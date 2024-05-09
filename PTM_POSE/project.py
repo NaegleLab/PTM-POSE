@@ -62,7 +62,7 @@ def find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = 
         #check if ptm is associated with the same gene (if info is provided). if not, do not add
         if gene is not None:
             for i, row in ptms_in_region.iterrows():
-                if gene not in config.translator.loc[config.translator['UniProtKB/Swiss-Prot ID'] == row['UniProtKB Accession'], 'Gene name'].values: 
+                if gene not in config.uniprot_to_gene[row['UniProtKB Accession']].split(' '):
                     ptms_in_region = ptms_in_region.drop(i)
             #make sure ptms still are present after filtering
             if ptms_in_region.empty:
