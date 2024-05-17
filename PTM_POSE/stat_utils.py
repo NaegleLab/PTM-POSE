@@ -97,7 +97,7 @@ def convertToFishers(M, n, N, x):
     M : int
         Total number of ptms.
     n : int
-        Total number of instances in the subset.
+        Total number of instances in the population.
     N : int
         Total number of ptms in the subset.
     x : int
@@ -112,7 +112,7 @@ def convertToFishers(M, n, N, x):
             [N-x, M- (n+N) + x]]
     return table
 
-def constructPivotTable(spliced_ptms, database = 'PhosphoSitePlus', collapse_on_similar = False, include_unknown = False):
+def constructPivotTable(annotated_ptms, reference_col, database = 'PhosphoSitePlus', collapse_on_similar = False, include_unknown = False):
     """
     Given a ptm dataframe and regulatory data from phosphositeplus, create a table with PTMs in the rows and annotations in the columns, with 1 indicating that the PTM has that annotation
 
@@ -133,7 +133,7 @@ def constructPivotTable(spliced_ptms, database = 'PhosphoSitePlus', collapse_on_
         dataframe with PTMs in the rows and annotations in the columns, with 1 indicating that the PTM has that annotation
     """
     #create matrix indicating function of each ptm: ptm in the rows, function in columns, and 1 indicating that the ptm has that function## create molecular function table, with
-    annotation = ptms.copy()
+    annotation = annotated_ptms.copy()
     if include_unknown:
         annotation.loc[annotation[reference_col].isna(), reference_col] = 'unknown'
     annotation = annotation.dropna(subset = reference_col)

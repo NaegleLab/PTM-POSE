@@ -33,7 +33,7 @@ def add_PSP_regulatory_site_data(spliced_ptms, file = 'Regulatory_sites.gz'):
     regulatory_site_data = regulatory_site_data.rename(columns = {'ACC_ID':'UniProtKB Accession'})
     #drop extra modification information that is not needed
     regulatory_site_data['Residue'] = regulatory_site_data['MOD_RSD'].apply(lambda x: x.split('-')[0][0])
-    regulatory_site_data['PTM Position in Canonical Isoform'] = regulatory_site_data['MOD_RSD'].apply(lambda x: x.split('-')[0][1:])
+    regulatory_site_data['PTM Position in Canonical Isoform'] = regulatory_site_data['MOD_RSD'].apply(lambda x: int(x.split('-')[0][1:]))
     #add modification type
     regulatory_site_data['Modification Class'] = regulatory_site_data['MOD_RSD'].apply(lambda x: psp_dict[x.split('-')[1]])
 
@@ -87,7 +87,7 @@ def add_PSP_kinase_substrate_data(spliced_ptms, file = 'Kinase_Substrate_Dataset
     ks_dataset.columns = ['UniProtKB Accession', 'Residue', 'PSP:Kinase']
 
     #separate residue and position
-    ks_dataset['PTM Position in Canonical Isoform'] = ks_dataset['Residue'].apply(lambda x: x[1:])
+    ks_dataset['PTM Position in Canonical Isoform'] = ks_dataset['Residue'].apply(lambda x: int(x[1:]))
     ks_dataset['Residue'] = ks_dataset['Residue'].apply(lambda x: x[0])
 
     original_data_size = spliced_ptms.shape[0]
@@ -125,7 +125,7 @@ def add_PSP_disease_association(spliced_ptms, file = 'Disease-associated_sites.g
     #drop extra modification information that is not needed
     #drop extra modification information that is not needed
     disease_associated_sites['Residue'] = disease_associated_sites['MOD_RSD'].apply(lambda x: x.split('-')[0][0])
-    disease_associated_sites['PTM Position in Canonical Isoform'] = disease_associated_sites['MOD_RSD'].apply(lambda x: x.split('-')[0][1:])
+    disease_associated_sites['PTM Position in Canonical Isoform'] = disease_associated_sites['MOD_RSD'].apply(lambda x: int(x.split('-')[0][1:]))
     #add modification type
     disease_associated_sites['Modification Class'] = disease_associated_sites['MOD_RSD'].apply(lambda x: psp_dict[x.split('-')[1]])
     #if phosphorylation, add specific residue
@@ -219,28 +219,37 @@ def add_ELM_interactions(spliced_ptms):
 
 def add_ELM_matched_motifs(spliced_ptms, ptm_coordinates, flank_size = 7):
     elm_classes = pd.read_csv('http://elm.eu.org/elms/elms_index.tsv', sep = '\t', header = 5)
-
+    #create corresponding label for ptm_coordinate data
+    ptm_coordinates['PTM Label'] = ptm_coordinates['UniProtKB Accession'] + '_' + ptm_coordinates['Residue'] + ptm_coordinates['PTM Position in Canonical Isoform'].apply(lambda x: int(x) if x == x else np.nan).astype(str)
+    
     match_list = []
     for i, row in spliced_ptms.iterrows():
         matches = []
+        #grab ptm information
         #grab flanking sequence for the ptm
-        ptm = row['UniProtKB Accession'] + '_' + row['Residue'] + row['PTM Position in Canonical Isoform']
-        if ptm in ptm_coordinates['Source of PTM'].values:
-            ptm_flanking_seq = ptm_coordinates.loc[ptm_coordinates['Source of PTM'] == ptm, 'Expected Flanking Sequence'].values[0]
+        loc = int(row["PTM Position in Canonical Isoform"]) if row['PTM Position in Canonical Isoform'] == row['PTM Position in Canonical Isoform'] else np.nan
+        ptm = row['UniProtKB Accession'] + '_' + row['Residue'] + str(loc)
 
+        
+        if ptm in ptm_coordinates['PTM Label'].values:
+            ptm_flanking_seq = ptm_coordinates.loc[ptm_coordinates['PTM Label'] == ptm, 'Expected Flanking Sequence'].values[0]
+            #make sure flanking sequence is present
+            if isinstance(ptm_flanking_seq, str):
 
-            #default flanking sequence is 10, if requested flanking sequence is different, then adjust
-            if flank_size > 10:
-                raise ValueError('Flanking size must be equal to or less than 10')
-            elif flank_size < 10:
-                ptm_flanking_seq = ptm_flanking_seq[10-flank_size:10+flank_size]
+                #default flanking sequence is 10, if requested flanking sequence is different, then adjust
+                if flank_size > 10:
+                    raise ValueError('Flanking size must be equal to or less than 10')
+                elif flank_size < 10:
+                    ptm_flanking_seq = ptm_flanking_seq[10-flank_size:10+flank_size]
 
-            for j, elm_row in elm_classes.iterrows():
-                reg_ex = elm_row['Regex']
-                if re.search(reg_ex, ptm_flanking_seq) is not None:
-                    matches.append(elm_row['ELMIdentifier'])
+                for j, elm_row in elm_classes.iterrows():
+                    reg_ex = elm_row['Regex']
+                    if re.search(reg_ex, ptm_flanking_seq) is not None:
+                        matches.append(elm_row['ELMIdentifier'])
 
-            match_list.append(';'.join(matches))
+                match_list.append(';'.join(matches))
+            else:
+                match_list.append(np.nan)
         else:
             print(f'PTM {ptm} not found in PTM info file')
             match_list.append(np.nan)
@@ -267,7 +276,7 @@ def add_PTMint_data(spliced_ptms):
     #PTMint['Site'] = PTMint['AA'] + PTMint['Site'].astype(str)
     PTMint['PTMInt:Interaction'] = PTMint['Int_gene']+'->'+PTMint['Effect']
     PTMint = PTMint[['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'PTMInt:Interaction']]
-    PTMint['PTM Position in Canonical Isoform'] = PTMint['PTM Position in Canonical Isoform'].astype(str)
+    #PTMint['PTM Position in Canonical Isoform'] = PTMint['PTM Position in Canonical Isoform'].astype(str)
 
     #aggregate PTMint data on the same PTMs
     PTMint = PTMint.groupby(['UniProtKB Accession','Residue','PTM Position in Canonical Isoform'], as_index = False).agg(';'.join)
@@ -295,8 +304,16 @@ def add_PTMcode_intraprotein(spliced_ptms, fname = None):
     
     #grab humn data
     ptmcode = ptmcode[ptmcode['Species'] == 'Homo sapiens']
+
+    #add gene name to data
+    translator = pd.DataFrame(config.uniprot_to_gene, index = ['Gene']).T
+    translator['Gene'] = translator['Gene'].apply(lambda x: x.split(' '))
+    translator = translator.explode('Gene')
+    translator = translator.reset_index()
+    translator.columns = ['UniProtKB/Swiss-Prot ID', 'Gene name']
+
     #add uniprot ID information
-    ptmcode = ptmcode.merge(config.translator[['Gene name', 'UniProtKB/Swiss-Prot ID']].dropna().drop_duplicates(), left_on = '## Protein', right_on = 'Gene name', how = 'left')
+    ptmcode = ptmcode.merge(translator.dropna().drop_duplicates(), left_on = '## Protein', right_on = 'Gene name', how = 'left')
 
     #convert modification names to match annotation data
     convert_dict = {'Adp ribosylation': 'ADP Ribosylation', 'Glutamine deamidation':'Deamidation'}
@@ -329,7 +346,7 @@ def add_PTMcode_intraprotein(spliced_ptms, fname = None):
     ptmcode = ptmcode.rename(columns = {'UniProtKB/Swiss-Prot ID':'UniProtKB Accession', 'Residue1':'Residue', 'Residue2':'PTMcode:Intraprotein_Interactions'})
     
     #separate residue information into separate columns, one for amino acid and one for position
-    ptmcode['PTM Position in Canonical Isoform'] = ptmcode['Residue'].apply(lambda x: x[1:])
+    ptmcode['PTM Position in Canonical Isoform'] = ptmcode['Residue'].apply(lambda x: int(x[1:]))
     ptmcode['Residue'] = ptmcode['Residue'].apply(lambda x: x[0])
 
     #add to splice data
@@ -345,12 +362,18 @@ def add_PTMcode_intraprotein(spliced_ptms, fname = None):
     return spliced_ptms
 
 def extract_ids_PTMcode(df, col = '## Protein1'):
+
+    #add gene name to data
+    name_to_uniprot = pd.DataFrame(config.uniprot_to_gene, index = ['Gene']).T
+    name_to_uniprot['Gene'] = name_to_uniprot['Gene'].apply(lambda x: x.split(' '))
+    name_to_uniprot = name_to_uniprot.explode('Gene')
+    name_to_uniprot = name_to_uniprot.reset_index()
+    name_to_uniprot.columns = ['UniProtKB/Swiss-Prot ID', 'Gene name']
+
     #protein name is provided as either ensemble gene id or gene name check for both
-    gene_id_to_uniprot = config.translator[['Gene stable ID', 'UniProtKB/Swiss-Prot ID']].dropna().drop_duplicates(subset = 'Gene stable ID')
-    df = df.merge(gene_id_to_uniprot, left_on = col, right_on = 'Gene stable ID', how = 'left')
+    df = df.merge(config.translator[['UniProtKB/Swiss-Prot ID', 'Gene stable ID']].dropna().drop_duplicates(), left_on = col, right_on = 'Gene stable ID', how = 'left')
     df = df.rename(columns = {'UniProtKB/Swiss-Prot ID': 'From_ID'})
-    gene_name_to_uniprot = config.translator[['Gene name', 'UniProtKB/Swiss-Prot ID']].dropna().drop_duplicates(subset ='Gene name')
-    df = df.merge(gene_name_to_uniprot, left_on = col, right_on = 'Gene name', how = 'left')
+    df = df.merge(name_to_uniprot, left_on = col, right_on = 'Gene name', how = 'left')
     df = df.rename(columns = {'UniProtKB/Swiss-Prot ID': 'From_Name'})
 
     #grab unique id from 'From_ID' and 'From_Name' column, if available
@@ -411,7 +434,7 @@ def add_PTMcode_interprotein(spliced_ptms, fname = None):
 
     #separate residue information into separate columns, one for amino acid and one for position
     ptmcode['PTM Position in Canonical Isoform'] = ptmcode['Residue'].apply(lambda x: x[1:])
-    ptmcode['Residue'] = ptmcode['Residue'].apply(lambda x: x[0])
+    ptmcode['Residue'] = ptmcode['Residue'].apply(lambda x: int(x[0]))
 
     #add to splice data
     original_data_size = spliced_ptms.shape[0]
@@ -515,19 +538,20 @@ def add_RegPhos_data(spliced_ptms, fname = None):
         regphos = pd.read_csv(fname, sep = '\t')
 
     regphos = regphos.dropna(subset = 'catalytic kinase')
-    regphos['Residue'] = regphos['code'] + regphos['position'].astype(str)
-    regphos = regphos.rename(columns = {'AC': 'UniProtKB Accession', 'catalytic kinase': 'RegPhos:Kinase'})
+    #regphos['Residue'] = regphos['code'] + regphos['position'].astype(str)
+    regphos = regphos.rename(columns = {'code': 'Residue', 'position':'PTM Position in Canonical Isoform', 'AC': 'UniProtKB Accession', 'catalytic kinase': 'RegPhos:Kinase'})
     regphos['Modification Class'] = 'Phosphorylation'
-    regphos = regphos[['UniProtKB Accession', 'Residue', 'Modification Class', 'RegPhos:Kinase']]
+    regphos = regphos[['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class', 'RegPhos:Kinase']].dropna()
+    regphos = regphos.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).agg(';'.join).reset_index()
 
     #add to splice data
     original_data_size = spliced_ptms.shape[0]
-    spliced_ptms = spliced_ptms.merge(regphos, how = 'left', on = ['UniProtKB Accession', 'Residue', 'Modification Class'])
+    spliced_ptms = spliced_ptms.merge(regphos, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'])
     if spliced_ptms.shape[0] != original_data_size:
         raise RuntimeError('Dataframe size has changed, check for duplicates in spliced ptms dataframe')
     
     #report the number of PTMs identified
-    num_ptms_with_regphos_data = spliced_ptms.dropna(subset = 'RegPhos:Kinase').groupby(['UniProtKB Accession', 'Residue']).size().shape[0]
+    num_ptms_with_regphos_data = spliced_ptms.dropna(subset = 'RegPhos:Kinase').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).size().shape[0]
     print(f"RegPhos kinase-substrate data added: {num_ptms_with_regphos_data} PTMs in dataset found with kinase-substrate information")
 
     return spliced_ptms

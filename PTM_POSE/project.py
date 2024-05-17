@@ -51,22 +51,37 @@ def find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = 
 
     #extract only PTM information from dataframe and return that and list (if not ptms, return empty dataframe)
     if not ptms_in_region.empty:
+        #grab uniprot id and residue
+        ptms_in_region = ptms_in_region[['UniProtKB Accession', 'Source of PTM', 'Residue', 'PTM Position in Canonical Isoform', loc_col, 'Modification', 'Modification Class']]
+
+        #check if ptm is associated with the same gene (if info is provided). if not, do not add
+        if gene is not None:
+            for i, row in ptms_in_region.iterrows():
+                if ';' in row['UniProtKB Accession']:
+                    uni_ids = row['UniProtKB Accession'].split(';')
+                    remove = True
+                    for uni in uni_ids:
+                        if gene in config.uniprot_to_gene[uni].split(' '):
+                            remove = False
+                            break
+
+                    if remove:
+                        ptms_in_region.drop(i)
+                else:
+                    if gene not in config.uniprot_to_gene[row['UniProtKB Accession']].split(' '):
+                        ptms_in_region = ptms_in_region.drop(i)
+
+            #make sure ptms still are present after filtering
+            if ptms_in_region.empty:
+                return pd.DataFrame()
+            else:
+                ptms_in_region.insert(0, 'Gene', gene)
+        
         #calculate proximity to region start and end
         ptms_in_region['Proximity to Region Start (bp)'] = (ptms_in_region[loc_col] - start).abs()
         ptms_in_region['Proximity to Region End (bp)'] = (ptms_in_region[loc_col] - end).abs()
         ptms_in_region['Proximity to Splice Boundary (bp)'] = ptms_in_region.apply(lambda x: min(x['Proximity to Region Start (bp)'], x['Proximity to Region End (bp)']), axis = 1)
 
-        #grab uniprot id and residue
-        ptms_in_region = ptms_in_region[['UniProtKB Accession', 'Source of PTM', 'Residue', 'PTM Position in Canonical Isoform', 'Modification', 'Modification Class', 'Proximity to Region Start (bp)', 'Proximity to Region End (bp)', 'Proximity to Splice Boundary (bp)']]
-
-        #check if ptm is associated with the same gene (if info is provided). if not, do not add
-        if gene is not None:
-            for i, row in ptms_in_region.iterrows():
-                if gene not in config.uniprot_to_gene[row['UniProtKB Accession']].split(' '):
-                    ptms_in_region = ptms_in_region.drop(i)
-            #make sure ptms still are present after filtering
-            if ptms_in_region.empty:
-                return pd.DataFrame()
             
         #add event id and dpsi column if provided
         #if event_id is not None:
@@ -75,8 +90,7 @@ def find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = 
         #    ptms_in_region['dPSI'] = dPSI
         #if sig is not None:
         #    ptms_in_region['Significance'] = sig
-        if gene is not None:
-            ptms_in_region.insert(0, 'Gene', gene)
+        #if gene is not None:
 
         return ptms_in_region
     else:
