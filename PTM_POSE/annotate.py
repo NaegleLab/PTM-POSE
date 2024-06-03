@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import re
 
-import POSE_config as config
+from PTM_POSE import POSE_config as config
 
 #system packages
 import os
@@ -158,11 +158,14 @@ def add_PSP_disease_association(spliced_ptms, file = 'Disease-associated_sites.g
     return spliced_ptms
 
 
-def add_ELM_interactions(spliced_ptms):
+def add_ELM_interactions(spliced_ptms, fname = None):
     """
     Given a spliced ptms dataframe from the project module, add ELM interaction data to the dataframe
     """
-    elm_interactions = pd.read_csv('http://elm.eu.org/interactions/as_tsv', sep = '\t', header = 0)
+    if fname is None:
+        elm_interactions = pd.read_csv('http://elm.eu.org/interactions/as_tsv', sep = '\t', header = 0)
+    else:
+        elm_interactions = pd.read_csv(fname, sep = '\t', header = 0)
     elm_interactions = elm_interactions[(elm_interactions['taxonomyElm'] == '9606(Homo sapiens)') & (elm_interactions['taxonomyDomain'] == '9606(Homo sapiens)')]
 
     elm_list = []
@@ -369,6 +372,7 @@ def extract_ids_PTMcode(df, col = '## Protein1'):
     name_to_uniprot = name_to_uniprot.explode('Gene')
     name_to_uniprot = name_to_uniprot.reset_index()
     name_to_uniprot.columns = ['UniProtKB/Swiss-Prot ID', 'Gene name']
+    name_to_uniprot = name_to_uniprot.drop_duplicates(subset = 'Gene name', keep = False)
 
     #protein name is provided as either ensemble gene id or gene name check for both
     df = df.merge(config.translator[['UniProtKB/Swiss-Prot ID', 'Gene stable ID']].dropna().drop_duplicates(), left_on = col, right_on = 'Gene stable ID', how = 'left')
@@ -433,8 +437,8 @@ def add_PTMcode_interprotein(spliced_ptms, fname = None):
     ptmcode = ptmcode.rename(columns = {'UniProtKB/Swiss-Prot ID':'UniProtKB Accession', 'Residue1':'Residue', 'Interacting Residue':'PTMcode:Interprotein_Interactions'})
 
     #separate residue information into separate columns, one for amino acid and one for position
-    ptmcode['PTM Position in Canonical Isoform'] = ptmcode['Residue'].apply(lambda x: x[1:])
-    ptmcode['Residue'] = ptmcode['Residue'].apply(lambda x: int(x[0]))
+    ptmcode['PTM Position in Canonical Isoform'] = ptmcode['Residue'].apply(lambda x: float(x[1:]))
+    ptmcode['Residue'] = ptmcode['Residue'].apply(lambda x: x[0])
 
     #add to splice data
     original_data_size = spliced_ptms.shape[0]
@@ -444,7 +448,7 @@ def add_PTMcode_interprotein(spliced_ptms, fname = None):
     
     #report the number of PTMs identified
     num_ptms_with_PTMcode_data = spliced_ptms.dropna(subset = 'PTMcode:Interprotein_Interactions').groupby(['UniProtKB Accession', 'Residue']).size().shape[0]
-    print(f"PTMcode intraprotein interactions added: {num_ptms_with_PTMcode_data} PTMs in dataset found with PTMcode interprotein interaction information")
+    print(f"PTMcode interprotein interactions added: {num_ptms_with_PTMcode_data} PTMs in dataset found with PTMcode interprotein interaction information")
 
     return spliced_ptms
 

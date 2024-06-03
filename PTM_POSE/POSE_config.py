@@ -6,7 +6,7 @@ import os
 import json
 
 
-import database_interfacing as di
+from PTM_POSE import database_interfacing as di
 
 package_dir = os.path.dirname(os.path.abspath(__file__))
 modification_conversion = pd.read_csv(package_dir + '/../Resource_Files/modification_conversion.csv')

@@ -3,7 +3,7 @@ import pandas as pd
 
 import multiprocessing
 
-import POSE_config as config
+from PTM_POSE import POSE_config as config
 
 from tqdm import tqdm
 

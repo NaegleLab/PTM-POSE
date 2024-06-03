@@ -71,7 +71,7 @@ def hypergeom(M, n, N, k):
     M : int
         Total number of ptms.
     n : int
-        Total number of instances in the subset.
+        Total number of instances in the population.
     N : int
         Total number of ptms in the subset.
     k : int
