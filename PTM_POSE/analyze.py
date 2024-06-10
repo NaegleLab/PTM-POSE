@@ -4,13 +4,11 @@ import pandas as pd
 #stats packages
 import scipy.stats as stats
 
-import seaborn as sns
-
 #plotting 
 import matplotlib.pyplot as plt
 
-#custom functions
-import annotate, stat_utils
+#custom stat functions
+import stat_utils
 
 
 
@@ -18,19 +16,14 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize 
     if show_all_ptm_count:
         num_ptms = [spliced_ptms.drop_duplicates(['UniProtKB Accession', 'Residue']).shape[0]]
         num_ptms_filters = ['All PTMs']
-        filter_source = []
+        filter_source = ['None']
     else:
         num_ptms = []
         num_ptms_filters = []
         filter_source = []
 
     #look for annotations and add counts to lists
-    if 'PSP:DOMAIN' in spliced_ptms.columns:
-        #in domain or not
-        num_ptms.append(spliced_ptms.dropna(subset = 'PSP:DOMAIN').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
-        num_ptms_filters.append('PTMs In Domain')
-        filter_source.append('PhosphoSitePlus')
-       
+    if 'PSP:ON_PROCESS' in spliced_ptms.columns:
         #with a biological process annotation
         num_ptms.append(spliced_ptms.dropna(subset = 'PSP:ON_PROCESS').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
         num_ptms_filters.append('PTMs associated with Biological Process')
@@ -42,45 +35,60 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize 
         filter_source.append('PhosphoSitePlus')
     if 'PSP:Kinase' in spliced_ptms.columns:
         num_ptms.append(spliced_ptms.dropna(subset = 'PSP:Kinase').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
-        num_ptms_filters.append('PTMs associated with Kinase')
+        num_ptms_filters.append('PTMs associated with Kinase (PSP)')
         filter_source.append('PhosphoSitePlus')
     if 'PSP:Disease_Association' in spliced_ptms.columns:
         num_ptms.append(spliced_ptms.dropna(subset = 'PSP:Disease_Association').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
         num_ptms_filters.append('PTMs with Disease Association')
         filter_source.append('PhosphoSitePlus')
-    if 'ELM Interactions' in spliced_ptms.columns:
-        num_ptms.append(spliced_ptms.dropna(subset = 'ELM Interactions').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+    if 'ELM:Interactions' in spliced_ptms.columns:
+        num_ptms.append(spliced_ptms.dropna(subset = 'ELM:Interactions').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
         num_ptms_filters.append('PTMs with Known ELM Interactions')
         filter_source.append('ELM')
-    if 'ELM Motif Matches' in spliced_ptms.columns:
-        num_ptms.append(spliced_ptms[spliced_ptms['ELM Motif Matches'] != ''].drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
-        num_ptms_filters.append('PTMs with ELM Motif Matches')
-        filter_source.append('ELM')
+    #if 'ELM:Motif Matches' in spliced_ptms.columns:
+    #    num_ptms.append(spliced_ptms[spliced_ptms['ELM Motif Matches'] != ''].drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+    #    num_ptms_filters.append('PTMs with ELM Motif Matches')
+    #    filter_source.append('ELM')
 
         #with ligand motifs
-        num_ptms.append(spliced_ptms[spliced_ptms['ELM Motif Matches'].str.contains('LIG')].drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
-        num_ptms_filters.append('PTMs with ELM Ligand Motif Matches')
-        filter_source.append('ELM')
+    #    num_ptms.append(spliced_ptms[spliced_ptms['ELM Motif Matches'].str.contains('LIG')].drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+    #    num_ptms_filters.append('PTMs with ELM Ligand Motif Matches')
+    #    filter_source.append('ELM')
 
         #with phospho dependent motifs
-        sh2_motifs = ['LIG_SH2_CRK', 'LIG_SH2_GRB2like', 'LIG_SH2_NCK_1', 'LIG_SH2_PTP2', 'LIG_SH2_SFK_2', 'LIG_SH2_SFK_CTail_3', 'LIG_SH2_STAP1', 'LIG_SH2_STAT3', 'LIG_SH2_STAT5', 'LIG_SH2_STAT6']
-        ptb_motifs = ['LIG_PTB_Phospho_1']
-        fha_motifs = ['LIG_FHA_1', 'LIG_FHA_2']
-        other_motifs = ['LIG_TYR_ITAM', 'LIG_TYR_ITIM', 'LIG_TYR_ITSM', 'LIG_RBL1_LxSxE_2', 'LIG_BRCT_BRCA1_1', 'LIG_BRCT_BRCA1_2', 'LIG_BRCT_MDC1_1', 'LIG_DLG_GKlike_1']
-        fourteen33_motifs = ['LIG_14-3-3_CanoR_1', 'LIG_14-3-3_CterR_2']
-        phospho_dependent_motifs = sh2_motifs + ptb_motifs + fha_motifs + other_motifs + fourteen33_motifs
+    #    sh2_motifs = ['LIG_SH2_CRK', 'LIG_SH2_GRB2like', 'LIG_SH2_NCK_1', 'LIG_SH2_PTP2', 'LIG_SH2_SFK_2', 'LIG_SH2_SFK_CTail_3', 'LIG_SH2_STAP1', 'LIG_SH2_STAT3', 'LIG_SH2_STAT5', 'LIG_SH2_STAT6']
+    #    ptb_motifs = ['LIG_PTB_Phospho_1']
+    #    fha_motifs = ['LIG_FHA_1', 'LIG_FHA_2']
+    #    other_motifs = ['LIG_TYR_ITAM', 'LIG_TYR_ITIM', 'LIG_TYR_ITSM', 'LIG_RBL1_LxSxE_2', 'LIG_BRCT_BRCA1_1', 'LIG_BRCT_BRCA1_2', 'LIG_BRCT_MDC1_1', 'LIG_DLG_GKlike_1']
+    #    fourteen33_motifs = ['LIG_14-3-3_CanoR_1', 'LIG_14-3-3_CterR_2']
+    #    phospho_dependent_motifs = sh2_motifs + ptb_motifs + fha_motifs + other_motifs + fourteen33_motifs
 
-        num_ptms.append(spliced_ptms[(spliced_ptms['ELM Motif Matches'].str.contains('|'.join(phospho_dependent_motifs))) & (spliced_ptms['Modification Class'] == 'Phosphorylation')].shape[0])
-        num_ptms_filters.append('PTMs with Phospho Dependent ELM Motif Matches')
-        filter_source.append('ELM')
+    #    num_ptms.append(spliced_ptms[(spliced_ptms['ELM Motif Matches'].str.contains('|'.join(phospho_dependent_motifs))) & (spliced_ptms['Modification Class'] == 'Phosphorylation')].shape[0])
+    #    num_ptms_filters.append('PTMs with Phospho Dependent ELM Motif Matches')
+    #    filter_source.append('ELM')
     if 'PTMInt:Interaction' in spliced_ptms.columns:
         num_ptms.append(spliced_ptms.dropna(subset = 'PTMInt:Interaction').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
         num_ptms_filters.append('PTMs with Known PTMInt Interactions')
         filter_source.append('PTMInt')
+
+    if 'PTMcode:Interprotein_Interactions' in spliced_ptms.columns:
+        num_ptms.append(spliced_ptms.dropna(subset = 'PTMcode:Interprotein_Interactions').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+        num_ptms_filters.append('PTMs with PTMcode Interprotein Interactions')
+        filter_source.append('PTMcode')
+
+    if 'DEPOD:Phosphatase' in spliced_ptms.columns:
+        num_ptms.append(spliced_ptms.dropna(subset = 'DEPOD:Phosphatase').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+        num_ptms_filters.append('PTMs associated with Phosphatase')
+        filter_source.append('DEPOD')
+
+    if 'RegPhos:Kinase' in spliced_ptms.columns:
+        num_ptms.append(spliced_ptms.dropna(subset = 'RegPhos:Kinase').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+        num_ptms_filters.append('PTMs associated with Kinase (RegPhos)')
+        filter_source.append('RegPhos')
     
     #plot bar plot
     #color bars based on datasource
-    palette = {'None': 'gray', 'PhosphoSitePlus': 'blue', 'ELM': 'green', 'PTMInt':'red'}
+    palette = {'None': 'gray', 'PhosphoSitePlus': 'blue', 'ELM': 'green', 'PTMInt':'red', 'PTMcode':'purple', 'DEPOD':'orange', 'RegPhos':'gold'}
     colors = []
     for source in filter_source:
         colors.append(palette[source])
@@ -88,6 +96,10 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize 
     ax.barh(num_ptms_filters[::-1], num_ptms[::-1], color = colors[::-1])
     ax.set_xlabel('Number of PTMs')
     ax.set_title('Number of PTMs in Dataset')
+    
+    #annotate with number of PTMs
+    for i, num_ptm in enumerate(num_ptms[::-1]):
+        ax.text(num_ptm, i, str(num_ptm), ha = 'left', va = 'center')
 
     #create legend
     handles = [plt.Rectangle((0,0),1,1, color = color) for color in palette.values() if color != 'gray']
@@ -95,69 +107,6 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize 
     ax.legend(handles, labels, title = 'Annotation Source')
     plt.show()
 
-def density_plots(annotated_splice_data, mod_class = None, sig_col = None, alpha = 0.05, type = 'hist', perform_sig_tests = True, figsize = (4,3)):
-    if sig_col is not None:
-        significant_splice_data = annotated_splice_data[annotated_splice_data[sig_col] <= alpha].copy()
-
-    #if requested perform significance tests
-    if perform_sig_tests and sig_col is not None:
-        #report direction of significance
-        if np.mean(annotated_splice_data['PTM Density (PTMs/bp)']) < np.mean(significant_splice_data['PTM Density (PTMs/bp)']):
-            print('Significant events have higher PTM density')
-        else:
-            print('Significant events have lower PTM density')
-
-        f, p = stats.mannwhitneyu(annotated_splice_data['PTM Density (PTMs/bp)'].dropna().values, significant_splice_data['PTM Density (PTMs/bp)'].dropna().values)
-        print('Mann Whitney U test: p =', p)
-    elif sig_col is not None:
-        print('Significance column not provided (sig_col = None), skipping significance testing')
-
-
-    if type =='hist':
-        fig, ax = plt.subplots(figsize=figsize)
-        
-        ax.hist(annotated_splice_data['PTM Density (PTMs/bp)'], density = True, bins = 20, alpha = 0.5, label = 'All Events')
-        if sig_col is not None:
-            ax.hist(significant_splice_data['PTM Density (PTMs/bp)'], density = True, bins = 20, alpha = 0.5, label = 'Significant Events')
-            ax.legend()
-
-        ax.set_xlabel('PTM Density (PTMs/bp)')
-        ax.set_ylabel('Density')
-    elif type == 'scatter':
-        if sig_col is None:
-            fig, ax = plt.subplots(1,1,figsize=figsize)
-            ax.scatter(annotated_splice_data['Event Length'], annotated_splice_data['PTM Density (PTMs/bp)'], s = 1)
-            ax.set_xlabel('PTM Density (PTM sites/bp)')
-            ax.set_ylabel('Event Length (bp)')
-        else:
-            fig, ax = plt.subplots(1,2, figsize=figsize,sharey = True, sharex = True)
-            #all ptms
-            ax[0].scatter(annotated_splice_data['Event Length'], annotated_splice_data['PTM Density (PTMs/bp)'], s = 1)
-            ax[0].set_ylabel('PTM Density (PTM sites/bp)')
-            ax[0].set_xlabel('Exon Length (bp)')
-            ax[0].set_title('All PTMs')
-
-            #significant ptms
-            ax[1].scatter(significant_splice_data['Event Length'], significant_splice_data['PTM Density (PTMs/bp)'], s = 1)
-            ax[1].set_ylabel('PTM Density (PTMs/bp)')
-            ax[1].set_xlabel('Exon Length (bp)')
-            ax[1].set_title('Significant PTMs')
-    elif type == 'boxplot':
-        annotated_splice_data['Type of Event'] = 'All'
-        if sig_col is None:
-            plt_data = annotated_splice_data.copy()
-        
-        else:
-            significant_splice_data['Type of Event'] = 'Significant'
-            plt_data = pd.concat([annotated_splice_data, significant_splice_data]).copy()
-        fig, ax = plt.subplots(figsize=figsize)
-        sns.boxplot(data = plt_data, x = 'Type of Event', y = 'PTM Density (PTMs/bp)', ax = ax)
-    else: 
-        print("Plot type not recognized. Available plot types are 'hist', 'scatter', and 'boxplot'")
-        ax = None
-
-
-    return ax
 
 def get_annotation_col(spliced_ptms, annotation_type = 'Function', database = 'PhosphoSitePlus'):
     """
@@ -165,15 +114,19 @@ def get_annotation_col(spliced_ptms, annotation_type = 'Function', database = 'P
     """
     #check to make sure requested annotation is available
     if database == 'PhosphoSitePlus':
-        col_dict = {'Function':'PSP:ON_FUNCTION', 'Process':'PSP:ON_PROCESS', 'Disease':"PSP:Disease_Associated", 'Kinase':'PSP:Kinase', 'Interactions': 'PSP:ON_INTERACT', 'Domain':'PSP:Domain'}
+        col_dict = {'Function':'PSP:ON_FUNCTION', 'Process':'PSP:ON_PROCESS', 'Disease':"PSP:Disease_Association", 'Kinase':'PSP:Kinase', 'Interactions': 'PSP:ON_PROT_INTERACT'}
         if annotation_type in col_dict.keys():
             annotation_col = col_dict[annotation_type]
-            if annotation_col not in spliced_ptms.columns:
-                raise ValueError('Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the appropriate annotate module function to append this information.')
+            if annotation_col not in spliced_ptms.columns and annotation_type in ['Function', 'Process', 'Interactions']:
+                raise ValueError('Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.add_PSP_regulatory_site_data() function to append this information.')
+            elif annotation_type == 'Disease' and annotation_col not in spliced_ptms.columns:
+                raise ValueError('Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.add_PSP_disease_association() function to append this information.')
+            elif annotation_type == 'Kinase' and annotation_col not in spliced_ptms.columns:
+                raise ValueError('Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.add_PSP_kinase_substrate_data() function to append this information.')
         else:
             raise ValueError(f"Invalid annotation type for PhosphoSitePlus. Available annotation data for PhosphoSitePlus includes: {', '.join(col_dict.keys())}")
     elif database == 'ELM':
-        col_dict = {'Interactions':'ELM:Interactions', 'Motif Match':'ELM Motif Matches'}
+        col_dict = {'Interactions':'ELM:Interactions', 'Motif Match':'ELM:Motif Matches'}
         if annotation_type in col_dict.keys():
             annotation_col = col_dict[annotation_type]
             if annotation_col not in spliced_ptms.columns:
@@ -187,10 +140,40 @@ def get_annotation_col(spliced_ptms, annotation_type = 'Function', database = 'P
         col_dict = {'Interactions':'PTMInt:Interactions'}
         if annotation_type in col_dict.keys():
             annotation_col = col_dict[annotation_type]
+            if annotation_col not in spliced_ptms.columns:
+                raise ValueError('Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.add_PTMInt_data() function to append this information.')
+        else:
+            raise ValueError(f"Invalid annotation type for PTMInt. Available annotation data for PhosphoSitePlus includes: {', '.join(col_dict.keys())}")
+    elif database == 'PTMcode':
+        col_dict = {'Interactions':'PTMcode:Interprotein_Interactions', 'Intraprotein Interactions':'PTMcode:Intraprotein_Interactions'}
+        if annotation_type in col_dict.keys():
+            annotation_col = col_dict[annotation_type]
+            if annotation_col not in spliced_ptms.columns:
+                if annotation_type == 'Interactions':
+                    raise ValueError('Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.add_PTMcode_interprotein() function to append this information.')
+                elif annotation_type == 'Intraprotein Interactions':
+                    raise ValueError('Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.add_PTMcode_intraprotein() function to append this information.')
+        else:
+            raise ValueError(f"Invalid annotation type for PTMcode. Available annotation data for PTMcode includes: {', '.join(col_dict.keys())}")
+                
+    elif database == 'DEPOD':
+        col_dict = {'Phosphatase':'DEPOD:Phosphatase'}
+        if annotation_type in col_dict.keys():
+            annotation_col = col_dict[annotation_type]
+            if annotation_col not in spliced_ptms.columns:
+                raise ValueError('Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.add_DEPOD_phosphatase_data() function to append this information.')
+        else:
+            raise ValueError(f"Invalid annotation type for PTMInt. Available annotation data for PhosphoSitePlus includes: {', '.join(col_dict.keys())}")
+    elif database == 'RegPhos':
+        col_dict = {'Kinase':'RegPhos:Kinase'}
+        if annotation_type in col_dict.keys():
+            annotation_col = col_dict[annotation_type]
+            if annotation_col not in spliced_ptms.columns:
+                raise ValueError('Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.add_RegPhos_data() function to append this information.')
         else:
             raise ValueError(f"Invalid annotation type for PTMInt. Available annotation data for PhosphoSitePlus includes: {', '.join(col_dict.keys())}")
     else:
-        raise ValueError("Invalid database. Available options include 'PhosphoSitePlus', 'ELM', and 'PTMInt'")
+        raise ValueError("Invalid database. Available options include 'PhosphoSitePlus', 'ELM', 'PTMcode', 'RegPhos', 'DEPOD', and 'PTMInt'")
 
     return annotation_col
 
@@ -229,8 +212,8 @@ def get_ptm_annotations(spliced_ptms, annotation_type = 'Function', database = '
         ptms_of_interest = spliced_ptms.copy()
 
     #extract relevant annotation and remove PTMs without an annotation
-    annotations = ptms_of_interest[['UniProtKB Accession', 'Residue', 'Modification Class'] + [annotation_col]].copy()
-    annotations = annotations.dropna(subset = annotation_col)
+    annotations = ptms_of_interest[['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'] + [annotation_col]].copy()
+    annotations = annotations.dropna(subset = annotation_col).drop_duplicates()
 
     #separate distinct modification annotations in unique rows
     annotations_exploded = annotations.copy()
