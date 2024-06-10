@@ -2,11 +2,8 @@ import pandas as pd
 import numpy as np
 import re
 
-from PTM_POSE import POSE_config as config
+from PTM_POSE import POSE_config
 
-#system packages
-import os
-import urllib.request
 
 #dictionaries for converting modification codes to modification names in PhosphoSitePlus data
 psp_dict = {'p': 'Phosphorylation', 'ca':'Caspase Cleavage', 'hy':'Hydroxylation', 'sn':'S-Nitrosylation', 'ng':'Glycosylation', 'ub': 'Ubiquitination', 'pa': "Palmitoylation",'ne':'Neddylation','sc':'Succinylation', 'sm': 'Sumoylation', 'ga': 'Glycosylation', 'gl': 'Glycosylation', 'ac': 'Acetylation', 'me':'Methylation', 'm1':'Methylation', 'm2': 'Dimethylation', 'm3':'Trimethylation'}
@@ -39,7 +36,7 @@ def add_PSP_regulatory_site_data(spliced_ptms, file = 'Regulatory_sites.gz'):
 
     #restrict to human data
     regulatory_site_data = regulatory_site_data[regulatory_site_data['ORGANISM'] == 'human']
-    regulatory_site_data = regulatory_site_data[['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class', 'DOMAIN', 'ON_PROCESS', 'ON_PROT_INTERACT', 'ON_OTHER_INTERACT', 'ON_FUNCTION']].drop_duplicates()
+    regulatory_site_data = regulatory_site_data[['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class', 'ON_PROCESS', 'ON_PROT_INTERACT', 'ON_OTHER_INTERACT', 'ON_FUNCTION']].drop_duplicates()
     
     #group like modifications into a single column
     regulatory_site_data = regulatory_site_data.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).agg(lambda x: '; '.join([y for y in x if y == y])).reset_index()
@@ -59,8 +56,8 @@ def add_PSP_regulatory_site_data(spliced_ptms, file = 'Regulatory_sites.gz'):
     num_ptms_with_known_function = spliced_ptms.dropna(subset = 'PSP:ON_FUNCTION').groupby(['UniProtKB Accession', 'Residue']).size().shape[0]
     num_ptms_with_known_process = spliced_ptms.dropna(subset = 'PSP:ON_PROCESS').groupby(['UniProtKB Accession', 'Residue']).size().shape[0]
     num_ptms_with_known_interaction = spliced_ptms.dropna(subset = 'PSP:ON_PROT_INTERACT').groupby(['UniProtKB Accession', 'Residue']).size().shape[0]
-    num_ptms_in_domain = spliced_ptms.dropna(subset = 'PSP:DOMAIN').groupby(['UniProtKB Accession', 'Residue']).size().shape[0]
-    print(f"PhosphoSitePlus regulatory_site information added:\n\t ->{num_ptms_with_known_function} PTMs in dataset found associated with a molecular function \n\t ->{num_ptms_with_known_process} PTMs in dataset found associated with a biological process\n\t ->{num_ptms_with_known_interaction} PTMs in dataset found associated with a protein interaction\n\t ->{num_ptms_in_domain} PTMs in dataset found associated with a domain")
+    #num_ptms_in_domain = spliced_ptms.dropna(subset = 'PSP:DOMAIN').groupby(['UniProtKB Accession', 'Residue']).size().shape[0]
+    print(f"PhosphoSitePlus regulatory_site information added:\n\t ->{num_ptms_with_known_function} PTMs in dataset found associated with a molecular function \n\t ->{num_ptms_with_known_process} PTMs in dataset found associated with a biological process\n\t ->{num_ptms_with_known_interaction} PTMs in dataset found associated with a protein interaction")
     return spliced_ptms
 
 def add_PSP_kinase_substrate_data(spliced_ptms, file = 'Kinase_Substrate_Dataset.gz'):
@@ -309,7 +306,7 @@ def add_PTMcode_intraprotein(spliced_ptms, fname = None):
     ptmcode = ptmcode[ptmcode['Species'] == 'Homo sapiens']
 
     #add gene name to data
-    translator = pd.DataFrame(config.uniprot_to_gene, index = ['Gene']).T
+    translator = pd.DataFrame(POSE_config.uniprot_to_gene_name, index = ['Gene']).T
     translator['Gene'] = translator['Gene'].apply(lambda x: x.split(' '))
     translator = translator.explode('Gene')
     translator = translator.reset_index()
@@ -327,13 +324,13 @@ def add_PTMcode_intraprotein(spliced_ptms, fname = None):
         mod = mod.capitalize()
         if 'glycosylation' in mod: #if glycosylation, group into one gorup
             new_mod_names.append('Glycosylation')
-        elif mod in config.modification_conversion['Modification Class'].values: #if already in modification class data, keep
+        elif mod in POSE_config.modification_conversion['Modification Class'].values: #if already in modification class data, keep
             new_mod_names.append(mod)
         elif mod in convert_dict.keys():
             new_mod_names.append(convert_dict[mod])
         else:
             try:
-                new_mod = config.modification_conversion[config.modification_conversion['Modification'] == mod].values[0][0]
+                new_mod = POSE_config.modification_conversion[POSE_config.modification_conversion['Modification'] == mod].values[0][0]
                 new_mod_names.append(new_mod)
             except:
                 failed_mod.append(mod)
@@ -367,7 +364,7 @@ def add_PTMcode_intraprotein(spliced_ptms, fname = None):
 def extract_ids_PTMcode(df, col = '## Protein1'):
 
     #add gene name to data
-    name_to_uniprot = pd.DataFrame(config.uniprot_to_gene, index = ['Gene']).T
+    name_to_uniprot = pd.DataFrame(POSE_config.uniprot_to_genename, index = ['Gene']).T
     name_to_uniprot['Gene'] = name_to_uniprot['Gene'].apply(lambda x: x.split(' '))
     name_to_uniprot = name_to_uniprot.explode('Gene')
     name_to_uniprot = name_to_uniprot.reset_index()
@@ -375,8 +372,8 @@ def extract_ids_PTMcode(df, col = '## Protein1'):
     name_to_uniprot = name_to_uniprot.drop_duplicates(subset = 'Gene name', keep = False)
 
     #protein name is provided as either ensemble gene id or gene name check for both
-    df = df.merge(config.translator[['UniProtKB/Swiss-Prot ID', 'Gene stable ID']].dropna().drop_duplicates(), left_on = col, right_on = 'Gene stable ID', how = 'left')
-    df = df.rename(columns = {'UniProtKB/Swiss-Prot ID': 'From_ID'})
+    df = df.merge(POSE_config.translator[['Gene stable ID']].reset_index().dropna().drop_duplicates(), left_on = col, right_on = 'Gene stable ID', how = 'left')
+    df = df.rename(columns = {'index': 'From_ID'})
     df = df.merge(name_to_uniprot, left_on = col, right_on = 'Gene name', how = 'left')
     df = df.rename(columns = {'UniProtKB/Swiss-Prot ID': 'From_Name'})
 
@@ -416,13 +413,13 @@ def add_PTMcode_interprotein(spliced_ptms, fname = None):
         mod = mod.capitalize()
         if 'glycosylation' in mod:
             new_mod_names.append('Glycosylation')
-        elif mod in config.modification_conversion['Modification Class'].values:
+        elif mod in POSE_config.modification_conversion['Modification Class'].values:
             new_mod_names.append(mod)
         elif mod in convert_dict.keys():
             new_mod_names.append(convert_dict[mod])
         else:
             try:
-                new_mod = config.modification_conversion[config.modification_conversion['Modification'] == mod].values[0][0]
+                new_mod = POSE_config.modification_conversion[POSE_config.modification_conversion['Modification'] == mod].values[0][0]
                 new_mod_names.append(new_mod)
             except:
                 failed_mod.append(mod)
@@ -559,6 +556,3 @@ def add_RegPhos_data(spliced_ptms, fname = None):
     print(f"RegPhos kinase-substrate data added: {num_ptms_with_regphos_data} PTMs in dataset found with kinase-substrate information")
 
     return spliced_ptms
-
-
-

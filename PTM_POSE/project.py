@@ -53,7 +53,6 @@ def find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = 
     if not ptms_in_region.empty:
         #grab uniprot id and residue
         ptms_in_region = ptms_in_region[['UniProtKB Accession', 'Source of PTM', 'Residue', 'PTM Position in Canonical Isoform', loc_col, 'Modification', 'Modification Class']]
-
         #check if ptm is associated with the same gene (if info is provided). if not, do not add
         if gene is not None:
             for i, row in ptms_in_region.iterrows():
@@ -61,14 +60,14 @@ def find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = 
                     uni_ids = row['UniProtKB Accession'].split(';')
                     remove = True
                     for uni in uni_ids:
-                        if gene in config.uniprot_to_gene[uni].split(' '):
+                        if gene in config.uniprot_to_genename[uni].split(' '):
                             remove = False
                             break
 
                     if remove:
                         ptms_in_region.drop(i)
                 else:
-                    if gene not in config.uniprot_to_gene[row['UniProtKB Accession']].split(' '):
+                    if gene not in config.uniprot_to_genename[row['UniProtKB Accession']].split(' '):
                         ptms_in_region = ptms_in_region.drop(i)
 
             #make sure ptms still are present after filtering
@@ -105,7 +104,7 @@ def convert_strand_symbol(strand):
     else:
         return strand
 
-def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'exonStart_0base', region_end_col = 'exonEnd', gene_col = None, dPSI_col = None, sig_col = None, event_id_col = None, extra_cols = None, annotate_original_df = True, coordinate_type = 'hg38', separate_modification_types = False):
+def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'exonStart_0base', region_end_col = 'exonEnd', gene_col = None, dPSI_col = None, sig_col = None, event_id_col = None, extra_cols = None, annotate_original_df = True, coordinate_type = 'hg38', separate_modification_types = False, taskbar_label = None):
     """
     Given a dataframe with a unique region in each row, project PTMs onto the regions. Assumes that the region data will have chromosome, strand, and genomic start/end positions, and each row corresponds to a unique region.
 
@@ -139,6 +138,9 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
     splice_data: pandas.DataFrame
         dataframe containing the original splice data with an additional column 'PTMs' that contains the PTMs found in the region of interest, in the format of 'SiteNumber(ModificationType)'. If no PTMs are found, the value will be np.nan.
     """
+    if taskbar_label is None:
+        taskbar_label = 'Projecting PTMs onto regions using ' + coordinate_type + ' coordinates.'
+
     spliced_ptm_info = []
     spliced_ptms_list = []
     num_ptms_affected = []
@@ -148,7 +150,7 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
     region_data = region_data.copy()
 
     #iterate through each row of the splice data and find PTMs in the region
-    for index, row in tqdm(region_data.iterrows(), total = len(region_data)):
+    for index, row in tqdm(region_data.iterrows(), total = len(region_data), desc = taskbar_label):
         #grab region information from row
         chromosome = row[chromosome_col]
         strand = convert_strand_symbol(row[strand_col])
@@ -160,6 +162,7 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
         #project ptms onto region
         ptms_in_region = find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = gene, coordinate_type = coordinate_type)
         
+
         #add additional context from splice data, if indicated
         if event_id_col is not None:
             ptms_in_region['Region ID'] = row[event_id_col]
@@ -196,6 +199,9 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
 
     #combine all PTM information 
     spliced_ptm_info = pd.concat(spliced_ptm_info, ignore_index = True)
+
+    #convert ptm position to float
+    spliced_ptm_info['PTM Position in Canonical Isoform'] = spliced_ptm_info['PTM Position in Canonical Isoform'].astype(float)
             
     #add ptm info to original splice event dataframe
     if annotate_original_df:
@@ -207,7 +213,7 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
 
     return region_data, spliced_ptm_info
     
-def project_ptms_onto_splice_events(splice_data, ptm_coordinates, annotate_original_df = True, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'exonStart_0base', region_end_col = 'exonEnd', dPSI_col = None, sig_col = None, event_id_col = None, gene_col = None, extra_cols = None, separate_modification_types = False, coordinate_type = 'hg38', PROCESSES = 1):
+def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotate_original_df = True, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'exonStart_0base', region_end_col = 'exonEnd', dPSI_col = None, sig_col = None, event_id_col = None, gene_col = None, extra_cols = None, separate_modification_types = False, coordinate_type = 'hg38', taskbar_label = None, PROCESSES = 1):
     """
     Given splice event quantification data, project PTMs onto the regions impacted by the splice events. Assumes that the splice event data will have chromosome, strand, and genomic start/end positions for the regions of interest, and each row of the splice_event_data corresponds to a unique region.
 
@@ -237,6 +243,16 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates, annotate_origi
     splice_data: pandas.DataFrame
         dataframe containing the original splice data with an additional column 'PTMs' that contains the PTMs found in the region of interest, in the format of 'SiteNumber(ModificationType)'. If no PTMs are found, the value will be np.nan.
     """
+    #load ptm data from config if not provided
+    if ptm_coordinates is None and config.ptm_coordinates is not None:
+        ptm_coordinates = config.ptm_coordinates
+    elif ptm_coordinates is None:
+        raise ValueError('ptm_coordinates dataframe not provided and not found in the resource files. Please provide the ptm_coordinates dataframe with config.download_ptm_coordinates() or download the file manually. To avoid needing to download this file each time, run POSE_config.download_ptm_coordinates(save = True) to save the file locally within the package directory (will take ~63MB of storage space)')
+
+    if taskbar_label is None:
+        taskbar_label = 'Projecting PTMs onto splice events using ' + coordinate_type + ' coordinates.'
+
+
     #initialize lists to store spliced PTM information
     spliced_ptm_info = []
     spliced_ptms_list = []
@@ -246,7 +262,7 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates, annotate_origi
     splice_data = splice_data.copy()
 
     if PROCESSES == 1:
-        splice_data, spliced_ptm_info = find_ptms_in_many_regions(splice_data, ptm_coordinates, chromosome_col = chromosome_col, strand_col = strand_col, region_start_col = region_start_col, region_end_col = region_end_col, dPSI_col = dPSI_col, sig_col = sig_col, event_id_col = event_id_col, gene_col = gene_col, extra_cols = extra_cols, annotate_original_df = annotate_original_df, coordinate_type = coordinate_type, separate_modification_types=separate_modification_types)
+        splice_data, spliced_ptm_info = find_ptms_in_many_regions(splice_data, ptm_coordinates, chromosome_col = chromosome_col, strand_col = strand_col, region_start_col = region_start_col, region_end_col = region_end_col, dPSI_col = dPSI_col, sig_col = sig_col, event_id_col = event_id_col, gene_col = gene_col, extra_cols = extra_cols, annotate_original_df = annotate_original_df, coordinate_type = coordinate_type,taskbar_label = taskbar_label, separate_modification_types=separate_modification_types)
     elif PROCESSES > 1:
         #check num_cpus available, if greater than number of cores - 1 (to avoid freezing machine), then set to PROCESSES to 1 less than total number of cores
         num_cores = multiprocessing.cpu_count()
@@ -257,20 +273,20 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates, annotate_origi
         splice_data_split = np.array_split(splice_data, PROCESSES)
         pool = multiprocessing.Pool(PROCESSES)
         #run with multiprocessing
-        results = pool.starmap(find_ptms_in_many_regions, [(splice_data_split[i], ptm_coordinates, chromosome_col, strand_col, region_start_col, region_end_col, gene_col, dPSI_col, sig_col, event_id_col, extra_cols, annotate_original_df, coordinate_type, separate_modification_types) for i in range(PROCESSES)])
+        results = pool.starmap(find_ptms_in_many_regions, [(splice_data_split[i], ptm_coordinates, chromosome_col, strand_col, region_start_col, region_end_col, gene_col, dPSI_col, sig_col, event_id_col, extra_cols, annotate_original_df, coordinate_type, separate_modification_types, taskbar_label) for i in range(PROCESSES)])
 
         splice_data = pd.concat([res[0] for res in results])
         spliced_ptm_info = pd.concat([res[1] for res in results])
 
         #raise ValueError('Multiprocessing not yet functional. Please set PROCESSES = 1.')
 
-
+    print(f'PTMs projection successful ({spliced_ptm_info.shape[0]} identified).\n')
 
     return splice_data, spliced_ptm_info
 
 
 
-def project_PTMs_onto_MATS(ptm_coordinates, SE_events = None, fiveASS_events = None, threeASS_events = None, RI_events = None, MXE_events = None, coordinate_type = 'hg38', PROCESSES = 1):
+def project_PTMs_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_events = None, threeASS_events = None, RI_events = None, MXE_events = None, coordinate_type = 'hg38', identify_flanking_sequences = False, PROCESSES = 1):
     """
     Given splice quantification from the MATS algorithm, annotate with PTMs that are found in the differentially included regions.
 
@@ -278,8 +294,22 @@ def project_PTMs_onto_MATS(ptm_coordinates, SE_events = None, fiveASS_events = N
     ----------
     ptm_coordinates: pandas.DataFrame
         dataframe containing PTM information, including chromosome, strand, and genomic location of PTMs
-    MATS_data: dict
-        dictionary containing the differentially included region quantification data from the MATS algorithm. Keys should be the different types of splicing events (SE, A5SS, A3SS, RI, MXE), and the values should be the quantification data in pandas.DataFrame format.
+    SE_events: pandas.DataFrame
+        dataframe containing skipped exon event information from MATS
+    fiveASS_events: pandas.DataFrame
+        dataframe containing 5' alternative splice site event information from MATS
+    threeASS_events: pandas.DataFrame
+        dataframe containing 3' alternative splice site event information from MATS
+    RI_events: pandas.DataFrame
+        dataframe containing retained intron event information from MATS
+    MXE_events: pandas.DataFrame
+        dataframe containing mutually exclusive exon event information from MATS
+    coordinate_type: str
+        indicates the coordinate system used for the start and end positions. Either hg38 or hg19. Default is 'hg38'.
+    identify_flanking_sequences: bool
+        Indicate whether to look for altered flanking sequences from spliced events, in addition to those directly in the spliced region. Default is False.
+    PROCESSES: int
+        Number of processes to use for multiprocessing. Default is 1.
     """
     print(f'Projecting PTMs onto MATS splice events using {coordinate_type} coordinates.')
     #reformat chromosome name format
@@ -290,7 +320,14 @@ def project_PTMs_onto_MATS(ptm_coordinates, SE_events = None, fiveASS_events = N
             SE_events['chr'] = SE_events['chr'].apply(lambda x: x[3:]) 
 
         SE_events['AS ID'] = SE_events['AS type'] + "_" + SE_events.index.astype(str)
-        spliced_events['SE'], SE_ptms = project_ptms_onto_splice_events(SE_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'exonStart_0base', region_end_col = 'exonEnd', event_id_col = 'AS ID', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type, PROCESSES = PROCESSES)
+
+        #check to make sure there is enough information to do multiprocessing if that is desired
+        if PROCESSES*4 > SE_events.shape[0]:
+            SE_processes = 1
+        else:
+            SE_processes = PROCESSES
+
+        spliced_events['SE'], SE_ptms = project_ptms_onto_splice_events(SE_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'exonStart_0base', region_end_col = 'exonEnd', event_id_col = 'AS ID', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type, taskbar_label = "Skipped Exon events", PROCESSES = SE_processes)
         SE_ptms['Event Type'] = 'SE'
         spliced_ptms.append(SE_ptms)
     else:
@@ -315,7 +352,14 @@ def project_PTMs_onto_MATS(ptm_coordinates, SE_events = None, fiveASS_events = N
         fiveASS_events['event_end'] = region_end
 
         fiveASS_events['AS ID'] = fiveASS_events['AS type'] + "_" + fiveASS_events.index.astype(str)
-        spliced_events['5ASS'], fiveASS_ptms = project_ptms_onto_splice_events(fiveASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'event_start', region_end_col = 'event_end', event_id_col = 'AS ID', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type, PROCESSES = PROCESSES)
+
+        #check to make sure there is enough information to do multiprocessing if that is desired
+        if PROCESSES*4 > fiveASS_events.shape[0]:
+            fiveASS_processes = 1
+        else:
+            fiveASS_processes = PROCESSES
+
+        spliced_events['5ASS'], fiveASS_ptms = project_ptms_onto_splice_events(fiveASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'event_start', region_end_col = 'event_end', event_id_col = 'AS ID', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type, taskbar_label = "5' ASS events", PROCESSES = fiveASS_processes)
         fiveASS_ptms['Event Type'] = '5ASS'
         spliced_ptms.append(fiveASS_ptms)
     else:
@@ -340,7 +384,14 @@ def project_PTMs_onto_MATS(ptm_coordinates, SE_events = None, fiveASS_events = N
         threeASS_events['event_end'] = region_end
 
         threeASS_events['AS ID'] = threeASS_events['AS type'] + "_" + threeASS_events.index.astype(str)
-        spliced_events['3ASS'], threeASS_ptms = project_ptms_onto_splice_events(threeASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'event_start', region_end_col = 'event_end', event_id_col = 'AS ID', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type, PROCESSES = PROCESSES)
+
+        #check to make sure there is enough information to do multiprocessing if that is desired
+        if PROCESSES*4 > threeASS_events.shape[0]:
+            threeASS_processes = 1
+        else:
+            threeASS_processes = PROCESSES
+
+        spliced_events['3ASS'], threeASS_ptms = project_ptms_onto_splice_events(threeASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'event_start', region_end_col = 'event_end', event_id_col = 'AS ID', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type, taskbar_label = "3' ASS events", PROCESSES = threeASS_processes)
         threeASS_ptms['Event Type'] = '3ASS'
         spliced_ptms.append(threeASS_ptms)
     else:
@@ -351,7 +402,14 @@ def project_PTMs_onto_MATS(ptm_coordinates, SE_events = None, fiveASS_events = N
             RI_events['chr'] = RI_events['chr'].apply(lambda x: x[3:])
 
         RI_events['AS ID'] = RI_events['AS type'] + "_" + RI_events.index.astype(str)
-        spliced_events['RI'], RI_ptms = project_ptms_onto_splice_events(RI_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'riExonStart_0base', region_end_col = 'riExonEnd', event_id_col = 'AS ID', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type, PROCESSES = PROCESSES)
+
+        #check to make sure there is enough information to do multiprocessing if that is desired
+        if PROCESSES*4 > RI_events.shape[0]:
+            RI_processes = 1
+        else:
+            RI_processes = PROCESSES
+
+        spliced_events['RI'], RI_ptms = project_ptms_onto_splice_events(RI_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'riExonStart_0base', region_end_col = 'riExonEnd', event_id_col = 'AS ID', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type, taskbar_label = 'Retained Intron Events', PROCESSES = RI_processes)
         RI_ptms['Event Type'] = 'RI'
         spliced_ptms.append(RI_ptms)
 
@@ -359,17 +417,23 @@ def project_PTMs_onto_MATS(ptm_coordinates, SE_events = None, fiveASS_events = N
         if MXE_events['chr'].str.contains('chr').any():
             MXE_events['chr'] = MXE_events['chr'].apply(lambda x: x[3:])
 
+        #check to make sure there is enough information to do multiprocessing if that is desired
+        if PROCESSES*4 > MXE_events.shape[0]:
+            MXE_processes = 1
+        else:
+            MXE_processes = PROCESSES
+
         #add AS ID
         MXE_events['AS ID'] = MXE_events['AS type'] + "_" + MXE_events.index.astype(str)
         
         mxe_ptms = []
         #first mxe exon
-        spliced_events['MXE_Exon1'], MXE_Exon1_ptms = project_ptms_onto_splice_events(MXE_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = '1stExonStart_0base', region_end_col = '1stExonEnd', event_id_col = 'AS ID', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type, PROCESSES = PROCESSES)
+        spliced_events['MXE_Exon1'], MXE_Exon1_ptms = project_ptms_onto_splice_events(MXE_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = '1stExonStart_0base', region_end_col = '1stExonEnd', event_id_col = 'AS ID', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type, taskbar_label = 'MXE, First Exon', PROCESSES = MXE_processes)
         MXE_Exon1_ptms['Event Type'] = 'MXE (First Exon)'
         mxe_ptms.append(MXE_Exon1_ptms)
 
         #second mxe exon
-        spliced_events['MXE_Exon2'], MXE_Exon2_ptms = project_ptms_onto_splice_events(MXE_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = '2ndExonStart_0base', region_end_col = '2ndExonEnd', event_id_col = 'AS ID', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type, PROCESSES = PROCESSES)
+        spliced_events['MXE_Exon2'], MXE_Exon2_ptms = project_ptms_onto_splice_events(MXE_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = '2ndExonStart_0base', region_end_col = '2ndExonEnd', event_id_col = 'AS ID', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type, taskbar_label = 'MXE, Second Exon', PROCESSES = MXE_processes)
         MXE_Exon2_ptms['Event Type'] = 'MXE (Second Exon)'
         mxe_ptms.append(MXE_Exon2_ptms)
 

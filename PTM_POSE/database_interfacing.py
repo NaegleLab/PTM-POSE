@@ -5,6 +5,8 @@ import requests
 from requests.adapters import HTTPAdapter, Retry
 import re
 
+import numpy as np
+
 from PTM_POSE import project
 
 
@@ -39,7 +41,7 @@ def get_batch(batch_url, session, re_next_link):
         yield response, total
         batch_url = get_next_link(response.headers, re_next_link)
 
-def get_uniprot_gene_names():
+def get_uniprot_to_gene(genename = True, geneid = True):
     """
     Construct a dictionary for converting from UniProt IDs to any gene names associated with that ID. Do this for all human, reviewed uniprot ids
 
@@ -50,14 +52,44 @@ def get_uniprot_gene_names():
     """
     #start up session for interfacting with rest api
     session, re_next_link = establish_session()
+    if not genename and not geneid:
+        raise ValueError('Must request at least one of genename or geneid')
+    
+    #establish query url
+    fields = ['accession'] + ['gene_names'] * genename + ['xref_ensembl_full'] * geneid 
+    fields = ','.join(fields)
+    url =  f"https://rest.uniprot.org/uniprotkb/search?query=reviewed:true+AND+organism_id:9606&format=tsv&fields={fields}_full&size=500"
 
-    url =  "https://rest.uniprot.org/uniprotkb/search?query=reviewed:true+AND+organism_id:9606&format=tsv&fields=accession,gene_names&size=500"
-    id_to_gene = {}
+    #run qeury in batch sizes of 500 and extract info
+    uni_to_genename = {}
+    uni_to_geneid = {}
     for batch, total in get_batch(url, session, re_next_link):
         for line in batch.text.splitlines()[1:]:
-            primaryAccession, gene_names = line.split('\t')
-            id_to_gene[primaryAccession] = gene_names
-    return id_to_gene
+            results = line.split('\t')
+            if genename and geneid:
+                primaryAccession, gene_names, gene_id = results
+            elif genename:
+                primaryAccession, gene_names = results
+            elif geneid:
+                primaryAccession, gene_id = results
+            
+
+            if genename:
+                uni_to_genename[primaryAccession] = gene_names
+            if geneid:
+                #ensembl reference exists, extract gene id from reference list and combine unique entries
+                if len(gene_id) > 0:
+                    gene_id = ' '.join(np.unique([id.split('.')[0].strip() for id in gene_id.split(';') if 'ENSG' in id]))
+                uni_to_geneid[primaryAccession] = gene_id
+
+
+    #return information
+    if genename and geneid:
+        return uni_to_genename, uni_to_geneid
+    elif genename:
+        return uni_to_genename
+    elif geneid:
+        return uni_to_geneid
 
 
 def get_region_sequence(chromosome, strand, region_start, region_end, coordinate_type = 'hg38'):
