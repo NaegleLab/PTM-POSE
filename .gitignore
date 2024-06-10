@@ -1,6 +1,9 @@
 # package specific files
 Resource_Files/translator.csv
-Resource_Files/uniprot_to_gene_name.csv
+Resource_Files/uniprot_to_gene_name.json
+
+#sql lite(pybiomart generates)
+*.sqllite
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
