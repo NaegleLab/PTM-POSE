@@ -591,5 +591,4 @@ def compare_inclusion_motifs(flanking_sequences, elm_classes = None):
 
     flanking_sequences["Motif only in Inclusion"] = only_in_inclusion
     flanking_sequences["Motif only in Exclusion"] = only_in_exclusion
-    flanking_sequences = flanking_sequences.replace('', np.nan)
     return flanking_sequences
