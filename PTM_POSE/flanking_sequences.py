@@ -233,6 +233,11 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
         Number of amino acids to include flanking the PTM, by default 7
     coordinate_type : str, optional
         Coordinate system used for the regions, by default 'hg38'. Other options is hg19.
+    lowercase_mod : bool, optional
+        Whether to lowercase the amino acid associated with the PTM in returned flanking sequences, by default True
+    order_by : str, optional
+        Whether the first, spliced and second regions are defined by their genomic coordinates (first has smallest coordinate, spliced next, then second), or if they are defined by their translation (first the first when translated, etc.)
+    
 
     Returns
     -------
@@ -334,7 +339,7 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
         if gene is not None:
             ptms_in_region = ptms_in_region[['Source of PTM', 'Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']].reset_index(drop = True)
         else:
-            ptms_in_region = ptms_in_region[['Source of PTM', 'Residue', 'PTM Position in Canonical Isoform']].reset_index(drop = True)
+            ptms_in_region = ptms_in_region[['Source of PTM', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']].reset_index(drop = True)
         #add flanking sequence information to ptm dataframe
         ptms_in_region['Inclusion Sequence'] = inclusion_seq_list
         ptms_in_region['Exclusion Sequence'] = exclusion_seq_list
@@ -431,12 +436,13 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
 
     #do some quick comparison of flanking sequences
     results['Matched'] = results['Inclusion Sequence'] == results['Exclusion Sequence']
+    results['Stop Codon Introduced'] = (results['Inclusion Sequence'].str.contains(r'\*')) | (results['Exclusion Sequence'].str.contains(r'\*'))
     return results
 
 
-def getSequenceSimilarity(seq1, seq2):
+def getSequenceIdentity(seq1, seq2):
     """
-    Given two flanking sequences, calculate the sequence similarity between them using Biopython and criteria definded by Pillman et al. BMC Bioinformatics 2011
+    Given two flanking sequences, calculate the sequence identity between them using Biopython and parameters definded by Pillman et al. BMC Bioinformatics 2011
 
     Parameters
     ----------
@@ -449,9 +455,9 @@ def getSequenceSimilarity(seq1, seq2):
         normalized score of sequence similarity between flanking sequences (calculated similarity/max possible similarity)
     """
     #align canonical and alternative flanks, return only the score
-    actual_similarity = pairwise2.align.globalxs(seq1, seq1, -10, -2, score_only = True)
+    actual_similarity = pairwise2.align.globalxs(seq1, seq2, -10, -2, score_only = True)
     #aling the canonical flank to itself, return only the score
-    control_similarity = pairwise2.align.globalxs(seq1, seq2, -10, -2, score_only = True)
+    control_similarity = pairwise2.align.globalxs(seq1, seq1, -10, -2, score_only = True)
     #normalize score
     normalized_score = actual_similarity/control_similarity
     return normalized_score
@@ -503,6 +509,37 @@ def findAlteredPositions(seq1, seq2, flank_size = 5):
     else:
         return np.nan, np.nan, np.nan
     
+def compare_flanking_sequences(flanking_sequences, flank_size = 5):
+    sequence_identity_list = []
+    altered_positions_list = []
+    residue_change_list = []
+    flank_side_list = []
+    for i, row in flanking_sequences.iterrows():
+        #if sequences are not the same and do not introduce stop codons, compare sequence identity
+        if not row['Stop Codon Introduced'] and not row['Matched']:
+            #compare sequence identity
+            sequence_identity = getSequenceIdentity(row['Inclusion Sequence'], row['Exclusion Sequence'])
+            #identify where flanking sequence changes
+            altered_positions, residue_change, flank_side = findAlteredPositions(row['Inclusion Sequence'], row['Exclusion Sequence'], flank_size = flank_size)
+        else:
+            sequence_identity = np.nan
+            altered_positions = np.nan
+            residue_change = np.nan
+            flank_side = np.nan
+
+        #add to lists
+        sequence_identity_list.append(sequence_identity)
+        altered_positions_list.append(altered_positions)
+        residue_change_list.append(residue_change)
+        flank_side_list.append(flank_side)
+
+    flanking_sequences['Sequence Identity'] = sequence_identity_list
+    flanking_sequences['Altered Positions'] = altered_positions_list
+    flanking_sequences['Residue Change'] = residue_change_list
+    flanking_sequences['Altered Flank Side'] = flank_side_list
+    return flanking_sequences
+
+    
 def find_motifs(seq, elm_classes):
     """
     Given a sequence and a dataframe containinn ELM class information, identify motifs that can be found in the provided sequence using the RegEx expression provided by ELM (PTMs not considered). This does not take into account the position of the motif in the sequence or additional information that might validate any potential interaction (i.e. structural information that would indicate whether the motif is accessible or not). ELM class information can be downloaded from the download page of elm (http://elm.eu.org/elms/elms_index.tsv).
@@ -522,7 +559,7 @@ def find_motifs(seq, elm_classes):
 
     return matches
 
-def compare_inclusion_motifs(flanking_sequences, elm_classes):
+def compare_inclusion_motifs(flanking_sequences, elm_classes = None):
     """
     Given a DataFrame containing flanking sequences with changes and a DataFrame containing ELM class information, identify motifs that are found in the inclusion and exclusion events, identifying motifs unique to each case. This does not take into account the position of the motif in the sequence or additional information that might validate any potential interaction (i.e. structural information that would indicate whether the motif is accessible or not). ELM class information can be downloaded from the download page of elm (http://elm.eu.org/elms/elms_index.tsv).
 
@@ -531,10 +568,28 @@ def compare_inclusion_motifs(flanking_sequences, elm_classes):
     flanking_sequences: pandas.DataFrame
         DataFrame containing flanking sequences with changes, obtained from get_flanking_changes_from_splice_data()
     elm_classes: pandas.DataFrame
-        DataFrame containing ELM class information (ELMIdentifier, Regex, etc.), downloaded directly from ELM (http://elm.eu.org/elms/elms_index.tsv)
+        DataFrame containing ELM class information (ELMIdentifier, Regex, etc.), downloaded directly from ELM (http://elm.eu.org/elms/elms_index.tsv). Recommended to download this file and input it manually, but will download from ELM otherwise
 
     Returns
     -------
+    flanking_sequences: pandas.DataFrame
+        DataFrame containing flanking sequences with changes and motifs found in the inclusion and exclusion events
 
     """
-    pass
+    if elm_classes is None:
+        elm_classes = pd.read_csv('http://elm.eu.org/elms/elms_index.tsv', sep = '\t', header = 5)
+
+    only_in_inclusion = []
+    only_in_exclusion = []
+
+    for i, row in flanking_sequences.iterrows():
+        inclusion_matches = find_motifs(row['Inclusion Sequence'], elm_classes)
+        exclusion_matches = find_motifs(row['Exclusion Sequence'], elm_classes)
+
+        only_in_inclusion.append(';'.join(set(inclusion_matches) - set(exclusion_matches)))
+        only_in_exclusion.append(';'.join(set(exclusion_matches) - set(inclusion_matches)))
+
+    flanking_sequences["Motif only in Inclusion"] = only_in_inclusion
+    flanking_sequences["Motif only in Exclusion"] = only_in_exclusion
+    flanking_sequences = flanking_sequences.replace('', np.nan)
+    return flanking_sequences

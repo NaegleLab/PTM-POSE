@@ -10,6 +10,22 @@ from ptm_pose import stat_utils
 
 
 def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize = (5, 5)):
+    """
+    Given a dataframe with ptm annotations added, show the number of PTMs associated with each annotation type
+
+    Parameters
+    ----------
+    spliced_ptms: pd.DataFrame
+        Dataframe with PTMs and annotations added
+    show_all_ptm_count: bool
+        Whether to show the total number of PTMs in the dataset. Default is True.
+    figsize: tuple
+        Size of the figure. Default is (5, 5).
+    
+    Outputs
+    -------
+    bar plot showing the number of PTMs associated with each annotation type
+    """
     if show_all_ptm_count:
         num_ptms = [spliced_ptms.drop_duplicates(['UniProtKB Accession', 'Residue']).shape[0]]
         num_ptms_filters = ['All PTMs']
@@ -108,6 +124,20 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize 
 def get_annotation_col(spliced_ptms, annotation_type = 'Function', database = 'PhosphoSitePlus'):
     """
     Given the database of interest and annotation type, return the annotation column that will be found in a annotated spliced_ptm dataframe
+
+    Parameters
+    ----------
+    spliced_ptms: pd.DataFrame
+        Dataframe with PTM annotations added from annotate module
+    annotation_type: str
+        Type of annotation to pull from spliced_ptms dataframe. Available information depends on the selected database. Default is 'Function'.
+    database: str
+        database from which PTMs are pulled. Options include 'PhosphoSitePlus', 'ELM', 'PTMInt', 'PTMcode', 'DEPOD', and 'RegPhos'. Default is 'PhosphoSitePlus'.
+
+    Returns
+    -------
+    annotation_col: str
+        Column name in spliced_ptms dataframe that contains the requested annotation
     """
     #check to make sure requested annotation is available
     if database == 'PhosphoSitePlus':

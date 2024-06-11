@@ -83,6 +83,19 @@ def find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = 
         return pd.DataFrame()
     
 def convert_strand_symbol(strand):
+    """
+    Given DNA strand information, make sure the strand information is in integer format (1 for forward, -1 for reverse). This is intended to convert from string format ('+' or '-') to integer format (1 or -1), but will return the input if it is already in integer format.
+
+    Parameters
+    ----------
+    strand: str or int
+        DNA strand information, either as a string ('+' or '-') or an integer (1 or -1)
+
+    Returns
+    -------
+    int
+        DNA strand information as an integer (1 for forward, -1 for reverse)
+    """
     if isinstance(strand, str):
         if strand == '+':
             return 1
@@ -117,6 +130,10 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
         indicates the coordinate system used for the start and end positions. Either hg38 or hg19. Default is 'hg38'.
     separate_modification_types: bool
         Indicate whether to store PTM sites with  multiple modification types as multiple rows. For example, if a site at K100 was both an acetylation and methylation site, these will be separated into unique rows with the same site number but different modification types. Default is True.
+    taskbar_label: str
+        Label to display in the tqdm progress bar. Default is None, which will automatically state "Projecting PTMs onto regions using ----- coordinates".
+    
+    
 
     Returns
     -------
@@ -210,11 +227,11 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotat
     Given splice event quantification data, project PTMs onto the regions impacted by the splice events. Assumes that the splice event data will have chromosome, strand, and genomic start/end positions for the regions of interest, and each row of the splice_event_data corresponds to a unique region.
 
     Parameters
-    ----------
-    ptm_coordinates: pandas.DataFrame
-        dataframe containing PTM information, including chromosome, strand, and genomic location of PTMs
+
     splice_data: pandas.DataFrame
         dataframe containing splice event information, including chromosome, strand, and genomic location of regions of interest
+    ptm_coordinates: pandas.DataFrame
+        dataframe containing PTM information, including chromosome, strand, and genomic location of PTMs. If none, it will pull from the config file.
     chromosome_col: str
         column name in splice_data that contains chromosome information. Default is 'chr'. Expects it to be a str with only the chromosome number: 'Y', '1', '2', etc.
     strand_col: str
@@ -225,8 +242,22 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotat
         column name in splice_data that contains the end position of the region of interest. Default is 'exonEnd'.
     event_id_col: str
         column name in splice_data that contains the unique identifier for the splice event. If provided, will be used to annotate the ptm information with the specific splice event ID. Default is None.
+    gene_col: str
+        column name in splice_data that contains the gene name. If provided, will be used to make sure the projected PTMs stem from the same gene (some cases where genomic coordiantes overlap between distinct genes). Default is None.
+    dPSI_col: str
+        column name in splice_data that contains the delta PSI value for the splice event. Default is None, which will not include this information in the output
+    sig_col: str
+        column name in splice_data that contains the significance value for the splice event. Default is None, which will not include this information in the output.
+    extra_cols: list
+        list of additional columns to include in the output dataframe. Default is None, which will not include any additional columns.
     coordinate_type: str
         indicates the coordinate system used for the start and end positions. Either hg38 or hg19. Default is 'hg38'.
+    separate_modification_types: bool
+        Indicate whether to store PTM sites with  multiple modification types as multiple rows. For example, if a site at K100 was both an acetylation and methylation site, these will be separated into unique rows with the same site number but different modification types. Default is True.
+    taskbar_label: str
+        Label to display in the tqdm progress bar. Default is None, which will automatically state "Projecting PTMs onto regions using ----- coordinates".
+    PROCESSES: int
+        Number of processes to use for multiprocessing. Default is 1 (single processing)
 
     Returns
     -------
@@ -245,10 +276,6 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotat
         taskbar_label = 'Projecting PTMs onto splice events using ' + coordinate_type + ' coordinates.'
 
 
-    #initialize lists to store spliced PTM information
-    spliced_ptm_info = []
-    spliced_ptms_list = []
-    num_ptms_affected = []
 
     #copy
     splice_data = splice_data.copy()
@@ -299,7 +326,7 @@ def project_PTMs_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
     coordinate_type: str
         indicates the coordinate system used for the start and end positions. Either hg38 or hg19. Default is 'hg38'.
     identify_flanking_sequences: bool
-        Indicate whether to look for altered flanking sequences from spliced events, in addition to those directly in the spliced region. Default is False.
+        Indicate whether to look for altered flanking sequences from spliced events, in addition to those directly in the spliced region. Default is False. (not yet active)
     PROCESSES: int
         Number of processes to use for multiprocessing. Default is 1.
     """
