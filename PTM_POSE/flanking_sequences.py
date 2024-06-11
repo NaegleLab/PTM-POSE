@@ -8,9 +8,9 @@ import pandas as pd
 import re
 
 #PTM pose functions
-from PTM_POSE import database_interfacing as di
-from PTM_POSE import project
-from PTM_POSE import POSE_config as config
+from ptm_pose import database_interfacing as di
+from ptm_pose import project
+from ptm_pose import pose_config as config
 
 # Get the standard codon table
 codon_table = CodonTable.unambiguous_dna_by_name["Standard"]
@@ -207,7 +207,7 @@ def get_spliceseq_event_regions(spliceseq_event, splicegraph):
 
 
 
-def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region, spliced_region, second_flank_region, event_id = None, flank_size = 5, coordinate_type = 'hg38', lowercase_mod = True, order_by = 'Coordinates'):
+def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region, spliced_region, second_flank_region, gene = None, event_id = None, flank_size = 5, coordinate_type = 'hg38', lowercase_mod = True, order_by = 'Coordinates'):
     """
     Currently has been tested with MATS splicing events.
 
@@ -241,12 +241,12 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
     """
     strand = project.convert_strand_symbol(strand)
     #check first flank for ptms
-    ptms_in_region_first_flank = project.find_PTMs_in_region(ptm_coordinates, chromosome, strand, first_flank_region[0], first_flank_region[1], coordinate_type = coordinate_type)
+    ptms_in_region_first_flank = project.find_PTMs_in_region(ptm_coordinates, chromosome, strand, first_flank_region[0], first_flank_region[1], gene = gene, coordinate_type = coordinate_type)
     if not ptms_in_region_first_flank.empty:
         ptms_in_region_first_flank = ptms_in_region_first_flank[ptms_in_region_first_flank['Proximity to Region End (bp)'] < flank_size*3]
         ptms_in_region_first_flank['Region'] = 'First'
     #check second flank for ptms
-    ptms_in_region_second_flank = project.find_PTMs_in_region(ptm_coordinates, chromosome, strand, second_flank_region[0], second_flank_region[1], coordinate_type = coordinate_type)
+    ptms_in_region_second_flank = project.find_PTMs_in_region(ptm_coordinates, chromosome, strand, second_flank_region[0], second_flank_region[1], gene = gene, coordinate_type = coordinate_type)
     if not ptms_in_region_second_flank.empty:
         ptms_in_region_second_flank = ptms_in_region_second_flank[ptms_in_region_second_flank['Proximity to Region Start (bp)'] < flank_size*3]
         ptms_in_region_second_flank['Region'] = 'Second'
@@ -330,8 +330,12 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
                 exclusion_seq_list.append(np.nan)
                 flank_region_list.append(flank_region_loc)
 
+        #grab useful info from ptm dataframe
+        if gene is not None:
+            ptms_in_region = ptms_in_region[['Source of PTM', 'Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']].reset_index(drop = True)
+        else:
+            ptms_in_region = ptms_in_region[['Source of PTM', 'Residue', 'PTM Position in Canonical Isoform']].reset_index(drop = True)
         #add flanking sequence information to ptm dataframe
-        ptms_in_region = ptms_in_region[['Source of PTM', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']].reset_index(drop = True)
         ptms_in_region['Inclusion Sequence'] = inclusion_seq_list
         ptms_in_region['Exclusion Sequence'] = exclusion_seq_list
         ptms_in_region['Region'] = flank_region_list
@@ -343,7 +347,7 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
         return ptms_in_region
 
 
-def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, chromosome_col = None, strand_col = None, first_flank_start_col = None, first_flank_end_col = None, spliced_region_start_col = None, spliced_region_end_col = None, second_flank_start_col = None, second_flank_end_col = None, deltaPSI_col = None,  sig_col = None, event_id_col = None, flank_size = 5, coordinate_type = 'hg38', lowercase_mod = True):
+def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, chromosome_col = None, strand_col = None, first_flank_start_col = None, first_flank_end_col = None, spliced_region_start_col = None, spliced_region_end_col = None, second_flank_start_col = None, second_flank_end_col = None, dPSI_col = None,  sig_col = None, event_id_col = None, gene_col = None, flank_size = 5, coordinate_type = 'hg38', lowercase_mod = True):
     """
     Given a DataFrame containing information about splice events, extract the flanking sequences associated with the PTMs in the flanking regions if there is potential for this to be altered. The DataFrame should contain columns for the chromosome, strand, start and stop locations of the first flanking region, spliced region, and second flanking region. The DataFrame should also contain a column for the event ID associated with the splice event. If the DataFrame does not contain the necessary columns, the function will raise an error.
 
@@ -387,15 +391,15 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
     if ptm_coordinates is None and config.ptm_coordinates is not None:
         ptm_coordinates = config.ptm_coordinates
     elif ptm_coordinates is None:
-        raise ValueError('ptm_coordinates dataframe not provided and not found in the resource files. Please provide the ptm_coordinates dataframe with config.download_ptm_coordinates() or download the file manually. To avoid needing to download this file each time, run POSE_config.download_ptm_coordinates(save = True) to save the file locally within the package directory (will take ~63MB of storage space)')
+        raise ValueError('ptm_coordinates dataframe not provided and not found in the resource files. Please provide the ptm_coordinates dataframe with config.download_ptm_coordinates() or download the file manually. To avoid needing to download this file each time, run pose_config.download_ptm_coordinates(save = True) to save the file locally within the package directory (will take ~63MB of storage space)')
 
     #check to make sure all required columns are provided
     if chromosome_col is None and strand_col is None and first_flank_start_col is None and first_flank_end_col is None and spliced_region_start_col is None and spliced_region_end_col is None and second_flank_start_col is None and second_flank_end_col is None:
         raise ValueError('Please provide column names for chromosome, strand, first flank start, first flank end, spliced region start, spliced region end, second flank start, and second flank end.')
 
     #if chromosome is labeled with 'chr', remove
-    if 'chr' in chromosome_col:
-        splice_data[chromosome_col] = splice_data[chromosome_col].str.replace('chr','')
+    if splice_data[chromosome_col].str.contains('chr').any():
+        splice_data['chr'] = splice_data['chr'].str.strip('chr')
     
 
     results = []
@@ -408,6 +412,7 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
         #get gene info
         chromosome = event[chromosome_col]
         strand = event[strand_col]
+        gene = event[gene_col] if gene_col is not None else None
 
         #extract region inof
         first_flank_region = [event[first_flank_start_col], event[first_flank_end_col]]
@@ -532,3 +537,4 @@ def compare_inclusion_motifs(flanking_sequences, elm_classes):
     -------
 
     """
+    pass

@@ -3,11 +3,11 @@ import pandas as pd
 
 import multiprocessing
 
-from PTM_POSE import POSE_config as config
+from ptm_pose import pose_config as config
 
 from tqdm import tqdm
 
-def find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = None, coordinate_type = 'hg38', consider_ragged = True):
+def find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = None, coordinate_type = 'hg38'):
     """
     Given an genomic region in either hg38 or hg19 coordinates (such as the region encoding an exon of interest), identify PTMs that are mapped to that region. If so, return the exon number. If none are found, return np.nan.
     
@@ -30,17 +30,13 @@ def find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = 
         dataframe containing all PTMs found in the region. If no PTMs are found, returns np.nan.
         
     """
-    #if gene name is provided, make sure there is translator column to check gene name match
-    #if gene is not None and config.translator is None:
-    #    print('Gene name was provided, but a ID translator file was not, so cannot check to make sure projected PTMs belong to the correct gene. In general, this should not cause errors, but to be certain PTMs are properly projected it is recommended that ')
-
     #restrict to PTMs on the same chromosome and strand
     ptms_in_region = ptm_coordinates[(ptm_coordinates['Chromosome/scaffold name'] == chromosome) & (ptm_coordinates['Strand'] == strand)].copy()
 
-    if coordinate_type in ['hg18','hg19','hg38']:
+    if coordinate_type in ['hg19','hg38']:
         loc_col = f'Gene Location ({coordinate_type})'
     else:
-        raise ValueError('Coordinate type must be hg38, hg19, or hg18')
+        raise ValueError('Coordinate type must be hg38 or hg19')
 
     #check to make sure the start value is less than the end coordinate. If it is not, treat the end coordinate as the start and the start coordinate as the end
     if start < end:
@@ -52,7 +48,7 @@ def find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = 
     #extract only PTM information from dataframe and return that and list (if not ptms, return empty dataframe)
     if not ptms_in_region.empty:
         #grab uniprot id and residue
-        ptms_in_region = ptms_in_region[['UniProtKB Accession', 'Source of PTM', 'Residue', 'PTM Position in Canonical Isoform', loc_col, 'Modification', 'Modification Class']]
+        ptms_in_region = ptms_in_region[['Source of PTM', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', loc_col, 'Modification', 'Modification Class']]
         #check if ptm is associated with the same gene (if info is provided). if not, do not add
         if gene is not None:
             for i, row in ptms_in_region.iterrows():
@@ -81,15 +77,6 @@ def find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = 
         ptms_in_region['Proximity to Region End (bp)'] = (ptms_in_region[loc_col] - end).abs()
         ptms_in_region['Proximity to Splice Boundary (bp)'] = ptms_in_region.apply(lambda x: min(x['Proximity to Region Start (bp)'], x['Proximity to Region End (bp)']), axis = 1)
 
-            
-        #add event id and dpsi column if provided
-        #if event_id is not None:
-        #    ptms_in_region['Region Name'] = event_id
-        #if dPSI is not None: 
-        #    ptms_in_region['dPSI'] = dPSI
-        #if sig is not None:
-        #    ptms_in_region['Significance'] = sig
-        #if gene is not None:
 
         return ptms_in_region
     else:
@@ -140,6 +127,10 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
     """
     if taskbar_label is None:
         taskbar_label = 'Projecting PTMs onto regions using ' + coordinate_type + ' coordinates.'
+
+    if region_data[chromosome_col].str.contains('chr').any():
+        region_data['chr'] = region_data['chr'].str.strip('chr')
+    
 
     spliced_ptm_info = []
     spliced_ptms_list = []
@@ -201,7 +192,8 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
     spliced_ptm_info = pd.concat(spliced_ptm_info, ignore_index = True)
 
     #convert ptm position to float
-    spliced_ptm_info['PTM Position in Canonical Isoform'] = spliced_ptm_info['PTM Position in Canonical Isoform'].astype(float)
+    if spliced_ptm_info.shape[0] > 0:
+        spliced_ptm_info['PTM Position in Canonical Isoform'] = spliced_ptm_info['PTM Position in Canonical Isoform'].astype(float)
             
     #add ptm info to original splice event dataframe
     if annotate_original_df:
@@ -247,7 +239,7 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotat
     if ptm_coordinates is None and config.ptm_coordinates is not None:
         ptm_coordinates = config.ptm_coordinates
     elif ptm_coordinates is None:
-        raise ValueError('ptm_coordinates dataframe not provided and not found in the resource files. Please provide the ptm_coordinates dataframe with config.download_ptm_coordinates() or download the file manually. To avoid needing to download this file each time, run POSE_config.download_ptm_coordinates(save = True) to save the file locally within the package directory (will take ~63MB of storage space)')
+        raise ValueError('ptm_coordinates dataframe not provided and not found in the resource files. Please provide the ptm_coordinates dataframe with config.download_ptm_coordinates() or download the file manually. To avoid needing to download this file each time, run pose_config.download_ptm_coordinates(save = True) to save the file locally within the package directory (will take ~63MB of storage space)')
 
     if taskbar_label is None:
         taskbar_label = 'Projecting PTMs onto splice events using ' + coordinate_type + ' coordinates.'

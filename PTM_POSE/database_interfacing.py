@@ -7,7 +7,7 @@ import re
 
 import numpy as np
 
-from PTM_POSE import project
+from ptm_pose import project
 
 
 #UniProt accession services adapted from suggested python code on UniProt website

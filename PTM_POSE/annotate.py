@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import re
 
-from PTM_POSE import POSE_config
+from ptm_pose import pose_config
 
 
 #dictionaries for converting modification codes to modification names in PhosphoSitePlus data
@@ -45,6 +45,10 @@ def add_PSP_regulatory_site_data(spliced_ptms, file = 'Regulatory_sites.gz'):
     #add 'PSP:' in front of each column
     regulatory_site_data.columns = ['PSP:' + x if x not in ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'] else x for x in regulatory_site_data.columns]
 
+    #if splice data already has the annotation columns, remove them
+    if 'PSP:ON_FUNCTION' in spliced_ptms.columns:
+        spliced_ptms = spliced_ptms.drop(columns = ['PSP:ON_FUNCTION', 'PSP:ON_PROCESS', 'PSP:ON_PROT_INTERACT', 'PSP:ON_OTHER_INTERACT'])
+
     #merge with spliced_ptm info
     original_data_size = spliced_ptms.shape[0]
     spliced_ptms = spliced_ptms.merge(regulatory_site_data, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'])
@@ -86,6 +90,11 @@ def add_PSP_kinase_substrate_data(spliced_ptms, file = 'Kinase_Substrate_Dataset
     #separate residue and position
     ks_dataset['PTM Position in Canonical Isoform'] = ks_dataset['Residue'].apply(lambda x: int(x[1:]))
     ks_dataset['Residue'] = ks_dataset['Residue'].apply(lambda x: x[0])
+
+    
+    #if splice data already has the annotation columns, remove them
+    if 'PSP:Kinase' in spliced_ptms.columns:
+        spliced_ptms = spliced_ptms.drop(columns = ['PSP:Kinase'])
 
     original_data_size = spliced_ptms.shape[0]
     spliced_ptms = spliced_ptms.merge(ks_dataset, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'])
@@ -139,6 +148,11 @@ def add_PSP_disease_association(spliced_ptms, file = 'Disease-associated_sites.g
 
     #aggregate multiple disease associations
     disease_associated_sites = disease_associated_sites.groupby(['UniProtKB Accession', 'Residue','PTM Position in Canonical Isoform', 'Modification Class']).agg(';'.join).reset_index()
+
+    #if splice data already has the annotation columns, remove them
+    if 'PSP:Disease_Association' in spliced_ptms.columns:
+        spliced_ptms = spliced_ptms.drop(columns = ['PSP:Disease_Association'])
+
 
     #merge with spliced_ptm info
     original_data_size = spliced_ptms.shape[0]
@@ -208,8 +222,8 @@ def add_ELM_interactions(spliced_ptms, fname = None):
         elm_interactor.append(np.nan)
 
     spliced_ptms['ELM:Interactions'] = elm_list
-    spliced_ptms['Location of PTM for ELM Interaction'] = elm_type
-    spliced_ptms['Interacting Protein for ELM Interaction'] = elm_interactor
+    spliced_ptms['ELM:Location of PTM for Interaction'] = elm_type
+    spliced_ptms['ELM:Interacting Protein for Interaction'] = elm_interactor
     
     #report the number of ptms with motif data
     num_ptms_with_ELM_instance = spliced_ptms.dropna(subset = 'ELM:Interactions').groupby(['UniProtKB Accession', 'Residue']).size().shape[0]
@@ -265,12 +279,6 @@ def add_PTMint_data(spliced_ptms):
     """
     Given spliced_ptms data from project module, add PTMInt interaction data, which will include the protein that is being interacted with, whether it enchances or inhibits binding, and the localization of the interaction. This will be added as a new column labeled PTMInt:Interactions and each entry will be formatted like 'Protein->Effect|Localization'. If multiple interactions, they will be separated by a semicolon
     """
-    #identify package directory
-    #pdir = os.path.dirname(__file__)
-    #if no directory has been provided, download the data to directory
-    #if not os.path.exists(pdir+ "/Data/PTM_experimental_evidence.csv"):
-    #    download_PTMint_data(pdir+'/Data/')
-
     PTMint = pd.read_csv('https://ptmint.sjtu.edu.cn/data/PTM%20experimental%20evidence.csv')
     PTMint = PTMint.rename(columns={'Uniprot':'UniProtKB Accession', 'AA':'Residue', 'Site':'PTM Position in Canonical Isoform'})
     #PTMint['Site'] = PTMint['AA'] + PTMint['Site'].astype(str)
@@ -306,7 +314,7 @@ def add_PTMcode_intraprotein(spliced_ptms, fname = None):
     ptmcode = ptmcode[ptmcode['Species'] == 'Homo sapiens']
 
     #add gene name to data
-    translator = pd.DataFrame(POSE_config.uniprot_to_gene_name, index = ['Gene']).T
+    translator = pd.DataFrame(pose_config.uniprot_to_genename, index = ['Gene']).T
     translator['Gene'] = translator['Gene'].apply(lambda x: x.split(' '))
     translator = translator.explode('Gene')
     translator = translator.reset_index()
@@ -324,13 +332,13 @@ def add_PTMcode_intraprotein(spliced_ptms, fname = None):
         mod = mod.capitalize()
         if 'glycosylation' in mod: #if glycosylation, group into one gorup
             new_mod_names.append('Glycosylation')
-        elif mod in POSE_config.modification_conversion['Modification Class'].values: #if already in modification class data, keep
+        elif mod in pose_config.modification_conversion['Modification Class'].values: #if already in modification class data, keep
             new_mod_names.append(mod)
         elif mod in convert_dict.keys():
             new_mod_names.append(convert_dict[mod])
         else:
             try:
-                new_mod = POSE_config.modification_conversion[POSE_config.modification_conversion['Modification'] == mod].values[0][0]
+                new_mod = pose_config.modification_conversion[pose_config.modification_conversion['Modification'] == mod].values[0][0]
                 new_mod_names.append(new_mod)
             except:
                 failed_mod.append(mod)
@@ -349,6 +357,11 @@ def add_PTMcode_intraprotein(spliced_ptms, fname = None):
     ptmcode['PTM Position in Canonical Isoform'] = ptmcode['Residue'].apply(lambda x: int(x[1:]))
     ptmcode['Residue'] = ptmcode['Residue'].apply(lambda x: x[0])
 
+        #if splice data already has the annotation columns, remove them
+    if 'PTMcode:Intraprotein_Interactions' in spliced_ptms.columns:
+        spliced_ptms = spliced_ptms.drop(columns = ['PTMcode:Intraprotein_Interactions'])
+
+
     #add to splice data
     original_data_size = spliced_ptms.shape[0]
     spliced_ptms = spliced_ptms.merge(ptmcode, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'])
@@ -364,7 +377,7 @@ def add_PTMcode_intraprotein(spliced_ptms, fname = None):
 def extract_ids_PTMcode(df, col = '## Protein1'):
 
     #add gene name to data
-    name_to_uniprot = pd.DataFrame(POSE_config.uniprot_to_genename, index = ['Gene']).T
+    name_to_uniprot = pd.DataFrame(pose_config.uniprot_to_genename, index = ['Gene']).T
     name_to_uniprot['Gene'] = name_to_uniprot['Gene'].apply(lambda x: x.split(' '))
     name_to_uniprot = name_to_uniprot.explode('Gene')
     name_to_uniprot = name_to_uniprot.reset_index()
@@ -372,7 +385,7 @@ def extract_ids_PTMcode(df, col = '## Protein1'):
     name_to_uniprot = name_to_uniprot.drop_duplicates(subset = 'Gene name', keep = False)
 
     #protein name is provided as either ensemble gene id or gene name check for both
-    df = df.merge(POSE_config.translator[['Gene stable ID']].reset_index().dropna().drop_duplicates(), left_on = col, right_on = 'Gene stable ID', how = 'left')
+    df = df.merge(pose_config.translator[['Gene stable ID']].reset_index().dropna().drop_duplicates(), left_on = col, right_on = 'Gene stable ID', how = 'left')
     df = df.rename(columns = {'index': 'From_ID'})
     df = df.merge(name_to_uniprot, left_on = col, right_on = 'Gene name', how = 'left')
     df = df.rename(columns = {'UniProtKB/Swiss-Prot ID': 'From_Name'})
@@ -413,13 +426,13 @@ def add_PTMcode_interprotein(spliced_ptms, fname = None):
         mod = mod.capitalize()
         if 'glycosylation' in mod:
             new_mod_names.append('Glycosylation')
-        elif mod in POSE_config.modification_conversion['Modification Class'].values:
+        elif mod in pose_config.modification_conversion['Modification Class'].values:
             new_mod_names.append(mod)
         elif mod in convert_dict.keys():
             new_mod_names.append(convert_dict[mod])
         else:
             try:
-                new_mod = POSE_config.modification_conversion[POSE_config.modification_conversion['Modification'] == mod].values[0][0]
+                new_mod = pose_config.modification_conversion[pose_config.modification_conversion['Modification'] == mod].values[0][0]
                 new_mod_names.append(new_mod)
             except:
                 failed_mod.append(mod)
@@ -436,6 +449,10 @@ def add_PTMcode_interprotein(spliced_ptms, fname = None):
     #separate residue information into separate columns, one for amino acid and one for position
     ptmcode['PTM Position in Canonical Isoform'] = ptmcode['Residue'].apply(lambda x: float(x[1:]))
     ptmcode['Residue'] = ptmcode['Residue'].apply(lambda x: x[0])
+
+            #if splice data already has the annotation columns, remove them
+    if 'PTMcode:Interprotein_Interactions' in spliced_ptms.columns:
+        spliced_ptms = spliced_ptms.drop(columns = ['PTMcode:Interprotein_Interactions'])
 
     #add to splice data
     original_data_size = spliced_ptms.shape[0]
@@ -520,6 +537,10 @@ def add_DEPOD_phosphatase_data(spliced_ptms):
     depod = depod[['DEPOD:Phosphatase', 'UniProtKB Accession', 'Residue']]
     depod['Modification Class'] = 'Phosphorylation'
 
+            #if splice data already has the annotation columns, remove them
+    if 'DEPOD:Phosphatase' in spliced_ptms.columns:
+        spliced_ptms = spliced_ptms.drop(columns = ['DEPOD:Phosphatase'])
+
     #add to splice data
     original_data_size = spliced_ptms.shape[0]
     spliced_ptms = spliced_ptms.merge(depod, how = 'left', on = ['UniProtKB Accession', 'Residue', 'Modification Class'])
@@ -544,6 +565,10 @@ def add_RegPhos_data(spliced_ptms, fname = None):
     regphos['Modification Class'] = 'Phosphorylation'
     regphos = regphos[['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class', 'RegPhos:Kinase']].dropna()
     regphos = regphos.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).agg(';'.join).reset_index()
+
+    #if splice data already has the annotation columns, remove them
+    if 'RegPhos:Kinase' in spliced_ptms.columns:
+        spliced_ptms = spliced_ptms.drop(columns = ['RegPhos:Kinase'])
 
     #add to splice data
     original_data_size = spliced_ptms.shape[0]

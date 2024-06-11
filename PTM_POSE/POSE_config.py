@@ -1,14 +1,14 @@
 import pandas as pd
 import numpy as np
 
-#file processing packages
+#base python packages
 import os
-import json
+import time
 
 
-from PTM_POSE import database_interfacing as di
+from ptm_pose import database_interfacing as di
 
-package_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+package_dir = os.path.dirname(os.path.abspath(__file__))
 resource_dir = package_dir + '/Resource_Files/'
 modification_conversion = pd.read_csv(resource_dir + 'modification_conversion.csv')
 
@@ -18,11 +18,21 @@ else:
     print('ptm_coordinates file not found. Please run download_ptm_coordinates() to download the file from GitHub LFS. Set save = True to save the file locally and avoid downloading in the future.')
     ptm_coordinates = None
 
-def download_ptm_coordinates(save = False):
+def download_ptm_coordinates(save = False, max_retries = 5, delay = 10):
     """
     Download ptm_coordinates dataframe from GitHub Large File Storage (LFS). By default, this will not save the file locally due the larger size (do not want to force users to download but highly encourage), but an option to save the file is provided if desired
     """
-    ptm_coordinates = pd.read_csv('https://github.com/NaegleLab/PTM-POSE/raw/main/Resource_Files/ptm_coordinates.csv?download=', index_col = 0, dtype = {'Chromosome/scaffold name': str, 'PTM Position in Canonical Isoform': str})
+    for i in range(max_retries):
+        try:
+            ptm_coordinates = pd.read_csv('https://github.com/NaegleLab/PTM-POSE/raw/main/Resource_Files/ptm_coordinates.csv?download=', index_col = 0, dtype = {'Chromosome/scaffold name': str, 'PTM Position in Canonical Isoform': str})
+            break
+        except: 
+            time.sleep(delay)
+    else:
+        raise Exception('Failed to download ptm_coordinates file after ' + str(max_retries) + ' attempts. Please try again.')
+
+    
+
     if save:
         ptm_coordinates.to_csv(resource_dir + 'ptm_coordinates.csv')
     

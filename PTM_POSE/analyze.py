@@ -1,14 +1,11 @@
 import numpy as np
 import pandas as pd
 
-#stats packages
-import scipy.stats as stats
-
 #plotting 
 import matplotlib.pyplot as plt
 
 #custom stat functions
-import stat_utils
+from ptm_pose import stat_utils
 
 
 
@@ -222,62 +219,61 @@ def get_ptm_annotations(spliced_ptms, annotation_type = 'Function', database = '
     annotations_exploded[annotation_col] = annotations_exploded[annotation_col].apply(lambda x: x.strip() if isinstance(x, str) else np.nan)
     #get the number of annotations found
     annotation_counts = annotations_exploded[annotation_col].value_counts().reset_index()
-    #annotation_counts[f'Number of Spliced PTMs Associated with {annotation_type}']
     return annotations, annotation_counts
 
 
 
-def annotation_enrichment(spliced_ptms, sig_col = None, background_ptms = None, database = 'PhosphoSitePlus', annotation_type = 'Function', collapse_on_similar = False, mod_class = None, alpha = 0.05):
-    """
-    """
-    #if background not provided, use background data
-    if sig_col is None:
-        background_ptms = spliced_ptms.copy()
-        #restrict sample to significantly spliced ptms
-        spliced_ptms = spliced_ptms[spliced_ptms[sig_col] <= alpha].copy()
-    elif background_ptms is None:
-        raise ValueError('General background not yet created')
-    
+#def annotation_enrichment(spliced_ptms, sig_col = None, background_ptms = None, database = 'PhosphoSitePlus', annotation_type = 'Function', collapse_on_similar = False, mod_class = None, alpha = 0.05):#
+#    """
+#    """
+#    #if background not provided, use background data
+#    if sig_col is None:
+#        background_ptms = spliced_ptms.copy()
+#        #restrict sample to significantly spliced ptms
+#        spliced_ptms = spliced_ptms[spliced_ptms[sig_col] <= alpha].copy()
+#    elif background_ptms is None:
+#        raise ValueError('General background not yet created')
+#    
 
     #check if specific modification class was provided and subset data by modification if so
-    if mod_class is not None:
-        spliced_ptms = get_modification_class_data(spliced_ptms, mod_class)
-        background_ptms = get_modification_class_data(background_ptms, mod_class)
+#    if mod_class is not None:
+#        spliced_ptms = get_modification_class_data(spliced_ptms, mod_class)
+#        background_ptms = get_modification_class_data(background_ptms, mod_class)
 
     #check to make sure requested annotation is available
-    annotation_col = get_annotation_col(database = database, annotation_type = annotation_type)
+#    annotation_col = get_annotation_col(database = database, annotation_type = annotation_type)
 
     #get PTMs
-    background_ptms['PTM'] = background_ptms['UniProtKB Accession'] + '_' + background_ptms['Residue']
+#    background_ptms['PTM'] = background_ptms['UniProtKB Accession'] + '_' + background_ptms['Residue']
 
     #grab all ptms spliced out for comparison to background
-    spliced_ptm_list = np.unique(spliced_ptms['UniProtKB Accession'] + '_' + spliced_ptms['Residue'])
+#    spliced_ptm_list = np.unique(spliced_ptms['UniProtKB Accession'] + '_' + spliced_ptms['Residue'])
 
     #extract relevant annotation and remove PTMs without an annotation
-    background_annotations = background_ptms[['PTM'] + [annotation_col]].copy()
+#    background_annotations = background_ptms[['PTM'] + [annotation_col]].copy()
 
-    background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.split(';') if isinstance(x, str) else np.nan)
-    background_annotations = background_annotations.explode(annotation_col)
-    background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.strip() if isinstance(x, str) else np.nan)
+#    background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.split(';') if isinstance(x, str) else np.nan)
+#    background_annotations = background_annotations.explode(annotation_col)
+#    background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.strip() if isinstance(x, str) else np.nan)
     
     #if requested, group similar annotations (such as same function but increasing or decreasing)
-    if collapse_on_similar:
-        if database == 'PhosphoSitePlus' and annotation_type in ['Function', 'Process']:
-            background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.split(',')[0].strip(' ') if x == x else x)
-        else:
-            background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.strip(' ') if x == x else x)
-    else:
-        background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.strip(' ') if x == x else x)
-    
-    #construct pivot table
-    background_annotations['value'] = 1
-    background_annotation = background_annotation[['PTM',annotation_col, 'value']].drop_duplicates()
-    background_annotation = background_annotation.pivot(index = 'PTM', columns = annotation_col, values = 'value')
+#    if collapse_on_similar:
+#        if database == 'PhosphoSitePlus' and annotation_type in ['Function', 'Process']:
+#            background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.split(',')[0].strip(' ') if x == x else x)
+#        else:
+#            background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.strip(' ') if x == x else x)
+#    else:
+#        background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.strip(' ') if x == x else x)
+#    
+#    #construct pivot table
+#    background_annotations['value'] = 1
+#    background_annotation = background_annotation[['PTM',annotation_col, 'value']].drop_duplicates()
+#    background_annotation = background_annotation.pivot(index = 'PTM', columns = annotation_col, values = 'value')
 
     #remove any sites with no annotations
-    background_annotation = background_annotation.dropna(how = 'all')
+#    background_annotation = background_annotation.dropna(how = 'all')
 
-    enrichment = stat_utils.get_site_enrichment(spliced_ptm_list, background_annotation, subset_name = 'Spliced', type = annotation_type, fishers = True)
+#    enrichment = stat_utils.get_site_enrichment(spliced_ptm_list, background_annotation, subset_name = 'Spliced', type = annotation_type, fishers = True)
 
 
     
