@@ -207,7 +207,7 @@ def get_spliceseq_event_regions(spliceseq_event, splicegraph):
 
 
 
-def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region, spliced_region, second_flank_region, gene = None, event_id = None, flank_size = 5, coordinate_type = 'hg38', lowercase_mod = True, order_by = 'Coordinates'):
+def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region, spliced_region, second_flank_region, gene = None, dPSI = None, sig = None, event_id = None, flank_size = 5, coordinate_type = 'hg38', lowercase_mod = True, order_by = 'Coordinates'):
     """
     Currently has been tested with MATS splicing events.
 
@@ -263,9 +263,7 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
     if ptms_in_region.empty:
         return pd.DataFrame()
     else:
-        #restrict to ptms within boundary
-        if ptms_in_region.empty:
-            return pd.DataFrame()
+
         #add chromosome/strand info to region info for ensembl query
         first_flank_region_query = [chromosome, strand] + first_flank_region
         spliced_region_query = [chromosome, strand] + spliced_region
@@ -348,6 +346,10 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
 
         if event_id is not None:
             ptms_in_region.insert(0, 'Event ID', event_id)
+        if dPSI is not None:
+            ptms_in_region['dPSI'] = dPSI
+        if sig is not None:
+            ptms_in_region['Significant'] = sig
 
         return ptms_in_region
 
@@ -418,6 +420,8 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
         chromosome = event[chromosome_col]
         strand = event[strand_col]
         gene = event[gene_col] if gene_col is not None else None
+        dPSI = event[dPSI_col] if dPSI_col is not None else None
+        sig = event[sig_col] if sig_col is not None else None
 
         #extract region inof
         first_flank_region = [event[first_flank_start_col], event[first_flank_end_col]]
@@ -425,7 +429,7 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
         second_flank_region = [event[second_flank_start_col], event[second_flank_end_col]]
 
         #get flanking changes
-        ptm_flanks = get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region, spliced_region, second_flank_region, event_id = event_id, flank_size = flank_size, coordinate_type = coordinate_type, lowercase_mod=lowercase_mod)
+        ptm_flanks = get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region, spliced_region, second_flank_region, gene = gene, sig = sig, dPSI = dPSI, event_id = event_id, flank_size = flank_size, coordinate_type = coordinate_type, lowercase_mod=lowercase_mod)
 
         #append to results
         results.append(ptm_flanks)
@@ -437,6 +441,8 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
     #do some quick comparison of flanking sequences
     results['Matched'] = results['Inclusion Sequence'] == results['Exclusion Sequence']
     results['Stop Codon Introduced'] = (results['Inclusion Sequence'].str.contains(r'\*')) | (results['Exclusion Sequence'].str.contains(r'\*'))
+
+    print(f'{results.shape[0]} PTMs found with potential for altered flanking sequences.')
     return results
 
 
