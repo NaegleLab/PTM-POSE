@@ -1,2 +1,2 @@
-Resource_Files/ptm_coordinates.csv filter=lfs diff=lfs merge=lfs -text
 
+ptm_pose/Resource_Files/ptm_coordinates.csv filter=lfs diff=lfs merge=lfs -text
