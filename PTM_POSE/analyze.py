@@ -27,7 +27,7 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize 
     bar plot showing the number of PTMs associated with each annotation type
     """
     if show_all_ptm_count:
-        num_ptms = [spliced_ptms.drop_duplicates(['UniProtKB Accession', 'Residue']).shape[0]]
+        num_ptms = [spliced_ptms.drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0]]
         num_ptms_filters = ['All PTMs']
         filter_source = ['None']
     else:
@@ -38,33 +38,33 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize 
     #look for annotations and add counts to lists
     if 'PSP:ON_PROCESS' in spliced_ptms.columns:
         #with a biological process annotation
-        num_ptms.append(spliced_ptms.dropna(subset = 'PSP:ON_PROCESS').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+        num_ptms.append(spliced_ptms.dropna(subset = 'PSP:ON_PROCESS').drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0])
         num_ptms_filters.append('PTMs associated with Biological Process')
         filter_source.append('PhosphoSitePlus')
 
         #with a molecular function annoation in PSP
-        num_ptms.append(spliced_ptms.dropna(subset = 'PSP:ON_FUNCTION').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+        num_ptms.append(spliced_ptms.dropna(subset = 'PSP:ON_FUNCTION').drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0])
         num_ptms_filters.append('PTMs associated with Molecular Function')
         filter_source.append('PhosphoSitePlus')
     if 'PSP:Kinase' in spliced_ptms.columns:
-        num_ptms.append(spliced_ptms.dropna(subset = 'PSP:Kinase').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+        num_ptms.append(spliced_ptms.dropna(subset = 'PSP:Kinase').drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0])
         num_ptms_filters.append('PTMs associated with Kinase (PSP)')
         filter_source.append('PhosphoSitePlus')
     if 'PSP:Disease_Association' in spliced_ptms.columns:
-        num_ptms.append(spliced_ptms.dropna(subset = 'PSP:Disease_Association').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+        num_ptms.append(spliced_ptms.dropna(subset = 'PSP:Disease_Association').drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0])
         num_ptms_filters.append('PTMs with Disease Association')
         filter_source.append('PhosphoSitePlus')
     if 'ELM:Interactions' in spliced_ptms.columns:
-        num_ptms.append(spliced_ptms.dropna(subset = 'ELM:Interactions').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+        num_ptms.append(spliced_ptms.dropna(subset = 'ELM:Interactions').drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0])
         num_ptms_filters.append('PTMs with Known ELM Interactions')
         filter_source.append('ELM')
     #if 'ELM:Motif Matches' in spliced_ptms.columns:
-    #    num_ptms.append(spliced_ptms[spliced_ptms['ELM Motif Matches'] != ''].drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+    #    num_ptms.append(spliced_ptms[spliced_ptms['ELM Motif Matches'] != ''].drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0])
     #    num_ptms_filters.append('PTMs with ELM Motif Matches')
     #    filter_source.append('ELM')
 
         #with ligand motifs
-    #    num_ptms.append(spliced_ptms[spliced_ptms['ELM Motif Matches'].str.contains('LIG')].drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+    #    num_ptms.append(spliced_ptms[spliced_ptms['ELM Motif Matches'].str.contains('LIG')].drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0])
     #    num_ptms_filters.append('PTMs with ELM Ligand Motif Matches')
     #    filter_source.append('ELM')
 
@@ -80,22 +80,22 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize 
     #    num_ptms_filters.append('PTMs with Phospho Dependent ELM Motif Matches')
     #    filter_source.append('ELM')
     if 'PTMInt:Interaction' in spliced_ptms.columns:
-        num_ptms.append(spliced_ptms.dropna(subset = 'PTMInt:Interaction').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+        num_ptms.append(spliced_ptms.dropna(subset = 'PTMInt:Interaction').drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0])
         num_ptms_filters.append('PTMs with Known PTMInt Interactions')
         filter_source.append('PTMInt')
 
     if 'PTMcode:Interprotein_Interactions' in spliced_ptms.columns:
-        num_ptms.append(spliced_ptms.dropna(subset = 'PTMcode:Interprotein_Interactions').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+        num_ptms.append(spliced_ptms.dropna(subset = 'PTMcode:Interprotein_Interactions').drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0])
         num_ptms_filters.append('PTMs with PTMcode Interprotein Interactions')
         filter_source.append('PTMcode')
 
     if 'DEPOD:Phosphatase' in spliced_ptms.columns:
-        num_ptms.append(spliced_ptms.dropna(subset = 'DEPOD:Phosphatase').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+        num_ptms.append(spliced_ptms.dropna(subset = 'DEPOD:Phosphatase').drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0])
         num_ptms_filters.append('PTMs associated with Phosphatase')
         filter_source.append('DEPOD')
 
     if 'RegPhos:Kinase' in spliced_ptms.columns:
-        num_ptms.append(spliced_ptms.dropna(subset = 'RegPhos:Kinase').drop_duplicates(subset = ['UniProtKB Accession', 'Residue']).shape[0])
+        num_ptms.append(spliced_ptms.dropna(subset = 'RegPhos:Kinase').drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0])
         num_ptms_filters.append('PTMs associated with Kinase (RegPhos)')
         filter_source.append('RegPhos')
     
@@ -229,7 +229,10 @@ def get_ptm_annotations(spliced_ptms, annotation_type = 'Function', database = '
         modification class to subset 
     """
     #check to make sure requested annotation is available
-    annotation_col = get_annotation_col(spliced_ptms, database = database, annotation_type = annotation_type)
+    if database != 'Combined':
+        annotation_col = get_annotation_col(spliced_ptms, database = database, annotation_type = annotation_type)
+    else:
+        annotation_col = f'Combined:{annotation_type}'
 
 
     #check if specific modification class was provided and subset data by modification if so
@@ -253,59 +256,75 @@ def get_ptm_annotations(spliced_ptms, annotation_type = 'Function', database = '
 
 
 
-#def annotation_enrichment(spliced_ptms, sig_col = None, background_ptms = None, database = 'PhosphoSitePlus', annotation_type = 'Function', collapse_on_similar = False, mod_class = None, alpha = 0.05):#
-#    """
-#    """
-#    #if background not provided, use background data
-#    if sig_col is None:
-#        background_ptms = spliced_ptms.copy()
-#        #restrict sample to significantly spliced ptms
-#        spliced_ptms = spliced_ptms[spliced_ptms[sig_col] <= alpha].copy()
-#    elif background_ptms is None:
-#        raise ValueError('General background not yet created')
-#    
+def annotation_enrichment(spliced_ptms, sig_col = None, background_ptms = None, database = 'PhosphoSitePlus', annotation_type = 'Function', collapse_on_similar = False, mod_class = None, alpha = 0.05):#
+    """
+    In progress
+    """
+    #if background not provided, use background data
+    if sig_col is None:
+        background_ptms = spliced_ptms.copy()
+        #restrict sample to significantly spliced ptms
+        spliced_ptms = spliced_ptms[spliced_ptms[sig_col] <= alpha].copy()
+    elif background_ptms is None:
+        raise ValueError('General background not yet created')
+    
 
     #check if specific modification class was provided and subset data by modification if so
-#    if mod_class is not None:
-#        spliced_ptms = get_modification_class_data(spliced_ptms, mod_class)
-#        background_ptms = get_modification_class_data(background_ptms, mod_class)
+    if mod_class is not None:
+        spliced_ptms = get_modification_class_data(spliced_ptms, mod_class)
+        background_ptms = get_modification_class_data(background_ptms, mod_class)
 
     #check to make sure requested annotation is available
-#    annotation_col = get_annotation_col(database = database, annotation_type = annotation_type)
+    annotation_col = get_annotation_col(database = database, annotation_type = annotation_type)
 
     #get PTMs
-#    background_ptms['PTM'] = background_ptms['UniProtKB Accession'] + '_' + background_ptms['Residue']
+    background_ptms['PTM'] = background_ptms['UniProtKB Accession'] + '_' + background_ptms['Residue']
 
     #grab all ptms spliced out for comparison to background
-#    spliced_ptm_list = np.unique(spliced_ptms['UniProtKB Accession'] + '_' + spliced_ptms['Residue'])
+    spliced_ptm_list = np.unique(spliced_ptms['UniProtKB Accession'] + '_' + spliced_ptms['Residue'])
 
     #extract relevant annotation and remove PTMs without an annotation
-#    background_annotations = background_ptms[['PTM'] + [annotation_col]].copy()
+    background_annotations = background_ptms[['PTM'] + [annotation_col]].copy()
 
-#    background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.split(';') if isinstance(x, str) else np.nan)
-#    background_annotations = background_annotations.explode(annotation_col)
-#    background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.strip() if isinstance(x, str) else np.nan)
+    background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.split(';') if isinstance(x, str) else np.nan)
+    background_annotations = background_annotations.explode(annotation_col)
+    background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.strip() if isinstance(x, str) else np.nan)
     
     #if requested, group similar annotations (such as same function but increasing or decreasing)
-#    if collapse_on_similar:
-#        if database == 'PhosphoSitePlus' and annotation_type in ['Function', 'Process']:
-#            background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.split(',')[0].strip(' ') if x == x else x)
-#        else:
-#            background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.strip(' ') if x == x else x)
-#    else:
-#        background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.strip(' ') if x == x else x)
-#    
-#    #construct pivot table
-#    background_annotations['value'] = 1
-#    background_annotation = background_annotation[['PTM',annotation_col, 'value']].drop_duplicates()
-#    background_annotation = background_annotation.pivot(index = 'PTM', columns = annotation_col, values = 'value')
+    if collapse_on_similar:
+        if database == 'PhosphoSitePlus' and annotation_type in ['Function', 'Process']:
+            background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.split(',')[0].strip(' ') if x == x else x)
+        else:
+            background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.strip(' ') if x == x else x)
+    else:
+        background_annotations[annotation_col] = background_annotations[annotation_col].apply(lambda x: x.strip(' ') if x == x else x)
+    
+    #construct pivot table
+    background_annotations['value'] = 1
+    background_annotation = background_annotation[['PTM',annotation_col, 'value']].drop_duplicates()
+    background_annotation = background_annotation.pivot(index = 'PTM', columns = annotation_col, values = 'value')
 
     #remove any sites with no annotations
-#    background_annotation = background_annotation.dropna(how = 'all')
+    background_annotation = background_annotation.dropna(how = 'all')
 
-#    enrichment = stat_utils.get_site_enrichment(spliced_ptm_list, background_annotation, subset_name = 'Spliced', type = annotation_type, fishers = True)
+    enrichment = stat_utils.get_site_enrichment(spliced_ptm_list, background_annotation, subset_name = 'Spliced', type = annotation_type, fishers = True)
 
 
+
+def gene_set_enrichment(spliced_ptms):
+    pass
+
+def kstar_enrichment(spliced_ptms, networks):
+    pass
+
+def get_interaction_stats(spliced_ptms, interactions):
+    pass
+
+def process_data_for_kinase_library(altered_flanks):
+    pass
+
+def process_data_for_exon_ontology(odir, spliced_ptms = None, altered_flanks = None):
+    pass
     
 
 
