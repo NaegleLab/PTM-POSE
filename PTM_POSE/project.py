@@ -401,8 +401,8 @@ def project_PTMs_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
             fiveASS_events['second_flank_end'] = second_flank_end
         
         #set specific as id
-        if 'AS type' in fiveASS_events.columns:
-            fiveASS_events['AS ID'] =  "5ASS_" + fiveASS_events.index.astype(str)
+
+        fiveASS_events['AS ID'] =  "5ASS_" + fiveASS_events.index.astype(str)
 
         #check to make sure there is enough information to do multiprocessing if that is desired
         if PROCESSES*4 > fiveASS_events.shape[0]:
@@ -418,7 +418,7 @@ def project_PTMs_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
         #identify ptms with altered flanking sequences
         if identify_flanking_sequences:
             print("Identifying flanking sequences for 5'ASS events.")
-            fiveASS_flanks = fs.get_flanking_changes_from_splice_data(fiveASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end',dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type)
+            fiveASS_flanks = fs.get_flanking_changes_from_splice_data(fiveASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end',dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol',  event_id_col = 'AS ID',coordinate_type=coordinate_type)
             fiveASS_flanks['Event Type'] = '5ASS'
             spliced_flanks.append(fiveASS_flanks)
     else:
@@ -479,7 +479,7 @@ def project_PTMs_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
             #identify ptms with altered flanking sequences
         if identify_flanking_sequences:
             print("Identifying flanking sequences for 3' ASS events.")
-            threeASS_flanks = fs.get_flanking_changes_from_splice_data(threeASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type)
+            threeASS_flanks = fs.get_flanking_changes_from_splice_data(threeASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol',  event_id_col = 'AS ID', coordinate_type=coordinate_type)
             threeASS_flanks['Event Type'] = '3ASS'
             spliced_flanks.append(threeASS_flanks)
 
@@ -506,7 +506,7 @@ def project_PTMs_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
          #identify ptms with altered flanking sequences
         if identify_flanking_sequences:
             print('Identifying flanking sequences for retained intron events.')
-            RI_flanks = fs.get_flanking_changes_from_splice_data(RI_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'upstreamEE', spliced_region_end_col = 'downstreamES', first_flank_start_col = 'upstreamES', first_flank_end_col = 'upstreamEE', second_flank_start_col = 'downstreamES', second_flank_end_col = 'downstreamEE', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol', coordinate_type=coordinate_type)
+            RI_flanks = fs.get_flanking_changes_from_splice_data(RI_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'upstreamEE', spliced_region_end_col = 'downstreamES', first_flank_start_col = 'upstreamES', first_flank_end_col = 'upstreamEE', second_flank_start_col = 'downstreamES', second_flank_end_col = 'downstreamEE', dPSI_col='meanDeltaPSI', sig_col = 'FDR', gene_col = 'geneSymbol',  event_id_col = 'AS ID', coordinate_type=coordinate_type)
             RI_flanks['Event Type'] = 'RI'
             spliced_flanks.append(RI_flanks)
 

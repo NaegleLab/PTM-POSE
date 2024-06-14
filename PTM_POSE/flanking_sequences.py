@@ -7,10 +7,14 @@ import numpy as np
 import pandas as pd
 import re
 
+import tqdm
+
 #PTM pose functions
 from ptm_pose import database_interfacing as di
 from ptm_pose import project
 from ptm_pose import pose_config as config
+
+
 
 # Get the standard codon table
 codon_table = CodonTable.unambiguous_dna_by_name["Standard"]
@@ -335,9 +339,9 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
 
         #grab useful info from ptm dataframe
         if gene is not None:
-            ptms_in_region = ptms_in_region[['Source of PTM', 'Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']].reset_index(drop = True)
+            ptms_in_region = ptms_in_region[['Source of PTM', 'Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']].reset_index(drop = True)
         else:
-            ptms_in_region = ptms_in_region[['Source of PTM', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']].reset_index(drop = True)
+            ptms_in_region = ptms_in_region[['Source of PTM', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']].reset_index(drop = True)
         #add flanking sequence information to ptm dataframe
         ptms_in_region['Inclusion Sequence'] = inclusion_seq_list
         ptms_in_region['Exclusion Sequence'] = exclusion_seq_list
@@ -410,7 +414,7 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
     
 
     results = []
-    for i, event in splice_data.iterrows():
+    for i, event in tqdm.tqdm(splice_data.iterrows(), total = splice_data.shape[0], desc = 'Finding flanking sequences for PTMs nearby splice junctions'):
         if event_id_col is None:
             event_id = i
         else:
@@ -434,15 +438,19 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
         #append to results
         results.append(ptm_flanks)
 
-    #combine and remove any failed translation attempts
     results = pd.concat(results)
-    results = results.dropna(subset = ['Inclusion Sequence', 'Exclusion Sequence'])
+    #combine and remove any failed translation attempts
+    if not results.empty:
+        results = results[results['Translation Success']]
 
-    #do some quick comparison of flanking sequences
-    results['Matched'] = results['Inclusion Sequence'] == results['Exclusion Sequence']
-    results['Stop Codon Introduced'] = (results['Inclusion Sequence'].str.contains(r'\*')) | (results['Exclusion Sequence'].str.contains(r'\*'))
+        #do some quick comparison of flanking sequences
+        if not results.empty:
+            results['Matched'] = results['Inclusion Sequence'] == results['Exclusion Sequence']
+            results['Stop Codon Introduced'] = (results['Inclusion Sequence'].str.contains(r'\*')) | (results['Exclusion Sequence'].str.contains(r'\*')) 
 
-    print(f'{results.shape[0]} PTMs found with potential for altered flanking sequences.')
+        print(f'{results.shape[0]} PTMs found with potential for altered flanking sequences.')
+    else:
+        print('No PTMs found with potential for altered flanking sequences.')
     return results
 
 
