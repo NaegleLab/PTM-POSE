@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import re
+import os
 
 from ptm_pose import pose_config
 
@@ -289,6 +290,10 @@ def add_PTMint_data(spliced_ptms):
     #aggregate PTMint data on the same PTMs
     PTMint = PTMint.groupby(['UniProtKB Accession','Residue','PTM Position in Canonical Isoform'], as_index = False).agg(';'.join)
 
+    #if splice data already has the annotation columns, remove them
+    if 'PTMInt:Interaction' in spliced_ptms.columns:
+        spliced_ptms = spliced_ptms.drop(columns = ['PTMInt:Interaction'])
+
     #add to splice data
     original_data_size = spliced_ptms.shape[0]
     spliced_ptms = spliced_ptms.merge(PTMint[['UniProtKB Accession','Residue','PTM Position in Canonical Isoform', 'PTMInt:Interaction']], on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'], how = 'left')
@@ -378,7 +383,7 @@ def extract_ids_PTMcode(df, col = '## Protein1'):
 
     #add gene name to data
     name_to_uniprot = pd.DataFrame(pose_config.uniprot_to_genename, index = ['Gene']).T
-    name_to_uniprot['Gene'] = name_to_uniprot['Gene'].apply(lambda x: x.split(' '))
+    name_to_uniprot['Gene'] = name_to_uniprot['Gene'].apply(lambda x: x.split(' ') if x == x else np.nan)
     name_to_uniprot = name_to_uniprot.explode('Gene')
     name_to_uniprot = name_to_uniprot.reset_index()
     name_to_uniprot.columns = ['UniProtKB/Swiss-Prot ID', 'Gene name']
@@ -579,5 +584,227 @@ def add_RegPhos_data(spliced_ptms, fname = None):
     #report the number of PTMs identified
     num_ptms_with_regphos_data = spliced_ptms.dropna(subset = 'RegPhos:Kinase').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).size().shape[0]
     print(f"RegPhos kinase-substrate data added: {num_ptms_with_regphos_data} PTMs in dataset found with kinase-substrate information")
+
+    return spliced_ptms
+
+######### Functions for combining annotations from multiple sources ########
+
+def convert_PSP_label_to_UniProt(label):
+    """
+    Given a label for an interacting protein from PhosphoSitePlus, convert to UniProtKB accession. Required as PhosphoSitePlus interactions are recorded in various ways that aren't necessarily consistent with other databases (i.e. not always gene name)
+
+    Parameters
+    ----------
+    label: str
+        Label for interacting protein from PhosphoSitePlus
+    """
+    if pose_config.genename_to_uniprot_dict is None:
+        #using uniprot to gene name dict, construct dict to go the other direction (gene name to uniprot id)
+        name_to_uniprot = pd.DataFrame(pose_config.uniprot_to_genename, index = ['Gene']).T
+        name_to_uniprot = name_to_uniprot[name_to_uniprot['Gene'] != '']
+        name_to_uniprot['Gene'] = name_to_uniprot['Gene'].apply(lambda x: x.split(' '))
+        name_to_uniprot = name_to_uniprot.explode('Gene')
+        name_to_uniprot = name_to_uniprot.reset_index()
+        name_to_uniprot.columns = ['UniProtKB/Swiss-Prot ID', 'Gene name']
+        name_to_uniprot_df = name_to_uniprot.drop_duplicates(subset = 'Gene name', keep = False)
+        name_to_uniprot = name_to_uniprot.groupby('Gene name').agg(' '.join)
+        name_to_uniprot_dict = name_to_uniprot.to_dict()['UniProtKB/Swiss-Prot ID']
+        pose_config.genename_to_uniprot_dict = name_to_uniprot_dict
+
+
+    #remove isoform label if present
+    if label in name_to_uniprot_dict: #if PSP name is gene name found in uniprot
+        return name_to_uniprot_dict[label]
+    elif label.upper() in name_to_uniprot_dict:
+        return name_to_uniprot_dict[label.upper()]
+    elif label.split(' ')[0].upper() in name_to_uniprot_dict:
+        return name_to_uniprot_dict[label.split(' ')[0].upper()]
+    elif label.replace('-', '').upper() in name_to_uniprot_dict:
+        return name_to_uniprot_dict[label.replace('-', '').upper()]
+    elif label in pose_config.psp_name_dict: # if PSP name is not gene name, but is in conversion dictionary
+        return pose_config.psp_name_dict[label]
+    else: #otherwise note that gene was missed
+        return np.nan
+        #missed_genes.append(gene)
+
+def combine_interaction_data(spliced_ptms, interaction_databases = ['PhosphoSitePlus', 'PTMcode', 'PTMint', 'RegPhos', 'DEPOD'], include_enzyme_interactions = True):
+    pass
+
+
+
+def combine_KS_data(spliced_ptms, ks_databases = ['PhosphoSitePlus', 'RegPhos'], regphos_conversion = {'ERK1(MAPK3)':'MAPK3', 'ERK2(MAPK1)':'MAPK1', 'CDC2':'CDK1', 'CK2A1':'CSNK2A1', 'PKACA':'PRKACA', 'ABL1(ABL)':'ABL1'}):
+    """
+    Given spliced ptm information, combine kinase-substrate data from multiple databases (currently support PhosphoSitePlus and RegPhos), assuming that the kinase data from these resources has already been added to the spliced ptm data. The combined kinase data will be added as a new column labeled 'Combined:Kinase'
+
+    Parameters
+    ----------
+    spliced_ptms: pd.DataFrame
+        Spliced PTM data from project module
+    ks_databases: list
+        List of databases to combine kinase data from. Currently support PhosphoSitePlus and RegPhos
+    regphos_conversion: dict
+        Allows conversion of RegPhos names to matching names in PhosphoSitePlus.
+
+    Returns
+    -------
+    splicde_ptms: pd.DataFrame
+        Spliced PTM data with combined kinase data added
+    
+    """
+    if not hasattr(pose_config, 'genename_to_uniprot'):
+        pose_config.genename_to_uniprot = pose_config.flip_uniprot_dict(pose_config.uniprot_to_genename)
+
+    ks_data = []
+    for i, row in spliced_ptms.iterrows():
+        combined = []
+        for db in ks_databases:
+            if db == 'PhosphoSitePlus':
+                psp = row['PSP:Kinase'].split(';') if row['PSP:Kinase'] == row['PSP:Kinase'] else []
+                #convert PSP names to a common name (first gene name provided by uniprot)
+                psp = [pose_config.uniprot_to_genename[pose_config.genename_to_uniprot[kin]].split(' ')[0]  if kin in pose_config.genename_to_uniprot else kin for kin in psp]
+                combined += psp
+            elif db == 'RegPhos':
+                regphos = row['RegPhos:Kinase'].split(';') if row['RegPhos:Kinase'] == row['RegPhos:Kinase'] else []
+                for i, rp in enumerate(regphos):
+                    if rp in pose_config.genename_to_uniprot:
+                        regphos[i] = pose_config.uniprot_to_genename[pose_config.genename_to_uniprot[rp]].split(' ')[0]
+                    elif rp.split('(')[0] in pose_config.genename_to_uniprot:
+                        regphos[i] = pose_config.uniprot_to_genename[pose_config.genename_to_uniprot[rp.split('(')[0]]].split(' ')[0]
+                    elif rp.upper() in regphos_conversion:
+                        regphos[i] = regphos_conversion[rp.upper()]
+                    else:
+                        regphos[i] = rp.upper()
+                combined += regphos
+
+
+        if len(combined) > 0:
+            ks_data.append(';'.join(set(combined)))
+        else:
+            ks_data.append(np.nan)
+
+    spliced_ptms['Combined:Kinase'] = ks_data
+    return spliced_ptms
+
+
+def check_file(fname, expected_extension = '.tsv'):
+    """
+    Given a file name, check if the file exists and has the expected extension. If the file does not exist or has the wrong extension, raise an error.
+
+    Parameters
+    ----------
+    fname: str
+        File name to check
+    expected_extension: str
+        Expected file extension. Default is '.tsv'
+    """
+    if not os.path.exists(fname):
+        raise ValueError(f'File {fname} not found')
+    
+    if not fname.endswith(expected_extension):
+        raise ValueError(f'File {fname} does not have the expected extension ({expected_extension})')
+
+database_shorthand = {'PhosphoSitePlus':'PSP', 'PTMcode':'PTMcode', 'PTMint':'PTMint', 'RegPhos':'RegPhos', 'DEPOD':'DEPOD', 'ELM':'ELM'}
+def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = None, psp_disease_file = None, elm_interactions = False, elm_motifs = False, PTMint = False, PTMcode_intraprotein = False, PTMcode_interprotein = False, DEPOD = False, RegPhos = False, combine_similar = True):
+    """
+    Given spliced ptm data, add annotations from various databases. The annotations that can be added are the following:
+    - PhosphoSitePlus 
+        - regulatory site data (file must be provided)
+        - kinase-substrate data (file must be provided)
+        - disease association data (file must be provided)
+    - ELM 
+        - interaction data (can be downloaded automatically or provided as a file)
+        - motif matches (elm class data can be downloaded automatically or provided as a file)
+    - PTMInt
+        - interaction data (will be downloaded automatically)
+    - PTMcode
+        - intraprotein interactions (can be downloaded automatically or provided as a file)
+        - interprotein interactions (can be downloaded automatically or provided as a file)
+    - DEPOD
+        - phosphatase-substrate data (will be downloaded automatically)
+    - RegPhos
+        - kinase-substrate data (will be downloaded automatically)
+
+    Parameters
+    ----------
+    spliced_ptms: pd.DataFrame
+        Spliced PTM data from project module
+    psp_regulatory_site_file: str
+        File path to PhosphoSitePlus regulatory site data
+    psp_ks_file: str
+        File path to PhosphoSitePlus kinase-substrate data
+    psp_disease_file: str
+        File path to PhosphoSitePlus disease association data
+    elm_interactions: bool or str
+        If True, download ELM interaction data automatically. If str, provide file path to ELM interaction data
+    elm_motifs: bool or str
+        If True, download ELM motif data automatically. If str, provide file path to ELM motif data
+    PTMint: bool
+        If True, download PTMInt data automatically
+    PTMcode_intraprotein: bool or str
+        If True, download PTMcode intraprotein data automatically. If str, provide file path to PTMcode intraprotein data
+    PTMcode_interprotein: bool or str
+        If True, download PTMcode interprotein data automatically. If str, provide file path to PTMcode interprotein data
+    DEPOD: bool
+        If True, download DEPOD data automatically
+    RegPhos: bool
+        If True, download RegPhos data automatically
+    combine_similar: bool
+        Whether to combine annotations of similar information (kinase, interactions, etc) from multiple databases into another column labeled as 'Combined'. Default is True
+    """
+    
+    if psp_regulatory_site_file is not None:
+        spliced_ptms = add_PSP_regulatory_site_data(spliced_ptms, fname = psp_regulatory_site_file)
+    if psp_ks_file is not None:
+        spliced_ptms = add_PSP_kinase_substrate_data(spliced_ptms, fname = psp_ks_file)
+    if psp_disease_file is not None:
+        spliced_ptms = add_PSP_disease_association(spliced_ptms, fname = psp_disease_file)
+    if elm_interactions:
+        if isinstance(elm_interactions, bool):
+            spliced_ptms = add_ELM_interactions(spliced_ptms)
+        elif isinstance(elm_interactions, str):
+            check_file(elm_interactions, expected_extension='.tsv')
+            spliced_ptms = add_ELM_interactions(spliced_ptms, fname = elm_interactions)
+        else:
+            raise ValueError('elm_interactions must be either a boolean (download elm data automatically, slower) or a string (path to elm data tsv file, faster)')
+    if elm_motifs:
+        if isinstance(elm_motifs, bool):
+            spliced_ptms = add_ELM_matched_motifs(spliced_ptms)
+        elif isinstance(elm_motifs, str):
+            check_file(elm_motifs, expected_extension='.tsv')
+            spliced_ptms = add_ELM_interactions(spliced_ptms, fname = elm_motifs)
+        else:
+            raise ValueError('elm_interactions must be either a boolean (download elm data automatically, slower) or a string (path to elm data tsv file, faster)')
+    if PTMint:
+        spliced_ptms = add_PTMint_data(spliced_ptms)
+    if PTMcode_intraprotein:
+        if isinstance(PTMcode_intraprotein, bool):
+            spliced_ptms = add_PTMcode_intraprotein(spliced_ptms)
+        elif isinstance(PTMcode_intraprotein, str):
+            check_file(PTMcode_intraprotein, expected_extension='.gz')
+            spliced_ptms = add_PTMcode_intraprotein(spliced_ptms, fname = PTMcode_intraprotein)
+        else:
+            raise ValueError('PTMcode_intraprotein must be either a boolean (download PTMcode data automatically, slower) or a string (path to PTMcode data file, faster)')
+    if PTMcode_interprotein:
+        if isinstance(PTMcode_interprotein, bool):
+            spliced_ptms = add_PTMcode_interprotein(spliced_ptms)
+        elif isinstance(PTMcode_interprotein, str):
+            check_file(PTMcode_interprotein, expected_extension='.gz')
+            spliced_ptms = add_PTMcode_interprotein(spliced_ptms, fname = PTMcode_interprotein)
+        else:
+            raise ValueError('PTMcode_interprotein must be either a boolean (download PTMcode data automatically, slower) or a string (path to PTMcode data file, faster)')
+    if DEPOD:
+        spliced_ptms = add_DEPOD_phosphatase_data(spliced_ptms)
+    if RegPhos:
+        spliced_ptms = add_RegPhos_data(spliced_ptms)
+
+    if combine_similar:
+        #spliced_ptms = combine_interaction_data(spliced_ptms)
+
+        #check for what kinase data is available
+        kinase_cols = [col for col in spliced_ptms.columns if 'Kinase' in col]
+        if len(kinase_cols) > 0:
+            ks_databases = [database_shorthand[col.split(':')[0]] for col in kinase_cols] #grab databases with kinase information
+            spliced_ptms = combine_KS_data(spliced_ptms, ks_databases=ks_databases) #add combined kinase column
+
 
     return spliced_ptms
