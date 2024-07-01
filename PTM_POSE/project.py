@@ -57,14 +57,14 @@ def find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = 
                     uni_ids = row['UniProtKB Accession'].split(';')
                     remove = True
                     for uni in uni_ids:
-                        if gene in config.uniprot_to_genename[uni].split(' '):
+                        if gene in config.uniprot_to_genename[uni.split('-')[0]].split(' '):
                             remove = False
                             break
 
                     if remove:
                         ptms_in_region.drop(i)
                 else:
-                    if gene not in config.uniprot_to_genename[row['UniProtKB Accession']].split(' '):
+                    if gene not in config.uniprot_to_genename[row['UniProtKB Accession'].split('-')[0]].split(' '):
                         ptms_in_region = ptms_in_region.drop(i)
 
             #make sure ptms still are present after filtering
@@ -147,7 +147,7 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
         taskbar_label = 'Projecting PTMs onto regions using ' + coordinate_type + ' coordinates.'
 
     if region_data[chromosome_col].str.contains('chr').any():
-        region_data['chr'] = region_data['chr'].str.strip('chr')
+        region_data[chromosome_col] = region_data[chromosome_col].str.strip('chr')
     
 
     spliced_ptm_info = []
@@ -547,5 +547,4 @@ def project_PTMs_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
         spliced_flanks = pd.concat(spliced_flanks)
         return spliced_events, spliced_ptms, spliced_flanks
     else:
-        spliced_ptms = pd.concat(spliced_ptms)
         return spliced_events, spliced_ptms

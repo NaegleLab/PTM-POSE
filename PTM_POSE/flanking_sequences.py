@@ -353,7 +353,7 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
         if dPSI is not None:
             ptms_in_region['dPSI'] = dPSI
         if sig is not None:
-            ptms_in_region['Significant'] = sig
+            ptms_in_region['Significance'] = sig
 
         return ptms_in_region
 

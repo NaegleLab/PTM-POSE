@@ -56,7 +56,7 @@ def get_uniprot_to_gene(genename = True, geneid = True):
         raise ValueError('Must request at least one of genename or geneid')
     
     #establish query url
-    fields = ['accession'] + ['gene_names'] * genename + ['xref_ensembl_full'] * geneid 
+    fields = ['accession'] + ['gene_names'] * genename + ['xref_ensembl'] * geneid 
     fields = ','.join(fields)
     url =  f"https://rest.uniprot.org/uniprotkb/search?query=reviewed:true+AND+organism_id:9606&format=tsv&fields={fields}_full&size=500"
 
