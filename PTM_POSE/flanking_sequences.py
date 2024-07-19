@@ -1,6 +1,6 @@
 #biopython packages
 from Bio.Data import CodonTable
-from Bio import pairwise2
+from Bio.Align import PairwiseAligner
 
 #standard packages
 import numpy as np
@@ -313,7 +313,7 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
             #check if ptm codon codes for amino acid and then extract flanking sequence
             correct_seq = False
             if ptm_codon_inclusion in codon_table.forward_table.keys() and ptm_codon_exclusion in codon_table.forward_table.keys():
-                if codon_table.forward_table[ptm_codon_inclusion] == ptm['Residue'] and codon_table.forward_table[ptm_codon_exclusion] == ptm['Residue']:
+                if codon_table.forward_table[ptm_codon_inclusion] == ptm['Residue'] and codon_table.forward_table[ptm_codon_exclusion] == ptm['Residue']  and exclusion_ptm_loc-(flank_size*3) >= 0 and len(exclusion_seq) >= exclusion_ptm_loc+(flank_size*3)+3:
                     inclusion_flanking_seq = inclusion_seq[inclusion_ptm_loc-(flank_size*3):inclusion_ptm_loc+(flank_size*3)+3]
                     exclusion_flanking_seq = exclusion_seq[exclusion_ptm_loc-(flank_size*3):exclusion_ptm_loc+(flank_size*3)+3]
                     correct_seq = True
@@ -468,10 +468,16 @@ def getSequenceIdentity(seq1, seq2):
     normalized_score: float
         normalized score of sequence similarity between flanking sequences (calculated similarity/max possible similarity)
     """
-    #align canonical and alternative flanks, return only the score
-    actual_similarity = pairwise2.align.globalxs(seq1, seq2, -10, -2, score_only = True)
-    #aling the canonical flank to itself, return only the score
-    control_similarity = pairwise2.align.globalxs(seq1, seq1, -10, -2, score_only = True)
+    #make pairwise aligner object
+    aligner = PairwiseAligner()
+    #set parameters, with match score of 10 and mismatch score of -2
+    aligner.mode = 'global'
+    aligner.match_score = 10
+    aligner.mismatch_score = -2
+    #calculate sequence alignment score between two sequences
+    actual_similarity = aligner.align(seq1, seq2)[0].score
+    #calculate sequence alignment score between the same sequence
+    control_similarity = aligner.align(seq1, seq1)[0].score
     #normalize score
     normalized_score = actual_similarity/control_similarity
     return normalized_score
