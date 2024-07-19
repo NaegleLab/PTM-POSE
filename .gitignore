@@ -1,6 +1,7 @@
 # package specific files
-Resource_Files/translator.csv
-Resource_Files/uniprot_to_gene_name.json
+ptm_pose/Resource_Files/translator.csv
+generate_ptm_coordinates.py
+Testing.ipynb
 
 #sql lite(pybiomart generates)
 *.sqllite
