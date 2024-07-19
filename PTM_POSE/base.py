@@ -192,12 +192,22 @@ class POSE_Project:
 
 
 class POSE_Analyze:
-    def __init__(self, spliced_ptms = None, altered_flanks = None, alpha = 0.05, min_dPSI = 0, master_dir = None):
+    def __init__(self, spliced_ptms = None, altered_flanks = None, alpha = 0.05, min_dPSI = 0, odir = None,  psp_regulatory_site_file = None, psp_ks_file = None, psp_disease_file = None, elm_interactions_file = None, elm_motifs_file = None, PTMint_file = None, PTMcode_intraprotein_file = None, PTMcode_interprotein_file = None, RegPhos_file = None):
         self.spliced_ptms = spliced_ptms
         self.altered_flanks = altered_flanks
         self.alpha = alpha
         self.min_dPSI = min_dPSI
-        self.master_dir = master_dir
+        self.odir = odir
+
+        #save annotation file information
+        self.psp_regulatory_site_file = psp_regulatory_site_file
+        self.psp_ks_file = psp_ks_file
+        self.psp_disease_file = psp_disease_file
+        self.elm_interactions_file = elm_interactions_file
+        self.elm_motifs_file = elm_motifs_file
+        self.PTMint_file = PTMint_file
+        self.PTMcode_intraprotein_file = PTMcode_intraprotein_file
+        self.PTMcode_interprotein_file = PTMcode_interprotein_file
 
 
     def load_from_folder(self, idir):
@@ -230,6 +240,29 @@ class POSE_Analyze:
         if self.spliced_ptms is not None and self.altered_flanks is not None:
             self.combined_ptms = analyze.combine_outputs(self.spliced_ptms, self.altered_flanks)
 
+    def update_annotation_file_details(self, psp_regulatory_site_file = None, psp_ks_file = None, psp_disease_file = None, elm_interactions = False, elm_motifs = False, PTMint = False, PTMcode_intraprotein = False, PTMcode_interprotein = False, DEPOD = False, RegPhos = False):
+        """
+        Given annotation file information
+        """
+        self.psp_regulatory_site_file = psp_regulatory_site_file if psp_regulatory_site_file is not None else self.psp_regulatory_site_file
+        self.psp_ks_file = psp_ks_file if psp_ks_file is not None else self.psp_ks_file
+        self.psp_disease_file = psp_disease_file if psp_disease_file is not None else self.psp_disease_file
+
+        if elm_interactions:
+            self.elm_interactions_file = elm_interactions
+        if elm_motifs:
+            self.elm_motifs_file = elm_motifs
+        if PTMint:
+            self.PTMint_file = PTMint
+        if PTMcode_intraprotein:
+            self.PTMcode_intraprotein_file = PTMcode_intraprotein
+        if PTMcode_interprotein:
+            self.PTMcode_interprotein_file = PTMcode_interprotein
+        if RegPhos:
+            self.RegPhos_file = RegPhos
+        if DEPOD:
+            self.DEPOD_file = DEPOD
+
     def add_ptm_annotations(self, psp_regulatory_site_file = None, psp_ks_file = None, psp_disease_file = None, elm_interactions = False, elm_motifs = False, PTMint = False, PTMcode_intraprotein = False, PTMcode_interprotein = False, DEPOD = False, RegPhos = False, combine_similar = True):
         """
         Annotate spliced PTMs and altered flanking sequences with information from various databases
@@ -241,14 +274,16 @@ class POSE_Analyze:
         annotation_files: dict
             Dictionary with database names as keys and file paths as values to use for annotation. Default is None (will attempt to download data from the internet)
         """
+        self.update_annotation_file_details(psp_regulatory_site_file=psp_regulatory_site_file, psp_ks_file=psp_ks_file, psp_disease_file=psp_disease_file, elm_interactions=elm_interactions, elm_motifs=elm_motifs, PTMint=PTMint, PTMcode_intraprotein=PTMcode_intraprotein, PTMcode_interprotein=PTMcode_interprotein, DEPOD=DEPOD, RegPhos=RegPhos)
+
         #add annotations to spliced_ptms
         if self.spliced_ptms is not None:
             print('Adding annotations to spliced PTMs results')
-            self.spliced_ptms = analyze.annotate_ptms(self.spliced_ptms, psp_regulatory_site_file = psp_regulatory_site_file, psp_ks_file = psp_ks_file, psp_disease_file = psp_disease_file, elm_interactions = elm_interactions, elm_motifs = elm_motifs, PTMint = PTMint, PTMcode_intraprotein = PTMcode_intraprotein, PTMcode_interprotein = PTMcode_interprotein, DEPOD = DEPOD, RegPhos = RegPhos, combine_similar = combine_similar)
+            self.spliced_ptms = analyze.annotate_ptms(self.spliced_ptms, psp_regulatory_site_file = self.psp_regulatory_site_file, psp_ks_file = self.psp_ks_file, psp_disease_file = self.psp_disease_file, elm_interactions = self.elm_interactions_file, elm_motifs = self.elm_motifs_file, PTMint = self.PTMint_file, PTMcode_intraprotein = self.PTMcode_intraprotein_file, PTMcode_interprotein = self.PTMcode_interprotein_file, DEPOD = self.DEPOD_file, RegPhos = self.RegPhos_file, combine_similar = combine_similar)
         #add annotations to altered_flanks
         if self.altered_flanks is not None:
             print('Adding annotations to altered flanking sequences results')
-            self.altered_flanks = analyze.annotate_ptms(self.altered_flanks, psp_regulatory_site_file = psp_regulatory_site_file, psp_ks_file = psp_ks_file, psp_disease_file = psp_disease_file, elm_interactions = elm_interactions, elm_motifs = elm_motifs, PTMint = PTMint, PTMcode_intraprotein = PTMcode_intraprotein, PTMcode_interprotein = PTMcode_interprotein, DEPOD = DEPOD, RegPhos = RegPhos, combine_similar = combine_similar)
+            self.altered_flanks = analyze.annotate_ptms(self.altered_flanks, psp_regulatory_site_file = self.psp_regulatory_site_file, psp_ks_file = self.psp_ks_file, psp_disease_file = self.psp_disease_file, elm_interactions = self.elm_interactions_file, elm_motifs = self.elm_motifs_file, PTMint = self.PTMint_file, PTMcode_intraprotein = self.PTMcode_intraprotein_file, PTMcode_interprotein = self.PTMcode_interprotein_file, DEPOD = self.DEPOD_file, RegPhos = self.RegPhos_file, combine_similar = combine_similar)
 
         #recombine dataframes
         if self.spliced_ptms is not None and self.altered_flanks is not None:
@@ -256,14 +291,28 @@ class POSE_Analyze:
 
         self.annotation_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+    def show_available_annotations(self, type = 'all', figsize = (5,5)):
+        if type == 'all':
+            pose_plots.show_available_annotations(self.combined_ptms, figsize = figsize)
+        elif type == 'inclusion':
+            pose_plots.show_available_annotations(self.spliced_ptms, figsize = figsize)
+        elif type == 'flanking':
+            pose_plots.show_available_annotations(self.altered_flanks, figsize = figsize)
+        
+
+
+    def analyze_annotations(self, annotation_type = 'Function', database = 'PhosphoSitePlus'):
+        pass
+
+
     
-    def save(self, odir):
+    def save(self):
         if self.spliced_ptms is not None:
-            self.spliced_ptms.to_csv(odir + 'spliced_ptms.csv', index = False)
+            self.spliced_ptms.to_csv(self.odir + 'spliced_ptms.csv', index = False)
         if self.altered_flanks is not None:
-            self.altered_flanks.to_csv(odir + 'altered_flanks.csv', index = False)
+            self.altered_flanks.to_csv(self.odir + 'altered_flanks.csv', index = False)
         if self.combined_ptms is not None:
-            self.combined_ptms.to_csv(odir + 'combined_information.csv', index = False)
+            self.combined_ptms.to_csv(self.odir + 'combined_information.csv', index = False)
 
 
 
