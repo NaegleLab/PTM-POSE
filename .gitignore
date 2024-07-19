@@ -1,7 +1,11 @@
 # package specific files
 ptm_pose/Resource_Files/translator.csv
-generate_ptm_coordinates.py
+ptm_pose/Resource_Files/uniprot_to_gene_name.json
+ptm_pose/Resource_Files/nonconstitutive_ptm_list.txt
+ptm_pose/base.py
+Test_datasets/
 Testing.ipynb
+.pybiomart.sqlite
 
 #sql lite(pybiomart generates)
 *.sqllite
