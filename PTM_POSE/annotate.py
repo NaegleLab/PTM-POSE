@@ -3,7 +3,7 @@ import numpy as np
 import re
 import os
 
-from ptm_pose import pose_config
+from ptm_pose import pose_config, helpers
 
 
 #dictionaries for converting modification codes to modification names in PhosphoSitePlus data
@@ -242,9 +242,9 @@ def add_ELM_interactions(spliced_ptms, file = None):
         elm_type.append(np.nan)
         elm_interactor.append(np.nan)
 
-    spliced_ptms['ELM:Interactions'] = elm_list
+    spliced_ptms['ELM:Interactions'] = elm_interactor
     spliced_ptms['ELM:Location of PTM for Interaction'] = elm_type
-    spliced_ptms['ELM:Interacting Protein for Interaction'] = elm_interactor
+    spliced_ptms['ELM:Motifs Associated with Interactions'] = elm_list
     
     #report the number of ptms with motif data
     num_ptms_with_ELM_instance = spliced_ptms.dropna(subset = 'ELM:Interactions').groupby(['UniProtKB Accession', 'Residue']).size().shape[0]
@@ -273,7 +273,7 @@ def add_ELM_matched_motifs(spliced_ptms, flank_size = 7, file = None):
 
         
         if ptm in ptm_coordinates['PTM Label'].values:
-            ptm_flanking_seq = ptm_coordinates.loc[ptm_coordinates['PTM Label'] == ptm, 'Expected Flanking Sequence'].values[0]
+            ptm_flanking_seq = ptm_coordinates.loc[ptm_coordinates['PTM Label'] == ptm, 'Canonical Flanking Sequence'].values[0]
             #make sure flanking sequence is present
             if isinstance(ptm_flanking_seq, str):
 
@@ -298,7 +298,7 @@ def add_ELM_matched_motifs(spliced_ptms, flank_size = 7, file = None):
     spliced_ptms['ELM:Motif Matches'] = match_list
 
     #report the number of ptms with motif data
-    num_ptms_with_matched_motif = spliced_ptms.dropna(subset = 'ELM:Motif Matches').groupby(['UniProtKB Accession', 'Residue']).size().shape[0]
+    num_ptms_with_matched_motif = spliced_ptms.dropna(subset = 'ELM:Motif Matches').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).size().shape[0]
     print(f"ELM Class motif matches found: {num_ptms_with_matched_motif} PTMs in dataset found with at least one matched motif")
     return spliced_ptms
 
@@ -678,7 +678,7 @@ def convert_PSP_label_to_UniProt(label):
 
 def extract_interaction_details(interaction, column = "PSP:ON_PROT_INTERACT"):
 
-    interaction_types = {'PTMcode:Interprotein_Interactions':'INDUCES', 'PSP:Kinase':'REGULATES', 'DEPOD:Phosphatase':'REGULATES', 'RegPhos:Kinase':'REGULATES', 'Combined:Kinase':'REGULATES', 'ELM:Interacting Protein for Interaction':'UNCLEAR'}
+    interaction_types = {'PTMcode:Interprotein_Interactions':'INDUCES', 'PSP:Kinase':'REGULATES', 'DEPOD:Phosphatase':'REGULATES', 'RegPhos:Kinase':'REGULATES', 'Combined:Kinase':'REGULATES', 'ELM:Interactions':'UNCLEAR'}
     if column == 'PSP:ON_PROT_INTERACT':
         type = interaction.split('(')[1].split(')')[0]
         protein = interaction.split('(')[0].strip(' ')
@@ -718,7 +718,8 @@ def unify_interaction_data(spliced_ptms, interaction_col, name_dict = {}):
         pose_config.genename_to_uniprot = pose_config.flip_uniprot_dict(pose_config.uniprot_to_genename)
 
     #extract PSP data from annotated PTMs, separate cases in which single PTM has multipe interactions
-    interact = spliced_ptms.dropna(subset = interaction_col)[['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class',interaction_col]]
+    data_cols = [col for col in spliced_ptms.columns if col in ['Significance', 'dPSI']]
+    interact = spliced_ptms.dropna(subset = interaction_col)[['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class',interaction_col] + data_cols]
     if interact.empty:
         print(f"No PTMs associated with {interaction_col}")
         return interact
@@ -738,7 +739,7 @@ def unify_interaction_data(spliced_ptms, interaction_col, name_dict = {}):
         
 
     #convert interacting protein to uniprot id for databases that are not reported in uniprot ids
-    if interaction_col not in ['PTMcode:Interprotein_Interactions', 'ELM:Interacting Protein for Interaction']:
+    if interaction_col not in ['PTMcode:Interprotein_Interactions', 'ELM:Interactions']:
         interacting_id = []
         missed_genes = []
         for gene in interact['Interacting Protein']:
@@ -760,6 +761,7 @@ def unify_interaction_data(spliced_ptms, interaction_col, name_dict = {}):
         #save information
         interact['Interacting ID'] = interacting_id
         interact = interact.dropna(subset = 'Interacting ID')
+
 
         #check if there multiple in one row
         if interact['Interacting ID'].str.contains(';').any():
@@ -904,10 +906,10 @@ def combine_interaction_data(spliced_ptms, interaction_databases = ['PhosphoSite
                 interact = unify_interaction_data(spliced_ptms, 'PTMInt:Interaction')
                 interact['Source'] = database
                 interact_data.append(interact)
-        if database == 'ELM' and 'ELM:Interacting Protein for Interaction' in spliced_ptms.columns:
-            if not spliced_ptms['ELM:Interacting Protein for Interaction'].isna().all():
+        if database == 'ELM' and 'ELM:Interactions' in spliced_ptms.columns:
+            if not spliced_ptms['ELM:Interactions'].isna().all():
                 print('ELM data found and added')
-                interact = unify_interaction_data(spliced_ptms, 'ELM:Interacting Protein for Interaction')
+                interact = unify_interaction_data(spliced_ptms, 'ELM:Interactions')
                 interact['Source'] = database
                 interact_data.append(interact)
         
@@ -942,25 +944,28 @@ def combine_interaction_data(spliced_ptms, interaction_databases = ['PhosphoSite
                     interact['Source'] = database
                     interact_data.append(interact)
     
-    interact_data = pd.concat(interact_data)
-    interact_data = interact_data.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Interacting ID', 'Type'], dropna = False, as_index = False)['Source'].apply(lambda x: ';'.join(np.unique(x)))
+    if len(interact_data) > 0:
+        interact_data = pd.concat(interact_data)
+        extra_cols = [col for col in interact_data.columns if col in ['dPSI', 'Significance']]
+        interact_data = interact_data.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Interacting ID', 'Type']+extra_cols, dropna = False, as_index = False)['Source'].apply(helpers.join_unique_entries)
+    
+        #convert uniprot ids back to gene names for interpretability
+        ptm_gene = []
+        interacting_gene = []
+        for i, row in interact_data.iterrows():
+            ptm_gene.append(pose_config.uniprot_to_genename[row['UniProtKB Accession'].split('-')[0]].split(' ')[0]) if row['UniProtKB Accession'].split('-')[0] in pose_config.uniprot_to_genename else ptm_gene.append(row['UniProtKB Accession'])
+            interacting_gene.append(pose_config.uniprot_to_genename[row['Interacting ID'].split('-')[0]].split(' ')[0]) if row['Interacting ID'].split('-')[0] in pose_config.uniprot_to_genename else interacting_gene.append(row['Interacting ID'])
+        interact_data['Modified Gene'] = ptm_gene
+        interact_data["Interacting Gene"] = interacting_gene
+  
+  
+        return interact_data.drop_duplicates()
+    else:
+        return pd.DataFrame()
 
-    #convert uniprot ids back to gene names for interpretability
-    ptm_gene = []
-    interacting_gene = []
-    for i, row in interact_data.iterrows():
-        ptm_gene.append(pose_config.uniprot_to_genename[row['UniProtKB Accession'].split('-')[0]].split(' ')[0]) if row['UniProtKB Accession'].split('-')[0] in pose_config.uniprot_to_genename else ptm_gene.append(row['UniProtKB Accession'])
-        interacting_gene.append(pose_config.uniprot_to_genename[row['Interacting ID'].split('-')[0]].split(' ')[0]) if row['Interacting ID'].split('-')[0] in pose_config.uniprot_to_genename else interacting_gene.append(row['Interacting ID'])
-    interact_data['Modified Gene'] = ptm_gene
-    interact_data["Interacting Gene"] = interacting_gene
 
 
-    return interact_data.drop_duplicates()
-
-
-
-
-def combine_KS_data(spliced_ptms, ks_databases = ['PhosphoSitePlus', 'RegPhos'], regphos_conversion = {'ERK1(MAPK3)':'MAPK3', 'ERK2(MAPK1)':'MAPK1', 'CDC2':'CDK1', 'CK2A1':'CSNK2A1', 'PKACA':'PRKACA', 'ABL1(ABL)':'ABL1'}):
+def combine_KS_data(spliced_ptms, ks_databases = ['PhosphoSitePlus', 'RegPhos'], regphos_conversion = {'ERK1(MAPK3)':'MAPK3', 'ERK2(MAPK1)':'MAPK1', 'JNK2(MAPK9)':'MAPK9','CDC2':'CDK1', 'CK2A1':'CSNK2A1', 'PKACA':'PRKACA', 'ABL1(ABL)':'ABL1'}):
     """
     Given spliced ptm information, combine kinase-substrate data from multiple databases (currently support PhosphoSitePlus and RegPhos), assuming that the kinase data from these resources has already been added to the spliced ptm data. The combined kinase data will be added as a new column labeled 'Combined:Kinase'
 
@@ -1125,7 +1130,13 @@ def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = N
             print(f'Error adding ELM motif matches. Error message: {e}')
     if PTMint:
         try:
-            spliced_ptms = add_PTMInt_data(spliced_ptms)
+            if isinstance(PTMint, bool):
+                spliced_ptms = add_PTMInt_data(spliced_ptms)
+            elif isinstance(PTMint, str):
+                check_file(PTMint, expected_extension='.csv')
+                spliced_ptms = add_PTMInt_data(spliced_ptms, file = PTMint)
+            else:
+                raise ValueError('PTMint must be either a boolean (download PTMInt data automatically, slower) or a string (path to PTMInt data csv file, faster)')
         except Exception as e:
             print(f'Error adding PTMInt interaction data. Error message: {e}')
     if PTMcode_intraprotein:
@@ -1166,12 +1177,15 @@ def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = N
         if set(interaction_cols).intersection(spliced_ptms.columns) != 0:
             print('\nCombining interaction data from multiple databases')
             interact = combine_interaction_data(spliced_ptms)
-            interact['Combined:Interactions'] = interact['Interacting Gene']+'->'+interact['Type']
-            interact = interact.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'], dropna = False, as_index = False)['Combined:Interactions'].apply(lambda x: ';'.join(np.unique(x)))
-            if 'Combined:Interactions' in spliced_ptms.columns:
-                spliced_ptms = spliced_ptms.drop(columns = ['Combined:Interactions'])
-
-            spliced_ptms = spliced_ptms.merge(interact, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'])
+            if not interact.empty:
+                interact['Combined:Interactions'] = interact['Interacting Gene']+'->'+interact['Type']
+                interact = interact.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'], dropna = False, as_index = False)['Combined:Interactions'].apply(lambda x: ';'.join(np.unique(x)))
+                if 'Combined:Interactions' in spliced_ptms.columns:
+                    spliced_ptms = spliced_ptms.drop(columns = ['Combined:Interactions'])
+    
+                spliced_ptms = spliced_ptms.merge(interact, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'])
+            else:
+                spliced_ptms['Combined:Interactions'] = np.nan
 
         #check for what kinase data is available
         kinase_cols = [col for col in spliced_ptms.columns if 'Kinase' in col]
