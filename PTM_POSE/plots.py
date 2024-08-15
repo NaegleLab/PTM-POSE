@@ -6,7 +6,7 @@ import matplotlib.lines as mlines
 import seaborn as sns
 import networkx as nx
 
-from ptm_pose import analyze
+from ptm_pose import analyze, pose_config
 
 
 def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize = (5, 5)):
@@ -64,6 +64,67 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize 
     ax.legend(handles, labels, title = 'Annotation Source')
     plt.show()
 
+def plot_annotations(spliced_ptms, database = 'PhosphoSitePlus', annot_type = 'Function', collapse_on_similar = True, colors = None, top_terms = 5, legend = True, leg_loc = (-2.5,-0.6), ax = None):
+    """
+    Given a dataframe with PTM annotations added, plot the top annotations associated with the PTMs
+
+    Parameters
+    ----------
+    spliced_ptms: pd.DataFrame
+        Dataframe with PTMs and annotations added
+    database: str
+        Database to use for annotations. Default is 'PhosphoSitePlus'.
+    annot_type: str
+        Type of annotation to plot. Default is 'Function'.
+    collapse_on_similar: bool
+        Whether to collapse similar annotations into a single category. Default is True.
+    colors: list
+        List of colors to use for the bar plot. Default is None.
+    top_terms: int
+        Number of top terms to plot. Default is 5.
+    legend: bool
+        Whether to show the legend. Default is True.
+    leg_loc: tuple
+        Location of the legend. Default is (-2.5,-0.6).
+    ax: matplotlib.Axes
+        Axis to plot on. If None, will create new figure. Default is None.
+
+    """
+    _, annotation_counts = analyze.get_ptm_annotations(spliced_ptms, annotation_type = annot_type, database = database, collapse_on_similar = collapse_on_similar)
+    if ax is None:
+        fig, ax = plt.subplots(figsize = (2,3))
+
+    if database == 'PTMcode': #convert to readable gene name
+        annotation_counts.index = [pose_config.uniprot_to_genename[i].split(' ')[0] if i in pose_config.uniprot_to_genename.keys() else i for i in annotation_counts.index]
+
+    if colors is None:
+        colors = ['lightgrey', 'gray', 'white']
+    if isinstance(annotation_counts, pd.Series):
+        annotation_counts = annotation_counts.head(top_terms).sort_values(ascending = True)
+        ax.barh(annotation_counts.index, annotation_counts.values, color = colors[0], edgecolor = 'black')
+    else:
+        annotation_counts = annotation_counts.head(top_terms).sort_values(by = 'All Impacted', ascending = True)
+        ax.barh(annotation_counts['Excluded'].index, annotation_counts['Excluded'].values, height = 1, edgecolor = 'black', color = colors[0])
+        ax.barh(annotation_counts['Included'].index, annotation_counts['Included'].values, left = annotation_counts['Excluded'].values, height = 1, color = colors[1], edgecolor = 'black')
+        ax.barh(annotation_counts['Altered Flank'].index, annotation_counts['Altered Flank'].values, left = annotation_counts['Excluded'].values+annotation_counts['Included'].values, height = 1, color = colors[2], edgecolor = 'black')
+    #ax.set_xticks([0,50,100,150])
+    ax.set_ylabel('', fontsize = 10)
+    ax.set_xlabel('Number of PTMs', fontsize = 10)
+
+    ax.set_title(f'Top {top_terms} {database} {annot_type} Annotations', fontsize = 10, weight = 'bold')
+
+    #label_dict = {'EXONT:Name':'Exon Ontology Term', 'PSP:ON_PROCESS':'Biological Process (PSP)', 'PSP:ON_FUNCTION':'Molecular Function (PSP)', 'Combined:Kinase':'Kinase'}
+    #ax.text(-1*ax.get_xlim()[1]/10, top_terms-0.2, label_dict[term_to_plot], weight = 'bold', ha = 'right', fontsize = 8)
+    x_label_dict = {'Function':'Number of PTMs\nassociated with Function', 'Process':'Number of PTMs\nassociated with Process', 'Disease':'Number of PTMs\nassociated with Disease', 'Kinase':'Number of Phosphosites\ntargeted by Kinase', 'Interactions': 'Number of PTMs\nthat regulate interaction\n with protein','Motif Match':'Number of PTMs\nfound within a\nmotif instance', 'Intraprotein': 'Number of PTMs\nthat are important\for intraprotein\n interactions','Phosphatase':'Number of Phosphosites\ntargeted by Phosphatase'}
+    ax.set_xlabel(x_label_dict[annot_type], fontsize = 8)
+    
+    #make a custom legend
+    if legend:
+        import matplotlib.patches as mpatches
+        handles = [mpatches.Patch(facecolor = colors[0], edgecolor = 'black', label = 'Excluded'), mpatches.Patch(facecolor = colors[1], edgecolor = 'black', label = 'Included'),mpatches.Patch(facecolor = colors[2], edgecolor = 'black', label = 'Altered Flank')]
+        ax.legend(handles = handles, ncol = 1, fontsize = 7, title = 'Type of Impact', title_fontsize = 8)
+
+
 
 def draw_pie(dist, xpos, ypos, size,colors,edgecolor =None, type = 'donut', ax=None):
     """
@@ -111,7 +172,7 @@ def draw_pie(dist, xpos, ypos, size,colors,edgecolor =None, type = 'donut', ax=N
 
 
 
-def plot_EnrichR_pies(enrichr_results, terms_to_plot = None, colors = None, edgecolor = None, row_height = 0.3, leg_loc = (0.5,1.1), type = 'circle', ax = None):
+def plot_EnrichR_pies(enrichr_results, top_terms = None, terms_to_plot = None, colors = None, edgecolor = None, row_height = 0.3, leg_loc = (0.5,1.1), type = 'circle', ax = None):
     """
     Given PTM-specific EnrichR results, plot EnrichR score for the provided terms, with each self point represented as a pie chart indicating the fraction of genes in the group with PTMs
     
@@ -119,6 +180,8 @@ def plot_EnrichR_pies(enrichr_results, terms_to_plot = None, colors = None, edge
     ----------
     ptm_results: pd.selfFrame
         selfFrame containing PTM-specific results from EnrichR analysis
+    num_to_plot: int
+        number of terms to plot, if None, will plot all terms. Ignored if specific terms are provided in terms to plot list
     terms_to_plot: list
         list of terms to plot
     ax: matplotlib.Axes
@@ -132,14 +195,18 @@ def plot_EnrichR_pies(enrichr_results, terms_to_plot = None, colors = None, edge
     plt_data['Number with Differential Inclusion Only'] = plt_data['Genes with Differentially Included PTMs only'].apply(lambda x: len(x.split(';')))
     plt_data['Number with Altered Flank Only'] = plt_data['Genes with Differentially Included PTMs only'].apply(lambda x: len(x.split(';')))
     plt_data['Number with Both'] = plt_data['Genes with Both'].apply(lambda x: len(x.split(';')) if x != '' else 0)
+    
 
     if terms_to_plot is None:
         plt_data = plt_data.sort_values(by = 'Combined Score')
+        if top_terms is not None:
+            plt_data = plt_data.iloc[-top_terms:] if top_terms < plt_data.shape[0] else plt_data
     else:
         plt_data = plt_data[plt_data['Term'].isin(terms_to_plot)].sort_values(by = 'Combined Score')
         if plt_data.shape[0] == 0:
             print('No significant terms found in EnrichR results. Please check the terms_to_plot list and try again.')
             return
+        
 
     #remove gene ontology specific terms
     plt_data['Term'] = plt_data['Term'].apply(lambda x: x.split(' R-HSA')[0] +' (R)' if 'R-HSA' in x else x.split('(GO')[0]+' (GO)')
@@ -187,7 +254,8 @@ def plot_interaction_network(interaction_graph, network_data, network_stats = No
 
     Parameters
     ----------
-
+    interaction_graph: nx.Graph
+        NetworkX graph object representing the interaction network, created from analyze.get_interaction_network
     """
     node_colors = []
     node_sizes = []

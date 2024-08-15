@@ -61,6 +61,33 @@ def adjustP(sorted_p, method = 'BH'):
                 adj_p = 1
             adj_p_list.append(adj_p)
     return adj_p_list
+
+def calculateMW_EffectSize(group1, group2):
+    """
+    Given two lists of values, calculate the effect size and p-value of the Mann-Whitney U test
+
+    Parameters
+    ----------
+    group1: list or array
+        first group of values
+    group2: list or array
+        second group of values
+    
+    Returns
+    -------
+    p: float
+        p-value of Mann-Whitney U test
+    r: float
+        effect size of Mann-Whitney U test
+    """
+    stat, p = stats.mannwhitneyu(group1, group2)
+    n1 = len(group1)
+    n2 = len(group2)
+    u1 = n1*n2/2
+    u2 = n1*n2*(n1+n2+1)/12
+    z = (stat - u1)/np.sqrt(u2)
+    r = abs(z)/np.sqrt(n1+n2)
+    return p, r
     
 def hypergeom(M, n, N, k):
     """

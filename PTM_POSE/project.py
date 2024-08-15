@@ -9,7 +9,7 @@ from ptm_pose import flanking_sequences as fs
 
 from tqdm import tqdm
 
-def find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = None, coordinate_type = 'hg38'):
+def find_ptms_in_region(ptm_coordinates, chromosome, strand, start, end, gene = None, coordinate_type = 'hg38'):
     """
     Given an genomic region in either hg38 or hg19 coordinates (such as the region encoding an exon of interest), identify PTMs that are mapped to that region. If so, return the exon number. If none are found, return np.nan.
     
@@ -170,7 +170,7 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
         gene = row[gene_col] if gene_col is not None else None
 
         #project ptms onto region
-        ptms_in_region = find_PTMs_in_region(ptm_coordinates, chromosome, strand, start, end, gene = gene, coordinate_type = coordinate_type)
+        ptms_in_region = find_ptms_in_region(ptm_coordinates, chromosome, strand, start, end, gene = gene, coordinate_type = coordinate_type)
         
 
         #add additional context from splice data, if indicated
@@ -579,10 +579,10 @@ def add_splicegraph_info(psi_data, splicegraph, purpose = 'inclusion'):
     else:
         raise ValueError('Purpose must be either inclusion or flanking. Please provide the correct purpose for the splicegraph information.')
 
-def project_ptms_onto_SpliceSeq(psi_data, splicegraph, dPSI_col = None, sig_col = None, extra_cols = None, coordinate_type = 'hg19', separate_modification_types = False, PROCESSES = 1):
+def project_ptms_onto_SpliceSeq(psi_data, splicegraph, dPSI_col = None, sig_col = None, extra_cols = None, coordinate_type = 'hg19', separate_modification_types = False, identify_flanking_sequences = False, PROCESSES = 1):
     #remove ME events from this analysis
     print('Removing ME events from analysis')
-    psi_data = psi_data[psi_data['splice_type'] != 'ME']
+    psi_data = psi_data[psi_data['splice_type'] != 'ME'].copy()
 
     #split exons into individual exons
     psi_data['Individual exon'] = psi_data['exons'].apply(lambda x: x.split(':'))
@@ -590,6 +590,7 @@ def project_ptms_onto_SpliceSeq(psi_data, splicegraph, dPSI_col = None, sig_col 
     psi_data['Individual exon'] = psi_data['Individual exon'].astype(float)
 
     #add gene location information to psi data from spliceseq
+
     spliced_data = psi_data.merge(splicegraph, left_on = ['symbol', 'Individual exon'], right_on = ['Symbol', 'Exon'], how = 'left')
     spliced_data = spliced_data.rename(columns = {'Chr_Start': 'spliced_region_start', 'Chr_Stop': 'spliced_region_end'})
 
@@ -597,6 +598,8 @@ def project_ptms_onto_SpliceSeq(psi_data, splicegraph, dPSI_col = None, sig_col 
     spliced_data, spliced_ptms = project_ptms_onto_splice_events(spliced_data, chromosome_col = 'Chromosome', strand_col = 'Strand', gene_col = 'symbol', region_start_col = 'spliced_region_start', region_end_col = 'spliced_region_end', event_id_col = 'as_id',dPSI_col = dPSI_col, sig_col = sig_col, extra_cols = extra_cols, separate_modification_types = separate_modification_types, coordinate_type = coordinate_type, PROCESSES = PROCESSES)
 
     ## add code for extracting flanking sequences (to do)
+    if identify_flanking_sequences:
+        pass
 
     return spliced_data, spliced_ptms
 
