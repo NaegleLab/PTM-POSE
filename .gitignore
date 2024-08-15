@@ -2,6 +2,14 @@
 Resource_Files/translator.csv
 Resource_Files/uniprot_to_gene_name.json
 
+#sphinx-specific
+_build/
+gallery_output/
+.zip
+.json
+.py.md5
+
+
 #sql lite(pybiomart generates)
 *.sqllite
 
