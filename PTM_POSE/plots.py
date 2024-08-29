@@ -286,7 +286,7 @@ def plot_interaction_network(interaction_graph, network_data, network_stats = No
 
     #set up subplot if not provied
     if ax is None:
-        fig, ax = plt.subplots(figsize = (6,6))
+        fig, ax = plt.subplots(figsize = (4,4))
 
     nx.draw(interaction_graph, node_size = node_sizes, node_color = node_colors, edge_color = edgecolor, style = edge_style, ax = ax)
 

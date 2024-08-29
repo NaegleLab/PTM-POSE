@@ -172,20 +172,26 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
         #project ptms onto region
         ptms_in_region = find_ptms_in_region(ptm_coordinates, chromosome, strand, start, end, gene = gene, coordinate_type = coordinate_type)
         
+        extra_info = {}
+
 
         #add additional context from splice data, if indicated
+        extra_info = {}
         if event_id_col is not None:
-            ptms_in_region['Region ID'] = row[event_id_col]
+            extra_info['Region ID'] = row[event_id_col]
             
         if dPSI_col is not None:
-            ptms_in_region['dPSI'] = row[dPSI_col]
+            extra_info['dPSI'] = row[dPSI_col]
         
         if sig_col is not None:
-            ptms_in_region['Significance'] = row[sig_col]
+            extra_info['Significance'] = row[sig_col]
         
         if extra_cols is not None:
             for col in extra_cols:
-                ptms_in_region[col] = row[col]
+                extra_info[col] = row[col]
+
+        #add extra info to ptms_in_region
+        ptms_in_region = pd.concat([pd.DataFrame(extra_info, index = ptms_in_region.index), ptms_in_region], axis = 1)
 
         #if desired, add ptm information to the original splice event dataframe
         if annotate_original_df:

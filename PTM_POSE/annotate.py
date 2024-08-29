@@ -176,7 +176,7 @@ def add_PSP_kinase_substrate_data(spliced_ptms, file = 'Kinase_Substrate_Dataset
     
         #report the number of ptms with kinase substrate information
     if report_success:
-        num_ptms_with_KS = spliced_ptms.dropna(subset = 'PSP:Kinase').groupby(['UniProtKB Accession', 'Residue', 'PTM Position Canonical Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_KS = spliced_ptms.dropna(subset = 'PSP:Kinase').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
         print(f"PhosphoSitePlus kinase-substrate interactions added: {num_ptms_with_KS} phosphorylation sites in dataset found associated with a kinase in PhosphoSitePlus")
     return spliced_ptms
 
@@ -1200,7 +1200,7 @@ def check_file(fname, expected_extension = '.tsv'):
 
 
 
-def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = None, psp_disease_file = None, elm_interactions = False, elm_motifs = False, PTMint = False, PTMcode_intraprotein = False, PTMcode_interprotein = False, DEPOD = False, RegPhos = False, ptmsigdb_file = None, combine_similar = True):
+def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = None, psp_disease_file = None, elm_interactions = False, elm_motifs = False, PTMint = False, PTMcode_intraprotein = False, PTMcode_interprotein = False, DEPOD = False, RegPhos = False, ptmsigdb_file = None, interactions_to_combine = ['PTMcode', 'PhosphoSitePlus', 'RegPhos', 'PTMInt'], kinases_to_combine = ['PhosphoSitePlus', 'RegPhos'], combine_phosphatases = ['DEPOD'], combine_similar = True):
     """
     Given spliced ptm data, add annotations from various databases. The annotations that can be added are the following:
     - PhosphoSitePlus 
