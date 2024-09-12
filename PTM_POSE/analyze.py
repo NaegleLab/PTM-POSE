@@ -1,19 +1,47 @@
 import numpy as np
 import pandas as pd
-import networkx as nx
+import pickle
 
 import os
+import time
 
 #plotting 
 import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
+import seaborn as sns
+from ptm_pose import plots as pose_plots
 
 #analysis packages
+from Bio.Align import PairwiseAligner
 import gseapy as gp
+import networkx as nx
+import re
+
 
 #custom stat functions
 from ptm_pose import stat_utils, pose_config, annotate, helpers
 
 package_dir = os.path.dirname(os.path.abspath(__file__))
+
+def get_modification_counts(ptms):
+    """
+    Given PTM data (either spliced ptms, altered flanks, or combined data), return the counts of each modification class
+
+    Parameters
+    ----------
+    ptms: pd.DataFrame
+        Dataframe with PTMs projected onto splicing events or with altered flanking sequences
+
+    Returns
+    -------
+    modification_counts: pd.Series
+        Series with the counts of each modification class
+    """
+    ptms['Modification Class'] = ptms['Modification Class'].apply(lambda x: x.split(';'))
+    ptms = ptms.explode('Modification Class')
+    modification_counts = ptms.groupby('Modification Class').size()
+    modification_counts = modification_counts.sort_values(ascending = True)
+    return modification_counts
 
 def get_annotation_col(spliced_ptms, annotation_type = 'Function', database = 'PhosphoSitePlus'):
     """
@@ -40,7 +68,7 @@ def get_annotation_col(spliced_ptms, annotation_type = 'Function', database = 'P
     elif annotation_type in pose_config.annotation_col_dict[database].keys():
         annotation_col = pose_config.annotation_col_dict[database][annotation_type]
         if annotation_col not in spliced_ptms.columns:
-            raise ValueError(f'Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.{pose_config.annotation_function_dict[database]} function to append this information.')
+            raise ValueError(f'Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.{pose_config.annotation_function_dict[database][annotation_type]} function to append this information.')
         return annotation_col
     else:
         raise ValueError(f"Invalid annotation type for {database}. Available annotation data for {database} includes: {', '.join(pose_config.annotation_col_dict[database].keys())}")
@@ -72,19 +100,25 @@ def combine_outputs(spliced_ptms, altered_flanks, mod_class = None, include_stop
     spliced_ptms['Impact'] = spliced_ptms['dPSI'].apply(lambda x: 'Included' if x > 0 else 'Excluded')
 
     #restrict altered flanks to those that are changed and are not disrupted by stop codons
+    if altered_flanks['Stop Codon Introduced'].dtypes != bool:
+        altered_flanks['Stop Codon Introduced'] = altered_flanks['Stop Codon Introduced'].astype(bool)
     if include_stop_codon_introduction:
-        altered_flanks = altered_flanks[~altered_flanks['Matched']].copy()
         altered_flanks['Impact'] = altered_flanks['Stop Codon Introduced'].apply(lambda x: 'Stop Codon Introduced' if x else 'Altered Flank')
     else:
-        altered_flanks = altered_flanks[(~altered_flanks['Matched']) & (~altered_flanks['Stop Codon Introduced'])].copy()
+        altered_flanks = altered_flanks[~altered_flanks['Stop Codon Introduced']].copy()
         altered_flanks['Impact'] = 'Altered Flank'
 
     #identify annotations that are found in both datasets
-    annotation_columns_in_spliced_ptms = [col for col in spliced_ptms.columns if any([annot in col for annot in ['PSP', 'ELM','PTMInt','PTMcode','RegPhos','Combined', 'DEPOD']])]
-    annotation_columns_in_altered_flanks = [col for col in altered_flanks.columns if any([annot in col for annot in ['PSP', 'ELM','PTMInt','PTMcode','RegPhos','Combined', 'DEPOD']])]
+    annotation_columns_in_spliced_ptms = [col for col in spliced_ptms.columns if ':' in col]
+    annotation_columns_in_altered_flanks = [col for col in altered_flanks.columns if ':' in col]
     annotation_columns = list(set(annotation_columns_in_spliced_ptms).intersection(annotation_columns_in_altered_flanks))
     if len(annotation_columns) != annotation_columns_in_spliced_ptms:
-        print('Some annotations in spliced ptms dataframe not found in altered flanks dataframe. These annotations will be ignored. To avoid this, make sure to add annotations to both dataframes, or annotate the combined dataframe.')
+        annotation_columns_only_in_spliced = list(set(annotation_columns_in_spliced_ptms) - set(annotation_columns_in_altered_flanks))
+        annotation_columns_only_in_altered = list(set(annotation_columns_in_altered_flanks) - set(annotation_columns_in_spliced_ptms))
+        if len(annotation_columns_only_in_spliced) > 0:
+            print(f'Warning: some annotations in spliced ptms dataframe not found in altered flanks dataframe: {", ".join(annotation_columns_only_in_spliced)}. These annotations will be ignored. To avoid this, make sure to add annotations to both dataframes, or annotate the combined dataframe.')
+        if len(annotation_columns_only_in_altered) > 0:
+            print(f'Warning: some annotations in altered flanks dataframe not found in spliced ptms dataframe: {", ".join(annotation_columns_only_in_altered)}. These annotations will be ignored. To avoid this, make sure to add annotations to both dataframes, or annotate the combined dataframe.')
 
     #check if dPSI or sig columns are in both dataframes
     sig_cols = []
@@ -123,15 +157,18 @@ def simplify_annotation(annotation, sep = ','):
     return annotation
 
 def collapse_annotations(annotations, database = 'PhosphoSitePlus', annotation_type = 'Function'):
-    sep_dict = {'PhosphoSitePlus':{'Function':',', 'Process':',','Interactions':'(', 'Disease':'->'}, 'ELM': {'Interactions': ' ', 'Motif Match': ' '}, 'PTMInt':{'Interactions':'->'}, 'PTMcode':{'Interactions':'_', 'Intraprotein':' '}, 'RegPhos':{'Kinase':' '}, 'DEPOD':{'Phosphatase':' '}, 'Combined':{'Kinase':' ', 'Interactions':'->'}, 'PTMsigDB': {'WikiPathway':'->', 'NetPath':'->','mSigDB':'->', 'Perturbation (DIA2)':'->', 'Perturbation (DIA)': '->', 'Perturbation (PRM)':'->','Kinase':'->'}}
-                
-    sep = sep_dict[database][annotation_type]
-    collapsed = []
-    for annot in annotations:
-        if annot == annot:
-            collapsed.append(simplify_annotation(annot, sep = sep))
-        else:
-            collapsed.append(annot)
+    sep_dict = {'PhosphoSitePlus':{'Function':',', 'Process':',','Interactions':'(', 'Disease':'->', 'Perturbation':'->'}, 'ELM': {'Interactions': ' ', 'Motif Match': ' '}, 'PTMInt':{'Interactions':'->'}, 'PTMcode':{'Interactions':'_', 'Intraprotein':' '}, 'RegPhos':{'Kinase':' '}, 'DEPOD':{'Phosphatase':' '}, 'Combined':{'Kinase':' ', 'Interactions':'->'}, 'PTMsigDB': {'WikiPathway':'->', 'NetPath':'->','mSigDB':'->', 'Perturbation (DIA2)':'->', 'Perturbation (DIA)': '->', 'Perturbation (PRM)':'->','Kinase':'->'}}
+    
+    if annotation_type == 'Kinase' and database != 'PTMsigDB':
+        collapsed = annotations
+    else:
+        sep = sep_dict[database][annotation_type]
+        collapsed = []
+        for annot in annotations:
+            if annot == annot:
+                collapsed.append(simplify_annotation(annot, sep = sep))
+            else:
+                collapsed.append(annot)
     return collapsed
 
 
@@ -147,7 +184,7 @@ def get_modification_class_data(spliced_ptms, mod_class):
 
     return ptms_of_interest
 
-def get_ptm_annotations(spliced_ptms, annotation_type = 'Function', database = 'PhosphoSitePlus', mod_class = None, collapse_on_similar = False):
+def get_ptm_annotations(spliced_ptms, annotation_type = 'Function', database = 'PhosphoSitePlus', mod_class = None, collapse_on_similar = False, dPSI_col = None, sig_col = None):
     """
     Given spliced ptm information obtained from project and annotate modules, grab PTMs in spliced ptms associated with specific PTM modules
 
@@ -176,9 +213,14 @@ def get_ptm_annotations(spliced_ptms, annotation_type = 'Function', database = '
         ptms_of_interest = spliced_ptms.copy()
 
     #extract relevant annotation and remove PTMs without an annotation
-    optional_cols = [col for col in ptms_of_interest.columns if col in ['Impact', 'dPSI', 'Significance']]
+    optional_cols = [col for col in ptms_of_interest.columns if col in ['Impact', 'dPSI', 'Significance'] or col == dPSI_col or col == sig_col ]
     annotations = ptms_of_interest[['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'] + [annotation_col] + optional_cols].copy()
     annotations = annotations.dropna(subset = annotation_col).drop_duplicates()
+
+    if annotations.empty:
+        print("No PTMs with associated annotation")
+        return None, None
+    
     #combine repeat entries for same PTM (with multiple impacts)
     annotations = annotations.groupby(['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'], as_index = False).agg(lambda x: ';'.join(set([str(i) for i in x if i == i])))
 
@@ -213,41 +255,6 @@ def get_ptm_annotations(spliced_ptms, annotation_type = 'Function', database = '
     annotations = annotations.groupby(['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'], as_index = False).agg(lambda x: ';'.join(set([str(i) for i in x if i == i])))
 
     return annotations, annotation_counts
-
-def plot_annotations(spliced_ptms, database = 'PhosphoSitePlus', annot_type = 'Function', collapse_on_similar = True, colors = None, top_terms = 5, legend = True, leg_loc = (-2.5,-0.6), ax = None):
-    _, annotation_counts = get_ptm_annotations(spliced_ptms, annotation_type = annot_type, database = database, collapse_on_similar = collapse_on_similar)
-    if ax is None:
-        fig, ax = plt.subplots(figsize = (2,3))
-
-    if database == 'PTMcode': #convert to readable gene name
-        annotation_counts.index = [pose_config.uniprot_to_genename[i].split(' ')[0] if i in pose_config.uniprot_to_genename.keys() else i for i in annotation_counts.index]
-
-    if colors is None:
-        colors = ['lightgrey', 'gray', 'white']
-    if isinstance(annotation_counts, pd.Series):
-        annotation_counts = annotation_counts.head(top_terms).sort_values(ascending = True)
-        ax.barh(annotation_counts.index, annotation_counts.values, color = colors[0], edgecolor = 'black')
-    else:
-        annotation_counts = annotation_counts.head(top_terms).sort_values(by = 'All Impacted', ascending = True)
-        ax.barh(annotation_counts['Excluded'].index, annotation_counts['Excluded'].values, height = 1, edgecolor = 'black', color = colors[0])
-        ax.barh(annotation_counts['Included'].index, annotation_counts['Included'].values, left = annotation_counts['Excluded'].values, height = 1, color = colors[1], edgecolor = 'black')
-        ax.barh(annotation_counts['Altered Flank'].index, annotation_counts['Altered Flank'].values, left = annotation_counts['Excluded'].values+annotation_counts['Included'].values, height = 1, color = colors[2], edgecolor = 'black')
-    #ax.set_xticks([0,50,100,150])
-    ax.set_ylabel('', fontsize = 10)
-    ax.set_xlabel('Number of PTMs', fontsize = 10)
-
-    ax.set_title(f'Top {top_terms} {database} {annot_type} Annotations', fontsize = 10, weight = 'bold')
-
-    #label_dict = {'EXONT:Name':'Exon Ontology Term', 'PSP:ON_PROCESS':'Biological Process (PSP)', 'PSP:ON_FUNCTION':'Molecular Function (PSP)', 'Combined:Kinase':'Kinase'}
-    #ax.text(-1*ax.get_xlim()[1]/10, top_terms-0.2, label_dict[term_to_plot], weight = 'bold', ha = 'right', fontsize = 8)
-    x_label_dict = {'Function':'Number of PTMs\nassociated with Function', 'Process':'Number of PTMs\nassociated with Process', 'Disease':'Number of PTMs\nassociated with Disease', 'Kinase':'Number of Phosphosites\ntargeted by Kinase', 'Interactions': 'Number of PTMs\nthat regulate interaction\n with protein','Motif Match':'Number of PTMs\nfound within a\nmotif instance', 'Intraprotein': 'Number of PTMs\nthat are important\for intraprotein\n interactions','Phosphatase':'Number of Phosphosites\ntargeted by Phosphatase'}
-    ax.set_xlabel(x_label_dict[annot_type], fontsize = 8)
-    
-    #make a custom legend
-    if legend:
-        import matplotlib.patches as mpatches
-        handles = [mpatches.Patch(facecolor = colors[0], edgecolor = 'black', label = 'Excluded'), mpatches.Patch(facecolor = colors[1], edgecolor = 'black', label = 'Included'),mpatches.Patch(facecolor = colors[2], edgecolor = 'black', label = 'Altered Flank')]
-        ax.legend(handles = handles, ncol = 1, fontsize = 7, title = 'Type of Impact', title_fontsize = 8)
 
 def get_annotation_categories(spliced_ptms):
     """
@@ -312,11 +319,13 @@ def construct_background(file = None, annotation_type = 'Function', database = '
             ptm_coordinates = annotate.add_PSP_kinase_substrate_data(ptm_coordinates, file = file, report_success=False)
         elif annotation_type == 'Disease':
             ptm_coordinates = annotate.add_PSP_disease_association(ptm_coordinates, file = file, report_success=False)
+        elif annotation_type == 'Perturbation':
+            ptm_coordinates = annotate.add_PTMsigDB_data(ptm_coordinates, file = file, report_success=False)
     if database == 'ELM':
         if annotation_type == 'Interactions':
             ptm_coordinates = annotate.add_ELM_interactions(ptm_coordinates, file = file, report_success = False)
         elif annotation_type == 'Motif Match':
-            ptm_coordinates = annotate.add_ELM_motif_matches(ptm_coordinates, file = file, report_success = False)
+            ptm_coordinates = annotate.add_ELM_matched_motifs(ptm_coordinates, file = file, report_success = False)
     if database == 'PTMInt':
         ptm_coordinates = annotate.add_PTMInt_data(ptm_coordinates, file = file, report_success=False)
     if database == 'PTMcode':
@@ -327,7 +336,7 @@ def construct_background(file = None, annotation_type = 'Function', database = '
     if database == 'RegPhos':
         ptm_coordinates = annotate.add_RegPhos_data(ptm_coordinates, file = file, report_success=False)
     if database == 'DEPOD':
-        ptm_coordinates = annotate.add_DEPOD_data(ptm_coordinates, report_success=False)
+        ptm_coordinates = annotate.add_DEPOD_phosphatase_data(ptm_coordinates, report_success=False)
     if database == 'PTMsigDB':
         ptm_coordinates = annotate.add_PTMsigDB_data(ptm_coordinates, file = file, report_success=False)
     if database == 'Combined':
@@ -367,7 +376,7 @@ def get_enrichment_inputs(spliced_ptms,  annotation_type = 'Function', database 
             background_annotation_count = pose_config.download_background(annotation_type = annotation_type, database = database, mod_class = mod_class, collapsed=collapse_on_similar)
         except:
             if annotation_file is None:
-                raise ValueError('Please provide an annotation file to construct the background data. To avoid having to do this in the future, you can choose to set save_background = True to save the background data to Resource Files in package directory.')
+                print('Note: To avoid having to constructing background each time (which is slower), you can choose to set save_background = True to save the background data to Resource Files in package directory.')
             background_annotation_count = construct_background(file = annotation_file, annotation_type = annotation_type, database = database, collapse_on_similar = collapse_on_similar, save = save_background)
 
         if mod_class is None:
@@ -432,8 +441,9 @@ def get_enrichment_inputs(spliced_ptms,  annotation_type = 'Function', database 
     annotation_details, foreground_annotation_count = get_ptm_annotations(spliced_ptms, annotation_type = annotation_type, database = database, collapse_on_similar=collapse_on_similar)
 
     #process annotation details into usable format
-    if annotation_details.shape[0] == 0:
-        print('No spliced PTMs with an annotation, so could not perform enrichment analysis')
+    if annotation_details is None:
+        print('No PTMs with requested annotation type, so could not perform enrichment analysis')
+        return np.repeat(None, 5)
     else:
         annotation_col = get_annotation_col(spliced_ptms, database = database, annotation_type = annotation_type)
         annotation_details[annotation_col] = annotation_details[annotation_col].str.split(';')
@@ -480,29 +490,31 @@ def annotation_enrichment(spliced_ptms, database = 'PhosphoSitePlus', annotation
     foreground_annotation_count, foreground_size, background_annotations, background_size, annotation_details = get_enrichment_inputs(spliced_ptms, background_type = background_type, annotation_type = annotation_type, database = database, collapse_on_similar = collapse_on_similar, mod_class = mod_class, alpha = alpha, min_dPSI = min_dPSI, annotation_file = annotation_file, save_background = save_background)
     
 
+    if foreground_annotation_count is not None:
+        #iterate through all annotations and calculate enrichment with a hypergeometric test
+        results = pd.DataFrame(columns = ['Fraction Impacted', 'p-value'], index = foreground_annotation_count.index)
+        for i, n in background_annotations.items():
+            #number of PTMs in the foreground with the annotation
+            if i in foreground_annotation_count.index.values:
+                if foreground_annotation_count.shape[1] == 1:
+                    k = foreground_annotation_count.loc[i, 'count']
+                elif foreground_annotation_count.shape[1] > 1:
+                    k = foreground_annotation_count.loc[i, 'All Impacted']
 
-    #iterate through all annotations and calculate enrichment with a hypergeometric test
-    results = pd.DataFrame(columns = ['Fraction Impacted', 'p-value'], index = foreground_annotation_count.index)
-    for i, n in background_annotations.items():
-        #number of PTMs in the foreground with the annotation
-        if i in foreground_annotation_count.index.values:
-            if foreground_annotation_count.shape[1] == 1:
-                k = foreground_annotation_count.loc[i, 'count']
-            elif foreground_annotation_count.shape[1] > 1:
-                k = foreground_annotation_count.loc[i, 'All Impacted']
+                p = stat_utils.getEnrichment(background_size, n, foreground_size, k, fishers = False)
+                results.loc[i, 'Fraction Impacted'] = f"{k}/{n}"
+                results.loc[i, 'p-value'] = p
 
-            p = stat_utils.getEnrichment(background_size, n, foreground_size, k, fishers = False)
-            results.loc[i, 'Fraction Impacted'] = f"{k}/{n}"
-            results.loc[i, 'p-value'] = p
-
-    results = results.sort_values('p-value')
-    results['Adjusted p-value'] = stat_utils.adjustP(results['p-value'].values)
-    results = pd.concat([results, annotation_details], axis = 1)
+        results = results.sort_values('p-value')
+        results['Adjusted p-value'] = stat_utils.adjustP(results['p-value'].values)
+        results = pd.concat([results, annotation_details], axis = 1)
+    else:
+        results = None
 
     return results
 
 
-def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, combined = None, alpha = 0.05, min_dPSI = None, gene_sets = ['KEGG_2021_Human', 'GO_Biological_Process_2023', 'GO_Cellular_Component_2023', 'GO_Molecular_Function_2023','Reactome_2022'], background = None, return_sig_only = True):
+def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, combined = None, alpha = 0.05, min_dPSI = None, gene_sets = ['KEGG_2021_Human', 'GO_Biological_Process_2023', 'GO_Cellular_Component_2023', 'GO_Molecular_Function_2023','Reactome_2022'], background = None, return_sig_only = True, max_retries = 5, delay = 10):
     """
     Given spliced_ptms and/or altered_flanks dataframes (or the dataframes combined from combine_outputs()), perform gene set enrichment analysis using the enrichr API
 
@@ -520,6 +532,10 @@ def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, combined = N
         List of genes to use as background in enrichment analysis. Default is None (all genes in the gene set database will be used).
     return_sig_only: bool
         Whether to return only significantly enriched gene sets. Default is True.
+    max_retries: int
+        Number of times to retry downloading gene set enrichment data from enrichr API. Default is 5.
+    delay: int
+        Number of seconds to wait between retries. Default is 10.
 
     Returns
     -------
@@ -612,7 +628,15 @@ def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, combined = N
 
     
     #perform gene set enrichment analysis and save data
-    enr = gp.enrichr(foreground, background = background, gene_sets = gene_sets, organism='human')
+    for i in range(max_retries):
+        try:
+            enr = gp.enrichr(foreground, background = background, gene_sets = gene_sets, organism='human')
+            break
+        except: 
+            time.sleep(delay)
+    else:
+        raise Exception('Failed to run enrichr analysis after ' + str(max_retries) + ' attempts. Please try again later.')
+    
     results = enr.results.copy()
     results['Type'] = type
 
@@ -626,92 +650,359 @@ def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, combined = N
     else:
         return results
     
+def compare_flanking_sequences(altered_flanks, flank_size = 5):
+    sequence_identity_list = []
+    altered_positions_list = []
+    residue_change_list = []
+    flank_side_list = []
+    for i, row in altered_flanks.iterrows():
+        #if there is sequence info for both and does not introduce stop codons, compare sequence identity
+        if not row['Stop Codon Introduced'] and row['Inclusion Flanking Sequence'] == row['Inclusion Flanking Sequence'] and row['Exclusion Flanking Sequence'] == row['Exclusion Flanking Sequence']:
+            #compare sequence identity
+            sequence_identity = getSequenceIdentity(row['Inclusion Flanking Sequence'], row['Exclusion Flanking Sequence'])
+            #identify where flanking sequence changes
+            altered_positions, residue_change, flank_side = findAlteredPositions(row['Inclusion Flanking Sequence'], row['Exclusion Flanking Sequence'], flank_size = flank_size)
+        else:
+            sequence_identity = np.nan
+            altered_positions = np.nan
+            residue_change = np.nan
+            flank_side = np.nan
 
 
-def kstar_enrichment(spliced_ptms, networks):
-    pass
 
-def get_interaction_network(spliced_ptms, node_type = 'Gene'):
-    if node_type not in ['Gene', 'PTM']:
-        raise ValueError("node_type parameter (which dictates whether to consider interactions at PTM or gene level) can be either Gene or PTM")
-    
-    #extract interaction information in provided data
-    interactions = annotate.combine_interaction_data(spliced_ptms)
-    interactions['Residue'] = interactions['Residue'] + interactions['PTM Position in Canonical Isoform'].astype(int).astype(str)
-    interactions = interactions.drop(columns = ['PTM Position in Canonical Isoform'])
+        #add to lists
+        sequence_identity_list.append(sequence_identity)
+        altered_positions_list.append(altered_positions)
+        residue_change_list.append(residue_change)
+        flank_side_list.append(flank_side)
 
-    #add regulation change information
-    if 'dPSI' in spliced_ptms.columns:
-        interactions['Regulation Change'] = interactions.apply(lambda x: '+' if x['Type'] != 'DISRUPTS' and x['dPSI'] > 0 else '+' if x['Type'] == 'DISRUPTS' and x['dPSI'] < 0 else '-', axis = 1)
-        grouping_cols = ['Residue', 'Type', 'Source', 'dPSI', 'Regulation Change']
-        interactions['dPSI'] = interactions['dPSI'].apply(str)
-    else:
-        grouping_cols = ['Residue', 'Type', 'Source']
+    altered_flanks['Sequence Identity'] = sequence_identity_list
+    altered_flanks['Altered Positions'] = altered_positions_list
+    altered_flanks['Residue Change'] = residue_change_list
+    altered_flanks['Altered Flank Side'] = flank_side_list
+    return altered_flanks
 
-    #extract gene_specific network information
-    if node_type == 'Gene':
-        network_data = interactions.groupby(['Modified Gene', 'Interacting Gene'], as_index = False)[grouping_cols].agg(helpers.join_unique_entries)
-        #generate network with all possible PTM-associated interactions
-        interaction_graph = nx.from_pandas_edgelist(network_data, source = 'Modified Gene', target = 'Interacting Gene')
-    else:
-        interactions['Spliced PTM'] = interactions['Modified Gene'] + '_' + interactions['Residue']
-        network_data = interactions.groupby(['Spliced PTM', 'Interacting Gene'], as_index = False)[grouping_cols].agg(helpers.join_unique_entries)
-        network_data = network_data.drop(columns = ['Residue'])
+
+
+def compare_inclusion_motifs(flanking_sequences, elm_classes = None):
+    """
+    Given a DataFrame containing flanking sequences with changes and a DataFrame containing ELM class information, identify motifs that are found in the inclusion and exclusion events, identifying motifs unique to each case. This does not take into account the position of the motif in the sequence or additional information that might validate any potential interaction (i.e. structural information that would indicate whether the motif is accessible or not). ELM class information can be downloaded from the download page of elm (http://elm.eu.org/elms/elms_index.tsv).
+
+    Parameters
+    ----------
+    flanking_sequences: pandas.DataFrame
+        DataFrame containing flanking sequences with changes, obtained from get_flanking_changes_from_splice_data()
+    elm_classes: pandas.DataFrame
+        DataFrame containing ELM class information (ELMIdentifier, Regex, etc.), downloaded directly from ELM (http://elm.eu.org/elms/elms_index.tsv). Recommended to download this file and input it manually, but will download from ELM otherwise
+
+    Returns
+    -------
+    flanking_sequences: pandas.DataFrame
+        DataFrame containing flanking sequences with changes and motifs found in the inclusion and exclusion events
+
+    """
+    if elm_classes is None:
+        elm_classes = pd.read_csv('http://elm.eu.org/elms/elms_index.tsv', sep = '\t', header = 5)
+
         
-        #generate network with all possible PTM-associated interactions
-        interaction_graph = nx.from_pandas_edgelist(network_data, source = 'Spliced PTM', target = 'Interacting Gene')
 
+    only_in_inclusion = []
+    only_in_exclusion = []
 
-    return interaction_graph, network_data
+    for _, row in flanking_sequences.iterrows():
+        #check if there is a stop codon introduced and both flanking sequences are present
+        if not row['Stop Codon Introduced'] and row['Inclusion Flanking Sequence'] == row['Inclusion Flanking Sequence'] and row['Exclusion Flanking Sequence'] == row['Exclusion Flanking Sequence']:
+            #get elm motifs that match inclusion or Exclusion Flanking Sequences
+            inclusion_matches = find_motifs(row['Inclusion Flanking Sequence'], elm_classes)
+            exclusion_matches = find_motifs(row['Exclusion Flanking Sequence'], elm_classes)
 
+            #get motifs that are unique to each case
+            only_in_inclusion.append(';'.join(set(inclusion_matches) - set(exclusion_matches)))
+            only_in_exclusion.append(';'.join(set(exclusion_matches) - set(inclusion_matches)))
+        else:
+            only_in_inclusion.append(np.nan)
+            only_in_exclusion.append(np.nan)
 
-def get_interaction_stats(interaction_graph):
-    """
-    Given the networkx interaction graph, calculate various network centrality measures to identify the most relevant PTMs or genes in the network
-    """
-    #calculate network centrality measures
-    degree_centrality = nx.degree_centrality(interaction_graph)
-    closeness_centrality = nx.closeness_centrality(interaction_graph)
-    betweenness_centrality = nx.betweenness_centrality(interaction_graph)
-    network_stats = pd.DataFrame({'Degree': dict(interaction_graph.degree()), 'Degree Centrality':degree_centrality, 'Closeness':closeness_centrality,'Betweenness':betweenness_centrality})
-    return network_stats
+    #save data
+    flanking_sequences["Motif only in Inclusion"] = only_in_inclusion
+    flanking_sequences["Motif only in Exclusion"] = only_in_exclusion
+    return flanking_sequences
 
-def get_protein_interaction_network(protein, network_data):
-    protein_network = network_data[network_data['Modified Gene'] == protein]
-    protein_network = protein_network.drop(columns = ['Modified Gene'])
-    protein_network = protein_network.rename(columns = {'Residue': 'Spliced PTMs facilitating Interacting'})
-    return protein_network
+def identify_change_to_specific_motif(altered_flanks, elm_motif_name, elm_classes = None, modification_class = None, residues = None, dPSI_col = None):
+    if 'Altered Positions' not in altered_flanks.columns:
+        altered_flanks = compare_flanking_sequences(altered_flanks)
+    
+    #grab elm motifs that match inclusion or Exclusion Flanking Sequences
+    if 'Motif only in Inclusion' not in altered_flanks.columns:
+        altered_flanks = compare_inclusion_motifs(altered_flanks, elm_classes = elm_classes)
 
-def summarize_protein_network(protein, interaction_graph, network_data, network_stats = None):
-    """
-    Given a protein of interest, summarize the network data for that protein
-    """
-    protein_network = network_data[network_data['Modified Gene'] == protein]
-    increased_interactions = protein_network.loc[protein_network['Regulation Change'] == '+', 'Interacting Gene'].values
-    decreased_interactions = protein_network.loc[protein_network['Regulation Change'] == '-', 'Interacting Gene'].values
-    ambiguous_interactions = protein_network.loc[protein_network['Regulation Change'].str.contains(';'), 'Interacting Gene'].values
+    #grab only needed info
+    motif_data = altered_flanks.dropna(subset = ['Inclusion Flanking Sequence', 'Exclusion Flanking Sequence'], how = 'all').copy()
+    cols_to_keep = ['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class', 'Inclusion Flanking Sequence', 'Exclusion Flanking Sequence', 'Motif only in Inclusion', 'Motif only in Exclusion', 'Altered Positions', 'Residue Change']
+    if dPSI_col is not None:
+        cols_to_keep.append(dPSI_col)
 
-    #print interactions
-    if len(increased_interactions) > 0:
-        print(f'Increased interaction likelihoods: {', '.join(increased_interactions)}')
-    if len(decreased_interactions) > 0:
-        print(f'Decreased interaction likelihoods: {', '.join(decreased_interactions)}')
-    if len(ambiguous_interactions) > 0:
-        print(f'Ambiguous interaction impact: {', '.join(ambiguous_interactions)}')
+    #go through motif data and identify motifs matching elm motif of interest
+    motif_data = motif_data[cols_to_keep]
+    for i, row in motif_data.iterrows():
+        if row['Motif only in Inclusion'] == row['Motif only in Inclusion']:
+            if elm_motif_name in row['Motif only in Inclusion']:
+                motif_data.loc[i, 'Motif only in Inclusion'] = ';'.join([motif for motif in row['Motif only in Inclusion'].split(';') if elm_motif_name in motif])
+            else:
+                motif_data.loc[i, 'Motif only in Inclusion'] = np.nan
 
-    if network_stats is None:
-        network_stats = get_interaction_stats(interaction_graph)
+        if row['Motif only in Exclusion'] == row['Motif only in Exclusion']:
+            if elm_motif_name in row['Motif only in Exclusion']:
+                motif_data.loc[i, 'Motif only in Exclusion'] = ';'.join([motif for motif in row['Motif only in Exclusion'].split(';') if elm_motif_name in motif])
+            else:
+                motif_data.loc[i, 'Motif only in Exclusion'] = np.nan
 
-    network_ranks = network_stats.rank(ascending = False).astype(int)
-    print(f'Number of interactions: {network_stats.loc[protein, "Degree"]} (Rank: {network_ranks.loc[protein, "Degree"]})')
-    print(f'Centrality measures - \t Degree = {network_stats.loc[protein, "Degree Centrality"]} (Rank: {network_ranks.loc[protein, "Degree Centrality"]})')
-    print(f'                      \t Betweenness = {network_stats.loc[protein, "Betweenness"]} (Rank: {network_ranks.loc[protein, "Betweenness"]})')
-    print(f'                      \t Eigenvector = {network_stats.loc[protein, "Eigenvector"]} (Rank: {network_ranks.loc[protein, "Eigenvector"]})')
-    print(f'                      \t Closeness = {network_stats.loc[protein, "Closeness"]} (Rank: {network_ranks.loc[protein, "Closeness"]})')
+    #restrict to events that are specific modification types or residues (for example, SH2 domain motifs should be phosphotyrosine)
+    motif_data = motif_data.dropna(subset = ['Motif only in Inclusion', 'Motif only in Exclusion'], how = 'all')
+    if modification_class is not None:
+        motif_data = motif_data[motif_data['Modification Class'].str.contains(modification_class)]
+
+    if residues is not None and isinstance(residues, str):
+        motif_data = motif_data[motif_data['Residue'] == residues]
+    elif residues is not None and isinstance(residues, list):
+        motif_data = motif_data[motif_data['Residue'].isin(residues)]
+    elif residues is not None:
+        raise ValueError('residues parameter must be a string or list of strings')
+    
+    return motif_data
+
     
 
 
 
+def findAlteredPositions(seq1, seq2, flank_size = 5):
+    """
+    Given two sequences, identify the location of positions that have changed
+
+    Parameters
+    ----------
+    seq1, seq2: str
+        sequences to compare (order does not matter)
+    flank_size: int
+        size of the flanking sequences (default is 5). This is used to make sure the provided sequences are the correct length
+    
+    Returns
+    -------
+    altered_positions: list
+        list of positions that have changed
+    residue_change: list
+        list of residues that have changed associated with that position
+    flank_side: str
+        indicates which side of the flanking sequence the change has occurred (N-term, C-term, or Both)
+    """
+    desired_seq_size = flank_size*2+1
+    altered_positions = []
+    residue_change = []
+    flank_side = []
+    seq_size = len(seq1)
+    flank_size = (seq_size -1)/2
+    if seq_size == len(seq2) and seq_size == desired_seq_size:
+        for i in range(seq_size):
+            if seq1[i] != seq2[i]:
+                altered_positions.append(i-(flank_size))
+                residue_change.append(f'{seq1[i]}->{seq2[i]}')
+        #check to see which side flanking sequence
+        altered_positions = np.array(altered_positions)
+        n_term = any(altered_positions < 0)
+        c_term = any(altered_positions > 0)
+        if n_term and c_term:
+            flank_side = 'Both'
+        elif n_term:
+            flank_side = 'N-term only'
+        elif c_term:
+            flank_side = 'C-term only'
+        else:
+            flank_side = 'Unclear'
+        return altered_positions, residue_change, flank_side
+    else:
+        return np.nan, np.nan, np.nan
+        
+def getSequenceIdentity(seq1, seq2):
+    """
+    Given two flanking sequences, calculate the sequence identity between them using Biopython and parameters definded by Pillman et al. BMC Bioinformatics 2011
+
+    Parameters
+    ----------
+    seq1, seq2: str
+        flanking sequence 
+
+    Returns
+    -------
+    normalized_score: float
+        normalized score of sequence similarity between flanking sequences (calculated similarity/max possible similarity)
+    """
+    #make pairwise aligner object
+    aligner = PairwiseAligner()
+    #set parameters, with match score of 10 and mismatch score of -2
+    aligner.mode = 'global'
+    aligner.match_score = 10
+    aligner.mismatch_score = -2
+    #calculate sequence alignment score between two sequences
+    actual_similarity = aligner.align(seq1, seq2)[0].score
+    #calculate sequence alignment score between the same sequence
+    control_similarity = aligner.align(seq1, seq1)[0].score
+    #normalize score
+    normalized_score = actual_similarity/control_similarity
+    return normalized_score
+
+def find_motifs(seq, elm_classes):
+    """
+    Given a sequence and a dataframe containinn ELM class information, identify motifs that can be found in the provided sequence using the RegEx expression provided by ELM (PTMs not considered). This does not take into account the position of the motif in the sequence or additional information that might validate any potential interaction (i.e. structural information that would indicate whether the motif is accessible or not). ELM class information can be downloaded from the download page of elm (http://elm.eu.org/elms/elms_index.tsv).
+
+    Parameters
+    ----------
+    seq: str
+        sequence to search for motifs
+    elm_classes: pandas.DataFrame
+        DataFrame containing ELM class information (ELMIdentifier, Regex, etc.), downloaded directly from ELM (http://elm.eu.org/elms/elms_index.tsv)
+    """
+    matches = []
+    for j, elm_row in elm_classes.iterrows():
+        reg_ex = elm_row['Regex']
+        if re.search(reg_ex, seq) is not None:
+            matches.append(elm_row['ELMIdentifier'])
+
+    return matches
+    
+
+class protein_interactions:
+    def __init__(self, spliced_ptms):
+        self.spliced_ptms = spliced_ptms
+
+
+    def get_interaction_network(self, node_type = 'Gene'):
+        if node_type not in ['Gene', 'PTM']:
+            raise ValueError("node_type parameter (which dictates whether to consider interactions at PTM or gene level) can be either Gene or PTM")
+        
+        #extract interaction information in provided data
+        interactions = annotate.combine_interaction_data(self.spliced_ptms)
+        interactions['Residue'] = interactions['Residue'] + interactions['PTM Position in Canonical Isoform'].astype(int).astype(str)
+        interactions = interactions.drop(columns = ['PTM Position in Canonical Isoform'])
+
+        #add regulation change information
+        if 'dPSI' in self.spliced_ptms.columns:
+            interactions['Regulation Change'] = interactions.apply(lambda x: '+' if x['Type'] != 'DISRUPTS' and x['dPSI'] > 0 else '+' if x['Type'] == 'DISRUPTS' and x['dPSI'] < 0 else '-', axis = 1)
+            grouping_cols = ['Residue', 'Type', 'Source', 'dPSI', 'Regulation Change']
+            interactions['dPSI'] = interactions['dPSI'].apply(str)
+        else:
+            grouping_cols = ['Residue', 'Type', 'Source']
+
+        #extract gene_specific network information
+        if node_type == 'Gene':
+            network_data = interactions.groupby(['Modified Gene', 'Interacting Gene'], as_index = False)[grouping_cols].agg(helpers.join_unique_entries)
+            #generate network with all possible PTM-associated interactions
+            interaction_graph = nx.from_pandas_edgelist(network_data, source = 'Modified Gene', target = 'Interacting Gene')
+        else:
+            interactions['Spliced PTM'] = interactions['Modified Gene'] + '_' + interactions['Residue']
+            network_data = interactions.groupby(['Spliced PTM', 'Interacting Gene'], as_index = False)[grouping_cols].agg(helpers.join_unique_entries)
+            network_data = network_data.drop(columns = ['Residue'])
+            
+            #generate network with all possible PTM-associated interactions
+            interaction_graph = nx.from_pandas_edgelist(network_data, source = 'Spliced PTM', target = 'Interacting Gene')
+
+        self.network_data = network_data
+        self.interaction_graph = interaction_graph
+
+
+    def get_interaction_stats(self):
+        """
+        Given the networkx interaction graph, calculate various network centrality measures to identify the most relevant PTMs or genes in the network
+        """
+        #calculate network centrality measures
+        degree_centrality = nx.degree_centrality(self.interaction_graph)
+        closeness_centrality = nx.closeness_centrality(self.interaction_graph)
+        betweenness_centrality = nx.betweenness_centrality(self.interaction_graph)
+        network_stats = pd.DataFrame({'Degree': dict(self.interaction_graph.degree()), 'Degree Centrality':degree_centrality, 'Closeness':closeness_centrality,'Betweenness':betweenness_centrality})
+        self.network_stats = network_stats
+
+    def get_protein_interaction_network(self, protein):
+        """
+        Given a specific protein, return the network data for that protein
+
+        Parameters
+        ----------
+        protein: str
+            Gene name of the protein of interest
+
+        Returns
+        -------
+        protein_network: pd.DataFrame
+            Dataframe containing network data for the protein of interest
+        """
+        if not hasattr(self, 'network_data'):
+            self.get_interaction_network()
+
+        if protein not in self.network_data['Modified Gene'].unique():
+            print(f'{protein} is not found in the network data. Please provide a valid gene name.')
+            return None
+        
+        protein_network = self.network_data[self.network_data['Modified Gene'] == protein]
+        protein_network = protein_network.drop(columns = ['Modified Gene'])
+        protein_network = protein_network.rename(columns = {'Residue': 'Spliced PTMs facilitating Interacting'})
+        return protein_network
+
+    def summarize_protein_network(self, protein):
+        """
+        Given a protein of interest, summarize the network data for that protein
+        """
+        if not hasattr(self, 'network_data'):
+            self.get_interaction_network()
+
+        if not hasattr(self, 'network_stats'):
+            self.get_interaction_stats()
+
+        protein_network = self.network_data[self.network_data['Modified Gene'] == protein]
+        increased_interactions = protein_network.loc[protein_network['Regulation Change'] == '+', 'Interacting Gene'].values
+        decreased_interactions = protein_network.loc[protein_network['Regulation Change'] == '-', 'Interacting Gene'].values
+        ambiguous_interactions = protein_network.loc[protein_network['Regulation Change'].str.contains(';'), 'Interacting Gene'].values
+
+        #print interactions
+        if len(increased_interactions) > 0:
+            print(f'Increased interaction likelihoods: {', '.join(increased_interactions)}')
+        if len(decreased_interactions) > 0:
+            print(f'Decreased interaction likelihoods: {', '.join(decreased_interactions)}')
+        if len(ambiguous_interactions) > 0:
+            print(f'Ambiguous interaction impact: {', '.join(ambiguous_interactions)}')
+
+        network_ranks = self.network_stats.rank(ascending = False).astype(int)
+        print(f'Number of interactions: {self.network_stats.loc[protein, "Degree"]} (Rank: {network_ranks.loc[protein, "Degree"]})')
+        print(f'Centrality measures - \t Degree = {self.network_stats.loc[protein, "Degree Centrality"]} (Rank: {network_ranks.loc[protein, "Degree Centrality"]})')
+        print(f'                      \t Betweenness = {self.network_stats.loc[protein, "Betweenness"]} (Rank: {network_ranks.loc[protein, "Betweenness"]})')
+        print(f'                      \t Closeness = {self.network_stats.loc[protein, "Closeness"]} (Rank: {network_ranks.loc[protein, "Closeness"]})')
+
+    def plot_interaction_network(self, modified_color = 'red', modified_node_size = 10, interacting_color = 'lightblue', interacting_node_size = 1, edgecolor = 'gray', seed = 200, ax = None, proteins_to_label = None, labelcolor = 'black'):
+        """
+        Given the interactiong graph and network data outputted from analyze.get_interaction_network, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs. by default, will only label proteins 
+
+        Parameters
+        ----------
+        interaction_graph: nx.Graph
+            NetworkX graph object representing the interaction network, created from analyze.get_interaction_network
+        network_data: pd.DataFrame
+            Dataframe containing details about specifici protein interactions (including which protein contains the spliced PTMs)
+        network_stats: pd.DataFrame
+            Dataframe containing network statistics for each protein in the interaction network, obtained from analyze.get_interaction_stats(). Default is None, which will not label any proteins in the network.
+        """
+        if not hasattr(self, 'interaction_graph'):
+            self.get_interaction_network()
+
+        if not hasattr(self, 'network_stats'):
+            self.get_interaction_stats()
+
+        pose_plots.plot_interaction_network(self.interaction_graph, self.network_data, self.network_stats, modified_color = modified_color, modified_node_size = modified_node_size, interacting_color = interacting_color, interacting_node_size = interacting_node_size, edgecolor = edgecolor, seed = seed, ax = ax, proteins_to_label = proteins_to_label, labelcolor = labelcolor)
+
+    def plot_network_centrality(self,  centrality_measure = 'Degree', top_N = 10, modified_color = 'red', interacting_color = 'black', ax = None):
+        if not hasattr(self, 'interaction_graph'):
+            self.get_interaction_network()
+        if not hasattr(self, 'network_stats'):
+            self.get_interaction_stats()
+
+        pose_plots.plot_network_centrality(self.network_stats, self.network_data, centrality_measure=centrality_measure,top_N = top_N, modified_color = modified_color, interacting_color = interacting_color, ax = ax)
 
 def edit_sequence_for_kinase_library(seq):
     """
@@ -725,119 +1016,313 @@ def edit_sequence_for_kinase_library(seq):
         return np.nan
     return seq
 
-def process_data_for_kinase_library(altered_flanks, odir):
-    """
-    Extract flanking sequence information for 
-    """
-    #restrict to events with changed flanking sequences, no introduced stop codons, and phosphorylation modifications
-    flank_data = altered_flanks[~altered_flanks['Matched']] 
-    flank_data = flank_data[~flank_data['Stop Codon Introduced']]
-    flank_data = flank_data[flank_data['Modification Class'].str.contains('Phosphorylation')]
 
-    #generate files to input into Kinase Library (inclusion first then exclusion)
-    inclusion_sequences = flank_data[['PTM', 'Inclusion Flanking Sequence']].drop_duplicates()
-    inclusion_sequences['Inclusion Flanking Sequence'] = inclusion_sequences['Inclusion Flanking Sequence'].apply(edit_sequence_for_kinase_library)
-    inclusion_sequences = inclusion_sequences.dropna(subset = 'Inclusion Flanking Sequence')
-    #write sequences to text file
-    with open(odir + 'inclusion_sequences_input.txt', 'w') as f:
-        for _, row in inclusion_sequences.iterrows():
-            f.write(row['Inclusion Flanking Sequence']+'\n')
+class KL_flank_analysis:
+    def __init__(self, altered_flanks, odir):
+        self.altered_flanks = altered_flanks
+        self.odir = odir
 
-    exclusion_sequences = flank_data[['PTM', 'Exclusion Flanking Sequence']].drop_duplicates()
-    exclusion_sequences['Exclusion Flanking Sequence'] = exclusion_sequences['Exclusion Flanking Sequence'].apply(edit_sequence_for_kinase_library)
-    exclusion_sequences = exclusion_sequences.dropna(subset = 'Exclusion Flanking Sequence')
-    #write sequences to text file
-    with open(odir + 'exclusion_sequences_input.txt', 'w') as f:
-        for _, row in exclusion_sequences.iterrows():
-            f.write(row['Exclusion Flanking Sequence']+'\n')
-
-
-def process_kinase_library_output(altered_flanks, scores, flanking_sequence_col = 'Inclusion Flanking Sequence'):
-    """
-    Process output from Kinase Library to connect kinase library scores back to the PTMs in the altered flanks dataframe
-
-    Parameters
-    ----------
-    altered_flanks: pd.DataFrame
-        Dataframe with PTMs associated with altered flanking sequences
-    scores: pd.DataFrame
-        Dataframe with kinase library scores for flanking sequences (loaded from downloaded .tsv outputs from kinase library)
-    flanking_sequence_col: str
-        Column in altered_flanks dataframe that contains the flanking sequence to match with the kinase library scores. Default is 'Inclusion Flanking Sequence'. Can also be 'Exclusion Flanking Sequence'
-
-    Returns
-    -------
-    percentiles_y: pd.DataFrame
-        Dataframe with kinase library scores for tyrosine sites
-    percentiles_st: pd.DataFrame
-        Dataframe with kinase library scores for serine/threonine sites
-
-    """
-    #restrict to events with changed flanking sequences, no introduced stop codons, and phosphorylation modifications
-    flank_data = altered_flanks[~altered_flanks['Matched']] 
-    flank_data = flank_data[~flank_data['Stop Codon Introduced']]
-    flank_data = flank_data[flank_data['Modification Class'].str.contains('Phosphorylation')]
+    def identify_sequences_of_interest(self):
+        self.sequences_of_interest = self.altered_flanks[(~self.altered_flanks['Matched']) & (~self.altered_flanks['Stop Codon Introduced']) & (self.altered_flanks['Modification Class'].str.contains('Phosphorylation'))].copy() 
 
     
-    sequences = flank_data[['Region ID','PTM',  flanking_sequence_col]].drop_duplicates()
-    sequences = sequences.dropna(subset =  flanking_sequence_col)
-    sequences['Label'] = sequences['Region ID'] + ';' + sequences['PTM']
-    sequences[flanking_sequence_col] = sequences[ flanking_sequence_col].apply(lambda x: x.upper().replace(' ', '_')+'_')
+    def process_data_for_kinase_library(self):
+        """
+        Extract flanking sequence information for 
+        """
+        #restrict to events with changed flanking sequences, no introduced stop codons, and phosphorylation modifications
+        if not hasattr(self, 'sequences_of_interest'):
+            self.identify_sequences_of_interest()
 
-    sequences = sequences.merge(scores, left_on = 'Exclusion Flanking Sequence', right_on = 'sequence', how = 'left')
-    #split info into tyrosine vs. serine/threonine
-    sequences_y = sequences[sequences['Label'].str.contains('_Y')]
-    sequences_st = sequences[(sequences['Label'].str.contains('_S')) | (sequences['Label'].str.contains('_T'))]
+        #generate files to input into Kinase Library (inclusion first then exclusion)
+        inclusion_sequences = self.sequences_of_interest[['PTM', 'Inclusion Flanking Sequence']].drop_duplicates()
+        inclusion_sequences['Inclusion Flanking Sequence'] = inclusion_sequences['Inclusion Flanking Sequence'].apply(edit_sequence_for_kinase_library)
+        inclusion_sequences = inclusion_sequences.dropna(subset = 'Inclusion Flanking Sequence')
+        #write sequences to text file
+        with open(self.odir + 'inclusion_sequences_input.txt', 'w') as f:
+            for _, row in inclusion_sequences.iterrows():
+                f.write(row['Inclusion Flanking Sequence']+'\n')
 
-    #pivot table to get scores for each kinase
-    percentiles_y = sequences_y.pivot_table(index = 'Label', columns = 'kinase', values = 'site_percentile')
-    percentiles_st = sequences_st.pivot_table(index = 'Label', columns = 'kinase', values = 'site_percentile')
+        exclusion_sequences = self.sequences_of_interest[['PTM', 'Exclusion Flanking Sequence']].drop_duplicates()
+        exclusion_sequences['Exclusion Flanking Sequence'] = exclusion_sequences['Exclusion Flanking Sequence'].apply(edit_sequence_for_kinase_library)
+        exclusion_sequences = exclusion_sequences.dropna(subset = 'Exclusion Flanking Sequence')
+        #write sequences to text file
+        with open(self.odir + 'exclusion_sequences_input.txt', 'w') as f:
+            for _, row in exclusion_sequences.iterrows():
+                f.write(row['Exclusion Flanking Sequence']+'\n')
 
-    return percentiles_y, percentiles_st
+        print('Input files for Kinase Library generated. Please run upload the file to the "score sites" tab of Kinase Library (https://kinase-library.mit.edu/sites) and download the full results.')
 
-def get_kinase_library_differences(altered_flanks, inclusion_scores, exclusion_scores):
-    """
-    Given altered flanking sequences and kinase library scores for inclusion and exclusion flanking sequences, calculate the difference in kinase library site percentiles between the two
+    def format_sequences_to_match_output(self, sequence_type = 'Inclusion'):
+        if not hasattr(self, 'sequences_of_interest'):
+            self.identify_sequences_of_interest()
 
-    Parameters
-    ----------
-    altered_flanks: pd.DataFrame
-        Dataframe with PTMs associated with altered flanking sequences
-    inclusion_scores: pd.DataFrame
-        Dataframe with kinase library scores for inclusion flanking sequences (loaded from downloaded .tsv outputs from kinase library)
-    exclusion_scores: pd.DataFrame
-        Dataframe with kinase library scores for exclusion flanking sequences (loaded from downloaded .tsv outputs from kinase library)
+        sequences = self.sequences_of_interest[['Region ID','PTM', f'{sequence_type} Flanking Sequence']].drop_duplicates().copy()
+        sequences = sequences.dropna(subset = 'Inclusion Flanking Sequence')
+        sequences['Label'] = sequences['Region ID'] + ';' + sequences['PTM']
+        sequences[f'{sequence_type} Flanking Sequence'] = sequences[f'{sequence_type} Flanking Sequence'].apply(lambda x: x.upper().replace(' ', '_')+'_')
+        return sequences
+
+    def process_kinase_library_output(self, scores, sequence_type = 'Inclusion'):
+        """
+        Process output from Kinase Library to connect kinase library scores back to the PTMs in the altered flanks dataframe
+
+        Parameters
+        ----------
+        altered_flanks: pd.DataFrame
+            Dataframe with PTMs associated with altered flanking sequences
+        scores: pd.DataFrame
+            Dataframe with kinase library scores for flanking sequences (loaded from downloaded .tsv outputs from kinase library)
+        flanking_sequence_col: str
+            Column in altered_flanks dataframe that contains the flanking sequence to match with the kinase library scores. Default is 'Inclusion Flanking Sequence'. Can also be 'Exclusion Flanking Sequence'
+
+        Returns
+        -------
+        percentiles_y: pd.DataFrame
+            Dataframe with kinase library scores for tyrosine sites
+        percentiles_st: pd.DataFrame
+            Dataframe with kinase library scores for serine/threonine sites
+
+        """
+        #restrict to events with changed flanking sequences, no introduced stop codons, and phosphorylation modifications
+        if not hasattr(self, 'sequences_of_interest'):
+            self.identify_sequences_of_interest()
+
+        sequences = self.format_sequences_to_match_output(sequence_type = sequence_type)
+
+
+        sequences = sequences.merge(scores, left_on = f'{sequence_type} Flanking Sequence', right_on = 'sequence', how = 'left')
+        #split info into tyrosine vs. serine/threonine
+        sequences_y = sequences[sequences['Label'].str.contains('_Y')]
+        sequences_st = sequences[(sequences['Label'].str.contains('_S')) | (sequences['Label'].str.contains('_T'))]
+
+        #pivot table to get scores for each kinase
+        percentiles_y = sequences_y.pivot_table(index = 'Label', columns = 'kinase', values = 'site_percentile')
+        percentiles_st = sequences_st.pivot_table(index = 'Label', columns = 'kinase', values = 'site_percentile')
+
+        return percentiles_y, percentiles_st
+
+    def get_kinase_library_differences(self, inclusion_scores_file, exclusion_scores_file):
+        """
+        Given altered flanking sequences and kinase library scores for inclusion and Exclusion Flanking Sequences, calculate the difference in kinase library site percentiles between the two
+
+        Parameters
+        ----------
+        altered_flanks: pd.DataFrame
+            Dataframe with PTMs associated with altered flanking sequences
+        inclusion_scores: pd.DataFrame
+            Dataframe with kinase library scores for Inclusion Flanking Sequences (loaded from downloaded .tsv outputs from kinase library)
+        exclusion_scores: pd.DataFrame
+            Dataframe with kinase library scores for Exclusion Flanking Sequences (loaded from downloaded .tsv outputs from kinase library)
+        
+        Returns
+        -------
+        percentiles_diff_y: pd.DataFrame
+            Dataframe with the difference in kinase library scores for tyrosine sites
+        percentiles_diff_st: pd.DataFrame
+            Dataframe with the difference in kinase library scores for serine/threonine sites
+        """
+        inclusion_scores = pd.read_csv(inclusion_scores_file, sep = '\t')
+        inclusion_percentiles_y, inclusion_percentiles_st = self.process_kinase_library_output(inclusion_scores, sequence_type = 'Inclusion')
+        exclusion_scores = pd.read_csv(exclusion_scores_file, sep = '\t')
+        exclusion_percentiles_y, exclusion_percentiles_st = self.process_kinase_library_output(exclusion_scores, sequence_type = 'Exclusion')
+
+        #calculate the difference in percentiles
+        labels= list(set(inclusion_percentiles_y.index).intersection(exclusion_percentiles_y.index))
+        percentiles_diff_y = inclusion_percentiles_y.loc[labels].copy()
+        percentiles_diff_y = percentiles_diff_y[exclusion_percentiles_y.columns]
+        for i, row in percentiles_diff_y.iterrows():
+            percentiles_diff_y.loc[i] = row - exclusion_percentiles_y.loc[i]
+
+        labels= list(set(inclusion_percentiles_st.index).intersection(exclusion_percentiles_st.index))
+        percentiles_diff_st = inclusion_percentiles_st.loc[labels].copy()
+        percentiles_diff_st = percentiles_diff_st[exclusion_percentiles_st.columns]
+        for i, row in percentiles_diff_st.iterrows():
+            percentiles_diff_st.loc[i] = row - exclusion_percentiles_st.loc[i]
+
+        #save all data
+        self.inclusion_percentiles = {}
+        self.inclusion_percentiles['Y'] = inclusion_percentiles_y
+        self.inclusion_percentiles['ST'] = inclusion_percentiles_st
+
+        self.exclusion_percentiles = {}
+        self.exclusion_percentiles['Y'] = exclusion_percentiles_y
+        self.exclusion_percentiles['ST'] = exclusion_percentiles_st
+
+        self.percentile_difference = {}
+        self.percentile_difference['Y'] = percentiles_diff_y
+        self.percentile_difference['ST'] = percentiles_diff_st
+
     
-    Returns
-    -------
-    percentiles_diff_y: pd.DataFrame
-        Dataframe with the difference in kinase library scores for tyrosine sites
-    percentiles_diff_st: pd.DataFrame
-        Dataframe with the difference in kinase library scores for serine/threonine sites
-    """
-    inclusion_percentiles_y, inclusion_percentiles_st = process_kinase_library_output(altered_flanks, inclusion_scores, flanking_sequence_col = 'Inclusion Flanking Sequence')
-    exclusion_percentiles_y, exclusion_percentiles_st = process_kinase_library_output(altered_flanks, exclusion_scores, flanking_sequence_col = 'Exclusion Flanking Sequence')
+#def process_data_for_exon_ontology(odir, spliced_ptms = None, altered_flanks = None):
+#    pass
 
-    #calculate the difference in percentiles
-    labels= list(set(inclusion_percentiles_y.index).intersection(exclusion_percentiles_y.index))
-    percentiles_diff_y = inclusion_percentiles_y.loc[labels].copy()
-    percentiles_diff_y = percentiles_diff_y[exclusion_percentiles_y.columns]
-    for i, row in percentiles_diff_y.iterrows():
-        percentiles_diff_y.loc[i] = row - exclusion_percentiles_y.loc[i]
 
-    labels= list(set(inclusion_percentiles_st.index).intersection(exclusion_percentiles_st.index))
-    percentiles_diff_st = inclusion_percentiles_st.loc[labels].copy()
-    percentiles_diff_st = percentiles_diff_st[exclusion_percentiles_st.columns]
-    for i, row in percentiles_diff_st.iterrows():
-        percentiles_diff_st.loc[i] = row - exclusion_percentiles_st.loc[i]
 
-    return percentiles_diff_y, percentiles_diff_st
     
-def process_data_for_exon_ontology(odir, spliced_ptms = None, altered_flanks = None):
-    pass
 
+class kstar_enrichment:
+    def __init__(self, significant_ptms, network_dir, background_ptms = None, phospho_type = 'Y'):
+        """
+        Given spliced ptm or PTMs with altered flanks and a single kstar network, get enrichment for each kinase in the network using a hypergeometric. Assumes the  data has already been reduced to the modification of interest (phosphotyrosine or phoshoserine/threonine)
 
+        Parameters
+        ----------
+        network_dir : dict
+            dictionary of networks with kinase-substrate information
+        spliced_ptms : pandas dataframe
+            all PTMs of interest
+        background_ptms: pd.DataFrame
+            PTMs to consider as the background for enrichment purposes, which should overlap with the spliced ptms information provided (an example might be all identified events, whether or not they are significant). If not provided, will use all ptms in the phosphoproteome.
+        phospho_type : str 
+            type of phosphorylation event to extract. Can either by phosphotyrosine ('Y') or phosphoserine/threonine ('ST'). Default is 'Y'.
 
+        """
+        #process ptms to only include specific phosphorylation data needed
+        self.significant_ptms = self.process_ptms(significant_ptms, phospho_type = phospho_type)
+        if background_ptms is not None:
+            self.background_ptms = self.process_ptms(background_ptms, phospho_type=phospho_type)
+        else:
+            background_ptms = pose_config.ptm_coordinates.copy()
+            self.background_ptms = self.process_ptms(background_ptms, phospho_type = phospho_type)
+
+        #check if file exists and whether a pickle has been generated: if not, load each network file individually
+        if not os.path.exists(network_dir):
+            raise ValueError('Network directory not found')
+        elif os.path.exists(f"{network_dir}/*.p"):
+            networks = pickle.load(open(f"{network_dir}/network_{phospho_type}.p", "rb" ) )
+        else:
+            network_directory = network_dir + f'/{phospho_type}/INDIVIDUAL_NETWORKS/'
+            networks = {}
+            for file in os.listdir(network_directory):
+                if file.endswith('.tsv'):
+                    #get the value of the network number
+                    file_noext = file.strip(".tsv").split('_')
+                    key_name = 'nkin'+str(file_noext[1])
+                    #print("Debug: key name is %s"%(key_name))
+                    networks[key_name] = pd.read_csv(f"{network_directory}{file}", sep='\t')
+
+        #save info
+        self.networks = networks
+        self.phospho_type = phospho_type
+        self.median_enrichment = None
+
+    def process_ptms(self, ptms, phospho_type = 'Y'):
+        """
+        Given ptm information, restrict data to include only the phosphorylation type of interest and add a PTM column for matching information from KSTAR
+
+        Parameters
+        ----------
+        ptms: pd.DataFrame
+            ptm information containing modification type and ptm locatin information, such as the output from projection or altered flanking sequence analysis
+        phospho_type: str
+            type of phosphorylation event to extract. Can either by phosphotyrosine ('Y') or phosphoserine/threonine ('ST')
+        
+        Returns
+        ptms: pd.DataFrame
+            trimmed dataframe containing only modifications of interest and new 'PTM' column
+        """
+
+        #restrict to ptms to phosphorylation type of interest
+        if phospho_type == 'Y':
+            ptms = ptms[ptms['Modification'].str.contains('Phosphotyrosine')].copy()
+        elif phospho_type == 'ST':
+            ptms = ptms[(ptms["Modification"].str.contains('Phosphoserine')) | (ptms['Modification'].str.contains('Phosphothreonine'))].copy()
+
+        #construct PTM column that matches KSTAR information
+        ptms['PTM'] = ptms['UniProtKB Accession'] + '_' + ptms['Residue'] + ptms['PTM Position in Canonical Isoform'].astype(int).astype(str)
+
+        #filter out any PTMs that come from alternative isoforms
+        ptms = ptms[~ptms['UniProtKB Accession'].str.contains('-')]
+        return ptms
+
+    
+    def get_enrichment_single_network(self, network_key):
+        """
+        in progress
+        """
+        network = self.networks[network_key]
+        network['PTM'] = network['KSTAR_ACCESSION'] + '_' + network['KSTAR_SITE']
+
+        #add network information to all significant data
+        sig_ptms = self.significant_ptms[['PTM']].drop_duplicates()
+        sig_ptms_kstar = sig_ptms.merge(network[['KSTAR_KINASE','PTM']], on = 'PTM')
+
+        #repeat for background data
+        bg_ptms = self.background_ptms[['PTM']].drop_duplicates()
+        bg_ptms_kstar = bg_ptms.merge(network[['KSTAR_KINASE','PTM']], on = 'PTM')
+
+        results = pd.DataFrame(np.nan, index = sig_ptms_kstar['KSTAR_KINASE'].unique(), columns = ['k','n','M','N','p'])
+        for kinase in sig_ptms_kstar['KSTAR_KINASE'].unique():
+            #get numbers for a hypergeometric test to look for enrichment of kinase substrates
+            k = sig_ptms_kstar.loc[sig_ptms_kstar['KSTAR_KINASE'] == kinase, 'PTM'].nunique()
+            n = bg_ptms_kstar.loc[bg_ptms_kstar['KSTAR_KINASE'] == kinase, 'PTM'].nunique()
+            M = bg_ptms['PTM'].nunique()
+            N = sig_ptms_kstar['PTM'].nunique()
+
+            #run hypergeometric test
+            results.loc[kinase,'p'] = stat_utils.hypergeom(M,n,N,k)
+            results.loc[kinase, 'M'] = M
+            results.loc[kinase, 'N'] = N
+            results.loc[kinase, 'k'] = k
+            results.loc[kinase, 'n'] = n
+
+        return results
+    
+    def get_enrichment_all_networks(self):
+        """
+        Given prostate data and a dictionary of kstar networks, get enrichment for each kinase in each network in the prostate data. Assumes the prostate data has already been reduced to the modification of interest (phosphotyrosine or phoshoserine/threonine)
+
+        Parameters
+        ----------
+        networks : dict
+            dictionary of kstar networks
+        prostate : pandas dataframe
+            all PTMs identified in tCGA prostate data, regardless of significance (reduced to only include mods of interest)
+        sig_prostate : pandas dataframe
+            significant PTMs identified in tCGA prostate data, p < 0.05 and effect size > 0.25 (reduced to only include mods of interest)
+        """
+        results = {}
+        for network in self.networks:
+            results[network] = self.get_enrichment_single_network(network_key=network)
+        return results
+
+    def extract_enrichment(self, results):
+        """
+        Given a dictionary of results from get_enrichment_all_networks, extract the p-values for each network and kinase, and then calculate the median p-value across all networks for each kinase
+
+        Parameters
+        ----------
+        results : dict
+            dictionary of results from get_enrichment_all_networks
+        """
+        enrichment = pd.DataFrame(index = results['nkin0'].index, columns = results.keys())
+        for network in results:
+            enrichment[network] = results[network]['p']
+        enrichment['median'] = enrichment.median(axis = 1)
+        return enrichment
+    
+    def run_kstar_enrichment(self):
+        """
+        Run full kstar analysis to generate substrate enrichment across each of the 50 KSTAR networks and calculate the median p-value for each kinase across all networks
+        """
+        results = self.get_enrichment_all_networks()
+        enrichment = self.extract_enrichment(results)
+        self.enrichment_all = enrichment
+        self.median_enrichment = enrichment['median']
+
+    def return_enriched_kinases(self, alpha = 0.05):
+        """
+        Return kinases with a median p-value less than the provided alpha value (substrates are enriched among the significant PTMs)
+
+        Parameters
+        ----------
+        alpha : float
+            significance threshold to use to subset kinases. Default is 0.05.
+        """
+        if self.median_enrichment is None:
+            self.run_kstar_enrichment()
+        return self.median_enrichment[self.median_enrichment < alpha].index.values
     
 
 

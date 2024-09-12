@@ -7,9 +7,64 @@ import seaborn as sns
 import networkx as nx
 
 from ptm_pose import analyze, pose_config
+from ptm_pose import flanking_sequences as fs
 
 
-def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize = (5, 5)):
+def modification_breakdown(spliced_ptms = None, altered_flanks = None, colors = sns.color_palette('colorblind'), ax = None):
+    """
+    Plot the number of PTMs that are differentially included or have altered flanking sequences, separated by PTM type
+
+    Parameters
+    ----------
+    spliced_ptms: pd.DataFrame
+        Dataframe with PTMs that are differentially included
+    altered_flanks: pd.DataFrame
+        Dataframe with PTMs that have altered flanking sequences
+    colors: list
+        List of colors to use for the bar plot (first two will be used). Default is seaborn colorblind palette.
+    ax: matplotlib.Axes
+        Axis to plot on. If None, will create new figure. Default is None.
+    """
+    if spliced_ptms is None and altered_flanks is None:
+        raise ValueError('Either spliced_ptms or altered_flanks must be provided to plot modification breakdown. Both may be provided.')
+    
+    if ax is None:
+        fig, ax = plt.subplots(figsize = (4,4))
+
+    #separate rows into unique PTM types
+    if spliced_ptms is not None and altered_flanks is not None:
+        differentially_included_counts = analyze.get_modification_counts(spliced_ptms.copy())
+        altered_flanks_counts = analyze.get_modification_counts(altered_flanks.copy())
+        ax.barh(differentially_included_counts.index, differentially_included_counts.values, color = colors[0], label = 'Differentially Included PTMs')
+        altered_flanks_counts = altered_flanks_counts.reindex(differentially_included_counts.index, fill_value = 0)
+        ax.barh(altered_flanks_counts.index, altered_flanks_counts.values, left = differentially_included_counts.values, color = colors[1], label = 'PTMs with Altered Flank')
+        ax.legend()
+
+        #annotate with number of combined PTMs
+        total_count = differentially_included_counts.add(altered_flanks_counts, fill_value = 0)
+        for i, num_ptm in enumerate(total_count.values):
+            ax.text(num_ptm, i, str(num_ptm), ha = 'left', va = 'center')  
+
+        ax.set_xlim([0, total_count.max()*1.1])
+
+    elif spliced_ptms is not None:
+        modification_counts = analyze.get_modification_counts(spliced_ptms)
+        ax.barh(modification_counts.index, modification_counts.values, color = colors[0])
+
+        #annotate with number of PTMs
+        for i, num_ptm in enumerate(modification_counts.values):
+            ax.text(num_ptm, i, str(num_ptm), ha = 'left', va = 'center')
+    elif altered_flanks is not None:
+        modification_counts = analyze.get_modification_counts(altered_flanks)
+        ax.barh(modification_counts.index, modification_counts.values, color = colors[0])
+
+        #annotate with number of PTMs
+        for i, num_ptm in enumerate(modification_counts.values):
+            ax.text(num_ptm, i, str(num_ptm), ha = 'left', va = 'center')
+
+    ax.set_xlabel('Number of PTMs')
+
+def show_available_annotations(spliced_ptms, show_all_ptm_count = True, ax = None):
     """
     Given a dataframe with ptm annotations added, show the number of PTMs associated with each annotation type
 
@@ -19,13 +74,12 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize 
         Dataframe with PTMs and annotations added
     show_all_ptm_count: bool
         Whether to show the total number of PTMs in the dataset. Default is True.
-    figsize: tuple
-        Size of the figure. Default is (5, 5).
-    
-    Outputs
-    -------
-    bar plot showing the number of PTMs associated with each annotation type
+    ax: matplotlib.Axes
+        Axis to plot on. If None, will create new figure. Default is None.
     """
+    if ax is None:
+        fig, ax = plt.subplots(figsize = (5,5))
+
     if show_all_ptm_count:
         num_ptms = [spliced_ptms.drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0]]
         num_ptms_filters = ['All PTMs']
@@ -50,7 +104,7 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize 
     colors = []
     for source in filter_source:
         colors.append(palette[source])
-    fig, ax = plt.subplots(figsize = figsize)
+
     ax.barh(num_ptms_filters[::-1], num_ptms[::-1], color = colors[::-1])
     ax.set_xlabel('Number of PTMs with annotation')
     
@@ -64,7 +118,7 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, figsize 
     ax.legend(handles, labels, title = 'Annotation Source')
     plt.show()
 
-def plot_annotations(spliced_ptms, database = 'PhosphoSitePlus', annot_type = 'Function', collapse_on_similar = True, colors = None, top_terms = 5, legend = True, leg_loc = (-2.5,-0.6), ax = None):
+def plot_annotations(spliced_ptms, database = 'PhosphoSitePlus', annot_type = 'Function', collapse_on_similar = True, colors = None, top_terms = 5, legend = True, ax = None, title_type = 'database'):
     """
     Given a dataframe with PTM annotations added, plot the top annotations associated with the PTMs
 
@@ -84,13 +138,16 @@ def plot_annotations(spliced_ptms, database = 'PhosphoSitePlus', annot_type = 'F
         Number of top terms to plot. Default is 5.
     legend: bool
         Whether to show the legend. Default is True.
-    leg_loc: tuple
-        Location of the legend. Default is (-2.5,-0.6).
     ax: matplotlib.Axes
         Axis to plot on. If None, will create new figure. Default is None.
-
+    title_type: str
+        Type of title to use for the plot. Default is 'database'. Options include 'database' and 'detailed'.
     """
     _, annotation_counts = analyze.get_ptm_annotations(spliced_ptms, annotation_type = annot_type, database = database, collapse_on_similar = collapse_on_similar)
+    if annotation_counts is None:
+        return None
+
+
     if ax is None:
         fig, ax = plt.subplots(figsize = (2,3))
 
@@ -99,9 +156,14 @@ def plot_annotations(spliced_ptms, database = 'PhosphoSitePlus', annot_type = 'F
 
     if colors is None:
         colors = ['lightgrey', 'gray', 'white']
+
     if isinstance(annotation_counts, pd.Series):
         annotation_counts = annotation_counts.head(top_terms).sort_values(ascending = True)
-        ax.barh(annotation_counts.index, annotation_counts.values, color = colors[0], edgecolor = 'black')
+        if isinstance(colors, list) or isinstance(colors, np.ndarray):
+            colors = colors[0]
+        
+        ax.barh(annotation_counts.index, annotation_counts.values, color = colors, edgecolor = 'black')
+        legend = False
     else:
         annotation_counts = annotation_counts.head(top_terms).sort_values(by = 'All Impacted', ascending = True)
         ax.barh(annotation_counts['Excluded'].index, annotation_counts['Excluded'].values, height = 1, edgecolor = 'black', color = colors[0])
@@ -111,11 +173,14 @@ def plot_annotations(spliced_ptms, database = 'PhosphoSitePlus', annot_type = 'F
     ax.set_ylabel('', fontsize = 10)
     ax.set_xlabel('Number of PTMs', fontsize = 10)
 
-    ax.set_title(f'Top {top_terms} {database} {annot_type} Annotations', fontsize = 10, weight = 'bold')
+    if title_type == 'detailed':
+        ax.set_title(f'Top {top_terms} {database} {annot_type} Annotations', fontsize = 10, weight = 'bold')
+    elif title_type == 'database':
+        ax.set_title(f'{database}')
 
     #label_dict = {'EXONT:Name':'Exon Ontology Term', 'PSP:ON_PROCESS':'Biological Process (PSP)', 'PSP:ON_FUNCTION':'Molecular Function (PSP)', 'Combined:Kinase':'Kinase'}
     #ax.text(-1*ax.get_xlim()[1]/10, top_terms-0.2, label_dict[term_to_plot], weight = 'bold', ha = 'right', fontsize = 8)
-    x_label_dict = {'Function':'Number of PTMs\nassociated with Function', 'Process':'Number of PTMs\nassociated with Process', 'Disease':'Number of PTMs\nassociated with Disease', 'Kinase':'Number of Phosphosites\ntargeted by Kinase', 'Interactions': 'Number of PTMs\nthat regulate interaction\n with protein','Motif Match':'Number of PTMs\nfound within a\nmotif instance', 'Intraprotein': 'Number of PTMs\nthat are important\for intraprotein\n interactions','Phosphatase':'Number of Phosphosites\ntargeted by Phosphatase'}
+    x_label_dict = {'Function':'Number of PTMs\nassociated with Function', 'Process':'Number of PTMs\nassociated with Process', 'Disease':'Number of PTMs\nassociated with Disease', 'Kinase':'Number of Phosphosites\ntargeted by Kinase', 'Interactions': 'Number of PTMs\nthat regulate interaction\n with protein','Motif Match':'Number of PTMs\nfound within a\nmotif instance', 'Intraprotein': 'Number of PTMs\nthat are important\for intraprotein\n interactions','Phosphatase':'Number of Phosphosites\ntargeted by Phosphatase', 'Perturbation (DIA2)': "Number of PTMs\nAffected by Perturbation\n(Measured by DIA)", 'Perturbation (PRM)': 'Number of PTMs\nAffected by Perturbation\n(Measured by PRM)', 'NetPath':'Number of PTMs/Genes\nassociated with NetPath', 'Perturbation':'Number of PTMs\nAffected by Perturbation'}
     ax.set_xlabel(x_label_dict[annot_type], fontsize = 8)
     
     #make a custom legend
@@ -172,7 +237,7 @@ def draw_pie(dist, xpos, ypos, size,colors,edgecolor =None, type = 'donut', ax=N
 
 
 
-def plot_EnrichR_pies(enrichr_results, top_terms = None, terms_to_plot = None, colors = None, edgecolor = None, row_height = 0.3, leg_loc = (0.5,1.1), type = 'circle', ax = None):
+def plot_EnrichR_pies(enrichr_results, top_terms = None, terms_to_plot = None, colors = None, edgecolor = None, row_height = 0.3, type = 'circle', ax = None):
     """
     Given PTM-specific EnrichR results, plot EnrichR score for the provided terms, with each self point represented as a pie chart indicating the fraction of genes in the group with PTMs
     
@@ -184,6 +249,14 @@ def plot_EnrichR_pies(enrichr_results, top_terms = None, terms_to_plot = None, c
         number of terms to plot, if None, will plot all terms. Ignored if specific terms are provided in terms to plot list
     terms_to_plot: list
         list of terms to plot
+    colors: list
+        list of colors to use for pie slices. Default is None, which will use seaborn colorblind palette
+    edgecolor: str
+        color to use for edge of pie slices. Default is None, which will use the same color as the pie slice
+    row_height: float
+        height of each row in the plot. Default is 0.3.
+    type: str
+        type of pie chart to plot. Default is 'circle'. Options include 'circle' and 'donut' (hole in center).
     ax: matplotlib.Axes
         axis to plot on, if None, will create new figure
     """
@@ -250,12 +323,34 @@ def plot_EnrichR_pies(enrichr_results, top_terms = None, terms_to_plot = None, c
 
 def plot_interaction_network(interaction_graph, network_data, network_stats = None, modified_color = 'red', modified_node_size = 10, interacting_color = 'lightblue', interacting_node_size = 1, edgecolor = 'gray', seed = 200, ax = None, proteins_to_label = None, labelcolor = 'black'):
     """
-    Given the interactiong graph and network data outputted from analyze.get_interaction_network, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs
+    Given the interaction graph and network data outputted from analyze.protein_interactions, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs. by default, will only label proteins 
 
     Parameters
     ----------
     interaction_graph: nx.Graph
         NetworkX graph object representing the interaction network, created from analyze.get_interaction_network
+    network_data: pd.DataFrame
+        Dataframe containing details about specifici protein interactions (including which protein contains the spliced PTMs)
+    network_stats: pd.DataFrame
+        Dataframe containing network statistics for each protein in the interaction network, obtained from analyze.get_interaction_stats(). Default is None, which will not label any proteins in the network.
+    modified_color: str
+        Color to use for proteins that are spliced. Default is 'red'.
+    modified_node_size: int
+        Size of nodes that are spliced. Default is 10.
+    interacting_color: str
+        Color to use for proteins that are not spliced. Default is 'lightblue'.
+    interacting_node_size: int
+        Size of nodes that are not spliced. Default is 1.
+    edgecolor: str
+        Color to use for edges in the network. Default is 'gray'.
+    seed: int
+        Seed to use for spring layout of network. Default is 200.
+    ax: matplotlib.Axes
+        Axis to plot on. If None, will create new figure. Default is None.
+    proteins_to_label: list, int, or str
+        Specific proteins to label in the network. If list, will label all proteins in the list. If int, will label the top N proteins by degree centrality. If str, will label the specific protein. Default is None, which will not label any proteins in the network.
+    labelcolor: str
+        Color to use for labels. Default is 'black'.
     """
     node_colors = []
     node_sizes = []
@@ -316,12 +411,37 @@ def plot_interaction_network(interaction_graph, network_data, network_stats = No
         print('Proteins to label must be a list of strings or a single string. Ignoring when plotting.')
     
 def plot_network_centrality(network_stats, network_data = None, centrality_measure = 'Degree', top_N = 10, modified_color = 'red', interacting_color = 'black', ax = None):
+    """
+    Given the network statistics data obtained from analyze.get_interaction_stats(), plot the top N proteins in the protein interaction network based on centrality measure (Degree, Betweenness, or Closeness)
+
+    Parameters
+    ----------
+    network_stats: pd.DataFrame
+        Dataframe containing network statistics for each protein in the interaction network, obtained from analyze.get_interaction_stats()
+    network_data: pd.DataFrame
+        Dataframe containing information on which proteins are spliced and how they are altered. Default is None, which will plot all proteins the same color (interacting_color)
+    centrality_measure: str
+        Centrality measure to use for plotting. Default is 'Degree'. Options include 'Degree', 'Degree Centrality', 'Betweenness Centrality', 'Closeness Centrality'.
+    top_N: int
+        Number of top proteins to plot. Default is 10.
+    modified_color: str
+        Color to use for proteins that are spliced. Default is 'red'.
+    interacting_color: str
+        Color to use for proteins that are not spliced. Default is 'black'.
+    ax: matplotlib.Axes
+        Axis to plot on. If None, will create new figure. Default is None.
+    
+    Outputs
+    -------
+    bar plot showing the top N proteins in the interaction network based on centrality measure
+    """
     if centrality_measure not in network_stats.columns:
         raise ValueError('Centrality measure not found in network_stats dataframe. Please check the inputted centrality_measure. Available measures include Degree, Degree Centrality, Betweenness Centrality, Closeness Centrality, and Eigenvector Centrality.')
     
-    #get specific centrality measure
-    plt_data = network_stats.sort_values(by = centrality_measure, ascending = False).iloc[:top_N]
+    #get specific centrality measure and grab top N terms
+    plt_data = network_stats.sort_values(by = centrality_measure, ascending = False).iloc[:top_N].sort_values(by = centrality_measure, ascending = True)
     
+    #color bars based on whether protein is spliced or not
     if network_data is not None:
         colors = []
         for index, row in plt_data.iterrows():
@@ -332,8 +452,125 @@ def plot_network_centrality(network_stats, network_data = None, centrality_measu
     else:
         colors = modified_color
     
+    #establish figure
     if ax is None:
         fig, ax = plt.subplots(figsize = (3,3))
 
+    #plot bar plot
     ax.barh(plt_data.index, plt_data[centrality_measure], color = colors)
     ax.set_xlabel(f'{centrality_measure}')
+
+def location_of_altered_flanking_residues(altered_flanks, figsize = (4,3), modification_class = None, residue = None):
+    """
+    Plot the number of PTMs with altered residues as specific positions relative to the PTM site. This includes the specific position of the residue (-5 to +5 from PTM site) and the specific side of the PTM site that is altered (N-term or C-term)
+
+    Parameters
+    ----------
+    altered_flanks: pd.DataFrame
+        Dataframe with altered flanking sequences, and annotated information added with analyze.compare_flanking_sequences
+    figsize: tuple
+        Size of the figure. Default is (4,3).
+    modification_class: str
+        Specific modification class to plot. Default is None, which will plot all modification classes.
+    residue: str
+        Specific residue to plot. Default is None, which will plot all residues.
+
+    """
+    
+    fig, ax = plt.subplots(nrows = 2, figsize = figsize, height_ratios = [0.5,1])
+    fig.subplots_adjust(hspace = 1)
+
+    if modification_class is not None:
+        altered_flanks = altered_flanks[altered_flanks['Modification Class'].str.contains(modification_class)].copy()
+    
+    if residue is not None:
+        altered_flanks = altered_flanks[altered_flanks['Residue'] == residue].copy()
+
+    #### plot of side of modification that flank is altered
+    terminus = altered_flanks.groupby('Altered Flank Side').size()
+    terminus = terminus[['N-term only', 'C-term only']] #focus on cases where only one side is altered for ease of plotting
+    ax[0].bar(terminus.index, terminus.values, color = 'gray')
+    ax[0].set_xlabel('Location of Altered Region', fontsize = 9)
+    ax[0].set_xticklabels(['N-term\nonly', 'C-term\nonly'])
+    ax[0].set_ylabel('# of PTMs', fontsize = 9)
+
+    #### plot specific positions of altered residues relative to PTM
+    position_breakdown = altered_flanks.explode(['Altered Positions', 'Residue Change']).copy()[['Gene', 'Residue', 'PTM Position in Canonical Isoform','Altered Positions', 'Residue Change']]
+    position_breakdown = position_breakdown.groupby('Altered Positions').size()
+    ax[1].bar(position_breakdown.index, position_breakdown.values, color = 'gray')
+    ax[1].set_xlim([-5.5,5.5])
+    ax[1].set_xlabel('Position Relative to PTM', fontsize = 9)
+    ax[1].set_ylabel('# of Changed\nResidues', fontsize = 9)
+    ax[1].set_xticks(np.arange(-5,6,1))
+
+def alterations_matrix(altered_flanks, modification_class = None, residue = None, title = '', ax = None):
+    """
+    Given the altered flanking sequences dataframe, plot a matrix showing the positions of altered residues for specific proteins, as well as the specific change
+
+    Parameters
+    ----------
+    altered_flanks: pd.DataFrame
+        Dataframe with altered flanking sequences, and annotated information added with analyze.compare_flanking_sequences
+
+    modification_class: str
+        Specific modification class to plot. Default is None, which will plot all modification classes.
+
+    residue: str
+        Specific residue to plot. Default is None, which will plot all residues.
+    title: str
+        Title of the plot. Default is '' (no title).
+    ax: matplotlib.Axes
+        Axis to plot on. If None, will create new figure. Default is None.
+    """
+    #extract altered flanking sequences and make sure there is altered position data
+    position_breakdown = altered_flanks.copy()
+    if 'Altered Positions' not in position_breakdown.columns:
+        position_breakdown = fs.compare_flanking_sequences(position_breakdown)
+
+    position_breakdown = position_breakdown.dropna(subset = ['Altered Positions', 'Residue Change'])
+
+    #restrit to desired PTM types and residues
+    if modification_class is not None:
+        position_breakdown = position_breakdown[position_breakdown['Modification Class'].str.contains(modification_class)].copy()
+    if residue is not None:
+        position_breakdown = position_breakdown[position_breakdown['Residue'] == residue].copy()
+
+    #add ptm column to position breakdown
+    position_breakdown['PTM'] = position_breakdown['Gene'] + '_' + position_breakdown['Residue'] + position_breakdown['PTM Position in Canonical Isoform'].astype(str)
+
+    #separate altered residue into individual rows
+    position_breakdown = position_breakdown.explode(['Altered Positions', 'Residue Change']).copy()[['Gene', 'PTM','Altered Positions', 'Residue Change']]
+
+    #convert altered positions to integers and remove duplicates
+    position_breakdown['Altered Positions'] = position_breakdown['Altered Positions'].astype(int)
+    position_breakdown = position_breakdown.drop_duplicates()
+
+    #position_breakdown = position_breakdown.drop_duplicates(subset = ["PTM", "Altered_Positions"], keep = False)
+    position_breakdown['PTM']
+    position_matrix = position_breakdown.pivot(columns = 'Altered Positions', index = 'PTM', values= 'Residue Change')
+    for i, pos in zip(range(11),range(-5, 6)):
+        if pos not in position_matrix.columns:
+            position_matrix.insert(i, pos, np.nan)
+
+
+    #replace strings with 1 and nans with 0
+    position_values = position_matrix.map(lambda x: 1 if x == x else np.nan).sort_values(by = 5)
+    position_matrix = position_matrix.loc[position_values.index]
+    #plot heatmap with black edges around cells and no colorbar, annotate with strings in position matrix
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize = (4,3))
+    sns.heatmap(position_values, cmap = 'Greens', vmin = 0, vmax = 2, ax = ax, cbar = False, linewidths = 0.5, linecolor = 'black', yticklabels=True )
+    ax.set_facecolor("lightgrey")
+
+    #annotate with strings in the position matrix
+    for i in range(position_values.shape[0]):
+        for j in range(position_values.shape[1]):
+            if position_values.iloc[i,j] == 1:
+                ax.text(j+0.5, i+0.5, position_matrix.iloc[i,j], ha = 'center', va = 'center', fontsize = 6)
+
+    #adjust figure parameters
+    ax.set_xticklabels(['-5','-4','-3','-2','-1','PTM','1','2','3','4','5'], fontsize = 8)
+    ax.set_xlabel('')
+    ax.tick_params(axis = 'y', labelsize = 8)
+    ax.set_title(title, fontsize = 9)

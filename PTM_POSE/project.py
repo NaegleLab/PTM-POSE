@@ -567,6 +567,10 @@ def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
     else:
         return spliced_events, spliced_ptms
     
+#def project_ptms_onto_MAJIQ_dPSI(majiq_data, ptm_coordinates = None, coordinate_type = 'hg38', identify_flanking_sequences = False, dPSI_col = 'dPSI', sig_col = 'FDR', separate_modification_types = False, PROCESSES = 1):
+#    print('in progress')
+#    pass
+    
 def add_splicegraph_info(psi_data, splicegraph, purpose = 'inclusion'):
     psi_data = psi_data[psi_data['splice_type'] != 'ME'].copy()
 
@@ -585,7 +589,7 @@ def add_splicegraph_info(psi_data, splicegraph, purpose = 'inclusion'):
     else:
         raise ValueError('Purpose must be either inclusion or flanking. Please provide the correct purpose for the splicegraph information.')
 
-def project_ptms_onto_SpliceSeq(psi_data, splicegraph, dPSI_col = None, sig_col = None, extra_cols = None, coordinate_type = 'hg19', separate_modification_types = False, identify_flanking_sequences = False, PROCESSES = 1):
+def project_ptms_onto_SpliceSeq(psi_data, splicegraph, gene_col ='symbol', dPSI_col = None, sig_col = None, extra_cols = None, coordinate_type = 'hg19', separate_modification_types = False, identify_flanking_sequences = False, flank_size = 5, PROCESSES = 1):
     #remove ME events from this analysis
     print('Removing ME events from analysis')
     psi_data = psi_data[psi_data['splice_type'] != 'ME'].copy()
@@ -605,9 +609,11 @@ def project_ptms_onto_SpliceSeq(psi_data, splicegraph, dPSI_col = None, sig_col 
 
     ## add code for extracting flanking sequences (to do)
     if identify_flanking_sequences:
-        pass
+        altered_flanks = fs.get_flanking_changes_from_splicegraph(psi_data, splicegraph, dPSI_col = dPSI_col, sig_col = sig_col, extra_cols = extra_cols, gene_col = gene_col, coordinate_type=coordinate_type, flank_size = flank_size)
 
-    return spliced_data, spliced_ptms
+        return spliced_data, spliced_ptms, altered_flanks
+    else:
+        return spliced_data, spliced_ptms
 
 
 #def project_ptms_onto_TCGA_SpliceSeq(tcga_cancer = 'PRAD'):

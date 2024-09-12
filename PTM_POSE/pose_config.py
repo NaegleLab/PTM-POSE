@@ -75,20 +75,21 @@ else:
 #additional information
 
 #dictionary to associate annotation column names with different annotation types
-annotation_col_dict = {'PhosphoSitePlus':{'Function':'PSP:ON_FUNCTION', 'Process':'PSP:ON_PROCESS', 'Interactions':'PSP:ON_PROT_INTERACT', 'Disease':'PSP:Disease_Association', 'Kinase':'PSP:Kinase','Perturbation':'PTMsigDB:PSP-PERT'},
+annotation_col_dict = {'PhosphoSitePlus':{'Function':'PSP:ON_FUNCTION', 'Process':'PSP:ON_PROCESS', 'Interactions':'PSP:ON_PROT_INTERACT', 'Disease':'PSP:Disease_Association', 'Kinase':'PSP:Kinase','Perturbation':'PTMsigDB:PERT-PSP'},
                         'ELM':{'Interactions':'ELM:Interactions', 'Motif Match':'ELM:Motif Matches'},
                         'PTMcode':{'Intraprotein':'PTMcode:Intraprotein_Interactions', 'Interactions':'PTMcode:Interprotein_Interactions'},
-                        'PTMInt':{'Interactions':'PTMInt:Interactions'},
+                        'PTMInt':{'Interactions':'PTMInt:Interaction'},
                         'RegPhos':{'Kinase':'RegPhos:Kinase'},
                         'DEPOD':{'Phosphatase':'DEPOD:Phosphatase'},
                         'PTMsigDB': {'WikiPathway':'PTMsigDB:PATH-WP', 'NetPath':'PTMsigDB:PATH-NP','mSigDB':'PTMsigDB:PATH-BI', 'Perturbation (DIA2)':'PTMsigDB:PERT-P100-DIA2', 'Perturbation (DIA)': 'PTMsigDB:PERT-P100-DIA', 'Perturbation (PRM)':'PTMsigDB:PERT-P100-PRM','Kinase':'PTMsigDB:KINASE-iKiP'}}
 
-annotation_function_dict = {'PhosphoSitePlus': {'Function':'add_PSP_regulatory_site_data', 'Process':'add_PSP_regulatory_site_data', 'Disease':'add_PSP_disease_association', 'Kinase':'add_PSP_kinase_substrate_data', 'Interactions': 'add_PSP_regulatory_site_data()'},
+annotation_function_dict = {'PhosphoSitePlus': {'Function':'add_PSP_regulatory_site_data', 'Process':'add_PSP_regulatory_site_data', 'Disease':'add_PSP_disease_association', 'Kinase':'add_PSP_kinase_substrate_data', 'Interactions': 'add_PSP_regulatory_site_data()', 'Perturbation':'add_PTMsigDB_data'},
                        'ELM': {'Interactions':'add_ELM_interactions()', 'Motif Match':'add_ELM_motif_matches'},
                        'PTMcode': {'Intraprotein': 'add_PTMcode_intraprotein', 'Interactions':'add_PTMcode_interprotein'},
                        'PTMInt': {'Interactions':'add_PTMInt_data'},
                        'RegPhos': {'Kinase': 'add_RegPhos_data'},
-                       'DEPOD': {'Phosphatase':'add_DEPOD_data'}}
+                       'DEPOD': {'Phosphatase':'add_DEPOD_data'},
+                       'PTMsigDB':{'WikiPathway':'add_PTMsigDB_data', 'NetPath':'add_PTMsigDB_data','mSigDB':'add_PTMsigDB_data', 'Perturbation (DIA2)':'add_PTMsigDB_data', 'Perturbation (DIA)': 'add_PTMsigDB_data', 'Perturbation (PRM)':'add_PTMsigDB_data','Kinase':'add_PTMsigDB_data'}}
 
 
 

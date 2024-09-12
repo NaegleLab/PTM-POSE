@@ -339,7 +339,7 @@ def add_ELM_matched_motifs(spliced_ptms, flank_size = 7, file = None, report_suc
 
         
         if ptm in ptm_coordinates['PTM Label'].values:
-            ptm_flanking_seq = ptm_coordinates.loc[ptm_coordinates['PTM Label'] == ptm, 'Canonical Flanking Sequence'].values[0]
+            ptm_flanking_seq = ptm_coordinates.loc[ptm_coordinates['PTM Label'] == ptm, 'Expected Flanking Sequence'].values[0]
             #make sure flanking sequence is present
             if isinstance(ptm_flanking_seq, str):
 
@@ -408,82 +408,82 @@ def add_PTMInt_data(spliced_ptms, file = None, report_success = True):
     #delete source PTMint data
     #os.remove(pdir + './Data/PTM_experimental_evidence.csv')
 
-def add_PTMcode_intraprotein(spliced_ptms, fname = None, report_success = True):
-    #load ptmcode info
-    if fname is None:
-        ptmcode = pd.read_csv('https://ptmcode.embl.de/data/PTMcode2_associations_within_proteins.txt.gz', sep = '\t', header = 2, compression='gzip')
-    else:
-        check_file(fname, expected_extension = '.gz')
-        ptmcode = pd.read_csv(fname, sep = '\t', header = 2, compression = 'gzip')
-    
-    #grab humn data
-    ptmcode = ptmcode[ptmcode['Species'] == 'Homo sapiens']
-
-    #add gene name to data
-    translator = pd.DataFrame(pose_config.uniprot_to_genename, index = ['Gene']).T
-    translator['Gene'] = translator['Gene'].apply(lambda x: x.split(' '))
-    translator = translator.explode('Gene')
-    translator = translator.reset_index()
-    translator.columns = ['UniProtKB/Swiss-Prot ID', 'Gene name']
-
-    #add uniprot ID information
-    ptmcode = ptmcode.merge(translator.dropna().drop_duplicates(), left_on = '## Protein', right_on = 'Gene name', how = 'left')
-
-    #convert modification names to match annotation data
-    convert_dict = {'Adp ribosylation': 'ADP Ribosylation', 'Glutamine deamidation':'Deamidation'}
-    new_mod_names = []
-    failed_mod = []
-    mod_list = ptmcode['PTM1'].unique()
-    for mod in mod_list:
-        mod = mod.capitalize()
-        if 'glycosylation' in mod: #if glycosylation, group into one gorup
-            new_mod_names.append('Glycosylation')
-        elif mod in pose_config.modification_conversion['Modification Class'].values: #if already in modification class data, keep
-            new_mod_names.append(mod)
-        elif mod in convert_dict.keys():
-            new_mod_names.append(convert_dict[mod])
-        else:
-            try:
-                new_mod = pose_config.modification_conversion[pose_config.modification_conversion['Modification'] == mod].values[0][0]
-                new_mod_names.append(new_mod)
-            except:
-                failed_mod.append(mod)
-                new_mod_names.append(mod)
-    conversion_df = pd.DataFrame({'PTM1':mod_list, 'Modification Class':new_mod_names})
-
-    #add new modification labels to data
-    ptmcode = ptmcode.merge(conversion_df, on = 'PTM1', how = 'left')
-    
-    #groupby by PTM1 and rename to match column names in annotation data
-    ptmcode = ptmcode[['UniProtKB/Swiss-Prot ID', 'Modification Class', 'Residue1', 'Residue2']].dropna(subset = 'UniProtKB/Swiss-Prot ID')
-    ptmcode = ptmcode.groupby(['UniProtKB/Swiss-Prot ID', 'Modification Class', 'Residue1'])['Residue2'].agg(';'.join).reset_index()
-    ptmcode = ptmcode.rename(columns = {'UniProtKB/Swiss-Prot ID':'UniProtKB Accession', 'Residue1':'Residue', 'Residue2':'PTMcode:Intraprotein_Interactions'})
-    
-    #separate residue information into separate columns, one for amino acid and one for position
-    ptmcode['PTM Position in Canonical Isoform'] = ptmcode['Residue'].apply(lambda x: int(x[1:]))
-    ptmcode['Residue'] = ptmcode['Residue'].apply(lambda x: x[0])
-
-        #if splice data already has the annotation columns, remove them
-    if 'PTMcode:Intraprotein_Interactions' in spliced_ptms.columns:
-        spliced_ptms = spliced_ptms.drop(columns = ['PTMcode:Intraprotein_Interactions'])
-
-    #explode dataframe on modifications
-    if spliced_ptms['Modification Class'].str.contains(';').any():
-        spliced_ptms['Modification Class'] = spliced_ptms['Modification Class'].str.split(';')
-        spliced_ptms = spliced_ptms.explode('Modification Class').reset_index(drop = True)
-
-    #add to splice data
-    original_data_size = spliced_ptms.shape[0]
-    spliced_ptms = spliced_ptms.merge(ptmcode, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'])
-    if spliced_ptms.shape[0] != original_data_size:
-        raise RuntimeError('Dataframe size has changed, check for duplicates in spliced ptms dataframe')
-    
-    #report the number of PTMs identified
-    if report_success:
-        num_ptms_with_PTMcode_data = spliced_ptms.dropna(subset = 'PTMcode:Intraprotein_Interactions').groupby(['UniProtKB Accession', 'Residue']).size().shape[0]
-        print(f"PTMcode intraprotein interactions added: {num_ptms_with_PTMcode_data} PTMs in dataset found with PTMcode intraprotein interaction information")
-
-    return spliced_ptms
+#def add_PTMcode_intraprotein(spliced_ptms, fname = None, report_success = True):
+#    #load ptmcode info
+#    if fname is None:
+#        ptmcode = pd.read_csv('https://ptmcode.embl.de/data/PTMcode2_associations_within_proteins.txt.gz', sep = '\t', header = 2, compression='gzip')
+#    else:
+#        check_file(fname, expected_extension = '.gz')
+#        ptmcode = pd.read_csv(fname, sep = '\t', header = 2, compression = 'gzip')
+#    
+#    #grab humn data
+#    ptmcode = ptmcode[ptmcode['Species'] == 'Homo sapiens']
+#
+#    #add gene name to data
+#    translator = pd.DataFrame(pose_config.uniprot_to_genename, index = ['Gene']).T
+#    translator['Gene'] = translator['Gene'].apply(lambda x: x.split(' '))
+#    translator = translator.explode('Gene')
+#    translator = translator.reset_index()
+#    translator.columns = ['UniProtKB/Swiss-Prot ID', 'Gene name']
+#
+#    #add uniprot ID information
+#    ptmcode = ptmcode.merge(translator.dropna().drop_duplicates(), left_on = '## Protein', right_on = 'Gene name', how = 'left')
+#
+#    #convert modification names to match annotation data
+#    convert_dict = {'Adp ribosylation': 'ADP Ribosylation', 'Glutamine deamidation':'Deamidation'}
+#    new_mod_names = []
+#    failed_mod = []
+#    mod_list = ptmcode['PTM1'].unique()
+#    for mod in mod_list:
+#        mod = mod.capitalize()
+#        if 'glycosylation' in mod: #if glycosylation, group into one gorup
+#            new_mod_names.append('Glycosylation')
+#        elif mod in pose_config.modification_conversion['Modification Class'].values: #if already in modification class data, keep
+#            new_mod_names.append(mod)
+#        elif mod in convert_dict.keys():
+#            new_mod_names.append(convert_dict[mod])
+#        else:
+#            try:
+#                new_mod = pose_config.modification_conversion[pose_config.modification_conversion['Modification'] == mod].values[0][0]
+#                new_mod_names.append(new_mod)
+#            except:
+#                failed_mod.append(mod)
+#                new_mod_names.append(mod)
+#    conversion_df = pd.DataFrame({'PTM1':mod_list, 'Modification Class':new_mod_names})
+#
+#    #add new modification labels to data
+#    ptmcode = ptmcode.merge(conversion_df, on = 'PTM1', how = 'left')
+#    
+#    #groupby by PTM1 and rename to match column names in annotation data
+#    ptmcode = ptmcode[['UniProtKB/Swiss-Prot ID', 'Modification Class', 'Residue1', 'Residue2']].dropna(subset = 'UniProtKB/Swiss-Prot ID')
+#    ptmcode = ptmcode.groupby(['UniProtKB/Swiss-Prot ID', 'Modification Class', 'Residue1'])['Residue2'].agg(';'.join).reset_index()
+#    ptmcode = ptmcode.rename(columns = {'UniProtKB/Swiss-Prot ID':'UniProtKB Accession', 'Residue1':'Residue', 'Residue2':'PTMcode:Intraprotein_Interactions'})
+#    
+#    #separate residue information into separate columns, one for amino acid and one for position
+#    ptmcode['PTM Position in Canonical Isoform'] = ptmcode['Residue'].apply(lambda x: int(x[1:]))
+#    ptmcode['Residue'] = ptmcode['Residue'].apply(lambda x: x[0])
+#
+#        #if splice data already has the annotation columns, remove them
+#    if 'PTMcode:Intraprotein_Interactions' in spliced_ptms.columns:
+#        spliced_ptms = spliced_ptms.drop(columns = ['PTMcode:Intraprotein_Interactions'])
+#
+#    #explode dataframe on modifications
+#    if spliced_ptms['Modification Class'].str.contains(';').any():
+#        spliced_ptms['Modification Class'] = spliced_ptms['Modification Class'].str.split(';')
+#        spliced_ptms = spliced_ptms.explode('Modification Class').reset_index(drop = True)
+#
+#    #add to splice data
+#    original_data_size = spliced_ptms.shape[0]
+#    spliced_ptms = spliced_ptms.merge(ptmcode, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'])
+#    if spliced_ptms.shape[0] != original_data_size:
+#        raise RuntimeError('Dataframe size has changed, check for duplicates in spliced ptms dataframe')
+#    
+#    #report the number of PTMs identified
+#    if report_success:
+#        num_ptms_with_PTMcode_data = spliced_ptms.dropna(subset = 'PTMcode:Intraprotein_Interactions').groupby(['UniProtKB Accession', 'Residue']).size().shape[0]
+#        print(f"PTMcode intraprotein interactions added: {num_ptms_with_PTMcode_data} PTMs in dataset found with PTMcode intraprotein interaction information")
+#
+#    return spliced_ptms
 
 def extract_ids_PTMcode(df, col = '## Protein1'):
 
@@ -970,13 +970,13 @@ def add_annotation(spliced_ptms, database = 'PhosphoSitePlus', annotation_type =
         else:
             raise ValueError(f"Annotation type {annotation_type} not recognized for PhosphoSitePlus")
     elif database == 'PTMcode':
-        if annotation_type == 'Intraprotein':
-            if file is not None:
-                check_file(file, expected_extension='.gz')
-                spliced_ptms = add_PTMcode_intraprotein(spliced_ptms, file = file)
-            else:
-                spliced_ptms = add_PTMcode_intraprotein(spliced_ptms)
-        elif annotation_type == 'Interactions':
+        #if annotation_type == 'Intraprotein':
+        #    if file is not None:
+        #        check_file(file, expected_extension='.gz')
+        #        spliced_ptms = add_PTMcode_intraprotein(spliced_ptms, file = file)
+        #    else:
+        #        spliced_ptms = add_PTMcode_intraprotein(spliced_ptms)
+        if annotation_type == 'Interactions':
             if file is not None:
                 check_file(file, expected_extension='.gz')
                 spliced_ptms = add_PTMcode_interprotein(spliced_ptms, file = file)
@@ -1200,7 +1200,7 @@ def check_file(fname, expected_extension = '.tsv'):
 
 
 
-def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = None, psp_disease_file = None, elm_interactions = False, elm_motifs = False, PTMint = False, PTMcode_intraprotein = False, PTMcode_interprotein = False, DEPOD = False, RegPhos = False, ptmsigdb_file = None, interactions_to_combine = ['PTMcode', 'PhosphoSitePlus', 'RegPhos', 'PTMInt'], kinases_to_combine = ['PhosphoSitePlus', 'RegPhos'], combine_phosphatases = ['DEPOD'], combine_similar = True):
+def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = None, psp_disease_file = None, elm_interactions = False, elm_motifs = False, PTMint = False, PTMcode_interprotein = False, DEPOD = False, RegPhos = False, ptmsigdb_file = None, interactions_to_combine = ['PTMcode', 'PhosphoSitePlus', 'RegPhos', 'PTMInt'], kinases_to_combine = ['PhosphoSitePlus', 'RegPhos'], combine_similar = True):
     """
     Given spliced ptm data, add annotations from various databases. The annotations that can be added are the following:
     - PhosphoSitePlus 
@@ -1244,28 +1244,33 @@ def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = N
         If True, download DEPOD data automatically
     RegPhos: bool
         If True, download RegPhos data automatically
+    ptmsigdb_file: str
+        File path to PTMsigDB data
+    interactions_to_combine: list
+        List of databases to combine interaction data from. Default is ['PTMcode', 'PhosphoSitePlus', 'RegPhos', 'PTMInt']
+    kinases_to_combine: list
+        List of databases to combine kinase-substrate data from. Default is ['PhosphoSitePlus', 'RegPhos']
     combine_similar: bool
         Whether to combine annotations of similar information (kinase, interactions, etc) from multiple databases into another column labeled as 'Combined'. Default is True
     """
-    database_shorthand = {'PSP':'PhosphoSitePlus', 'PTMcode':'PTMcode', 'PTMint':'PTMint', 'RegPhos':'RegPhos', 'DEPOD':'DEPOD', 'ELM':'ELM'}
     if psp_regulatory_site_file is not None:
         try:
             check_file(psp_regulatory_site_file, expected_extension='.gz')
             spliced_ptms = add_PSP_regulatory_site_data(spliced_ptms, file = psp_regulatory_site_file)
         except Exception as e:
-            print(f'Error adding PhosphoSitePlus regulatory site data. Error message: {e}')
+            raise RuntimeError(f'Error adding PhosphoSitePlus regulatory site data. Error message: {e}')
     if psp_ks_file is not None:
         try:    
             check_file(psp_ks_file, expected_extension='.gz')
             spliced_ptms = add_PSP_kinase_substrate_data(spliced_ptms, file = psp_ks_file)
         except Exception as e:
-            print(f'Error adding PhosphoSitePlus kinase-substrate data. Error message: {e}')
+            raise RuntimeError(f'Error adding PhosphoSitePlus kinase-substrate data. Error message: {e}')
     if psp_disease_file is not None:
         try:
             check_file(psp_disease_file, expected_extension='.gz')
             spliced_ptms = add_PSP_disease_association(spliced_ptms, file = psp_disease_file)
         except Exception as e:
-            print(f'Error adding PhosphoSitePlus disease association data. Error message: {e}')
+            raise RuntimeError(f'Error adding PhosphoSitePlus disease association data. Error message: {e}')
     if elm_interactions:
         try:
             if isinstance(elm_interactions, bool):
@@ -1276,7 +1281,7 @@ def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = N
             else:
                 raise ValueError('elm_interactions must be either a boolean (download elm data automatically, slower) or a string (path to elm data tsv file, faster)')
         except Exception as e:
-            print(f'Error adding ELM interaction data. Error message: {e}')
+            raise RuntimeError(f'Error adding ELM interaction data. Error message: {e}')
     if elm_motifs:
         try:
             if isinstance(elm_motifs, bool):
@@ -1287,7 +1292,7 @@ def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = N
             else:
                 raise ValueError('elm_interactions must be either a boolean (download elm data automatically, slower) or a string (path to elm data tsv file, faster)')
         except Exception as e:
-            print(f'Error adding ELM motif matches. Error message: {e}')
+            raise RuntimeError(f'Error adding ELM motif matches. Error message: {e}')
     if PTMint:
         try:
             if isinstance(PTMint, bool):
@@ -1298,18 +1303,18 @@ def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = N
             else:
                 raise ValueError('PTMint must be either a boolean (download PTMInt data automatically, slower) or a string (path to PTMInt data csv file, faster)')
         except Exception as e:
-            print(f'Error adding PTMInt interaction data. Error message: {e}')
-    if PTMcode_intraprotein:
-        try:
-            if isinstance(PTMcode_intraprotein, bool):
-                spliced_ptms = add_PTMcode_intraprotein(spliced_ptms)
-            elif isinstance(PTMcode_intraprotein, str):
-                check_file(PTMcode_intraprotein, expected_extension='.gz')
-                spliced_ptms = add_PTMcode_intraprotein(spliced_ptms, fname = PTMcode_intraprotein)
-            else:
-                raise ValueError('PTMcode_intraprotein must be either a boolean (download PTMcode data automatically, slower) or a string (path to PTMcode data file, faster)')
-        except Exception as e:
-            print(f'Error adding PTMcode intraprotein interaction data. Error message: {e}')
+            raise RuntimeError(f'Error adding PTMInt interaction data. Error message: {e}')
+    #if PTMcode_intraprotein:
+    #    try:
+    #        if isinstance(PTMcode_intraprotein, bool):
+    #            spliced_ptms = add_PTMcode_intraprotein(spliced_ptms)
+    #        elif isinstance(PTMcode_intraprotein, str):
+    #            check_file(PTMcode_intraprotein, expected_extension='.gz')
+    #            spliced_ptms = add_PTMcode_intraprotein(spliced_ptms, fname = PTMcode_intraprotein)
+    #        else:
+    #            raise ValueError('PTMcode_intraprotein must be either a boolean (download PTMcode data automatically, slower) or a string (path to PTMcode data file, faster)')
+    #    except Exception as e:
+    #        print(f'Error adding PTMcode intraprotein interaction data. Error message: {e}')
     if PTMcode_interprotein:
         try:
             if isinstance(PTMcode_interprotein, bool):
@@ -1320,28 +1325,32 @@ def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = N
             else:
                 raise ValueError('PTMcode_interprotein must be either a boolean (download PTMcode data automatically, slower) or a string (path to PTMcode data file, faster)')
         except Exception as e:
-            print(f'Error adding PTMcode interprotein interaction data. Error message: {e}')
+            raise RuntimeError(f'Error adding PTMcode interprotein interaction data. Error message: {e}')
     if DEPOD:
         try:
             spliced_ptms = add_DEPOD_phosphatase_data(spliced_ptms)
         except Exception as e:
-            print(f'Error adding DEPOD phosphatase data. Error message: {e}')
+            raise RuntimeError(f'Error adding DEPOD phosphatase data. Error message: {e}')
     if RegPhos:
         try:
-            spliced_ptms = add_RegPhos_data(spliced_ptms)
+            if isinstance(RegPhos, str):
+                check_file(RegPhos, expected_extension='.txt')
+                spliced_ptms = add_RegPhos_data(spliced_ptms, file = RegPhos)
+            else:
+                spliced_ptms = add_RegPhos_data(spliced_ptms)
         except Exception as e:
-            print(f'Error adding PTMcode intraprotein interaction data. Error message: {e}')
+            raise RuntimeError(f'Error adding RegPhos kinase substrate data data. Error message: {e}')
     if ptmsigdb_file is not None:
         try:
             spliced_ptms = add_PTMsigDB_data(spliced_ptms, file = ptmsigdb_file)
         except Exception as e:
-            print(f'Error adding PTMsigDB data. Error message: {e}')
+            raise RuntimeError(f'Error adding PTMsigDB data. Error message: {e}')
 
     if combine_similar:
         interaction_cols = ['PTMcode:Interprotein_Interactions', 'PSP:ON_PROT_INTERACT', 'PSP:Kinase', 'PTMInt:Interaction', 'RegPhos:Kinase', 'DEPOD:Phosphatase']
         if set(interaction_cols).intersection(spliced_ptms.columns) != 0:
             print('\nCombining interaction data from multiple databases')
-            interact = combine_interaction_data(spliced_ptms)
+            interact = combine_interaction_data(spliced_ptms, interaction_databases = interactions_to_combine)
             if not interact.empty:
                 interact['Combined:Interactions'] = interact['Interacting Gene']+'->'+interact['Type']
                 interact = interact.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'], dropna = False, as_index = False)['Combined:Interactions'].apply(lambda x: ';'.join(np.unique(x)))
@@ -1353,11 +1362,9 @@ def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = N
                 spliced_ptms['Combined:Interactions'] = np.nan
 
         #check for what kinase data is available
-        kinase_cols = [col for col in spliced_ptms.columns if 'Kinase' in col and 'PTMsigDB' not in col]
-        if len(kinase_cols) > 0:
-            print('\nCombining kinase-substrate data from multiple databases')
-            ks_databases = [database_shorthand[col.split(':')[0]] for col in kinase_cols if 'Combined' not in col] #grab databases with kinase information
-            spliced_ptms = combine_KS_data(spliced_ptms, ks_databases=ks_databases) #add combined kinase column
+        spliced_ptms = combine_KS_data(spliced_ptms, ks_databases=kinases_to_combine) #add combined kinase column
 
 
     return spliced_ptms
+
+
