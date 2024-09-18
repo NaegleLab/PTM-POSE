@@ -963,11 +963,11 @@ class protein_interactions:
 
         #print interactions
         if len(increased_interactions) > 0:
-            print(f'Increased interaction likelihoods: {', '.join(increased_interactions)}')
+            print(f"Increased interaction likelihoods: {', '.join(increased_interactions)}")
         if len(decreased_interactions) > 0:
-            print(f'Decreased interaction likelihoods: {', '.join(decreased_interactions)}')
+            print(f"Decreased interaction likelihoods: {', '.join(decreased_interactions)}")
         if len(ambiguous_interactions) > 0:
-            print(f'Ambiguous interaction impact: {', '.join(ambiguous_interactions)}')
+            print(f"Ambiguous interaction impact: {', '.join(ambiguous_interactions)}")
 
         network_ranks = self.network_stats.rank(ascending = False).astype(int)
         print(f'Number of interactions: {self.network_stats.loc[protein, "Degree"]} (Rank: {network_ranks.loc[protein, "Degree"]})')

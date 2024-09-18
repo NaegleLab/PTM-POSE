@@ -1,10 +1,13 @@
-from ptm_pose import pose_config, project, annotate, analyze, plots
+from ptm_pose import pose_config, project, annotate, analyze
+from ptm_pose import plots as pose_plots
 from ptm_pose import flanking_sequences as fs
 
 import datetime
 import os
 import pandas as pd
 
+
+print('Warning: this module is still in the development phase and is not fully functional. Please check documentation for recommended methods for projection.')
 
 class POSE_Project:
     def __init__(self, splice_data, ptm_coordinates = None, splice_data_type = 'generic', chromosome_col = None, strand_col = None, region_start_col = None, region_end_col = None, first_flank_start_col = None, first_flank_end_col = None, second_flank_start_col = None, second_flank_end_col = None, gene_name_col = None, dPSI_col = None, sig_col = None, event_id_col = None, extra_cols = None, identify_flanking_sequences = False, splicegraph = None):

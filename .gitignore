@@ -2,6 +2,7 @@
 ptm_pose/Resource_Files/translator.csv
 ptm_pose/Resource_Files/uniprot_to_gene_name.json
 ptm_pose/Resource_Files/nonconstitutive_ptm_list.txt
+ptm_pose/Resource_Files/background_annotations/
 Test_datasets/
 Testing.ipynb
 .pybiomart.sqlite
