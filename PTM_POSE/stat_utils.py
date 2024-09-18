@@ -61,6 +61,33 @@ def adjustP(sorted_p, method = 'BH'):
                 adj_p = 1
             adj_p_list.append(adj_p)
     return adj_p_list
+
+def calculateMW_EffectSize(group1, group2):
+    """
+    Given two lists of values, calculate the effect size and p-value of the Mann-Whitney U test
+
+    Parameters
+    ----------
+    group1: list or array
+        first group of values
+    group2: list or array
+        second group of values
+    
+    Returns
+    -------
+    p: float
+        p-value of Mann-Whitney U test
+    r: float
+        effect size of Mann-Whitney U test
+    """
+    stat, p = stats.mannwhitneyu(group1, group2)
+    n1 = len(group1)
+    n2 = len(group2)
+    u1 = n1*n2/2
+    u2 = n1*n2*(n1+n2+1)/12
+    z = (stat - u1)/np.sqrt(u2)
+    r = abs(z)/np.sqrt(n1+n2)
+    return p, r
     
 def hypergeom(M, n, N, k):
     """
@@ -150,7 +177,7 @@ def constructPivotTable(annotated_ptms, reference_col, database = 'PhosphoSitePl
     annotation = annotation.dropna(how = 'all')
     return annotation
 
-def getEnrichment(function_class, all_data, subset_list, fishers = True):
+def getEnrichment(M, n, N, k, fishers = True):
     """
     Given a list of PTMs and their annotations, calculate the enrichment of a given annotation for that subset of PTMs
 
@@ -182,24 +209,14 @@ def getEnrichment(function_class, all_data, subset_list, fishers = True):
 
 
     """
-    M = all_data.shape[0]
-    n = all_data.dropna(subset = [function_class]).shape[0]
-    mask = all_data.index.isin(subset_list)
-    subset_data = all_data.loc[mask]
-    N = subset_data.shape[0]
-    if not function_class in subset_data.columns:
-        k = 0
-    else:
-        k = subset_data.dropna(subset = [function_class]).shape[0]
-    
+
     if fishers:
         table = convertToFishers(M, n, N, k)
         odds, p = stats.fisher_exact(table)
-        return n, k, p, M, N, odds
+        return p, odds
     else:
         p = hypergeom(M, n, N, k)
-        return n, k, p, M, N
-
+        return p
 
 def generate_site_enrichment(ptm_subset, reference_df, subset_name = 'Subset', type = 'Process', fishers = True): 
     """

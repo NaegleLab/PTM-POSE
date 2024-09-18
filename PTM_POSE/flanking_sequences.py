@@ -1,16 +1,20 @@
 #biopython packages
 from Bio.Data import CodonTable
-from Bio import pairwise2
 
 #standard packages
 import numpy as np
 import pandas as pd
 import re
 
+import tqdm
+import warnings
+
 #PTM pose functions
 from ptm_pose import database_interfacing as di
 from ptm_pose import project
-from ptm_pose import pose_config as config
+from ptm_pose import pose_config
+
+
 
 # Get the standard codon table
 codon_table = CodonTable.unambiguous_dna_by_name["Standard"]
@@ -77,7 +81,7 @@ def translate_flanking_sequence(seq, flank_size = 7, full_flanking_seq = True, l
 
 def get_ptm_locs_in_spliced_sequences(ptm_loc_in_flank, first_flank_seq, spliced_seq, second_flank_seq, strand, which_flank = 'First', order_by = 'Coordinates'):
     """
-    Given the location of a PTM in a flanking sequence, extract the location of the PTM in the inclusion sequence and the exclusion sequence associated with a given splice event. Inclusion sequence will include the skipped exon region, retained intron, or longer alternative splice site depending on event type. The PTM location should be associated with where the PTM is located relative to spliced region (before = 'First', after = 'Second').
+    Given the location of a PTM in a flanking sequence, extract the location of the PTM in the Inclusion Flanking Sequence and the Exclusion Flanking Sequence associated with a given splice event. Inclusion Flanking Sequence will include the skipped exon region, retained intron, or longer alternative splice site depending on event type. The PTM location should be associated with where the PTM is located relative to spliced region (before = 'First', after = 'Second').
 
     Parameters
     ----------
@@ -97,7 +101,7 @@ def get_ptm_locs_in_spliced_sequences(ptm_loc_in_flank, first_flank_seq, spliced
     Returns
     -------
     tuple
-        Tuple containing the PTM location in the inclusion sequence and the exclusion sequence
+        Tuple containing the PTM location in the Inclusion Flanking Sequence and the Exclusion Flanking Sequence
     """
     if order_by == 'Translation':
         if which_flank == 'First':
@@ -174,7 +178,7 @@ def get_flanking_sequence(ptm_loc, seq, ptm_residue, flank_size = 5, lowercase_m
     
     return flanking_seq_aa
 
-def extract_region_from_splicegraph(spliceseq, region_id):
+def extract_region_from_splicegraph(splicegraph, region_id):
     """
     Given a region id and the splicegraph from SpliceSeq, extract the chromosome, strand, and start and stop locations of that exon. Start and stop are forced to be in ascending order, which is not necessarily true from the splice graph (i.e. start > stop for negative strand exons). This is done to make the region extraction consistent with the rest of the codebase.
 
@@ -190,24 +194,52 @@ def extract_region_from_splicegraph(spliceseq, region_id):
     list
         List containing the chromosome, strand (1 for forward, -1 for negative), start, and stop locations of the region
     """
-    region_info = spliceseq.loc[region_id]
+    region_info = splicegraph.loc[region_id]
+
+    #check to see how many regions correspond to id, if multiple, default to first entry
+    if isinstance(region_info, pd.DataFrame):
+        region_info = region_info.iloc[0]
+        print(f'Warning: {region_id} has multiple entries in splicegraph. Defaulting to first entry.')
+    
     strand = project.convert_strand_symbol(region_info['Strand'])
     if strand == 1:
         return [region_info['Chromosome'], strand,region_info['Chr_Start'], region_info['Chr_Stop']]
     else:
         return [region_info['Chromosome'], strand,region_info['Chr_Stop'], region_info['Chr_Start']]
+
     
-def get_spliceseq_event_regions(spliceseq_event, splicegraph):
-    first_exon_region = extract_region_from_splicegraph(splicegraph, region_id = spliceseq_event['symbol']+'_'+str(spliceseq_event['from_exon']))
-    spliced_regions = [extract_region_from_splicegraph(splicegraph, spliceseq_event['symbol']+'_'+exon) if '.' in exon else extract_region_from_splicegraph(splicegraph, spliceseq_event['symbol']+'_'+exon+'.0') for exon in spliceseq_event['exons'].split(':')]
-    second_exon_region = extract_region_from_splicegraph(splicegraph, region_id = spliceseq_event['symbol']+'_'+str(spliceseq_event['to_exon']))
+def get_spliceseq_event_regions(gene_name, from_exon, spliced_exons, to_exon, splicegraph):
+    """
+    Given all exons associated with a splicegraph event, obtain the coordinates associated with the flanking exons and the spliced region. The spliced region is defined as the exons that are associated with psi values, while flanking regions include the "from" and "to" exons that indicate the adjacent, unspliced exons.
+
+    Parameters
+    ----------
+    gene_name : str
+        Gene name associated with the splice event
+    from_exon : int
+        Exon number associated with the first flanking exon
+    spliced_exons : str
+        Exon numbers associated with the spliced region, separated by colons for each unique exon
+    to_exon : int
+        Exon number associated with the second flanking exon
+    splicegraph : pandas.DataFrame
+        DataFrame containing information about individual exons and their coordinates
+
+    Returns
+    -------
+    tuple
+        Tuple containing the genomic coordinates of the first flanking region, spliced regions, and second flanking region
+    """
+    first_exon_region = extract_region_from_splicegraph(splicegraph, region_id = gene_name+'_'+str(from_exon))
+    spliced_regions = [extract_region_from_splicegraph(splicegraph, gene_name+'_'+exon) if '.' in exon else extract_region_from_splicegraph(splicegraph, gene_name+'_'+exon+'.0') for exon in spliced_exons.split(':')]
+    second_exon_region = extract_region_from_splicegraph(splicegraph, region_id = gene_name+'_'+str(to_exon))
     return first_exon_region, spliced_regions, second_exon_region
 
 
 
 
 
-def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region, spliced_region, second_flank_region, gene = None, event_id = None, flank_size = 5, coordinate_type = 'hg38', lowercase_mod = True, order_by = 'Coordinates'):
+def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region, spliced_region, second_flank_region, gene = None, dPSI = None, sig = None, event_id = None, flank_size = 5, coordinate_type = 'hg38', lowercase_mod = True, order_by = 'Coordinates'):
     """
     Currently has been tested with MATS splicing events.
 
@@ -246,12 +278,12 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
     """
     strand = project.convert_strand_symbol(strand)
     #check first flank for ptms
-    ptms_in_region_first_flank = project.find_PTMs_in_region(ptm_coordinates, chromosome, strand, first_flank_region[0], first_flank_region[1], gene = gene, coordinate_type = coordinate_type)
+    ptms_in_region_first_flank = project.find_ptms_in_region(ptm_coordinates, chromosome, strand, first_flank_region[0], first_flank_region[1], gene = gene, coordinate_type = coordinate_type)
     if not ptms_in_region_first_flank.empty:
         ptms_in_region_first_flank = ptms_in_region_first_flank[ptms_in_region_first_flank['Proximity to Region End (bp)'] < flank_size*3]
         ptms_in_region_first_flank['Region'] = 'First'
     #check second flank for ptms
-    ptms_in_region_second_flank = project.find_PTMs_in_region(ptm_coordinates, chromosome, strand, second_flank_region[0], second_flank_region[1], gene = gene, coordinate_type = coordinate_type)
+    ptms_in_region_second_flank = project.find_ptms_in_region(ptm_coordinates, chromosome, strand, second_flank_region[0], second_flank_region[1], gene = gene, coordinate_type = coordinate_type)
     if not ptms_in_region_second_flank.empty:
         ptms_in_region_second_flank = ptms_in_region_second_flank[ptms_in_region_second_flank['Proximity to Region Start (bp)'] < flank_size*3]
         ptms_in_region_second_flank['Region'] = 'Second'
@@ -263,9 +295,7 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
     if ptms_in_region.empty:
         return pd.DataFrame()
     else:
-        #restrict to ptms within boundary
-        if ptms_in_region.empty:
-            return pd.DataFrame()
+
         #add chromosome/strand info to region info for ensembl query
         first_flank_region_query = [chromosome, strand] + first_flank_region
         spliced_region_query = [chromosome, strand] + spliced_region
@@ -311,7 +341,7 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
             #check if ptm codon codes for amino acid and then extract flanking sequence
             correct_seq = False
             if ptm_codon_inclusion in codon_table.forward_table.keys() and ptm_codon_exclusion in codon_table.forward_table.keys():
-                if codon_table.forward_table[ptm_codon_inclusion] == ptm['Residue'] and codon_table.forward_table[ptm_codon_exclusion] == ptm['Residue']:
+                if codon_table.forward_table[ptm_codon_inclusion] == ptm['Residue'] and codon_table.forward_table[ptm_codon_exclusion] == ptm['Residue']  and exclusion_ptm_loc-(flank_size*3) >= 0 and len(exclusion_seq) >= exclusion_ptm_loc+(flank_size*3)+3:
                     inclusion_flanking_seq = inclusion_seq[inclusion_ptm_loc-(flank_size*3):inclusion_ptm_loc+(flank_size*3)+3]
                     exclusion_flanking_seq = exclusion_seq[exclusion_ptm_loc-(flank_size*3):exclusion_ptm_loc+(flank_size*3)+3]
                     correct_seq = True
@@ -337,17 +367,21 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
 
         #grab useful info from ptm dataframe
         if gene is not None:
-            ptms_in_region = ptms_in_region[['Source of PTM', 'Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']].reset_index(drop = True)
+            ptms_in_region = ptms_in_region[['Source of PTM', 'Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']].reset_index(drop = True)
         else:
-            ptms_in_region = ptms_in_region[['Source of PTM', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']].reset_index(drop = True)
+            ptms_in_region = ptms_in_region[['Source of PTM', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']].reset_index(drop = True)
         #add flanking sequence information to ptm dataframe
-        ptms_in_region['Inclusion Sequence'] = inclusion_seq_list
-        ptms_in_region['Exclusion Sequence'] = exclusion_seq_list
+        ptms_in_region['Inclusion Flanking Sequence'] = inclusion_seq_list
+        ptms_in_region['Exclusion Flanking Sequence'] = exclusion_seq_list
         ptms_in_region['Region'] = flank_region_list
         ptms_in_region['Translation Success'] = translate_success_list
 
         if event_id is not None:
             ptms_in_region.insert(0, 'Event ID', event_id)
+        if dPSI is not None:
+            ptms_in_region['dPSI'] = dPSI
+        if sig is not None:
+            ptms_in_region['Significance'] = sig
 
         return ptms_in_region
 
@@ -393,8 +427,8 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
         List containing DataFrames with the PTMs associated with the flanking regions and the amino acid sequences of the flanking regions in the inclusion and exclusion cases
     """
     #load ptm data from config if not provided
-    if ptm_coordinates is None and config.ptm_coordinates is not None:
-        ptm_coordinates = config.ptm_coordinates
+    if ptm_coordinates is None and pose_config.ptm_coordinates is not None:
+        ptm_coordinates = pose_config.ptm_coordinates
     elif ptm_coordinates is None:
         raise ValueError('ptm_coordinates dataframe not provided and not found in the resource files. Please provide the ptm_coordinates dataframe with config.download_ptm_coordinates() or download the file manually. To avoid needing to download this file each time, run pose_config.download_ptm_coordinates(save = True) to save the file locally within the package directory (will take ~63MB of storage space)')
 
@@ -408,7 +442,7 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
     
 
     results = []
-    for i, event in splice_data.iterrows():
+    for i, event in tqdm.tqdm(splice_data.iterrows(), total = splice_data.shape[0], desc = 'Finding flanking sequences for PTMs nearby splice junctions'):
         if event_id_col is None:
             event_id = i
         else:
@@ -418,6 +452,8 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
         chromosome = event[chromosome_col]
         strand = event[strand_col]
         gene = event[gene_col] if gene_col is not None else None
+        dPSI = event[dPSI_col] if dPSI_col is not None else None
+        sig = event[sig_col] if sig_col is not None else None
 
         #extract region inof
         first_flank_region = [event[first_flank_start_col], event[first_flank_end_col]]
@@ -425,170 +461,214 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
         second_flank_region = [event[second_flank_start_col], event[second_flank_end_col]]
 
         #get flanking changes
-        ptm_flanks = get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region, spliced_region, second_flank_region, event_id = event_id, flank_size = flank_size, coordinate_type = coordinate_type, lowercase_mod=lowercase_mod)
+        ptm_flanks = get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region, spliced_region, second_flank_region, gene = gene, sig = sig, dPSI = dPSI, event_id = event_id, flank_size = flank_size, coordinate_type = coordinate_type, lowercase_mod=lowercase_mod)
 
         #append to results
         results.append(ptm_flanks)
 
-    #combine and remove any failed translation attempts
     results = pd.concat(results)
-    results = results.dropna(subset = ['Inclusion Sequence', 'Exclusion Sequence'])
+    #combine and remove any failed translation attempts
+    if not results.empty:
+        results = results[results['Translation Success']]
 
-    #do some quick comparison of flanking sequences
-    results['Matched'] = results['Inclusion Sequence'] == results['Exclusion Sequence']
-    results['Stop Codon Introduced'] = (results['Inclusion Sequence'].str.contains(r'\*')) | (results['Exclusion Sequence'].str.contains(r'\*'))
+        #do some quick comparison of flanking sequences
+        if not results.empty:
+            #find flanking sequences that have changed and only keep those
+            results['Matched'] = results['Inclusion Flanking Sequence'] == results['Exclusion Flanking Sequence']
+            results = results[~results['Matched']]
+            results = results.drop(columns=['Matched'])
+            results['Stop Codon Introduced'] = (results['Inclusion Flanking Sequence'].str.contains(r'\*')) | (results['Exclusion Flanking Sequence'].str.contains(r'\*')) 
+
+        print(f'{results.shape[0]} PTMs found with potential for altered flanking sequences.')
+    else:
+        print('No PTMs found with potential for altered flanking sequences.')
     return results
 
 
-def getSequenceIdentity(seq1, seq2):
+def get_spliceseq_flank_loc(ptm, strand, from_region_coords, to_region_coords, coordinate_type = 'hg19'):
     """
-    Given two flanking sequences, calculate the sequence identity between them using Biopython and parameters definded by Pillman et al. BMC Bioinformatics 2011
+    Given ptm information for identifying flanking sequences from splicegraph information, extract the relative location of the ptm in the flanking region (where it is located in translation of the flanking region).
 
     Parameters
     ----------
-    seq1, seq2: str
-        flanking sequence 
-
-    Returns
-    -------
-    normalized_score: float
-        normalized score of sequence similarity between flanking sequences (calculated similarity/max possible similarity)
-    """
-    #align canonical and alternative flanks, return only the score
-    actual_similarity = pairwise2.align.globalxs(seq1, seq2, -10, -2, score_only = True)
-    #aling the canonical flank to itself, return only the score
-    control_similarity = pairwise2.align.globalxs(seq1, seq1, -10, -2, score_only = True)
-    #normalize score
-    normalized_score = actual_similarity/control_similarity
-    return normalized_score
-
-def findAlteredPositions(seq1, seq2, flank_size = 5):
-    """
-    Given two sequences, identify the location of positions that have changed
-
-    Parameters
-    ----------
-    seq1, seq2: str
-        sequences to compare (order does not matter)
-    flank_size: int
-        size of the flanking sequences (default is 5). This is used to make sure the provided sequences are the correct length
+    ptm : pandas.Series
+        Series containing PTM information
+    strand : int
+        Strand associated with the splice event (1 for forward, -1 for negative)
+    from_region_coords : list
+        List containing the chromosome, strand, start, and stop locations of the first flanking region
+    to_region_coords : list
+        List containing the chromosome, strand, start, and stop locations of the second flanking region
     
     Returns
     -------
-    altered_positions: list
-        list of positions that have changed
-    residue_change: list
-        list of residues that have changed associated with that position
-    flank_side: str
-        indicates which side of the flanking sequence the change has occurred (N-term, C-term, or Both)
+    int
+        Relative location of the PTM in the flanking region
     """
-    desired_seq_size = flank_size*2+1
-    altered_positions = []
-    residue_change = []
-    flank_side = []
-    seq_size = len(seq1)
-    flank_size = (seq_size -1)/2
-    if seq_size == len(seq2) and seq_size == desired_seq_size:
-        for i in range(seq_size):
-            if seq1[i] != seq2[i]:
-                altered_positions.append(i-(flank_size))
-                residue_change.append(f'{seq1[i]}->{seq2[i]}')
-        #check to see which side flanking sequence
-        altered_positions = np.array(altered_positions)
-        n_term = any(altered_positions < 0)
-        c_term = any(altered_positions > 0)
-        if n_term and c_term:
-            flank_side = 'Both'
-        elif n_term:
-            flank_side = 'N-term only'
-        elif c_term:
-            flank_side = 'C-term only'
-        else:
-            flank_side = 'Unclear'
-        return altered_positions, residue_change, flank_side
+    if strand == 1 and ptm['Which Flank'] == 'First':
+        return ptm[f'Gene Location ({coordinate_type})']  - from_region_coords[-2]
+    elif strand == 1 and ptm['Which Flank'] == 'Second':
+        return ptm[f'Gene Location ({coordinate_type})']  - to_region_coords[-2]
+    elif strand == -1 and ptm['Which Flank'] == 'First':
+        return from_region_coords[-1] - ptm[f'Gene Location ({coordinate_type})']
     else:
-        return np.nan, np.nan, np.nan
-    
-def compare_flanking_sequences(flanking_sequences, flank_size = 5):
-    sequence_identity_list = []
-    altered_positions_list = []
-    residue_change_list = []
-    flank_side_list = []
-    for i, row in flanking_sequences.iterrows():
-        #if sequences are not the same and do not introduce stop codons, compare sequence identity
-        if not row['Stop Codon Introduced'] and not row['Matched']:
-            #compare sequence identity
-            sequence_identity = getSequenceIdentity(row['Inclusion Sequence'], row['Exclusion Sequence'])
-            #identify where flanking sequence changes
-            altered_positions, residue_change, flank_side = findAlteredPositions(row['Inclusion Sequence'], row['Exclusion Sequence'], flank_size = flank_size)
-        else:
-            sequence_identity = np.nan
-            altered_positions = np.nan
-            residue_change = np.nan
-            flank_side = np.nan
+        return to_region_coords[-1] - ptm[f'Gene Location ({coordinate_type})']
 
-        #add to lists
-        sequence_identity_list.append(sequence_identity)
-        altered_positions_list.append(altered_positions)
-        residue_change_list.append(residue_change)
-        flank_side_list.append(flank_side)
-
-    flanking_sequences['Sequence Identity'] = sequence_identity_list
-    flanking_sequences['Altered Positions'] = altered_positions_list
-    flanking_sequences['Residue Change'] = residue_change_list
-    flanking_sequences['Altered Flank Side'] = flank_side_list
-    return flanking_sequences
-
-    
-def find_motifs(seq, elm_classes):
+def get_ptms_in_splicegraph_flank(gene_name, chromosome, strand, flank_region_start, flank_region_end, coordinate_type = 'hg19', which_flank = 'First', flank_size = 5):
     """
-    Given a sequence and a dataframe containinn ELM class information, identify motifs that can be found in the provided sequence using the RegEx expression provided by ELM (PTMs not considered). This does not take into account the position of the motif in the sequence or additional information that might validate any potential interaction (i.e. structural information that would indicate whether the motif is accessible or not). ELM class information can be downloaded from the download page of elm (http://elm.eu.org/elms/elms_index.tsv).
+
+    """
+    #check for ptms in first flank region
+    flank_ptms = project.find_ptms_in_region(ptm_coordinates = pose_config.ptm_coordinates, chromosome = chromosome, strand = strand, start = flank_region_start, end = flank_region_end, coordinate_type = coordinate_type, gene = gene_name)
+    if not flank_ptms.empty and which_flank == 'First': #if ptms found region, grab those close enough to splice boundary to have impacted flanking sequence
+        flank_ptms = flank_ptms[flank_ptms['Proximity to Region End (bp)'] < flank_size*3]
+        flank_ptms['Which Flank'] = 'First'
+    elif not flank_ptms.empty and which_flank == 'Second': #if ptms found region, grab those close enough to splice boundary to have impacted flanking sequence
+        flank_ptms = flank_ptms[flank_ptms['Proximity to Region Start (bp)'] < flank_size*3]
+        flank_ptms['Which Flank'] = 'Second'
+    
+    return flank_ptms
+
+def get_flank_changes_from_splicegraph_single_event(event_row, splicegraph, event_id_col = None, dPSI_col = None, sig_col = None, extra_cols = None, flank_size = 5, coordinate_type = 'hg19'):
+    region_id = event_row[event_id_col] if event_id_col is not None else None
+    dPSI = event_row[dPSI_col] if dPSI_col is not None else None
+    sig = event_row[sig_col] if sig_col is not None else None
+
+    #get region info
+    from_region_coords, spliced_region_coords, to_region_coords = get_spliceseq_event_regions(gene_name = event_row['symbol'], from_exon = event_row['from_exon'], spliced_exons = event_row['exons'], to_exon = event_row['to_exon'], splicegraph = splicegraph)
+    chromosome = from_region_coords[0]
+    strand = from_region_coords[1]
+
+    from_flank_ptms = get_ptms_in_splicegraph_flank(event_row['symbol'], chromosome, strand, from_region_coords[-2], from_region_coords[-1], coordinate_type = coordinate_type, which_flank = 'First', flank_size = flank_size)
+    to_flank_ptms = get_ptms_in_splicegraph_flank(event_row['symbol'], chromosome, strand, to_region_coords[-2], to_region_coords[-1], coordinate_type = coordinate_type, which_flank = 'Second', flank_size = flank_size)
+    ptms_of_interest = pd.concat([from_flank_ptms, to_flank_ptms]).reset_index()
+
+
+    #if any ptms found for event that could have altered flanking sequences extract sequence information
+    if not ptms_of_interest.empty:
+        #add additional context from splice data, if indicated
+        if event_id_col is not None:
+            ptms_of_interest['Region ID'] = region_id
+            
+        if dPSI_col is not None:
+            ptms_of_interest['dPSI'] = dPSI
+        
+        if sig_col is not None:
+            ptms_of_interest['Significance'] = sig
+        
+        if extra_cols is not None:
+            for col in extra_cols:
+                ptms_of_interest[col] = event_row[col]
+
+
+        region_list = [from_region_coords] + spliced_region_coords + [to_region_coords]
+        seqs = di.get_region_sequences_from_list(region_list, coordinate_type = 'hg19')
+        from_sequence = seqs[0]
+        to_sequence = seqs[-1] 
+        spliced_sequence = ''.join(seqs[1:-1]) #combine all sequences from spliced region (may be multiple exons)
+
+        inclusion_sequence = seqs[0] + ''.join(seqs[1:-1]) + seqs[-1] #combine sequences if spliced region is included
+        exclusion_sequence = seqs[0] + seqs[-1] #combine sequences if spliced region is excluded
+
+        #initialize columns for flanking sequences
+        ptms_of_interest['Inclusion Flanking Sequence'] = ''
+        ptms_of_interest['Exclusion Flanking Sequence'] = ''
+        for i, ptm in ptms_of_interest.iterrows():
+            ptm_loc_in_flank = get_spliceseq_flank_loc(ptm, strand, from_region_coords, to_region_coords)
+            #grab where ptm is located in both the inclusion and exclusion event
+            inclusion_ptm_loc, exclusion_ptm_loc = get_ptm_locs_in_spliced_sequences(ptm_loc_in_flank, from_sequence, spliced_sequence, to_sequence, strand = strand, which_flank = ptm['Which Flank'], order_by = 'Translation')
+
+            #extract expected flanking sequence based on location in sequence
+            inclusion_flank = get_flanking_sequence(inclusion_ptm_loc, inclusion_sequence, ptm_residue = ptm['Residue'], flank_size = flank_size, full_flanking_seq = False)
+            exclusion_flank = get_flanking_sequence(exclusion_ptm_loc, exclusion_sequence, ptm_residue = ptm['Residue'], flank_size = flank_size, full_flanking_seq = False)
+
+            #add to dataframe
+            ptms_of_interest.loc[i, 'Inclusion Flanking Sequence'] = inclusion_flank
+            ptms_of_interest.loc[i, 'Exclusion Flanking Sequence'] = exclusion_flank
+
+        #trim the expected flanking sequence
+        #ptms_of_interest['Expected Flanking Sequence'] = ptms_of_interest['Expected Flanking Sequence'].apply(lambda x: x[int((len(x)-1)/2-flank_size):int((len(x)-1)/2+flank_size+1)] if x == x else np.nan)
+        #find flanking sequences that have changed and only keep those
+        ptms_of_interest['Matched'] = ptms_of_interest['Inclusion Flanking Sequence'] == ptms_of_interest['Exclusion Flanking Sequence']
+        ptms_of_interest = ptms_of_interest[~ptms_of_interest['Matched']]
+        ptms_of_interest = ptms_of_interest.drop(columns=['Matched'])
+        ptms_of_interest['Stop Codon Introduced'] = (ptms_of_interest['Inclusion Flanking Sequence'].str.contains(r'\*')) | (ptms_of_interest['Exclusion Flanking Sequence'].str.contains(r'\*')) 
+
+    
+    return ptms_of_interest
+
+def get_flanking_changes_from_splicegraph(psi_data, splicegraph, ptm_coordinates = None, dPSI_col = None, sig_col = None, event_id_col = None, extra_cols = None, gene_col = 'symbol', flank_size = 5, coordinate_type = 'hg19'):
+    """
+    Given a DataFrame containing information about splice events  obtained from SpliceSeq and the corresponding splicegraph, extract the flanking sequences of PTMs that are nearby the splice boundary (potential for flanking sequence to be altered). Coordinate information of individual exons should be found in splicegraph. You can also provide columns with specific psi or significance information. Extra cols not in these categories can be provided with extra_cols parameter.
 
     Parameters
     ----------
-    seq: str
-        sequence to search for motifs
-    elm_classes: pandas.DataFrame
-        DataFrame containing ELM class information (ELMIdentifier, Regex, etc.), downloaded directly from ELM (http://elm.eu.org/elms/elms_index.tsv)
-    """
-    matches = []
-    for j, elm_row in elm_classes.iterrows():
-        reg_ex = elm_row['Regex']
-        if re.search(reg_ex, seq) is not None:
-            matches.append(elm_row['ELMIdentifier'])
-
-    return matches
-
-def compare_inclusion_motifs(flanking_sequences, elm_classes = None):
-    """
-    Given a DataFrame containing flanking sequences with changes and a DataFrame containing ELM class information, identify motifs that are found in the inclusion and exclusion events, identifying motifs unique to each case. This does not take into account the position of the motif in the sequence or additional information that might validate any potential interaction (i.e. structural information that would indicate whether the motif is accessible or not). ELM class information can be downloaded from the download page of elm (http://elm.eu.org/elms/elms_index.tsv).
-
-    Parameters
-    ----------
-    flanking_sequences: pandas.DataFrame
-        DataFrame containing flanking sequences with changes, obtained from get_flanking_changes_from_splice_data()
-    elm_classes: pandas.DataFrame
-        DataFrame containing ELM class information (ELMIdentifier, Regex, etc.), downloaded directly from ELM (http://elm.eu.org/elms/elms_index.tsv). Recommended to download this file and input it manually, but will download from ELM otherwise
+    psi_data : pandas.DataFrame
+        DataFrame containing information about splice events obtained from SpliceSeq
+    splicegraph : pandas.DataFrame
+        DataFrame containing information about individual exons and their coordinates
+    ptm_coordinates : pandas.DataFrame
+        DataFrame containing PTM coordinate information for identify PTMs in the flanking regions
+    dPSI_col : str, optional
+        Column name indicating delta PSI value, by default None
+    sig_col : str, optional
+        Column name indicating significance of the event, by default None
+    event_id_col : str, optional
+        Column name indicating event ID, by default None
+    extra_cols : list, optional
+        List of column names for additional information to add to the results, by default None
+    gene_col : str, optional
+        Column name indicating gene symbol of spliced gene, by default 'symbol'
+    flank_size : int, optional
+        Number of amino acids to include flanking the PTM, by default 5
+    coordinate_type : str, optional
+        Coordinate system used for the regions, by default 'hg19'. Other options is hg38.
 
     Returns
     -------
-    flanking_sequences: pandas.DataFrame
-        DataFrame containing flanking sequences with changes and motifs found in the inclusion and exclusion events
-
+    altered_flanks : pandas.DataFrame
+        DataFrame containing the PTMs associated with the flanking regions that are altered, and the flanking sequences that arise depending on whether the flanking sequence is included or not
     """
-    if elm_classes is None:
-        elm_classes = pd.read_csv('http://elm.eu.org/elms/elms_index.tsv', sep = '\t', header = 5)
+    #load ptm data from config if not provided
+    if ptm_coordinates is None and pose_config.ptm_coordinates is not None:
+        ptm_coordinates = pose_config.ptm_coordinates.copy()
+    elif ptm_coordinates is None:
+        raise ValueError('ptm_coordinates dataframe not provided and not found in the resource files. Please provide the ptm_coordinates dataframe with config.download_ptm_coordinates() or download the file manually. To avoid needing to download this file each time, run pose_config.download_ptm_coordinates(save = True) to save the file locally within the package directory (will take ~63MB of storage space)')
 
-    only_in_inclusion = []
-    only_in_exclusion = []
+    #load spliceseq
+    splicegraph['Region ID'] = splicegraph['Symbol'] + '_' + splicegraph['Exon'].astype(str)
+    splicegraph.index = splicegraph['Region ID'].values
 
-    for i, row in flanking_sequences.iterrows():
-        inclusion_matches = find_motifs(row['Inclusion Sequence'], elm_classes)
-        exclusion_matches = find_motifs(row['Exclusion Sequence'], elm_classes)
+    data_for_flanks = psi_data.drop_duplicates().copy() 
 
-        only_in_inclusion.append(';'.join(set(inclusion_matches) - set(exclusion_matches)))
-        only_in_exclusion.append(';'.join(set(exclusion_matches) - set(inclusion_matches)))
+    #extract relevant columns
+    relevant_columns = ['as_id', 'splice_type', 'symbol', 'from_exon', 'exons', 'to_exon']
+    if event_id_col is not None:
+        relevant_columns.append(event_id_col)
+    if dPSI_col is not None:
+        relevant_columns.append(dPSI_col)
+    if sig_col is not None:
+        relevant_columns.append(sig_col)
+    if extra_cols is not None:
+        relevant_columns.extend(extra_cols)
 
-    flanking_sequences["Motif only in Inclusion"] = only_in_inclusion
-    flanking_sequences["Motif only in Exclusion"] = only_in_exclusion
-    return flanking_sequences
+    data_for_flanks = data_for_flanks[relevant_columns].drop_duplicates()
+    data_for_flanks = data_for_flanks.dropna(subset = ['from_exon', 'to_exon'])
+    data_for_flanks['from_region_id'] = data_for_flanks[gene_col]+'_'+data_for_flanks['from_exon'].astype(str)
+    data_for_flanks['to_region_id'] = data_for_flanks['symbol']+'_'+data_for_flanks['to_exon'].astype(str)
+
+    #get coordinates for the different regions
+    altered_flanks = []
+    for i, row in tqdm.tqdm(data_for_flanks.iterrows(), total = data_for_flanks.shape[0], desc = 'Finding flanking changes for splicegraph events'):
+        single_event_altered_flanks = get_flank_changes_from_splicegraph_single_event(row, splicegraph, event_id_col = event_id_col, dPSI_col = dPSI_col, sig_col = sig_col, extra_cols = extra_cols, flank_size = flank_size, coordinate_type = coordinate_type)
+
+        altered_flanks.append(single_event_altered_flanks)
+
+    altered_flanks = pd.concat(altered_flanks)    
+    return altered_flanks
+
+
+
+
+
+

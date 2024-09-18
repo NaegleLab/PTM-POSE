@@ -1,0 +1,50 @@
+{% set name = "ptm-pose" %}
+{% set version = "0.2.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/ptm_pose-{{ version }}.tar.gz
+  sha256: 7912aaf0b2bf1b6253f5979732ec1486d1ff0ebf503f4bf70024e1fbe4c982c0
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - python >=3.10
+    - pip
+  run:
+    - python >=3.10
+    - pandas ==2.2.*
+    - numpy ==1.26.*
+    - scipy ==1.13.*
+    - biopython ==1.83.*
+    - tqdm ==4.66.*
+    - networkx ==3.3
+    - xlrd
+    - matplotlib-base
+    - seaborn
+    - requests
+
+test:
+  imports:
+    - ptm_pose
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/NaegleLab/PTM-POSE/tree/main
+  summary: 'PTM-POSE: PTM Projection onto Splice Events'
+  license: GPL-3.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - srcrowl

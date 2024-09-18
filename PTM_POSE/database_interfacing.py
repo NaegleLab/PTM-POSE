@@ -1,9 +1,10 @@
-import re
+
 
 #packages for web interfacing
 import requests
 from requests.adapters import HTTPAdapter, Retry
 import re
+import time
 
 import numpy as np
 
@@ -56,7 +57,7 @@ def get_uniprot_to_gene(genename = True, geneid = True):
         raise ValueError('Must request at least one of genename or geneid')
     
     #establish query url
-    fields = ['accession'] + ['gene_names'] * genename + ['xref_ensembl_full'] * geneid 
+    fields = ['accession'] + ['gene_names'] * genename + ['xref_ensembl'] * geneid 
     fields = ','.join(fields)
     url =  f"https://rest.uniprot.org/uniprotkb/search?query=reviewed:true+AND+organism_id:9606&format=tsv&fields={fields}_full&size=500"
 
@@ -92,7 +93,7 @@ def get_uniprot_to_gene(genename = True, geneid = True):
         return uni_to_geneid
 
 
-def get_region_sequence(chromosome, strand, region_start, region_end, coordinate_type = 'hg38'):
+def get_region_sequence(chromosome, strand, region_start, region_end, coordinate_type = 'hg38', max_retries = 5, delay = 15):
     """
     Given a genomic region, return the DNA sequence associated with the region. Adapted from example REST API code provided by Ensembl
 
@@ -119,19 +120,30 @@ def get_region_sequence(chromosome, strand, region_start, region_end, coordinate
     elif coordinate_type == 'hg19':
         coord_system_version = 'GRCh37'
 
+    #check to make sure region start is less than region end
+    if region_start >= region_end:
+        raise ValueError('Region start coordinate must be smaller than region end coordinate')
+
 
     server = "https://rest.ensembl.org"
     ext = f"/sequence/region/human/{chromosome}:{region_start}..{region_end}:{strand}?coord_system_version={coord_system_version}"
     
-    r = requests.get(server+ext, headers={ "Content-Type" : "text/plain"})
-    
-    if not r.ok:
-        r.raise_for_status()
-        return None
+    for i in range(max_retries):
+        try:
+            r = requests.get(server+ext, headers={ "Content-Type" : "text/plain"})
+            
+            if not r.ok:
+                r.raise_for_status()
+            break
+        except:
+            status = r.status_code 
+            time.sleep(delay)
     else:
-        return r.text
+        raise Exception('Failed to download region sequences after ' + str(max_retries) + f' attempts (status code = {status}). Please try again.')
 
-def get_region_sequences_from_list(regions_list, coordinate_type = 'hg38'):
+    return r.text
+
+def get_region_sequences_from_list(regions_list, coordinate_type = 'hg38', max_retries = 5, delay = 15):
     """
     Given a list of genomic regions, return the DNA sequences associated with the regions. Adapted from example REST API code provided by Ensembl
 
@@ -155,8 +167,15 @@ def get_region_sequences_from_list(regions_list, coordinate_type = 'hg38'):
     region_list_str = '['
     region_coords = []
     for i,region_info in enumerate(regions_list):
+        #check to make sure region start is less than region end
+        if region_info[2] >= region_info[3]:
+            raise ValueError('Region start coordinate must be smaller than region end coordinate, which is not true for all regions in list')
+        else:
+            start = region_info[2]
+            end = region_info[3]
+
         strand = project.convert_strand_symbol(region_info[1])
-        coord = f'{region_info[0]}:{region_info[2]}..{region_info[3]}:{strand}'
+        coord = f'{region_info[0]}:{start}..{end}:{strand}'
         region_coords.append(coord)
         if i == len(regions_list) - 1:
             region_list_str += f'"{coord}"'
@@ -168,24 +187,29 @@ def get_region_sequences_from_list(regions_list, coordinate_type = 'hg38'):
     server = "https://rest.ensembl.org"
     ext = "/sequence/region/human"
     headers={ "Content-Type" : "application/json", "Accept" : "application/json"}
-
-    r = requests.post(server+ext, headers=headers, data='{ "regions" : %s}' % region_list_str, params = {'coord_system_version':coord_system_version})
-    
-    if not r.ok:
-        r.raise_for_status()
-        return None
+    for i in range(max_retries):
+        try:
+            r = requests.post(server+ext, headers=headers, data='{ "regions" : %s}' % region_list_str, params = {'coord_system_version':coord_system_version})
+            if not r.ok:
+                r.raise_for_status()
+            break
+        except:
+            status = r.status_code 
+            time.sleep(delay)
     else:
-        decoded = r.json()
+        raise Exception('Failed to download region sequences after ' + str(max_retries) + f' attempts (status code = {status}). Please try again.')
 
-        #extract sequences, making sure they are in the same order as the inputted list
-        seq_list = []
-        for region in region_coords:
-            #find seq info associated with query
-            for result in decoded:
-                if result['query'] == region:
-                    seq_list.append(result['seq'])
-                    break
+    decoded = r.json()
 
-        #return sequences
-        return seq_list
+    #extract sequences, making sure they are in the same order as the inputted list
+    seq_list = []
+    for region in region_coords:
+        #find seq info associated with query
+        for result in decoded:
+            if result['query'] == region:
+                seq_list.append(result['seq'])
+                break
+
+    #return sequences
+    return seq_list
 
