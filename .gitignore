@@ -1,6 +1,8 @@
 # package specific files
 Resource_Files/translator.csv
 Resource_Files/uniprot_to_gene_name.json
+/Gallery/NetworKIN/
+/Gallery/*.csv
 
 #sphinx-specific
 _build/

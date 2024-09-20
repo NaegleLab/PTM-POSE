@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**00:00.170** total execution time for 1 file **from all galleries**:
+**00:00.159** total execution time for 4 files **from all galleries**:
 
 .. container::
 
@@ -33,5 +33,14 @@ Computation times
      - Time
      - Mem (MB)
    * - :ref:`sphx_glr_gallery_output_plot_num_annotations.py` (``gallery/plot_num_annotations.py``)
-     - 00:00.170
+     - 00:00.159
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_plot_kstar_enrichment.py` (``gallery/plot_kstar_enrichment.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_plot_location_altered_flanks.py` (``gallery/plot_location_altered_flanks.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_plot_protein_interactions.py` (``gallery/plot_protein_interactions.py``)
+     - 00:00.000
      - 0.0

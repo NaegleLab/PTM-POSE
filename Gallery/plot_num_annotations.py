@@ -9,13 +9,14 @@ Note: This examples assumes that you have already run the PTM-POSE pipeline and 
 
 
 from ptm_pose import analyze
+from ptm_pose import plots as pose_plots
 import pandas as pd
 
 # Load spliced ptm and altered flank data
 spliced_ptms = pd.read_csv('spliced_ptms.csv')
 altered_flanks = pd.read_csv('altered_flanks.csv')
 
-analyze.show_available_annotations(spliced_ptms, figsize = (5, 3))
+pose_plots.show_available_annotations(spliced_ptms)
 
 
 
