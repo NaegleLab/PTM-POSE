@@ -1,0 +1,757 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Running PTM-POSE &#8212; PTM-POSE</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'General_Instructions';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Types of Analysis Performed with PTM-POSE" href="gallery_output/index.html" />
+    <link rel="prev" title="PTM-POSE Reference" href="PTM_POSE.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PTM-POSE</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Running PTM-POSE</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="gallery_output/index.html">Types of Analysis Performed with PTM-POSE</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gallery_output/plot_protein_interactions.html">Identify protein interactions that may be impacted by splicing of PTMs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gallery_output/plot_num_annotations.html">Inspecting number of PTMs with annotation information available</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gallery_output/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gallery_output/plot_location_altered_flanks.html">Probing where and how PTM flanking sequences are altered</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="Examples/Examples.html">Full Analysis Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="Examples/ESRP1_knockdown.html">Project PTMs onto ESRP1 knockdown data from MATS (Yang et al, 2016)</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/NaegleLab/PTM-POSE" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/General_Instructions.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Running PTM-POSE</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#formatting-data">Formatting Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#identifying-differentially-included-ptms">Identifying differentially included PTMs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#altered-flanking-sequences">Altered Flanking Sequences</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#combining-outputs">Combining outputs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#annotating-ptms-with-functional-information">Annotating PTMs with Functional Information</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#downstream-analysis">Downstream Analysis</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="running-ptm-pose">
+<h1>Running PTM-POSE<a class="headerlink" href="#running-ptm-pose" title="Permalink to this heading">#</a></h1>
+<p>PTM-POSE is an easily implementable tool to project PTM sites onto splice event data generated from RNA sequencing data and is compatible with any splice event quantification tool that outputs genomic coordinates of different splice events (MATS, SpliceSeq, etc.). PTM-POSE harnesses PTMs that have been mapped to their genomic location by a sister package, [ExonPTMapper](<a class="github reference external" href="https://github.com/NaegleLab/ExonPTMapper">NaegleLab/ExonPTMapper</a>). It also contains functions for annotating these PTMs with information from various databases, like PhosphoSitePlus and ELM.</p>
+<section id="formatting-data">
+<h2>Formatting Data<a class="headerlink" href="#formatting-data" title="Permalink to this heading">#</a></h2>
+<p>To run PTM-POSE, you first need to process your data such that each row corresponds to a unique splice event with the genomic location of that splice event (chromosome, strand, and the bounds of the spliced region). Strand can be indicated using either ‘+’/’-’ or 1/-1. If desired, you can also provide a delta PSI and significance value which will be included in the final PTM dataframe. Any additional columns will be kept. At a minimum, the dataframe should look something like this (optional but recommended parameters indicated):</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>event id
+(optional)</p></th>
+<th class="head"><p>Gene name
+(recommended)</p></th>
+<th class="head"><p>chromosome</p></th>
+<th class="head"><p>strand</p></th>
+<th class="head"><p>region start</p></th>
+<th class="head"><p>region end</p></th>
+<th class="head"><p>dPSI
+(optional)</p></th>
+<th class="head"><p>significance
+(optional)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>first_event</p></td>
+<td><p>CSTN1</p></td>
+<td><p>1</p></td>
+<td><p>-1</p></td>
+<td><p>9797555</p></td>
+<td><p>9797612</p></td>
+<td><p>0.362</p></td>
+<td><p>0.032</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>PTM-POSE allows you to assess two potential impacts of splicing on PTMs:</p>
+<dl class="simple">
+<dt>Differential inclusion</dt><dd><p>lost or gained from the isoform as a result of a splice event</p>
+</dd>
+<dt>Altered flanking sequences</dt><dd><p>the PTM site is present in both isoforms, but the adjacent residues around a PTM are changed in one isoform such that its linear motif that drives many protein interactions is unique</p>
+</dd>
+</dl>
+</section>
+<section id="identifying-differentially-included-ptms">
+<h2>Identifying differentially included PTMs<a class="headerlink" href="#identifying-differentially-included-ptms" title="Permalink to this heading">#</a></h2>
+<p>Once the data is in the correct format, simply run the <cite>project_ptms_onto_splice_events()</cite> function, indicating the column names corresponding each data element. By default, PTM-POSE assumes the provided coordinates are in hg38 coordinates, but you can use older coordinate systems with the <cite>coordinate_type</cite> parameter. If you have saved ptm_coordinates locally, you can set this parameter to None.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ptm</span><span class="o">-</span><span class="n">pose</span> <span class="kn">import</span> <span class="nn">project</span>
+
+<span class="n">my_splice_data_annotated</span><span class="p">,</span> <span class="n">spliced_ptms</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">project_ptms_onto_splice_events</span><span class="p">(</span><span class="n">my_splice_data</span><span class="p">,</span>
+        <span class="n">ptm_coordinates</span><span class="p">,</span>
+        <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chromosome&#39;</span><span class="p">,</span>
+        <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span>
+        <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;region start&#39;</span><span class="p">,</span>
+        <span class="n">region_end_col</span> <span class="o">=</span>  <span class="s1">&#39;region end&#39;</span><span class="p">,</span>
+        <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;event id&#39;</span><span class="p">,</span>
+        <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;Gene name&#39;</span><span class="p">,</span>
+        <span class="n">dPSI_col</span><span class="o">=</span><span class="s1">&#39;dPSI&#39;</span><span class="p">,</span>
+        <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="altered-flanking-sequences">
+<h2>Altered Flanking Sequences<a class="headerlink" href="#altered-flanking-sequences" title="Permalink to this heading">#</a></h2>
+<p>In addition to the previously mentioned columns, we will need to know the location of the flanking exonic regions next to the spliced region. Make sure your dataframe contains the following information prior to running flanking sequence analysis:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<tbody>
+<tr class="row-odd"><td><blockquote>
+<div><p>event id
+(optional)</p>
+</div></blockquote>
+<blockquote>
+<div><p>first event</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>Gene name
+(recommended)</p>
+</div></blockquote>
+<blockquote>
+<div><p>CSTN1</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>chromosome</p>
+</div></blockquote>
+<blockquote>
+<div><p>1</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>strand</p>
+</div></blockquote>
+<blockquote>
+<div><p>-1</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>region start</p>
+</div></blockquote>
+<blockquote>
+<div><p>9797555</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>region end</p>
+</div></blockquote>
+<blockquote>
+<div><p>9797612</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>first flank start</p>
+</div></blockquote>
+<blockquote>
+<div><p>9687655</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>first flank end</p>
+</div></blockquote>
+<blockquote>
+<div><p>9688446</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>second flank start</p>
+</div></blockquote>
+<blockquote>
+<div><p>9811223</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>second flank end</p>
+</div></blockquote>
+<blockquote>
+<div><p>9811745</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>dPSI
+(recommended)</p>
+</div></blockquote>
+<blockquote>
+<div><p>0.362</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>significance
+(recommended)</p>
+</div></blockquote>
+<blockquote>
+<div><p>0.032</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Then, as with differentially included PTMs, you only need to run <cite>get_flanking_changes_from_splice_data()</cite> function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ptm</span><span class="o">-</span><span class="n">pose</span> <span class="kn">import</span> <span class="nn">project</span>
+
+<span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_flanking_changes_from_splice_data</span><span class="p">(</span><span class="n">my_splice_data</span><span class="p">,</span>
+        <span class="n">ptm_coordinates</span><span class="p">,</span>
+        <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chromosome&#39;</span><span class="p">,</span>
+        <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span>
+        <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;region_start&#39;</span><span class="p">,</span>
+        <span class="n">region_end_col</span> <span class="o">=</span>  <span class="s1">&#39;region_end&#39;</span><span class="p">,</span>
+        <span class="n">first_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;first_flank_start&#39;</span><span class="p">,</span>
+        <span class="n">first_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;first_flank_end&#39;</span><span class="p">,</span>
+        <span class="n">second_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;second_flank_start&#39;</span><span class="p">,</span>
+        <span class="n">second_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;second_flank_start&#39;</span><span class="p">,</span>
+        <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;event_id&#39;</span><span class="p">,</span>
+        <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;Gene name&#39;</span><span class="p">,</span>
+        <span class="n">dPSI_col</span><span class="o">=</span><span class="s1">&#39;dPSI&#39;</span><span class="p">,</span>
+        <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="combining-outputs">
+<h2>Combining outputs<a class="headerlink" href="#combining-outputs" title="Permalink to this heading">#</a></h2>
+<p>In some cases you may wish to work with a combined file that indicates both differential inclusion and altered flanking sequence events. This can be done quickly by running:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ptm_pose</span> <span class="kn">import</span> <span class="n">analyze</span>
+<span class="n">combined_output</span> <span class="o">=</span> <span class="n">analyze</span><span class="o">.</span><span class="n">combine_outputs</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">altered_flanks</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="annotating-ptms-with-functional-information">
+<h2>Annotating PTMs with Functional Information<a class="headerlink" href="#annotating-ptms-with-functional-information" title="Permalink to this heading">#</a></h2>
+<p>Beyond projecting PTMs onto your data, we have also provided additional functions for appending information on the function, relationships, and interactions of each post-translational modification that have been recorded in various databases. These annotations include information from:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Database</p></th>
+<th class="head"><p>Annotation types</p></th>
+<th class="head"><p>PTM-POSE function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td rowspan="2"><p><a class="reference external" href="https://www.phosphosite.org/homeAction.action">PhosphoSitePlus</a></p></td>
+<td><ul class="simple">
+<li><p>Function</p></li>
+<li><p>Biological Process</p></li>
+<li><p>interactions</p></li>
+</ul>
+</td>
+<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">annotate</span><span class="o">.</span><span class="n">add_PSP_regulatory_site_data</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;/path/to/file/Regulatory_sites.gz&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><ul class="simple">
+<li><p>Kinase substrates</p></li>
+</ul>
+</td>
+<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">annotate</span><span class="o">.</span><span class="n">add_PSP_kinase_substrate_data</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;/path/to/file/Kinase_Substrate_Dataset.gz&quot;</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://depod.bioss.uni-freiburg.de/">DEPOD</a></p></td>
+<td><ul class="simple">
+<li><p>Phosphatase substrates</p></li>
+</ul>
+</td>
+<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">annotate</span><span class="o">.</span><span class="n">add_DEPOD_data</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;/path/to/file/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="http://140.138.144.141/~RegPhos/index.php">RegPhos</a></p></td>
+<td><ul class="simple">
+<li><p>Kinase substrates</p></li>
+</ul>
+</td>
+<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">annotate</span><span class="o">.</span><span class="n">add_RegPhos_data</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;/path/to/file/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><a class="reference external" href="http://elm.eu.org/">ELM</a></p></td>
+<td><ul class="simple">
+<li><p>Interactions</p></li>
+</ul>
+</td>
+<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">annotate</span><span class="o">.</span><span class="n">add_PTMcode_interprotein</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;/path/to/file/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><ul class="simple">
+<li><p>Linear motifs</p></li>
+</ul>
+</td>
+<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">annotate</span><span class="o">.</span><span class="n">add_PTMcode_intraprotein</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;/path/to/file/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><a class="reference external" href="https://ptmcode.embl.de/">PTMcode</a></p></td>
+<td><ul class="simple">
+<li><p>Interactions</p></li>
+</ul>
+</td>
+<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">annotate</span><span class="o">.</span><span class="n">add_PTMcode_interprotein</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;/path/to/file/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><ul class="simple">
+<li><p>Intraprotein contacts</p></li>
+</ul>
+</td>
+<td><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">annotate</span><span class="o">.</span><span class="n">add_PTMcode_intraprotein</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;/path/to/file/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Rather than running each function individually, you can also use the master function <cite>annotate_ptms()</cite> to annotate with all desired information at once.</p>
+<p>We are continuing to work on adding functions to append more contextual information for individual PTMs. If you have suggestions for what information you would like to be added, please let us know!</p>
+</section>
+<section id="downstream-analysis">
+<h2>Downstream Analysis<a class="headerlink" href="#downstream-analysis" title="Permalink to this heading">#</a></h2>
+<p>PTM-POSE also provides functions in the <cite>annotate</cite> module for annotating the above outputs with functional information from various databases: PhosphoSitePlus, RegPhos, PTMcode, PTMInt, ELM, DEPOD. You can then identify PTMs with specific functions, interaction, etc. with the <cite>analyze</cite> module. See an example on a real dataset [here](Examples/ESRP1_knockdown).</p>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="PTM_POSE.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">PTM-POSE Reference</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="gallery_output/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Types of Analysis Performed with PTM-POSE</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#formatting-data">Formatting Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#identifying-differentially-included-ptms">Identifying differentially included PTMs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#altered-flanking-sequences">Altered Flanking Sequences</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#combining-outputs">Combining outputs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#annotating-ptms-with-functional-information">Annotating PTMs with Functional Information</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#downstream-analysis">Downstream Analysis</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Naegle Lab
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Naegle Lab.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

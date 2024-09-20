@@ -1,0 +1,1040 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ptm_pose.project &#8212; PTM-POSE</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ptm_pose/project';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PTM-POSE</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../General_Instructions.html">Running PTM-POSE</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../gallery_output/index.html">Types of Analysis Performed with PTM-POSE</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery_output/plot_protein_interactions.html">Identify protein interactions that may be impacted by splicing of PTMs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery_output/plot_num_annotations.html">Inspecting number of PTMs with annotation information available</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery_output/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery_output/plot_location_altered_flanks.html">Probing where and how PTM flanking sequences are altered</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../Examples/Examples.html">Full Analysis Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../Examples/ESRP1_knockdown.html">Project PTMs onto ESRP1 knockdown data from MATS (Yang et al, 2016)</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/NaegleLab/PTM-POSE" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for ptm_pose.project</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">from</span> <span class="nn">ptm_pose</span> <span class="kn">import</span> <span class="n">pose_config</span>
+<span class="kn">from</span> <span class="nn">ptm_pose</span> <span class="kn">import</span> <span class="n">flanking_sequences</span> <span class="k">as</span> <span class="n">fs</span>
+
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="k">def</span> <span class="nf">find_ptms_in_region</span><span class="p">(</span><span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">gene</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given an genomic region in either hg38 or hg19 coordinates (such as the region encoding an exon of interest), identify PTMs that are mapped to that region. If so, return the exon number. If none are found, return np.nan.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    chromosome: str</span>
+<span class="sd">        chromosome where region is located</span>
+<span class="sd">    strand: int</span>
+<span class="sd">        DNA strand for region is found on (1 for forward, -1 for reverse)</span>
+<span class="sd">    start: int</span>
+<span class="sd">        start position of region on the chromosome/strand (should always be less than end)</span>
+<span class="sd">    end: int</span>
+<span class="sd">        end position of region on the chromosome/strand (should always be greater than start)</span>
+<span class="sd">    coordinate_type: str</span>
+<span class="sd">        indicates the coordinate system used for the start and end positions. Either hg38 or hg19. Default is &#39;hg38&#39;.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ptms_in_region: pandas.DataFrame</span>
+<span class="sd">        dataframe containing all PTMs found in the region. If no PTMs are found, returns np.nan.</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#restrict to PTMs on the same chromosome and strand</span>
+    <span class="n">ptms_in_region</span> <span class="o">=</span> <span class="n">ptm_coordinates</span><span class="p">[(</span><span class="n">ptm_coordinates</span><span class="p">[</span><span class="s1">&#39;Chromosome/scaffold name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">chromosome</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ptm_coordinates</span><span class="p">[</span><span class="s1">&#39;Strand&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">strand</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">coordinate_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;hg19&#39;</span><span class="p">,</span><span class="s1">&#39;hg38&#39;</span><span class="p">]:</span>
+        <span class="n">loc_col</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Gene Location (</span><span class="si">{</span><span class="n">coordinate_type</span><span class="si">}</span><span class="s1">)&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Coordinate type must be hg38 or hg19&#39;</span><span class="p">)</span>
+
+    <span class="c1">#check to make sure the start value is less than the end coordinate. If it is not, treat the end coordinate as the start and the start coordinate as the end</span>
+    <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">:</span>
+        <span class="n">ptms_in_region</span> <span class="o">=</span> <span class="n">ptms_in_region</span><span class="p">[(</span><span class="n">ptms_in_region</span><span class="p">[</span><span class="n">loc_col</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">start</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ptms_in_region</span><span class="p">[</span><span class="n">loc_col</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">end</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ptms_in_region</span> <span class="o">=</span> <span class="n">ptms_in_region</span><span class="p">[(</span><span class="n">ptms_in_region</span><span class="p">[</span><span class="n">loc_col</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">start</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">ptms_in_region</span><span class="p">[</span><span class="n">loc_col</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">end</span><span class="p">)]</span>
+    
+
+    <span class="c1">#extract only PTM information from dataframe and return that and list (if not ptms, return empty dataframe)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ptms_in_region</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="c1">#grab uniprot id and residue</span>
+        <span class="n">ptms_in_region</span> <span class="o">=</span> <span class="n">ptms_in_region</span><span class="p">[[</span><span class="s1">&#39;Source of PTM&#39;</span><span class="p">,</span> <span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM Position in Canonical Isoform&#39;</span><span class="p">,</span> <span class="n">loc_col</span><span class="p">,</span> <span class="s1">&#39;Modification&#39;</span><span class="p">,</span> <span class="s1">&#39;Modification Class&#39;</span><span class="p">]]</span>
+        <span class="c1">#check if ptm is associated with the same gene (if info is provided). if not, do not add</span>
+        <span class="k">if</span> <span class="n">gene</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">ptms_in_region</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+                <span class="k">if</span> <span class="s1">&#39;;&#39;</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">]:</span>
+                    <span class="n">uni_ids</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+                    <span class="n">remove</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">for</span> <span class="n">uni</span> <span class="ow">in</span> <span class="n">uni_ids</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">pose_config</span><span class="o">.</span><span class="n">uniprot_to_genename</span><span class="p">[</span><span class="n">uni</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+                            <span class="n">remove</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="k">break</span>
+
+                    <span class="k">if</span> <span class="n">remove</span><span class="p">:</span>
+                        <span class="n">ptms_in_region</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">gene</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pose_config</span><span class="o">.</span><span class="n">uniprot_to_genename</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+                        <span class="n">ptms_in_region</span> <span class="o">=</span> <span class="n">ptms_in_region</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+            <span class="c1">#make sure ptms still are present after filtering</span>
+            <span class="k">if</span> <span class="n">ptms_in_region</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ptms_in_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Gene&#39;</span><span class="p">,</span> <span class="n">gene</span><span class="p">)</span>
+        
+        <span class="c1">#calculate proximity to region start and end</span>
+        <span class="n">ptms_in_region</span><span class="p">[</span><span class="s1">&#39;Proximity to Region Start (bp)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ptms_in_region</span><span class="p">[</span><span class="n">loc_col</span><span class="p">]</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
+        <span class="n">ptms_in_region</span><span class="p">[</span><span class="s1">&#39;Proximity to Region End (bp)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ptms_in_region</span><span class="p">[</span><span class="n">loc_col</span><span class="p">]</span> <span class="o">-</span> <span class="n">end</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
+        <span class="n">ptms_in_region</span><span class="p">[</span><span class="s1">&#39;Proximity to Splice Boundary (bp)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ptms_in_region</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Proximity to Region Start (bp)&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;Proximity to Region End (bp)&#39;</span><span class="p">]),</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+
+        <span class="k">return</span> <span class="n">ptms_in_region</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    
+<span class="k">def</span> <span class="nf">convert_strand_symbol</span><span class="p">(</span><span class="n">strand</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given DNA strand information, make sure the strand information is in integer format (1 for forward, -1 for reverse). This is intended to convert from string format (&#39;+&#39; or &#39;-&#39;) to integer format (1 or -1), but will return the input if it is already in integer format.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    strand: str or int</span>
+<span class="sd">        DNA strand information, either as a string (&#39;+&#39; or &#39;-&#39;) or an integer (1 or -1)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        DNA strand information as an integer (1 for forward, -1 for reverse)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strand</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">strand</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span> <span class="ow">or</span> <span class="n">strand</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">strand</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span> <span class="ow">or</span> <span class="n">strand</span> <span class="o">==</span> <span class="s1">&#39;-1&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">strand</span>
+
+<span class="k">def</span> <span class="nf">find_ptms_in_many_regions</span><span class="p">(</span><span class="n">region_data</span><span class="p">,</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;exonStart_0base&#39;</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="s1">&#39;exonEnd&#39;</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">annotate_original_df</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">,</span> <span class="n">separate_modification_types</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">taskbar_label</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a dataframe with a unique region in each row, project PTMs onto the regions. Assumes that the region data will have chromosome, strand, and genomic start/end positions, and each row corresponds to a unique region.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ptm_coordinates: pandas.DataFrame</span>
+<span class="sd">        dataframe containing PTM information, including chromosome, strand, and genomic location of PTMs</span>
+<span class="sd">    region_data: pandas.DataFrame</span>
+<span class="sd">        dataframe containing region information, including chromosome, strand, and genomic location of regions of interest</span>
+<span class="sd">    chromosome_col: str</span>
+<span class="sd">        column name in splice_data that contains chromosome information. Default is &#39;chr&#39;. Expects it to be a str with only the chromosome number: &#39;Y&#39;, &#39;1&#39;, &#39;2&#39;, etc.</span>
+<span class="sd">    strand_col: str</span>
+<span class="sd">        column name in splice_data that contains strand information. Default is &#39;strand&#39;. Expects it to be a str with &#39;+&#39; or &#39;-&#39;, or integers as 1 or -1. Will convert to integers automatically if string format is provided.</span>
+<span class="sd">    region_start_col: str</span>
+<span class="sd">        column name in splice_data that contains the start position of the region of interest. Default is &#39;exonStart_0base&#39;.</span>
+<span class="sd">    region_end_col: str</span>
+<span class="sd">        column name in splice_data that contains the end position of the region of interest. Default is &#39;exonEnd&#39;.</span>
+<span class="sd">    gene_col: str</span>
+<span class="sd">        column name in splice_data that contains the gene name. If provided, will be used to make sure the projected PTMs stem from the same gene (some cases where genomic coordiantes overlap between distinct genes). Default is None.</span>
+<span class="sd">    event_id_col: str</span>
+<span class="sd">        column name in splice_data that contains the unique identifier for the splice event. If provided, will be used to annotate the ptm information with the specific splice event ID. Default is None.</span>
+<span class="sd">    coordinate_type: str</span>
+<span class="sd">        indicates the coordinate system used for the start and end positions. Either hg38 or hg19. Default is &#39;hg38&#39;.</span>
+<span class="sd">    separate_modification_types: bool</span>
+<span class="sd">        Indicate whether to store PTM sites with  multiple modification types as multiple rows. For example, if a site at K100 was both an acetylation and methylation site, these will be separated into unique rows with the same site number but different modification types. Default is True.</span>
+<span class="sd">    taskbar_label: str</span>
+<span class="sd">        Label to display in the tqdm progress bar. Default is None, which will automatically state &quot;Projecting PTMs onto regions using ----- coordinates&quot;.</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    spliced_ptm_info: pandas.DataFrame</span>
+<span class="sd">        Contains the PTMs identified across the different splice events</span>
+<span class="sd">    splice_data: pandas.DataFrame</span>
+<span class="sd">        dataframe containing the original splice data with an additional column &#39;PTMs&#39; that contains the PTMs found in the region of interest, in the format of &#39;SiteNumber(ModificationType)&#39;. If no PTMs are found, the value will be np.nan.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">taskbar_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">taskbar_label</span> <span class="o">=</span> <span class="s1">&#39;Projecting PTMs onto regions using &#39;</span> <span class="o">+</span> <span class="n">coordinate_type</span> <span class="o">+</span> <span class="s1">&#39; coordinates.&#39;</span>
+
+    <span class="k">if</span> <span class="n">region_data</span><span class="p">[</span><span class="n">chromosome_col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="n">region_data</span><span class="p">[</span><span class="n">chromosome_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">region_data</span><span class="p">[</span><span class="n">chromosome_col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span>
+    
+
+    <span class="n">spliced_ptm_info</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">spliced_ptms_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">num_ptms_affected</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">num_unique_ptm_sites</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1">#copy</span>
+    <span class="n">region_data</span> <span class="o">=</span> <span class="n">region_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1">#iterate through each row of the splice data and find PTMs in the region</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">region_data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">(),</span> <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">region_data</span><span class="p">),</span> <span class="n">desc</span> <span class="o">=</span> <span class="n">taskbar_label</span><span class="p">):</span>
+        <span class="c1">#grab region information from row</span>
+        <span class="n">chromosome</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">chromosome_col</span><span class="p">]</span>
+        <span class="n">strand</span> <span class="o">=</span> <span class="n">convert_strand_symbol</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">strand_col</span><span class="p">])</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">region_start_col</span><span class="p">]</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">region_end_col</span><span class="p">]</span>
+        <span class="c1">#only provide these if column is given</span>
+        <span class="n">gene</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">gene_col</span><span class="p">]</span> <span class="k">if</span> <span class="n">gene_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="c1">#project ptms onto region</span>
+        <span class="n">ptms_in_region</span> <span class="o">=</span> <span class="n">find_ptms_in_region</span><span class="p">(</span><span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">gene</span> <span class="o">=</span> <span class="n">gene</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="n">coordinate_type</span><span class="p">)</span>
+        
+        <span class="n">extra_info</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+        <span class="c1">#add additional context from splice data, if indicated</span>
+        <span class="n">extra_info</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">event_id_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">extra_info</span><span class="p">[</span><span class="s1">&#39;Region ID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">event_id_col</span><span class="p">]</span>
+            
+        <span class="k">if</span> <span class="n">dPSI_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">extra_info</span><span class="p">[</span><span class="s1">&#39;dPSI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">dPSI_col</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">sig_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">extra_info</span><span class="p">[</span><span class="s1">&#39;Significance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">sig_col</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">extra_cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">extra_cols</span><span class="p">:</span>
+                <span class="n">extra_info</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
+
+        <span class="c1">#add extra info to ptms_in_region</span>
+        <span class="n">ptms_in_region</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">extra_info</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">ptms_in_region</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="n">ptms_in_region</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1">#if desired, add ptm information to the original splice event dataframe</span>
+        <span class="k">if</span> <span class="n">annotate_original_df</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ptms_in_region</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="c1">#split and separate unique modification types</span>
+                <span class="k">if</span> <span class="n">separate_modification_types</span><span class="p">:</span>
+                    <span class="n">ptms_in_region</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ptms_in_region</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+                    <span class="n">ptms_in_region</span> <span class="o">=</span> <span class="n">ptms_in_region</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">)</span>
+
+                <span class="n">ptms_info</span> <span class="o">=</span> <span class="n">ptms_in_region</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;PTM Position in Canonical Isoform&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39; (&#39;</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">ptms_str</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ptms_info</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+                <span class="n">spliced_ptms_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ptms_str</span><span class="p">)</span>
+                <span class="n">num_ptms_affected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ptms_in_region</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">num_unique_ptm_sites</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ptms_in_region</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">spliced_ptms_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+                <span class="n">num_ptms_affected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">num_unique_ptm_sites</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">spliced_ptm_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ptms_in_region</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+
+    <span class="c1">#combine all PTM information </span>
+    <span class="n">spliced_ptm_info</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">spliced_ptm_info</span><span class="p">,</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1">#convert ptm position to float</span>
+    <span class="k">if</span> <span class="n">spliced_ptm_info</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">spliced_ptm_info</span><span class="p">[</span><span class="s1">&#39;PTM Position in Canonical Isoform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spliced_ptm_info</span><span class="p">[</span><span class="s1">&#39;PTM Position in Canonical Isoform&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+            
+    <span class="c1">#add ptm info to original splice event dataframe</span>
+    <span class="k">if</span> <span class="n">annotate_original_df</span><span class="p">:</span>
+        <span class="n">region_data</span><span class="p">[</span><span class="s1">&#39;PTMs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spliced_ptms_list</span>
+        <span class="n">region_data</span><span class="p">[</span><span class="s1">&#39;Number of PTMs Affected&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_ptms_affected</span>
+        <span class="n">region_data</span><span class="p">[</span><span class="s1">&#39;Number of Unique PTM Sites by Position&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_unique_ptm_sites</span>
+        <span class="n">region_data</span><span class="p">[</span><span class="s1">&#39;Event Length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">region_data</span><span class="p">[</span><span class="n">region_end_col</span><span class="p">]</span> <span class="o">-</span> <span class="n">region_data</span><span class="p">[</span><span class="n">region_start_col</span><span class="p">])</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
+        <span class="n">region_data</span><span class="p">[</span><span class="s1">&#39;PTM Density (PTMs/bp)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">region_data</span><span class="p">[</span><span class="s1">&#39;Number of Unique PTM Sites by Position&#39;</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">region_data</span><span class="p">[</span><span class="n">region_end_col</span><span class="p">]</span> <span class="o">-</span> <span class="n">region_data</span><span class="p">[</span><span class="n">region_start_col</span><span class="p">])</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">region_data</span><span class="p">,</span> <span class="n">spliced_ptm_info</span>
+    
+<div class="viewcode-block" id="project_ptms_onto_splice_events"><a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.project.project_ptms_onto_splice_events">[docs]</a><span class="k">def</span> <span class="nf">project_ptms_onto_splice_events</span><span class="p">(</span><span class="n">splice_data</span><span class="p">,</span> <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">annotate_original_df</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;exonStart_0base&#39;</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="s1">&#39;exonEnd&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">separate_modification_types</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">,</span> <span class="n">taskbar_label</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given splice event quantification data, project PTMs onto the regions impacted by the splice events. Assumes that the splice event data will have chromosome, strand, and genomic start/end positions for the regions of interest, and each row of the splice_event_data corresponds to a unique region.</span>
+
+<span class="sd">    Parameters</span>
+
+<span class="sd">    splice_data: pandas.DataFrame</span>
+<span class="sd">        dataframe containing splice event information, including chromosome, strand, and genomic location of regions of interest</span>
+<span class="sd">    ptm_coordinates: pandas.DataFrame</span>
+<span class="sd">        dataframe containing PTM information, including chromosome, strand, and genomic location of PTMs. If none, it will pull from the config file.</span>
+<span class="sd">    chromosome_col: str</span>
+<span class="sd">        column name in splice_data that contains chromosome information. Default is &#39;chr&#39;. Expects it to be a str with only the chromosome number: &#39;Y&#39;, &#39;1&#39;, &#39;2&#39;, etc.</span>
+<span class="sd">    strand_col: str</span>
+<span class="sd">        column name in splice_data that contains strand information. Default is &#39;strand&#39;. Expects it to be a str with &#39;+&#39; or &#39;-&#39;, or integers as 1 or -1. Will convert to integers automatically if string format is provided.</span>
+<span class="sd">    region_start_col: str</span>
+<span class="sd">        column name in splice_data that contains the start position of the region of interest. Default is &#39;exonStart_0base&#39;.</span>
+<span class="sd">    region_end_col: str</span>
+<span class="sd">        column name in splice_data that contains the end position of the region of interest. Default is &#39;exonEnd&#39;.</span>
+<span class="sd">    event_id_col: str</span>
+<span class="sd">        column name in splice_data that contains the unique identifier for the splice event. If provided, will be used to annotate the ptm information with the specific splice event ID. Default is None.</span>
+<span class="sd">    gene_col: str</span>
+<span class="sd">        column name in splice_data that contains the gene name. If provided, will be used to make sure the projected PTMs stem from the same gene (some cases where genomic coordiantes overlap between distinct genes). Default is None.</span>
+<span class="sd">    dPSI_col: str</span>
+<span class="sd">        column name in splice_data that contains the delta PSI value for the splice event. Default is None, which will not include this information in the output</span>
+<span class="sd">    sig_col: str</span>
+<span class="sd">        column name in splice_data that contains the significance value for the splice event. Default is None, which will not include this information in the output.</span>
+<span class="sd">    extra_cols: list</span>
+<span class="sd">        list of additional columns to include in the output dataframe. Default is None, which will not include any additional columns.</span>
+<span class="sd">    coordinate_type: str</span>
+<span class="sd">        indicates the coordinate system used for the start and end positions. Either hg38 or hg19. Default is &#39;hg38&#39;.</span>
+<span class="sd">    separate_modification_types: bool</span>
+<span class="sd">        Indicate whether to store PTM sites with  multiple modification types as multiple rows. For example, if a site at K100 was both an acetylation and methylation site, these will be separated into unique rows with the same site number but different modification types. Default is True.</span>
+<span class="sd">    taskbar_label: str</span>
+<span class="sd">        Label to display in the tqdm progress bar. Default is None, which will automatically state &quot;Projecting PTMs onto regions using ----- coordinates&quot;.</span>
+<span class="sd">    PROCESSES: int</span>
+<span class="sd">        Number of processes to use for multiprocessing. Default is 1 (single processing)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    spliced_ptm_info: pandas.DataFrame</span>
+<span class="sd">        Contains the PTMs identified across the different splice events</span>
+<span class="sd">    splice_data: pandas.DataFrame</span>
+<span class="sd">        dataframe containing the original splice data with an additional column &#39;PTMs&#39; that contains the PTMs found in the region of interest, in the format of &#39;SiteNumber(ModificationType)&#39;. If no PTMs are found, the value will be np.nan.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#load ptm data from config if not provided</span>
+    <span class="k">if</span> <span class="n">ptm_coordinates</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">pose_config</span><span class="o">.</span><span class="n">ptm_coordinates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="n">pose_config</span><span class="o">.</span><span class="n">ptm_coordinates</span>
+    <span class="k">elif</span> <span class="n">ptm_coordinates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ptm_coordinates dataframe not provided and not found in the resource files. Please provide the ptm_coordinates dataframe with pose_config.download_ptm_coordinates() or download the file manually. To avoid needing to download this file each time, run pose_config.download_ptm_coordinates(save = True) to save the file locally within the package directory (will take ~63MB of storage space)&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">taskbar_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">taskbar_label</span> <span class="o">=</span> <span class="s1">&#39;Projecting PTMs onto splice events using &#39;</span> <span class="o">+</span> <span class="n">coordinate_type</span> <span class="o">+</span> <span class="s1">&#39; coordinates.&#39;</span>
+
+
+
+    <span class="c1">#copy</span>
+    <span class="n">splice_data</span> <span class="o">=</span> <span class="n">splice_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1">#check columns to make sure they are present and correct data type</span>
+    <span class="n">check_columns</span><span class="p">(</span><span class="n">splice_data</span><span class="p">,</span> <span class="n">chromosome_col</span><span class="o">=</span><span class="n">chromosome_col</span><span class="p">,</span> <span class="n">strand_col</span><span class="o">=</span><span class="n">strand_col</span><span class="p">,</span> <span class="n">region_start_col</span><span class="o">=</span><span class="n">region_start_col</span><span class="p">,</span> <span class="n">region_end_col</span><span class="o">=</span><span class="n">region_end_col</span><span class="p">,</span> <span class="n">dPSI_col</span><span class="o">=</span><span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span><span class="o">=</span><span class="n">sig_col</span><span class="p">,</span> <span class="n">event_id_col</span><span class="o">=</span><span class="n">event_id_col</span><span class="p">,</span> <span class="n">gene_col</span><span class="o">=</span><span class="n">gene_col</span><span class="p">,</span> <span class="n">extra_cols</span><span class="o">=</span><span class="n">extra_cols</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">PROCESSES</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">splice_data</span><span class="p">,</span> <span class="n">spliced_ptm_info</span> <span class="o">=</span> <span class="n">find_ptms_in_many_regions</span><span class="p">(</span><span class="n">splice_data</span><span class="p">,</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="n">chromosome_col</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="n">strand_col</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="n">region_start_col</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="n">region_end_col</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="n">event_id_col</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="n">gene_col</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="n">extra_cols</span><span class="p">,</span> <span class="n">annotate_original_df</span> <span class="o">=</span> <span class="n">annotate_original_df</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="n">coordinate_type</span><span class="p">,</span><span class="n">taskbar_label</span> <span class="o">=</span> <span class="n">taskbar_label</span><span class="p">,</span> <span class="n">separate_modification_types</span><span class="o">=</span><span class="n">separate_modification_types</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">PROCESSES</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1">#check num_cpus available, if greater than number of cores - 1 (to avoid freezing machine), then set to PROCESSES to 1 less than total number of cores</span>
+        <span class="n">num_cores</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">PROCESSES</span> <span class="o">&gt;</span> <span class="n">num_cores</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">PROCESSES</span> <span class="o">=</span> <span class="n">num_cores</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="c1">#split dataframe into chunks equal to PROCESSES</span>
+        <span class="n">splice_data_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">splice_data</span><span class="p">,</span> <span class="n">PROCESSES</span><span class="p">)</span>
+        <span class="n">pool</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">PROCESSES</span><span class="p">)</span>
+        <span class="c1">#run with multiprocessing</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="n">find_ptms_in_many_regions</span><span class="p">,</span> <span class="p">[(</span><span class="n">splice_data_split</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span><span class="p">,</span> <span class="n">strand_col</span><span class="p">,</span> <span class="n">region_start_col</span><span class="p">,</span> <span class="n">region_end_col</span><span class="p">,</span> <span class="n">gene_col</span><span class="p">,</span> <span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">event_id_col</span><span class="p">,</span> <span class="n">extra_cols</span><span class="p">,</span> <span class="n">annotate_original_df</span><span class="p">,</span> <span class="n">coordinate_type</span><span class="p">,</span> <span class="n">separate_modification_types</span><span class="p">,</span> <span class="n">taskbar_label</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">PROCESSES</span><span class="p">)])</span>
+
+        <span class="n">splice_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">])</span>
+        <span class="n">spliced_ptm_info</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">])</span>
+
+        <span class="c1">#raise ValueError(&#39;Multiprocessing not yet functional. Please set PROCESSES = 1.&#39;)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PTMs projection successful (</span><span class="si">{</span><span class="n">spliced_ptm_info</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> identified).</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">splice_data</span><span class="p">,</span> <span class="n">spliced_ptm_info</span></div>
+
+
+
+<div class="viewcode-block" id="project_ptms_onto_MATS"><a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.project.project_ptms_onto_MATS">[docs]</a><span class="k">def</span> <span class="nf">project_ptms_onto_MATS</span><span class="p">(</span><span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">SE_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fiveASS_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">threeASS_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RI_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">MXE_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">,</span> <span class="n">identify_flanking_sequences</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="s1">&#39;meanDeltaPSI&#39;</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;FDR&#39;</span><span class="p">,</span> <span class="n">separate_modification_types</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given splice quantification from the MATS algorithm, annotate with PTMs that are found in the differentially included regions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ptm_coordinates: pandas.DataFrame</span>
+<span class="sd">        dataframe containing PTM information, including chromosome, strand, and genomic location of PTMs</span>
+<span class="sd">    SE_events: pandas.DataFrame</span>
+<span class="sd">        dataframe containing skipped exon event information from MATS</span>
+<span class="sd">    fiveASS_events: pandas.DataFrame</span>
+<span class="sd">        dataframe containing 5&#39; alternative splice site event information from MATS</span>
+<span class="sd">    threeASS_events: pandas.DataFrame</span>
+<span class="sd">        dataframe containing 3&#39; alternative splice site event information from MATS</span>
+<span class="sd">    RI_events: pandas.DataFrame</span>
+<span class="sd">        dataframe containing retained intron event information from MATS</span>
+<span class="sd">    MXE_events: pandas.DataFrame</span>
+<span class="sd">        dataframe containing mutually exclusive exon event information from MATS</span>
+<span class="sd">    coordinate_type: str</span>
+<span class="sd">        indicates the coordinate system used for the start and end positions. Either hg38 or hg19. Default is &#39;hg38&#39;.</span>
+<span class="sd">    identify_flanking_sequences: bool</span>
+<span class="sd">        Indicate whether to look for altered flanking sequences from spliced events, in addition to those directly in the spliced region. Default is False. (not yet active)</span>
+<span class="sd">    PROCESSES: int</span>
+<span class="sd">        Number of processes to use for multiprocessing. Default is 1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Projecting PTMs onto MATS splice events using </span><span class="si">{</span><span class="n">coordinate_type</span><span class="si">}</span><span class="s1"> coordinates.&#39;</span><span class="p">)</span>
+    <span class="c1">#reformat chromosome name format</span>
+    <span class="n">spliced_events</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="n">spliced_flanks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">spliced_ptms</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">SE_events</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>   
+        <span class="k">if</span> <span class="n">SE_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">SE_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SE_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span> 
+
+        <span class="n">SE_events</span><span class="p">[</span><span class="s1">&#39;AS ID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;SE_&quot;</span> <span class="o">+</span> <span class="n">SE_events</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+        <span class="c1">#check to make sure there is enough information to do multiprocessing if that is desired</span>
+        <span class="k">if</span> <span class="n">PROCESSES</span><span class="o">*</span><span class="mi">4</span> <span class="o">&gt;</span> <span class="n">SE_events</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">SE_processes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">SE_processes</span> <span class="o">=</span> <span class="n">PROCESSES</span>
+
+        <span class="n">spliced_events</span><span class="p">[</span><span class="s1">&#39;SE&#39;</span><span class="p">],</span> <span class="n">SE_ptms</span> <span class="o">=</span> <span class="n">project_ptms_onto_splice_events</span><span class="p">(</span><span class="n">SE_events</span><span class="p">,</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;exonStart_0base&#39;</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="s1">&#39;exonEnd&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span><span class="o">=</span><span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;geneSymbol&#39;</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;AS ID&#39;</span><span class="p">,</span> <span class="n">coordinate_type</span><span class="o">=</span><span class="n">coordinate_type</span><span class="p">,</span> <span class="n">taskbar_label</span> <span class="o">=</span> <span class="s2">&quot;Skipped Exon events&quot;</span><span class="p">,</span> <span class="n">separate_modification_types</span><span class="o">=</span><span class="n">separate_modification_types</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="n">SE_processes</span><span class="p">)</span>
+        <span class="n">SE_ptms</span><span class="p">[</span><span class="s1">&#39;Event Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;SE&#39;</span>
+        <span class="n">spliced_ptms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SE_ptms</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">identify_flanking_sequences</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Identifying flanking sequences for skipped exon events.&#39;</span><span class="p">)</span>
+            <span class="n">SE_flanks</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_flanking_changes_from_splice_data</span><span class="p">(</span><span class="n">SE_events</span><span class="p">,</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">spliced_region_start_col</span> <span class="o">=</span> <span class="s1">&#39;exonStart_0base&#39;</span><span class="p">,</span> <span class="n">spliced_region_end_col</span> <span class="o">=</span> <span class="s1">&#39;exonEnd&#39;</span><span class="p">,</span> <span class="n">first_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;firstFlankingES&#39;</span><span class="p">,</span> <span class="n">first_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;firstFlankingEE&#39;</span><span class="p">,</span> <span class="n">second_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;secondFlankingES&#39;</span><span class="p">,</span> <span class="n">second_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;secondFlankingEE&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span><span class="o">=</span><span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;geneSymbol&#39;</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;AS ID&#39;</span><span class="p">,</span> <span class="n">coordinate_type</span><span class="o">=</span><span class="n">coordinate_type</span><span class="p">)</span>
+            <span class="n">SE_flanks</span><span class="p">[</span><span class="s1">&#39;Event Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;SE&#39;</span>
+            <span class="n">spliced_flanks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SE_flanks</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Skipped exon event data (SE_events) not provided, skipping&#39;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">fiveASS_events</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fiveASS_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">fiveASS_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fiveASS_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+
+        <span class="c1">#set the relevent start and end regions of the spliced out region, which are different depending on the strand</span>
+        <span class="n">region_start</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">region_end</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">first_flank_start</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">first_flank_end</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">second_flank_end</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">second_flank_start</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">fiveASS_events</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">strand</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;strand&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">strand</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
+                <span class="n">region_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortEE&#39;</span><span class="p">])</span>
+                <span class="n">region_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;longExonEnd&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">identify_flanking_sequences</span><span class="p">:</span>
+                    <span class="n">first_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortES&#39;</span><span class="p">])</span>
+                    <span class="n">first_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortEE&#39;</span><span class="p">])</span>
+                    <span class="n">second_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingES&#39;</span><span class="p">])</span>
+                    <span class="n">second_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingEE&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">region_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;longExonStart_0base&#39;</span><span class="p">])</span>
+                <span class="n">region_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortES&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">identify_flanking_sequences</span><span class="p">:</span>
+                    <span class="n">second_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortES&#39;</span><span class="p">])</span>
+                    <span class="n">second_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortEE&#39;</span><span class="p">])</span>
+                    <span class="n">first_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingES&#39;</span><span class="p">])</span>
+                    <span class="n">first_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingEE&#39;</span><span class="p">])</span>
+
+        <span class="n">fiveASS_events</span><span class="p">[</span><span class="s1">&#39;event_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">region_start</span>
+        <span class="n">fiveASS_events</span><span class="p">[</span><span class="s1">&#39;event_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">region_end</span>
+        <span class="k">if</span> <span class="n">identify_flanking_sequences</span><span class="p">:</span>
+            <span class="n">fiveASS_events</span><span class="p">[</span><span class="s1">&#39;first_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_flank_start</span>
+            <span class="n">fiveASS_events</span><span class="p">[</span><span class="s1">&#39;first_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_flank_end</span>
+            <span class="n">fiveASS_events</span><span class="p">[</span><span class="s1">&#39;second_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">second_flank_start</span>
+            <span class="n">fiveASS_events</span><span class="p">[</span><span class="s1">&#39;second_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">second_flank_end</span>
+        
+
+        <span class="c1">#set specific as id</span>
+
+        <span class="n">fiveASS_events</span><span class="p">[</span><span class="s1">&#39;AS ID&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="s2">&quot;5ASS_&quot;</span> <span class="o">+</span> <span class="n">fiveASS_events</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+        <span class="c1">#check to make sure there is enough information to do multiprocessing if that is desired</span>
+        <span class="k">if</span> <span class="n">PROCESSES</span><span class="o">*</span><span class="mi">4</span> <span class="o">&gt;</span> <span class="n">fiveASS_events</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">fiveASS_processes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fiveASS_processes</span> <span class="o">=</span> <span class="n">PROCESSES</span>
+
+        <span class="c1">#identify PTMs found within spliced regions</span>
+        <span class="n">spliced_events</span><span class="p">[</span><span class="s1">&#39;5ASS&#39;</span><span class="p">],</span> <span class="n">fiveASS_ptms</span> <span class="o">=</span> <span class="n">project_ptms_onto_splice_events</span><span class="p">(</span><span class="n">fiveASS_events</span><span class="p">,</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;event_start&#39;</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="s1">&#39;event_end&#39;</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;AS ID&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span><span class="o">=</span><span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;geneSymbol&#39;</span><span class="p">,</span> <span class="n">coordinate_type</span><span class="o">=</span><span class="n">coordinate_type</span><span class="p">,</span> <span class="n">taskbar_label</span> <span class="o">=</span> <span class="s2">&quot;5&#39; ASS events&quot;</span><span class="p">,</span> <span class="n">separate_modification_types</span><span class="o">=</span><span class="n">separate_modification_types</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="n">fiveASS_processes</span><span class="p">)</span>
+        <span class="n">fiveASS_ptms</span><span class="p">[</span><span class="s1">&#39;Event Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;5ASS&#39;</span>
+        <span class="n">spliced_ptms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fiveASS_ptms</span><span class="p">)</span>
+
+        <span class="c1">#identify ptms with altered flanking sequences</span>
+        <span class="k">if</span> <span class="n">identify_flanking_sequences</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Identifying flanking sequences for 5&#39;ASS events.&quot;</span><span class="p">)</span>
+            <span class="n">fiveASS_flanks</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_flanking_changes_from_splice_data</span><span class="p">(</span><span class="n">fiveASS_events</span><span class="p">,</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">spliced_region_start_col</span> <span class="o">=</span> <span class="s1">&#39;event_start&#39;</span><span class="p">,</span> <span class="n">spliced_region_end_col</span> <span class="o">=</span> <span class="s1">&#39;event_end&#39;</span><span class="p">,</span> <span class="n">first_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;first_flank_start&#39;</span><span class="p">,</span> <span class="n">first_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;first_flank_end&#39;</span><span class="p">,</span> <span class="n">second_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;second_flank_start&#39;</span><span class="p">,</span> <span class="n">second_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;second_flank_end&#39;</span><span class="p">,</span><span class="n">dPSI_col</span><span class="o">=</span><span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;geneSymbol&#39;</span><span class="p">,</span>  <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;AS ID&#39;</span><span class="p">,</span><span class="n">coordinate_type</span><span class="o">=</span><span class="n">coordinate_type</span><span class="p">)</span>
+            <span class="n">fiveASS_flanks</span><span class="p">[</span><span class="s1">&#39;Event Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;5ASS&#39;</span>
+            <span class="n">spliced_flanks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fiveASS_flanks</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;5&#39; ASS event data (fiveASS_events) not provided, skipping.&quot;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">threeASS_events</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+
+        <span class="k">if</span> <span class="n">threeASS_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">threeASS_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">threeASS_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+
+        <span class="c1">#set the relevent start and end regions of the spliced out region, which are different depending on the strand</span>
+        <span class="n">region_start</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">region_end</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">first_flank_start</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">first_flank_end</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">second_flank_end</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">second_flank_start</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">threeASS_events</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">strand</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;strand&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">strand</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
+                <span class="n">region_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;longExonStart_0base&#39;</span><span class="p">])</span>
+                <span class="n">region_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortES&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">identify_flanking_sequences</span><span class="p">:</span>
+                    <span class="n">second_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingES&#39;</span><span class="p">])</span>
+                    <span class="n">second_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingEE&#39;</span><span class="p">])</span>
+                    <span class="n">first_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortES&#39;</span><span class="p">])</span>
+                    <span class="n">first_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortEE&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">region_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortEE&#39;</span><span class="p">])</span>
+                <span class="n">region_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;longExonEnd&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">identify_flanking_sequences</span><span class="p">:</span>
+                    <span class="n">second_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingES&#39;</span><span class="p">])</span>
+                    <span class="n">second_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingEE&#39;</span><span class="p">])</span>
+                    <span class="n">first_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortES&#39;</span><span class="p">])</span>
+                    <span class="n">first_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortEE&#39;</span><span class="p">])</span>
+
+
+        <span class="c1">#save region info</span>
+        <span class="n">threeASS_events</span><span class="p">[</span><span class="s1">&#39;event_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">region_start</span>
+        <span class="n">threeASS_events</span><span class="p">[</span><span class="s1">&#39;event_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">region_end</span>
+        <span class="k">if</span> <span class="n">identify_flanking_sequences</span><span class="p">:</span>
+            <span class="n">threeASS_events</span><span class="p">[</span><span class="s1">&#39;first_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_flank_start</span>
+            <span class="n">threeASS_events</span><span class="p">[</span><span class="s1">&#39;first_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_flank_end</span>
+            <span class="n">threeASS_events</span><span class="p">[</span><span class="s1">&#39;second_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">second_flank_start</span>
+            <span class="n">threeASS_events</span><span class="p">[</span><span class="s1">&#39;second_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">second_flank_end</span>
+
+        <span class="c1">#add event ids</span>
+        <span class="n">threeASS_events</span><span class="p">[</span><span class="s1">&#39;AS ID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;3ASS_&quot;</span> <span class="o">+</span> <span class="n">threeASS_events</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+        <span class="c1">#check to make sure there is enough information to do multiprocessing if that is desired</span>
+        <span class="k">if</span> <span class="n">PROCESSES</span><span class="o">*</span><span class="mi">4</span> <span class="o">&gt;</span> <span class="n">threeASS_events</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">threeASS_processes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">threeASS_processes</span> <span class="o">=</span> <span class="n">PROCESSES</span>
+
+        <span class="n">spliced_events</span><span class="p">[</span><span class="s1">&#39;3ASS&#39;</span><span class="p">],</span> <span class="n">threeASS_ptms</span> <span class="o">=</span> <span class="n">project_ptms_onto_splice_events</span><span class="p">(</span><span class="n">threeASS_events</span><span class="p">,</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;event_start&#39;</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="s1">&#39;event_end&#39;</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;AS ID&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span><span class="o">=</span><span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;geneSymbol&#39;</span><span class="p">,</span> <span class="n">coordinate_type</span><span class="o">=</span><span class="n">coordinate_type</span><span class="p">,</span> <span class="n">taskbar_label</span> <span class="o">=</span> <span class="s2">&quot;3&#39; ASS events&quot;</span><span class="p">,</span> <span class="n">separate_modification_types</span><span class="o">=</span><span class="n">separate_modification_types</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="n">threeASS_processes</span><span class="p">)</span>
+        <span class="n">threeASS_ptms</span><span class="p">[</span><span class="s1">&#39;Event Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;3ASS&#39;</span>
+        <span class="n">spliced_ptms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">threeASS_ptms</span><span class="p">)</span>
+
+            <span class="c1">#identify ptms with altered flanking sequences</span>
+        <span class="k">if</span> <span class="n">identify_flanking_sequences</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Identifying flanking sequences for 3&#39; ASS events.&quot;</span><span class="p">)</span>
+            <span class="n">threeASS_flanks</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_flanking_changes_from_splice_data</span><span class="p">(</span><span class="n">threeASS_events</span><span class="p">,</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">spliced_region_start_col</span> <span class="o">=</span> <span class="s1">&#39;event_start&#39;</span><span class="p">,</span> <span class="n">spliced_region_end_col</span> <span class="o">=</span> <span class="s1">&#39;event_end&#39;</span><span class="p">,</span> <span class="n">first_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;first_flank_start&#39;</span><span class="p">,</span> <span class="n">first_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;first_flank_end&#39;</span><span class="p">,</span> <span class="n">second_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;second_flank_start&#39;</span><span class="p">,</span> <span class="n">second_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;second_flank_end&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span><span class="o">=</span><span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">dPSI_col</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;geneSymbol&#39;</span><span class="p">,</span>  <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;AS ID&#39;</span><span class="p">,</span> <span class="n">coordinate_type</span><span class="o">=</span><span class="n">coordinate_type</span><span class="p">)</span>
+            <span class="n">threeASS_flanks</span><span class="p">[</span><span class="s1">&#39;Event Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;3ASS&#39;</span>
+            <span class="n">spliced_flanks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">threeASS_flanks</span><span class="p">)</span>
+
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;3&#39; ASS event data (threeASS_events) not provided, skipping&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">RI_events</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+
+        <span class="c1">#add event id</span>
+        <span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;AS ID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;RI_&quot;</span> <span class="o">+</span> <span class="n">RI_events</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+        <span class="c1">#check to make sure there is enough information to do multiprocessing if that is desired</span>
+        <span class="k">if</span> <span class="n">PROCESSES</span><span class="o">*</span><span class="mi">4</span> <span class="o">&gt;</span> <span class="n">RI_events</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">RI_processes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">RI_processes</span> <span class="o">=</span> <span class="n">PROCESSES</span>
+
+        <span class="n">spliced_events</span><span class="p">[</span><span class="s1">&#39;RI&#39;</span><span class="p">],</span> <span class="n">RI_ptms</span> <span class="o">=</span> <span class="n">project_ptms_onto_splice_events</span><span class="p">(</span><span class="n">RI_events</span><span class="p">,</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;upstreamEE&#39;</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="s1">&#39;downstreamES&#39;</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;AS ID&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span><span class="o">=</span><span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;geneSymbol&#39;</span><span class="p">,</span> <span class="n">coordinate_type</span><span class="o">=</span><span class="n">coordinate_type</span><span class="p">,</span> <span class="n">taskbar_label</span> <span class="o">=</span> <span class="s1">&#39;Retained Intron Events&#39;</span><span class="p">,</span> <span class="n">separate_modification_types</span><span class="o">=</span><span class="n">separate_modification_types</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="n">RI_processes</span><span class="p">)</span>
+        <span class="n">RI_ptms</span><span class="p">[</span><span class="s1">&#39;Event Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;RI&#39;</span>
+        <span class="n">spliced_ptms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">RI_ptms</span><span class="p">)</span>
+
+         <span class="c1">#identify ptms with altered flanking sequences</span>
+        <span class="k">if</span> <span class="n">identify_flanking_sequences</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Identifying flanking sequences for retained intron events.&#39;</span><span class="p">)</span>
+            <span class="n">RI_flanks</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_flanking_changes_from_splice_data</span><span class="p">(</span><span class="n">RI_events</span><span class="p">,</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">spliced_region_start_col</span> <span class="o">=</span> <span class="s1">&#39;upstreamEE&#39;</span><span class="p">,</span> <span class="n">spliced_region_end_col</span> <span class="o">=</span> <span class="s1">&#39;downstreamES&#39;</span><span class="p">,</span> <span class="n">first_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;upstreamES&#39;</span><span class="p">,</span> <span class="n">first_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;upstreamEE&#39;</span><span class="p">,</span> <span class="n">second_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;downstreamES&#39;</span><span class="p">,</span> <span class="n">second_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;downstreamEE&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span><span class="o">=</span><span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;geneSymbol&#39;</span><span class="p">,</span>  <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;AS ID&#39;</span><span class="p">,</span> <span class="n">coordinate_type</span><span class="o">=</span><span class="n">coordinate_type</span><span class="p">)</span>
+            <span class="n">RI_flanks</span><span class="p">[</span><span class="s1">&#39;Event Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;RI&#39;</span>
+            <span class="n">spliced_flanks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">RI_flanks</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">MXE_events</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">MXE_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">MXE_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MXE_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+
+        <span class="c1">#check to make sure there is enough information to do multiprocessing if that is desired</span>
+        <span class="k">if</span> <span class="n">PROCESSES</span><span class="o">*</span><span class="mi">4</span> <span class="o">&gt;</span> <span class="n">MXE_events</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">MXE_processes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">MXE_processes</span> <span class="o">=</span> <span class="n">PROCESSES</span>
+
+        <span class="c1">#add AS ID</span>
+        <span class="n">MXE_events</span><span class="p">[</span><span class="s1">&#39;AS ID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;MXE_&quot;</span> <span class="o">+</span> <span class="n">MXE_events</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+        
+        <span class="n">mxe_ptms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1">#first mxe exon</span>
+        <span class="n">spliced_events</span><span class="p">[</span><span class="s1">&#39;MXE_Exon1&#39;</span><span class="p">],</span> <span class="n">MXE_Exon1_ptms</span> <span class="o">=</span> <span class="n">project_ptms_onto_splice_events</span><span class="p">(</span><span class="n">MXE_events</span><span class="p">,</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;1stExonStart_0base&#39;</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="s1">&#39;1stExonEnd&#39;</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;AS ID&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span><span class="o">=</span><span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;geneSymbol&#39;</span><span class="p">,</span> <span class="n">coordinate_type</span><span class="o">=</span><span class="n">coordinate_type</span><span class="p">,</span> <span class="n">taskbar_label</span> <span class="o">=</span> <span class="s1">&#39;MXE, First Exon&#39;</span><span class="p">,</span> <span class="n">separate_modification_types</span><span class="o">=</span><span class="n">separate_modification_types</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="n">MXE_processes</span><span class="p">)</span>
+        <span class="n">MXE_Exon1_ptms</span><span class="p">[</span><span class="s1">&#39;Event Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;MXE (First Exon)&#39;</span>
+        <span class="n">mxe_ptms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MXE_Exon1_ptms</span><span class="p">)</span>
+
+        <span class="c1">#second mxe exon</span>
+        <span class="n">spliced_events</span><span class="p">[</span><span class="s1">&#39;MXE_Exon2&#39;</span><span class="p">],</span> <span class="n">MXE_Exon2_ptms</span> <span class="o">=</span> <span class="n">project_ptms_onto_splice_events</span><span class="p">(</span><span class="n">MXE_events</span><span class="p">,</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;2ndExonStart_0base&#39;</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="s1">&#39;2ndExonEnd&#39;</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;AS ID&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span><span class="o">=</span><span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;geneSymbol&#39;</span><span class="p">,</span> <span class="n">coordinate_type</span><span class="o">=</span><span class="n">coordinate_type</span><span class="p">,</span> <span class="n">taskbar_label</span> <span class="o">=</span> <span class="s1">&#39;MXE, Second Exon&#39;</span><span class="p">,</span> <span class="n">separate_modification_types</span><span class="o">=</span><span class="n">separate_modification_types</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="n">MXE_processes</span><span class="p">)</span>
+        <span class="n">MXE_Exon2_ptms</span><span class="p">[</span><span class="s1">&#39;Event Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;MXE (Second Exon)&#39;</span>
+        <span class="n">mxe_ptms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MXE_Exon2_ptms</span><span class="p">)</span>
+
+        <span class="c1">#combine mxe ptms, and then drop any PTMs that were found in both MXE&#39;s</span>
+        <span class="n">mxe_ptms</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">MXE_Exon1_ptms</span><span class="p">,</span> <span class="n">MXE_Exon2_ptms</span><span class="p">])</span>
+        <span class="n">mxe_ptms</span> <span class="o">=</span> <span class="n">mxe_ptms</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">,</span> <span class="s1">&#39;Source of PTM&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM Position in Canonical Isoform&#39;</span><span class="p">,</span> <span class="s1">&#39;Modification&#39;</span><span class="p">,</span> <span class="s1">&#39;Modification Class&#39;</span><span class="p">,</span> <span class="s1">&#39;dPSI&#39;</span><span class="p">,</span> <span class="s1">&#39;Significance&#39;</span><span class="p">,</span> <span class="s1">&#39;Gene&#39;</span><span class="p">],</span> <span class="n">keep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">mxe_ptms</span><span class="p">[</span><span class="s1">&#39;dPSI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mxe_ptms</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;dPSI&#39;</span><span class="p">]</span><span class="o">*</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;Event Type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;MXE (Second Exon)&#39;</span> <span class="k">else</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;dPSI&#39;</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1">#add mxe ptms to spliced_ptms</span>
+        <span class="n">spliced_ptms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mxe_ptms</span><span class="p">)</span>
+
+    <span class="n">spliced_ptms</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">identify_flanking_sequences</span><span class="p">:</span>
+        <span class="n">spliced_flanks</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">spliced_flanks</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">spliced_events</span><span class="p">,</span> <span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">spliced_flanks</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">spliced_events</span><span class="p">,</span> <span class="n">spliced_ptms</span></div>
+    
+<span class="c1">#def project_ptms_onto_MAJIQ_dPSI(majiq_data, ptm_coordinates = None, coordinate_type = &#39;hg38&#39;, identify_flanking_sequences = False, dPSI_col = &#39;dPSI&#39;, sig_col = &#39;FDR&#39;, separate_modification_types = False, PROCESSES = 1):</span>
+<span class="c1">#    print(&#39;in progress&#39;)</span>
+<span class="c1">#    pass</span>
+    
+<span class="k">def</span> <span class="nf">add_splicegraph_info</span><span class="p">(</span><span class="n">psi_data</span><span class="p">,</span> <span class="n">splicegraph</span><span class="p">,</span> <span class="n">purpose</span> <span class="o">=</span> <span class="s1">&#39;inclusion&#39;</span><span class="p">):</span>
+    <span class="n">psi_data</span> <span class="o">=</span> <span class="n">psi_data</span><span class="p">[</span><span class="n">psi_data</span><span class="p">[</span><span class="s1">&#39;splice_type&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;ME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">purpose</span> <span class="o">==</span> <span class="s1">&#39;inclusion&#39;</span><span class="p">:</span>
+        <span class="c1">#split exons into individual exons</span>
+        <span class="n">psi_data</span><span class="p">[</span><span class="s1">&#39;Individual exon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">psi_data</span><span class="p">[</span><span class="s1">&#39;exons&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">))</span>
+        <span class="n">psi_data</span> <span class="o">=</span> <span class="n">psi_data</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;Individual exon&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+        <span class="n">psi_data</span><span class="p">[</span><span class="s1">&#39;Individual exon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">psi_data</span><span class="p">[</span><span class="s1">&#39;Individual exon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="c1">#add gene location information to psi data from spliceseq</span>
+        <span class="n">psi_data</span> <span class="o">=</span> <span class="n">psi_data</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">splicegraph</span><span class="p">,</span> <span class="n">left_on</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;Individual exon&#39;</span><span class="p">],</span> <span class="n">right_on</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;Exon&#39;</span><span class="p">],</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">)</span>
+        <span class="n">psi_data</span> <span class="o">=</span> <span class="n">psi_data</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Chr_Start&#39;</span><span class="p">:</span> <span class="s1">&#39;spliced_region_start&#39;</span><span class="p">,</span> <span class="s1">&#39;Chr_Stop&#39;</span><span class="p">:</span> <span class="s1">&#39;spliced_region_end&#39;</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">psi_data</span>
+    <span class="k">elif</span> <span class="n">purpose</span> <span class="o">==</span> <span class="s1">&#39;flanking&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not yet active. Please check back later.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Purpose must be either inclusion or flanking. Please provide the correct purpose for the splicegraph information.&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">project_ptms_onto_SpliceSeq</span><span class="p">(</span><span class="n">psi_data</span><span class="p">,</span> <span class="n">splicegraph</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span><span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">,</span> <span class="n">separate_modification_types</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">identify_flanking_sequences</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">flank_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="c1">#remove ME events from this analysis</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Removing ME events from analysis&#39;</span><span class="p">)</span>
+    <span class="n">psi_data</span> <span class="o">=</span> <span class="n">psi_data</span><span class="p">[</span><span class="n">psi_data</span><span class="p">[</span><span class="s1">&#39;splice_type&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;ME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1">#split exons into individual exons</span>
+    <span class="n">psi_data</span><span class="p">[</span><span class="s1">&#39;Individual exon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">psi_data</span><span class="p">[</span><span class="s1">&#39;exons&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">))</span>
+    <span class="n">psi_data</span> <span class="o">=</span> <span class="n">psi_data</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;Individual exon&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+    <span class="n">psi_data</span><span class="p">[</span><span class="s1">&#39;Individual exon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">psi_data</span><span class="p">[</span><span class="s1">&#39;Individual exon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="c1">#add gene location information to psi data from spliceseq</span>
+
+    <span class="n">spliced_data</span> <span class="o">=</span> <span class="n">psi_data</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">splicegraph</span><span class="p">,</span> <span class="n">left_on</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;Individual exon&#39;</span><span class="p">],</span> <span class="n">right_on</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;Exon&#39;</span><span class="p">],</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">)</span>
+    <span class="n">spliced_data</span> <span class="o">=</span> <span class="n">spliced_data</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Chr_Start&#39;</span><span class="p">:</span> <span class="s1">&#39;spliced_region_start&#39;</span><span class="p">,</span> <span class="s1">&#39;Chr_Stop&#39;</span><span class="p">:</span> <span class="s1">&#39;spliced_region_end&#39;</span><span class="p">})</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Projecting PTMs onto SpliceSeq data&#39;</span><span class="p">)</span>
+    <span class="n">spliced_data</span><span class="p">,</span> <span class="n">spliced_ptms</span> <span class="o">=</span> <span class="n">project_ptms_onto_splice_events</span><span class="p">(</span><span class="n">spliced_data</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;Chromosome&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;Strand&#39;</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;spliced_region_start&#39;</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="s1">&#39;spliced_region_end&#39;</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;as_id&#39;</span><span class="p">,</span><span class="n">dPSI_col</span> <span class="o">=</span> <span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="n">extra_cols</span><span class="p">,</span> <span class="n">separate_modification_types</span> <span class="o">=</span> <span class="n">separate_modification_types</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="n">coordinate_type</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="n">PROCESSES</span><span class="p">)</span>
+
+    <span class="c1">## add code for extracting flanking sequences (to do)</span>
+    <span class="k">if</span> <span class="n">identify_flanking_sequences</span><span class="p">:</span>
+        <span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_flanking_changes_from_splicegraph</span><span class="p">(</span><span class="n">psi_data</span><span class="p">,</span> <span class="n">splicegraph</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="n">extra_cols</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="n">gene_col</span><span class="p">,</span> <span class="n">coordinate_type</span><span class="o">=</span><span class="n">coordinate_type</span><span class="p">,</span> <span class="n">flank_size</span> <span class="o">=</span> <span class="n">flank_size</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">spliced_data</span><span class="p">,</span> <span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">altered_flanks</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">spliced_data</span><span class="p">,</span> <span class="n">spliced_ptms</span>
+
+
+<span class="c1">#def project_ptms_onto_TCGA_SpliceSeq(tcga_cancer = &#39;PRAD&#39;):</span>
+<span class="c1">#    &quot;&quot;&quot;</span>
+<span class="c1">#    In progress. Will download and process TCGA SpliceSeq data for a specific cancer type, and project PTMs onto the spliced regions.</span>
+<span class="c1">#    &quot;&quot;&quot;</span>
+<span class="c1">#    print(&#39;Not yet active. Please check back later.&#39;)</span>
+<span class="c1">#    pass</span>
+
+
+<span class="k">def</span> <span class="nf">check_columns</span><span class="p">(</span><span class="n">splice_data</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">first_flank_start_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">first_flank_end_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">second_flank_start_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">second_flank_end_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to quickly check if the provided column names exist in the dataset and if they are the correct type of data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">expected_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">chromosome_col</span><span class="p">,</span> <span class="n">strand_col</span><span class="p">,</span> <span class="n">region_start_col</span><span class="p">,</span> <span class="n">region_end_col</span><span class="p">,</span> <span class="n">first_flank_start_col</span><span class="p">,</span> <span class="n">first_flank_end_col</span><span class="p">,</span> <span class="n">second_flank_start_col</span><span class="p">,</span> <span class="n">second_flank_end_col</span><span class="p">,</span> <span class="n">gene_col</span><span class="p">,</span> <span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">event_id_col</span><span class="p">]</span>
+    <span class="n">expected_dtypes</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">],</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">,</span> <span class="nb">object</span><span class="p">],</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">float</span><span class="p">],</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">float</span><span class="p">],</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">float</span><span class="p">],</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">float</span><span class="p">],</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">float</span><span class="p">],</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">float</span><span class="p">],</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">],</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+
+    <span class="c1">#remove cols with None and the corresponding dtype entry</span>
+    <span class="n">expected_dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">dtype</span> <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected_cols</span><span class="p">,</span> <span class="n">expected_dtypes</span><span class="p">)</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="n">expected_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">expected_cols</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+
+    <span class="c1">#add extra columns to the expected columns list</span>
+    <span class="k">if</span> <span class="n">extra_cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">expected_cols</span> <span class="o">+=</span> <span class="n">extra_cols</span>
+        <span class="n">expected_dtypes</span> <span class="o">+=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">extra_cols</span><span class="p">)</span>   <span class="c1">#extra columns do not have dtype requirement</span>
+
+
+    <span class="c1">#check to make sure columns exist in the dataframe</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">x</span> <span class="ow">in</span> <span class="n">splice_data</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">expected_cols</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Not all expected columns are present in the splice data. Please check the column names and provide the correct names for the following columns: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">expected_cols</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">splice_data</span><span class="o">.</span><span class="n">columns</span><span class="p">]))</span>
+    
+    <span class="c1">#check to make sure columns are the correct data type</span>
+    <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">data_type</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected_cols</span><span class="p">,</span> <span class="n">expected_dtypes</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_type</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">splice_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data_type</span><span class="p">:</span>
+                <span class="c1">#try converting to the expected data type</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">splice_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">splice_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data_type</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Column </span><span class="si">{}</span><span class="s1"> is not the expected data type. Expected data type is one of </span><span class="si">{}</span><span class="s1">, but found data type </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">splice_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">splice_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">data_type</span><span class="p">:</span>
+                <span class="c1">#try converting to the expected data type</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">splice_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">splice_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Column </span><span class="si">{}</span><span class="s1"> is not the expected data type. Expected data type is </span><span class="si">{}</span><span class="s1">, but found data type </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">splice_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+                
+
+
+            
+
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Naegle Lab
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Naegle Lab.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
