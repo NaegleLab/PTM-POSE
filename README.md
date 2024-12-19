@@ -1,5 +1,7 @@
 # PTM-POSE (PTM Projection Onto Splice Events)
 
+*[Full documentation](https://naeglelab.github.io/PTM-POSE/)*
+
 PTM-POSE is an easily implementable tool to project PTM sites onto splice event data generated from RNA sequencing data and is compatible with any splice event quantification tool that outputs genomic coordinates of different splice events (MATS, SpliceSeq, etc.). PTM-POSE harnesses PTMs that have been mapped to their genomic location by a sister package, [ExonPTMapper](https://github.com/NaegleLab/ExonPTMapper). It also contains functions for annotating these PTMs with information from various databases, like PhosphoSitePlus and ELM.
 
 ## Running PTM-POSE
@@ -53,7 +55,7 @@ altered_flanks = project.get_flanking_changes_from_splice_data(my_splice_data, p
 
 ## Downstream Analysis
 
-PTM-POSE also provides functions in the `annotate` module for annotating the above outputs with functional information from various databases: PhosphoSitePlus, RegPhos, PTMcode, PTMInt, ELM, DEPOD. You can then identify PTMs with specific functions, interaction, etc. with the `analyze` module. See an example on a real dataset [here](Examples/ESRP1_knockdown).
+PTM-POSE also provides functions in the `annotate` module for annotating the above outputs with functional information from various databases: PhosphoSitePlus, RegPhos, PTMcode, PTMInt, ELM, DEPOD. You can then identify PTMs with specific functions, interaction, etc. with the `analyze` module. For more information and examples of analysis, see the [full documentation](https://naeglelab.github.io/PTM-POSE/).
 
 
 ## Have questions?
