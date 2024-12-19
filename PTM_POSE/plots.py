@@ -118,7 +118,7 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, ax = Non
     ax.legend(handles, labels, title = 'Annotation Source')
     plt.show()
 
-def plot_annotations(spliced_ptms, database = 'PhosphoSitePlus', annot_type = 'Function', collapse_on_similar = True, colors = None, top_terms = 5, legend = True, ax = None, title_type = 'database'):
+def plot_annotations(spliced_ptms, database = 'PhosphoSitePlus', annot_type = 'Function', collapse_on_similar = True, colors = None, fontsize = 10, top_terms = 5, legend = True, legend_loc = None, title = None, title_type = 'database', ax = None):
     """
     Given a dataframe with PTM annotations added, plot the top annotations associated with the PTMs
 
@@ -170,24 +170,28 @@ def plot_annotations(spliced_ptms, database = 'PhosphoSitePlus', annot_type = 'F
         ax.barh(annotation_counts['Included'].index, annotation_counts['Included'].values, left = annotation_counts['Excluded'].values, height = 1, color = colors[1], edgecolor = 'black')
         ax.barh(annotation_counts['Altered Flank'].index, annotation_counts['Altered Flank'].values, left = annotation_counts['Excluded'].values+annotation_counts['Included'].values, height = 1, color = colors[2], edgecolor = 'black')
     #ax.set_xticks([0,50,100,150])
-    ax.set_ylabel('', fontsize = 10)
-    ax.set_xlabel('Number of PTMs', fontsize = 10)
+    ax.set_ylabel('', fontsize = fontsize)
+    ax.set_xlabel('Number of PTMs', fontsize = fontsize)
 
-    if title_type == 'detailed':
-        ax.set_title(f'Top {top_terms} {database} {annot_type} Annotations', fontsize = 10, weight = 'bold')
+    if title is not None:
+        ax.set_title(title, fontsize = fontsize, weight = 'bold')
+    elif title_type == 'detailed':
+        ax.set_title(f'Top {top_terms} {database} {annot_type} Annotations', fontsize = fontsize, weight = 'bold')
     elif title_type == 'database':
-        ax.set_title(f'{database}')
+        ax.set_title(f'{database}', fontsize = fontsize, weight = 'bold')
 
     #label_dict = {'EXONT:Name':'Exon Ontology Term', 'PSP:ON_PROCESS':'Biological Process (PSP)', 'PSP:ON_FUNCTION':'Molecular Function (PSP)', 'Combined:Kinase':'Kinase'}
     #ax.text(-1*ax.get_xlim()[1]/10, top_terms-0.2, label_dict[term_to_plot], weight = 'bold', ha = 'right', fontsize = 8)
     x_label_dict = {'Function':'Number of PTMs\nassociated with Function', 'Process':'Number of PTMs\nassociated with Process', 'Disease':'Number of PTMs\nassociated with Disease', 'Kinase':'Number of Phosphosites\ntargeted by Kinase', 'Interactions': 'Number of PTMs\nthat regulate interaction\n with protein','Motif Match':'Number of PTMs\nfound within a\nmotif instance', 'Intraprotein': 'Number of PTMs\nthat are important\for intraprotein\n interactions','Phosphatase':'Number of Phosphosites\ntargeted by Phosphatase', 'Perturbation (DIA2)': "Number of PTMs\nAffected by Perturbation\n(Measured by DIA)", 'Perturbation (PRM)': 'Number of PTMs\nAffected by Perturbation\n(Measured by PRM)', 'NetPath':'Number of PTMs/Genes\nassociated with NetPath', 'Perturbation':'Number of PTMs\nAffected by Perturbation'}
-    ax.set_xlabel(x_label_dict[annot_type], fontsize = 8)
+    ax.set_xlabel(x_label_dict[annot_type], fontsize = fontsize)
     
     #make a custom legend
     if legend:
         import matplotlib.patches as mpatches
         handles = [mpatches.Patch(facecolor = colors[0], edgecolor = 'black', label = 'Excluded'), mpatches.Patch(facecolor = colors[1], edgecolor = 'black', label = 'Included'),mpatches.Patch(facecolor = colors[2], edgecolor = 'black', label = 'Altered Flank')]
-        ax.legend(handles = handles, ncol = 1, fontsize = 7, title = 'Type of Impact', title_fontsize = 8)
+        ax.legend(handles = handles, ncol = 1, fontsize = fontsize - 2, title = 'Type of Impact', title_fontsize = fontsize - 1, loc = 'upper right', bbox_to_anchor = legend_loc)
+
+    return ax
 
 
 
@@ -321,7 +325,40 @@ def plot_EnrichR_pies(enrichr_results, top_terms = None, terms_to_plot = None, c
 
     ax.set_xlabel('EnrichR Combined Score', fontsize = 11)
 
-def plot_interaction_network(interaction_graph, network_data, network_stats = None, modified_color = 'red', modified_node_size = 10, interacting_color = 'lightblue', interacting_node_size = 1, edgecolor = 'gray', seed = 200, ax = None, proteins_to_label = None, labelcolor = 'black'):
+def get_edge_colors(interaction_graph, network_data, defaultedgecolor = 'gray', color_edges_by = 'Database', database_color_dict = {'PSP/RegPhos':'red', 'PhosphoSitePlus':'green', 'PTMcode':'blue', 'PTMInt':'gold', 'Multiple':'purple'}):
+    edge_colors = []
+    legend_handles = {}
+    for edge in interaction_graph.edges:
+        trim = network_data[(network_data['Modified Gene'] == edge[0]) & (network_data['Interacting Gene'] == edge[1])]
+        if trim.shape[0] == 0:
+            trim = network_data[(network_data['Interacting Gene'] == edge[0]) & (network_data['Modified Gene'] == edge[1])]
+
+        if color_edges_by == 'Database':
+            if trim.shape[0] > 1: #specific color to indicate multiple databases
+                edge_colors.append(database_color_dict['Multiple'])
+                if 'Multiple Databases' not in legend_handles:
+                    legend_handles['Multiple Databases'] = mlines.Line2D([0], [0], color = 'purple', label = 'Multiple Databases')
+            elif ';' in trim['Source'].values[0]:
+                edge_colors.append(database_color_dict['Multiple'])
+                if 'Multiple Databases' not in legend_handles:
+                    legend_handles['Multiple Databases'] = mlines.Line2D([0], [0], color = 'purple', label = 'Multiple Databases')
+            elif trim["Source"].values[0] in database_color_dict:
+                edge_colors.append(database_color_dict[trim["Source"].values[0]])
+                if trim["Source"].values[0] not in legend_handles:
+                    legend_handles[trim["Source"].values[0]] = mlines.Line2D([0], [0], color = database_color_dict[trim["Source"].values[0]], label = trim["Source"].values[0])
+            else: #gray means not specific to database in list
+                edge_colors.append(defaultedgecolor)
+        else:
+            edge_colors.append(defaultedgecolor)
+            legend_handles = None
+
+    if isinstance(legend_handles, dict):
+        legend_handles = list(legend_handles.values())
+        
+    return edge_colors, legend_handles
+
+
+def plot_interaction_network(interaction_graph, network_data, network_stats = None, modified_color = 'red', modified_node_size = 10, interacting_color = 'lightblue', interacting_node_size = 1, defaultedgecolor = 'gray', color_edges_by = 'Same', seed = 200, legend_fontsize = 8, ax = None, proteins_to_label = None, labelcolor = 'black'):
     """
     Given the interaction graph and network data outputted from analyze.protein_interactions, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs. by default, will only label proteins 
 
@@ -381,9 +418,11 @@ def plot_interaction_network(interaction_graph, network_data, network_stats = No
 
     #set up subplot if not provied
     if ax is None:
-        fig, ax = plt.subplots(figsize = (4,4))
+        fig, ax = plt.subplots(figsize = (4,4), layout='constrained')
 
-    nx.draw(interaction_graph, node_size = node_sizes, node_color = node_colors, edge_color = edgecolor, style = edge_style, ax = ax)
+    edge_colors, edge_legend = get_edge_colors(interaction_graph, network_data, color_edges_by = color_edges_by, defaultedgecolor = defaultedgecolor)
+
+    nx.draw(interaction_graph, node_size = node_sizes, node_color = node_colors, edge_color = edge_colors, style = edge_style, ax = ax)
 
     #add legend for colored nodes
     modified_node = mlines.Line2D([0], [0], color='w',marker = 'o', markersize=modified_node_size,linewidth = 0.2, markerfacecolor = modified_color, markeredgecolor=modified_color, label='Spliced Protein')
@@ -392,7 +431,12 @@ def plot_interaction_network(interaction_graph, network_data, network_stats = No
     dashdot_line = mlines.Line2D([0], [0], color='gray', linestyle = 'dashdot', label = 'Interaction impact unclear')
     dotted_line = mlines.Line2D([0], [0], color='gray', linestyle = 'dotted', label = 'Interaction decreases')
     handles = [solid_line,dashdot_line, dotted_line, modified_node, interacting_node]
-    ax.legend(handles = handles, loc = 'upper center', ncol = 2, fontsize = 6, bbox_to_anchor = (0.5, 1.1))
+    net_legend = ax.legend(handles = handles, loc = 'upper center', ncol = 2, fontsize = legend_fontsize, bbox_to_anchor = (0.5, 1.1))
+    ax.add_artist(net_legend)
+
+    if color_edges_by == 'Database':
+        ax.legend(handles = edge_legend, loc = 'lower center', ncol = 1, fontsize = legend_fontsize, bbox_to_anchor = (0.5, -0.15), title = 'Interaction Source')
+
 
     #if requested, label specific proteins in the network
     if proteins_to_label is not None and isinstance(proteins_to_label, list):

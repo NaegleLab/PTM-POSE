@@ -213,6 +213,9 @@ def get_ptm_annotations(spliced_ptms, annotation_type = 'Function', database = '
         ptms_of_interest = spliced_ptms.copy()
 
     #extract relevant annotation and remove PTMs without an annotation
+    if 'Impact' not in ptms_of_interest.columns and 'dPSI' in ptms_of_interest.columns:
+        ptms_of_interest['Impact'] = ptms_of_interest['dPSI'].apply(lambda x: 'Included' if x > 0 else 'Excluded')
+
     optional_cols = [col for col in ptms_of_interest.columns if col in ['Impact', 'dPSI', 'Significance'] or col == dPSI_col or col == sig_col ]
     annotations = ptms_of_interest[['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'] + [annotation_col] + optional_cols].copy()
     annotations = annotations.dropna(subset = annotation_col).drop_duplicates()
@@ -401,7 +404,10 @@ def get_enrichment_inputs(spliced_ptms,  annotation_type = 'Function', database 
         else:
             if mod_class is not None:
                 background = get_modification_class_data(background, mod_class)
-
+            #remove impact from background columns if present
+            cols_to_remove = [col for col in ['dPSI', 'Significance', 'Impact'] if col in background.columns]
+            if len(cols_to_remove) > 0:
+                background = background.drop(columns = cols_to_remove)
         #get background counts
             background_size = background.shape[0]
         _, background_annotation_count = get_ptm_annotations(background, annotation_type = annotation_type, database = database, collapse_on_similar = collapse_on_similar)
@@ -496,7 +502,9 @@ def annotation_enrichment(spliced_ptms, database = 'PhosphoSitePlus', annotation
         for i, n in background_annotations.items():
             #number of PTMs in the foreground with the annotation
             if i in foreground_annotation_count.index.values:
-                if foreground_annotation_count.shape[1] == 1:
+                if isinstance(foreground_annotation_count, pd.Series):
+                    k = foreground_annotation_count[i]
+                elif foreground_annotation_count.shape[1] == 1:
                     k = foreground_annotation_count.loc[i, 'count']
                 elif foreground_annotation_count.shape[1] > 1:
                     k = foreground_annotation_count.loc[i, 'All Impacted']
@@ -871,16 +879,49 @@ def find_motifs(seq, elm_classes):
     
 
 class protein_interactions:
-    def __init__(self, spliced_ptms):
+    """
+    Class to assess interactions facilitated by PTMs in splicing network
+
+    Parameters
+    ----------
+    spliced_ptms: pd.DataFrame
+        Dataframe with PTMs projected onto splicing events and with annotations appended from various databases
+    include_enzyme_interactions: bool
+        Whether to include interactions with enzymes in the network, such as kinase-substrate interactions. Default is True
+    interaction_databases: list
+        List of databases whose information to include in the network. Default is ['PhosphoSitePlus', 'PTMcode', 'PTMInt', 'RegPhos', 'DEPOD', 'ELM']
+
+    Attributes
+    ----------
+    interaction_graph: nx.Graph
+        NetworkX graph object representing the interaction network, created from analyze.get_interaction_network
+    network_data: pd.DataFrame
+        Dataframe containing details about specifici protein interactions (including which protein contains the spliced PTMs)
+    network_stats: pd.DataFrame
+        Dataframe containing network statistics for each protein in the interaction network, obtained from analyze.get_interaction_stats(). Default is None, which will not label any proteins in the network.
+    """
+    def __init__(self, spliced_ptms, include_enzyme_interactions = True, interaction_databases = ['PhosphoSitePlus', 'PTMcode', 'PTMInt', 'RegPhos', 'DEPOD', 'ELM']):
         self.spliced_ptms = spliced_ptms
+        self.include_enzyme_interactions = include_enzyme_interactions
+        self.interaction_databases = interaction_databases
 
 
     def get_interaction_network(self, node_type = 'Gene'):
+        """
+        Given the spliced PTM data, extract interaction information and construct a dataframe containing all possible interactions driven by PTMs, either centered around specific PTMs or specific genes.
+
+        Parameters
+        ----------
+        node_type: str
+            What to define interactions by. Can either be by 'PTM', which will consider each PTM as a separate node, or by 'Gene', which will aggregate information across all PTMs of a single gene into a single node. Default is 'Gene'
+        """
         if node_type not in ['Gene', 'PTM']:
             raise ValueError("node_type parameter (which dictates whether to consider interactions at PTM or gene level) can be either Gene or PTM")
         
         #extract interaction information in provided data
-        interactions = annotate.combine_interaction_data(self.spliced_ptms)
+        interactions = annotate.combine_interaction_data(self.spliced_ptms, include_enzyme_interactions=self.include_enzyme_interactions, interaction_databases=self.interaction_databases)
+        if interactions.empty:
+            raise ValueError('No interaction data found in spliced PTM data. Please provide spliced PTM data with interaction information to generate network. This can be done by using the annotate module')
         interactions['Residue'] = interactions['Residue'] + interactions['PTM Position in Canonical Isoform'].astype(int).astype(str)
         interactions = interactions.drop(columns = ['PTM Position in Canonical Isoform'])
 
@@ -949,6 +990,11 @@ class protein_interactions:
     def summarize_protein_network(self, protein):
         """
         Given a protein of interest, summarize the network data for that protein
+
+        Parameters
+        ----------
+        protein: str
+            Gene name of the protein of interest
         """
         if not hasattr(self, 'network_data'):
             self.get_interaction_network()
@@ -975,18 +1021,26 @@ class protein_interactions:
         print(f'                      \t Betweenness = {self.network_stats.loc[protein, "Betweenness"]} (Rank: {network_ranks.loc[protein, "Betweenness"]})')
         print(f'                      \t Closeness = {self.network_stats.loc[protein, "Closeness"]} (Rank: {network_ranks.loc[protein, "Closeness"]})')
 
-    def plot_interaction_network(self, modified_color = 'red', modified_node_size = 10, interacting_color = 'lightblue', interacting_node_size = 1, edgecolor = 'gray', seed = 200, ax = None, proteins_to_label = None, labelcolor = 'black'):
+    def plot_interaction_network(self, modified_color = 'red', modified_node_size = 10, interacting_color = 'lightblue', interacting_node_size = 5, defaultedgecolor = 'gray', color_edges_by = 'Same', seed = 200, ax = None, proteins_to_label = None, labelcolor = 'black'):
         """
         Given the interactiong graph and network data outputted from analyze.get_interaction_network, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs. by default, will only label proteins 
 
         Parameters
         ----------
-        interaction_graph: nx.Graph
-            NetworkX graph object representing the interaction network, created from analyze.get_interaction_network
-        network_data: pd.DataFrame
-            Dataframe containing details about specifici protein interactions (including which protein contains the spliced PTMs)
-        network_stats: pd.DataFrame
-            Dataframe containing network statistics for each protein in the interaction network, obtained from analyze.get_interaction_stats(). Default is None, which will not label any proteins in the network.
+        modified_color: str
+            Color to use for nodes that are modified by splicing. Default is 'red'
+        modified_node_size: int
+            Size of nodes that are modified by splicing. Default is 10
+        interacting_color: str
+            Color to use for nodes that interact with modified nodes. Default is 'lightblue'
+        interacting_node_size: int
+            Size of nodes that interact with modified nodes. Default is 5
+        edgecolor: str
+            Color to use for edges in the network. Default is 'gray'. Can choose to color by database by providing a dictionary with database names as keys and colors as values or by specifying 'database' as color
+        seed: int
+            Seed to use for random number generator. Default is 200
+        ax: matplotlib.pyplot.Axes
+            Axes object to plot the network. Default is None
         """
         if not hasattr(self, 'interaction_graph'):
             self.get_interaction_network()
@@ -994,7 +1048,7 @@ class protein_interactions:
         if not hasattr(self, 'network_stats'):
             self.get_interaction_stats()
 
-        pose_plots.plot_interaction_network(self.interaction_graph, self.network_data, self.network_stats, modified_color = modified_color, modified_node_size = modified_node_size, interacting_color = interacting_color, interacting_node_size = interacting_node_size, edgecolor = edgecolor, seed = seed, ax = ax, proteins_to_label = proteins_to_label, labelcolor = labelcolor)
+        pose_plots.plot_interaction_network(self.interaction_graph, self.network_data, self.network_stats, modified_color = modified_color, modified_node_size = modified_node_size, interacting_color = interacting_color, interacting_node_size = interacting_node_size, defaultedgecolor = defaultedgecolor, color_edges_by=color_edges_by, seed = seed, ax = ax, proteins_to_label = proteins_to_label, labelcolor = labelcolor)
 
     def plot_network_centrality(self,  centrality_measure = 'Degree', top_N = 10, modified_color = 'red', interacting_color = 'black', ax = None):
         if not hasattr(self, 'interaction_graph'):
@@ -1178,14 +1232,40 @@ class kstar_enrichment:
             type of phosphorylation event to extract. Can either by phosphotyrosine ('Y') or phosphoserine/threonine ('ST'). Default is 'Y'.
 
         """
-        #process ptms to only include specific phosphorylation data needed
-        self.significant_ptms = self.process_ptms(significant_ptms, phospho_type = phospho_type)
-        if background_ptms is not None:
-            self.background_ptms = self.process_ptms(background_ptms, phospho_type=phospho_type)
+        #change phospho_type to list if not already
+        if isinstance(phospho_type, list):
+            pass
+        elif phospho_type in ['Y', 'ST']:
+            phospho_type = [phospho_type]
+        elif phospho_type == 'All':
+            phospho_type = ['Y', 'ST']
         else:
-            background_ptms = pose_config.ptm_coordinates.copy()
-            self.background_ptms = self.process_ptms(background_ptms, phospho_type = phospho_type)
+            raise ValueError('phospho_type must be either Y, ST, or All')
+        
+        self.significant_ptms = {}
+        self.background_ptms = {}
+        self.networks = {}
+        for ptype in phospho_type:
+            #process ptms to only include specific phosphorylation data needed
+            self.significant_ptms[ptype] = self.process_ptms(significant_ptms, phospho_type = ptype)
+            #load background, either from provided data or from all phosphoproteome data
+            if background_ptms is not None:
+                self.background_ptms[ptype] = self.process_ptms(background_ptms, phospho_type=ptype)
+            else:
+                self.background_ptms[ptype] = self.process_ptms(pose_config.ptm_coordinates.copy(), phospho_type = ptype)
 
+            #load kstar networks
+            self.networks[ptype] = self.load_networks(network_dir, phospho_type = ptype)
+
+
+        #save info
+        self.phospho_type = phospho_type
+        self.median_enrichment = None
+
+    def load_networks(self, network_dir, phospho_type = 'Y'):
+        """
+        Given network directory, load all kstar networks for specific phosphorylation type
+        """
         #check if file exists and whether a pickle has been generated: if not, load each network file individually
         if not os.path.exists(network_dir):
             raise ValueError('Network directory not found')
@@ -1201,11 +1281,8 @@ class kstar_enrichment:
                     key_name = 'nkin'+str(file_noext[1])
                     #print("Debug: key name is %s"%(key_name))
                     networks[key_name] = pd.read_csv(f"{network_directory}{file}", sep='\t')
+        return networks
 
-        #save info
-        self.networks = networks
-        self.phospho_type = phospho_type
-        self.median_enrichment = None
 
     def process_ptms(self, ptms, phospho_type = 'Y'):
         """
@@ -1237,19 +1314,19 @@ class kstar_enrichment:
         return ptms
 
     
-    def get_enrichment_single_network(self, network_key):
+    def get_enrichment_single_network(self, network_key, phospho_type = 'Y'):
         """
         in progress
         """
-        network = self.networks[network_key]
+        network = self.networks[phospho_type][network_key]
         network['PTM'] = network['KSTAR_ACCESSION'] + '_' + network['KSTAR_SITE']
 
         #add network information to all significant data
-        sig_ptms = self.significant_ptms[['PTM']].drop_duplicates()
+        sig_ptms = self.significant_ptms[phospho_type][['PTM']].drop_duplicates()
         sig_ptms_kstar = sig_ptms.merge(network[['KSTAR_KINASE','PTM']], on = 'PTM')
 
         #repeat for background data
-        bg_ptms = self.background_ptms[['PTM']].drop_duplicates()
+        bg_ptms = self.background_ptms[phospho_type][['PTM']].drop_duplicates()
         bg_ptms_kstar = bg_ptms.merge(network[['KSTAR_KINASE','PTM']], on = 'PTM')
 
         results = pd.DataFrame(np.nan, index = sig_ptms_kstar['KSTAR_KINASE'].unique(), columns = ['k','n','M','N','p'])
@@ -1269,7 +1346,7 @@ class kstar_enrichment:
 
         return results
     
-    def get_enrichment_all_networks(self):
+    def get_enrichment_all_networks(self, phospho_type = 'Y'):
         """
         Given prostate data and a dictionary of kstar networks, get enrichment for each kinase in each network in the prostate data. Assumes the prostate data has already been reduced to the modification of interest (phosphotyrosine or phoshoserine/threonine)
 
@@ -1283,8 +1360,8 @@ class kstar_enrichment:
             significant PTMs identified in tCGA prostate data, p < 0.05 and effect size > 0.25 (reduced to only include mods of interest)
         """
         results = {}
-        for network in self.networks:
-            results[network] = self.get_enrichment_single_network(network_key=network)
+        for network in self.networks[phospho_type]:
+            results[network] = self.get_enrichment_single_network(network_key=network, phospho_type=phospho_type)
         return results
 
     def extract_enrichment(self, results):
@@ -1306,10 +1383,14 @@ class kstar_enrichment:
         """
         Run full kstar analysis to generate substrate enrichment across each of the 50 KSTAR networks and calculate the median p-value for each kinase across all networks
         """
-        results = self.get_enrichment_all_networks()
-        enrichment = self.extract_enrichment(results)
+        enrichment = {}
+        median = {}
+        for ptype in self.phospho_type:
+            results = self.get_enrichment_all_networks(phospho_type=ptype)
+            enrichment[ptype] = self.extract_enrichment(results)
+            median[ptype] = enrichment[ptype]['median']
         self.enrichment_all = enrichment
-        self.median_enrichment = enrichment['median']
+        self.median_enrichment = median
 
     def return_enriched_kinases(self, alpha = 0.05):
         """
@@ -1322,7 +1403,11 @@ class kstar_enrichment:
         """
         if self.median_enrichment is None:
             self.run_kstar_enrichment()
-        return self.median_enrichment[self.median_enrichment < alpha].index.values
+
+        sig_enrichment = {}
+        for ptype in self.phospho_type:
+            sig_enrichment[ptype] = self.median_enrichment[ptype][self.median_enrichment[ptype] < alpha].index.values
+        return sig_enrichment
     
 
 
