@@ -245,6 +245,8 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
 
     Given flanking and spliced regions associated with a splice event, identify PTMs that have potential to have an altered flanking sequence depending on whether spliced region is included or excluded (if PTM is close to splice boundary). For these PTMs, extract the flanking sequences associated with the inclusion and exclusion cases and translate into amino acid sequences. If the PTM is not associated with a codon that codes for the expected amino acid, the PTM will be excluded from the results. 
 
+    Important note: It is assumed that all region coordinates are based on a 1-based coordinate system, not 0-based, consistent with Ensembl. If using a 0-based system, please adjust the coordinates accordingly prior to running this function
+
     Parameters
     ----------
     ptm_coordinates : pandas.DataFrame
@@ -320,7 +322,6 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
         flank_region_list = []
         for i, ptm in ptms_in_region.iterrows():
             ptm_loc = ptm[f'Gene Location ({coordinate_type})']
-            flank_region = ptm['Region']
             flank_region_loc = ptm['Region']
             flank_region = first_flank_region if flank_region_loc == 'First' else second_flank_region
             #grab ptm loc based on which strand ptm is on
@@ -386,7 +387,7 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
         return ptms_in_region
 
 
-def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, chromosome_col = None, strand_col = None, first_flank_start_col = None, first_flank_end_col = None, spliced_region_start_col = None, spliced_region_end_col = None, second_flank_start_col = None, second_flank_end_col = None, dPSI_col = None,  sig_col = None, event_id_col = None, gene_col = None, extra_cols = None, flank_size = 5, coordinate_type = 'hg38', lowercase_mod = True):
+def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, chromosome_col = None, strand_col = None, first_flank_start_col = None, first_flank_end_col = None, spliced_region_start_col = None, spliced_region_end_col = None, second_flank_start_col = None, second_flank_end_col = None, dPSI_col = None,  sig_col = None, event_id_col = None, gene_col = None, extra_cols = None, flank_size = 5, coordinate_type = 'hg38', start_coordinate_system = '1-based', end_coordinate_system = '1-based', lowercase_mod = True):
     """
     Given a DataFrame containing information about splice events, extract the flanking sequences associated with the PTMs in the flanking regions if there is potential for this to be altered. The DataFrame should contain columns for the chromosome, strand, start and stop locations of the first flanking region, spliced region, and second flanking region. The DataFrame should also contain a column for the event ID associated with the splice event. If the DataFrame does not contain the necessary columns, the function will raise an error.
 
@@ -459,10 +460,14 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
         dPSI = event[dPSI_col] if dPSI_col is not None else None
         sig = event[sig_col] if sig_col is not None else None
 
+        #determine if start and stop coordinates need to be adjusted to 1-based coordinate system (if in 0-based system)
+        start_adjustment = 1 if start_coordinate_system == '0-based' else 0
+        end_adjustment = 1 if end_coordinate_system == '0-based' else 0
+
         #extract region inof
-        first_flank_region = [event[first_flank_start_col], event[first_flank_end_col]]
-        spliced_region = [event[spliced_region_start_col], event[spliced_region_end_col]]
-        second_flank_region = [event[second_flank_start_col], event[second_flank_end_col]]
+        first_flank_region = [event[first_flank_start_col]+start_adjustment, event[first_flank_end_col]+end_adjustment]
+        spliced_region = [event[spliced_region_start_col]+start_adjustment, event[spliced_region_end_col]+end_adjustment]
+        second_flank_region = [event[second_flank_start_col]+start_adjustment, event[second_flank_end_col]+end_adjustment]
 
         #get flanking changes
         ptm_flanks = get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region, spliced_region, second_flank_region, gene = gene, sig = sig, dPSI = dPSI, event_id = event_id, flank_size = flank_size, coordinate_type = coordinate_type, lowercase_mod=lowercase_mod)
@@ -727,7 +732,7 @@ def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fi
             second_flank_end_col = 'secondFlankingEE'
         else:
             raise ValueError('Could not find flanking sequence columns in skipped exon event data, based on what is typically outputted by MATS. Please check column names and provide the appropriate columns for the first and second flanking sequences')
-        SE_flanks = get_flanking_changes_from_splice_data(SE_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'exonStart_0base', spliced_region_end_col = 'exonEnd', first_flank_start_col = first_flank_start_col, first_flank_end_col = first_flank_end_col, second_flank_start_col = second_flank_start_col, second_flank_end_col = second_flank_end_col, dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol', event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type)
+        SE_flanks = get_flanking_changes_from_splice_data(SE_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'exonStart_0base', spliced_region_end_col = 'exonEnd', first_flank_start_col = first_flank_start_col, first_flank_end_col = first_flank_end_col, second_flank_start_col = second_flank_start_col, second_flank_end_col = second_flank_end_col, dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol', event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system='0-based')
         SE_flanks['Event Type'] = 'SE'
         spliced_flanks.append(SE_flanks)
 
@@ -773,7 +778,7 @@ def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fi
 
 
         print("Identifying flanking sequences for 5'ASS events.")
-        fiveASS_flanks = get_flanking_changes_from_splice_data(fiveASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end',dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type)
+        fiveASS_flanks = get_flanking_changes_from_splice_data(fiveASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end',dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system='0-based')
         fiveASS_flanks['Event Type'] = '5ASS'
         spliced_flanks.append(fiveASS_flanks)
     
@@ -821,7 +826,7 @@ def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fi
 
             #identify ptms with altered flanking sequences
         print("Identifying flanking sequences for 3' ASS events.")
-        threeASS_flanks = get_flanking_changes_from_splice_data(threeASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end', dPSI_col=dPSI_col, sig_col = dPSI_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type)
+        threeASS_flanks = get_flanking_changes_from_splice_data(threeASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end', dPSI_col=dPSI_col, sig_col = dPSI_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system='0-based')
         threeASS_flanks['Event Type'] = '3ASS'
         spliced_flanks.append(threeASS_flanks)
 
@@ -835,7 +840,7 @@ def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fi
 
          #identify ptms with altered flanking sequences
         print('Identifying flanking sequences for retained intron events.')
-        RI_flanks = get_flanking_changes_from_splice_data(RI_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'upstreamEE', spliced_region_end_col = 'downstreamES', first_flank_start_col = 'upstreamES', first_flank_end_col = 'upstreamEE', second_flank_start_col = 'downstreamES', second_flank_end_col = 'downstreamEE', dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type)
+        RI_flanks = get_flanking_changes_from_splice_data(RI_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'upstreamEE', spliced_region_end_col = 'downstreamES', first_flank_start_col = 'upstreamES', first_flank_end_col = 'upstreamEE', second_flank_start_col = 'downstreamES', second_flank_end_col = 'downstreamEE', dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system='0-based')
         RI_flanks['Event Type'] = 'RI'
         spliced_flanks.append(RI_flanks)
 

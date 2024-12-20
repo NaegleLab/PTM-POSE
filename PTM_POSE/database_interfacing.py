@@ -145,7 +145,7 @@ def get_region_sequence(chromosome, strand, region_start, region_end, coordinate
 
 def get_region_sequences_from_list(regions_list, coordinate_type = 'hg38', max_retries = 5, delay = 15):
     """
-    Given a list of genomic regions, return the DNA sequences associated with the regions. Adapted from example REST API code provided by Ensembl
+    Given a list of genomic regions, return the DNA sequences associated with the regions. Adapted from example REST API code provided by Ensembl, and uses a 1-based coordinate system (inclusive of start and end coordinates)
 
     Parameters
     ----------
@@ -166,13 +166,19 @@ def get_region_sequences_from_list(regions_list, coordinate_type = 'hg38', max_r
  
     region_list_str = '['
     region_coords = []
+    single_bp = []
     for i,region_info in enumerate(regions_list):
         #check to make sure region start is less than region end
-        if region_info[2] >= region_info[3]:
+        if region_info[2] > region_info[3]:
             raise ValueError('Region start coordinate must be smaller than region end coordinate, which is not true for all regions in list')
+        elif region_info[2] == region_info[3]: #if its the same, extend the region by 1, then grab the first returned base
+            start = region_info[2]
+            end = region_info[3] + 1
+            single_bp.append(True)
         else:
             start = region_info[2]
             end = region_info[3]
+            single_bp.append(False)
 
         strand = project.convert_strand_symbol(region_info[1])
         coord = f'{region_info[0]}:{start}..{end}:{strand}'
@@ -203,11 +209,14 @@ def get_region_sequences_from_list(regions_list, coordinate_type = 'hg38', max_r
 
     #extract sequences, making sure they are in the same order as the inputted list
     seq_list = []
-    for region in region_coords:
+    for sbp, region in zip(single_bp, region_coords):
         #find seq info associated with query
         for result in decoded:
             if result['query'] == region:
-                seq_list.append(result['seq'])
+                if sbp:
+                    seq_list.append(result['seq'][0])
+                else:
+                    seq_list.append(result['seq'])
                 break
 
     #return sequences
