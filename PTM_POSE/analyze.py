@@ -127,7 +127,7 @@ def combine_outputs(spliced_ptms, altered_flanks, mod_class = None, include_stop
     if 'Significance' in spliced_ptms.columns and 'Significance' in altered_flanks.columns:
         sig_cols.append('Significance')
 
-    shared_columns = ['Impact', 'Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'] + sig_cols + annotation_columns
+    shared_columns = ['Impact', 'Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'] + sig_cols + annotation_columns
     combined = pd.concat([spliced_ptms[shared_columns], altered_flanks[shared_columns]])
     combined = combined.groupby([col for col in combined.columns if col != 'Impact'], as_index = False, dropna = False)['Impact'].apply(lambda x: ';'.join(set(x)))
 
@@ -217,7 +217,7 @@ def get_ptm_annotations(spliced_ptms, annotation_type = 'Function', database = '
         ptms_of_interest['Impact'] = ptms_of_interest['dPSI'].apply(lambda x: 'Included' if x > 0 else 'Excluded')
 
     optional_cols = [col for col in ptms_of_interest.columns if col in ['Impact', 'dPSI', 'Significance'] or col == dPSI_col or col == sig_col ]
-    annotations = ptms_of_interest[['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'] + [annotation_col] + optional_cols].copy()
+    annotations = ptms_of_interest[['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'] + [annotation_col] + optional_cols].copy()
     annotations = annotations.dropna(subset = annotation_col).drop_duplicates()
 
     if annotations.empty:
@@ -225,7 +225,7 @@ def get_ptm_annotations(spliced_ptms, annotation_type = 'Function', database = '
         return None, None
     
     #combine repeat entries for same PTM (with multiple impacts)
-    annotations = annotations.groupby(['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'], as_index = False).agg(lambda x: ';'.join(set([str(i) for i in x if i == i])))
+    annotations = annotations.groupby(['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform'], as_index = False).agg(lambda x: ';'.join(set([str(i) for i in x if i == i])))
 
     #separate distinct modification annotations in unique rows
     annotations_exploded = annotations.copy()
@@ -240,14 +240,14 @@ def get_ptm_annotations(spliced_ptms, annotation_type = 'Function', database = '
         annotations = annotations_exploded.groupby([col for col in annotations_exploded.columns if col != annotation_col], as_index = False, dropna = False)[annotation_col].apply(lambda x: ';'.join(set(x)))
     
     #get the number of annotations found
-    annotation_counts = annotations_exploded.drop_duplicates(subset = ['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'] + [annotation_col])[annotation_col].value_counts()
+    annotation_counts = annotations_exploded.drop_duplicates(subset = ['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform'] + [annotation_col])[annotation_col].value_counts()
 
     #additional_counts
     sub_counts = []
     if 'Impact' in annotations_exploded.columns:
         for imp in ['Included', 'Excluded', 'Altered Flank']:
             tmp_annotations = annotations_exploded[annotations_exploded['Impact'] == imp].copy()
-            tmp_annotations = tmp_annotations.drop_duplicates(subset = ['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'] + [annotation_col])
+            tmp_annotations = tmp_annotations.drop_duplicates(subset = ['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform'] + [annotation_col])
             sub_counts.append(tmp_annotations[annotation_col].value_counts())
     
         annotation_counts = pd.concat([annotation_counts] + sub_counts, axis = 1)
@@ -255,7 +255,7 @@ def get_ptm_annotations(spliced_ptms, annotation_type = 'Function', database = '
         annotation_counts = annotation_counts.replace(np.nan, 0)
     
     #combine repeat entries for same PTM (with multiple impacts)
-    annotations = annotations.groupby(['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'], as_index = False).agg(lambda x: ';'.join(set([str(i) for i in x if i == i])))
+    annotations = annotations.groupby(['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform'], as_index = False).agg(lambda x: ';'.join(set([str(i) for i in x if i == i])))
 
     return annotations, annotation_counts
 
@@ -383,9 +383,9 @@ def get_enrichment_inputs(spliced_ptms,  annotation_type = 'Function', database 
             background_annotation_count = construct_background(file = annotation_file, annotation_type = annotation_type, database = database, collapse_on_similar = collapse_on_similar, save = save_background)
 
         if mod_class is None:
-            background_size = pose_config.ptm_coordinates.drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0]
+            background_size = pose_config.ptm_coordinates.drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).shape[0]
         else:
-            background_size = pose_config.ptm_coordinates[pose_config.ptm_coordinates['Modification Class'].str.contains(mod_class)].drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0]
+            background_size = pose_config.ptm_coordinates[pose_config.ptm_coordinates['Modification Class'].str.contains(mod_class)].drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).shape[0]
 
     elif background_type == 'significance':
         if 'Significance' not in spliced_ptms.columns or 'dPSI' not in spliced_ptms.columns:
@@ -418,11 +418,11 @@ def get_enrichment_inputs(spliced_ptms,  annotation_type = 'Function', database 
     #        uniprot_id = [ptm.split('_')[0] for ptm in background]
     #        residue = [ptm.split('_')[1][0] for ptm in background]
     #        position = [int(ptm.split('_')[1][1:]) for ptm in background]
-    #        background = pd.DataFrame({'UniProtKB Accession':uniprot_id, 'Residue':residue, 'PTM Position in Canonical Isoform':position, 'Modification Class':mod_class})
+    #        background = pd.DataFrame({'UniProtKB Accession':uniprot_id, 'Residue':residue, 'PTM Position in Isoform':position, 'Modification Class':mod_class})
     #    if isinstance(background, pd.DataFrame):
     #        #check to make sure ptm data has key columns to identify ptms
-    #        if 'UniProtKB Accession' not in background.columns or 'Residue' not in background.columns or 'PTM Position in Canonical Isoform' not in background.columns or #'Modification Class' not in background.columns:
-    #            raise ValueError('Background dataframe must have UniProtKB Accession, Residue, PTM Position in Canonical Isoform, and Modification Class columns to identify PTMs')
+    #        if 'UniProtKB Accession' not in background.columns or 'Residue' not in background.columns or 'PTM Position in Isoform' not in background.columns or #'Modification Class' not in background.columns:
+    #            raise ValueError('Background dataframe must have UniProtKB Accession, Residue, PTM Position in Isoform, and Modification Class columns to identify PTMs')
             
     #        #restrict to specific modification class
     #        if mod_class is not None and 'Modification Class' in background.columns:
@@ -430,10 +430,10 @@ def get_enrichment_inputs(spliced_ptms,  annotation_type = 'Function', database 
     #        elif mod_class is not None:
     #            raise ValueError('Custom background dataframe must have a Modification Class column to subset by modification class.')
     #    else:
-    #        raise ValueError('Custom backgrounds must be provided as a list/array of PTMs in the form of "P00533_Y1068" (Uniprot ID followed by site number) or as a custom background dataframe with UniProtKB Accession, Residue, PTM Position in Canonical Isoform, and Modification Class columns.')
+    #        raise ValueError('Custom backgrounds must be provided as a list/array of PTMs in the form of "P00533_Y1068" (Uniprot ID followed by site number) or as a custom background dataframe with UniProtKB Accession, Residue, PTM Position in Isoform, and Modification Class columns.')
         
     #    background = annotate.add_annotation(background, annotation_type = annotation_type, database = database, check_existing = True, file = annotation_file)    
-    #    background_size = background.drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0]
+    #    background_size = background.drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).shape[0]
 
         #get background counts
     #    _, background_annotation_count = get_ptm_annotations(background, annotation_type = annotation_type, database = database, collapse_on_similar = collapse_on_similar)
@@ -455,7 +455,7 @@ def get_enrichment_inputs(spliced_ptms,  annotation_type = 'Function', database 
         annotation_details[annotation_col] = annotation_details[annotation_col].str.split(';')
         annotation_details = annotation_details.explode(annotation_col)
         annotation_details[annotation_col] = annotation_details[annotation_col].str.strip()
-        annotation_details['PTM'] = annotation_details['Gene'] + '_' + annotation_details['Residue'] + annotation_details['PTM Position in Canonical Isoform'].astype(int).astype(str)
+        annotation_details['PTM'] = annotation_details['Gene'] + '_' + annotation_details['Residue'] + annotation_details['PTM Position in Isoform'].astype(int).astype(str)
         annotation_details = annotation_details.groupby(annotation_col)['PTM'].agg(';'.join)
     
     return foreground_annotation_count, foreground_size, background_annotation_count, background_size, annotation_details
@@ -522,7 +522,7 @@ def annotation_enrichment(spliced_ptms, database = 'PhosphoSitePlus', annotation
     return results
 
 
-def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, combined = None, alpha = 0.05, min_dPSI = None, gene_sets = ['KEGG_2021_Human', 'GO_Biological_Process_2023', 'GO_Cellular_Component_2023', 'GO_Molecular_Function_2023','Reactome_2022'], background = None, return_sig_only = True, max_retries = 5, delay = 10):
+def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, combined = None, sig_col = 'Significance', dpsi_col = 'dPSI', alpha = 0.05, min_dPSI = None, gene_sets = ['KEGG_2021_Human', 'GO_Biological_Process_2023', 'GO_Cellular_Component_2023', 'GO_Molecular_Function_2023','Reactome_2022'], background = None, return_sig_only = True, max_retries = 5, delay = 10):
     """
     Given spliced_ptms and/or altered_flanks dataframes (or the dataframes combined from combine_outputs()), perform gene set enrichment analysis using the enrichr API
 
@@ -551,6 +551,9 @@ def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, combined = N
         Dataframe with gene set enrichment results from enrichr API
 
     """
+    if background is not None:
+        raise ValueError('Background data not supported at this time, but will be added in future versions. Please set background = None, which will use all genes in the gene set database as the background.')
+    
     if combined is not None:
         if spliced_ptms is not None or altered_flanks is not None:
             print('If combined dataframe is provided, you do not need to include spliced_ptms or altered_flanks dataframes. Ignoring these inputs.')
@@ -594,6 +597,7 @@ def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, combined = N
         both = combined_on_gene[both].index.tolist()
     elif spliced_ptms is not None:
         foreground = spliced_ptms.copy()
+        combined = spliced_ptms.copy()
         type = 'Differentially Included'
 
         #isolate the type of impact on the gene
@@ -602,6 +606,7 @@ def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, combined = N
         both = []
     elif altered_flanks is not None:
         foreground = altered_flanks.copy()
+        combined = altered_flanks.copy()
         type = 'Altered Flanking Sequences'
 
         #isolate the type of impact on the gene
@@ -612,12 +617,15 @@ def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, combined = N
         raise ValueError('No dataframes provided. Please provide spliced_ptms, altered_flanks, or the combined dataframe.')
     
     #restrict to significant ptms, if available
-    if 'Significance' in combined.columns and (min_dPSI is not None and 'dPSI' in foreground.columns):
-        foreground = combined[combined['Significance'] <= alpha].copy()
-        foreground = foreground[foreground['dPSI'].abs() >= min_dPSI]
-    elif 'Significance' in combined.columns:
-        foreground = combined[combined['Significance'] <= alpha].copy()
+    if sig_col in foreground.columns and (min_dPSI is not None and dpsi_col in foreground.columns):
+        foreground = foreground[foreground[sig_col] <= alpha].copy()
+        foreground = foreground[foreground[dpsi_col].abs() >= min_dPSI]
+    elif sig_col in foreground.columns:
+        if min_dPSI is not None:
+            print('`min_dpsi` provided but `dpsi_col` not found in dataframe. Ignoring `min_dpsi` parameter. Please indicate correct column name for dPSI values and rerun if desired.')
+        foreground = foreground[foreground[sig_col] <= alpha].copy()
     elif min_dPSI is not None and 'dPSI' in combined.columns:
+        print('`sig_col` not found in dataframe. Ignoring `alpha` parameter. Please indicate correct column name for Significance and rerun if desired.')
         foreground = combined[combined['dPSI'].abs() >= min_dPSI].copy()
     else:
         print('Significance column not found and min_dPSI not provided. All PTMs in dataframe will be considered as the foreground')
@@ -625,25 +633,33 @@ def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, combined = N
     foreground = foreground['Gene'].unique().tolist()   
 
     #construct background
-    if isinstance(background, list):
-        pass
-    elif isinstance(background, np.ndarray):
-        background = list(background)
-    elif background == 'Significance' and 'Significance' in foreground.columns:
-        background = combined.copy()
-        background = background['Gene'].unique().tolist()   
+    #if isinstance(background, list):
+    #    pass
+    #elif isinstance(background, np.ndarray):
+    #    background = list(background)
+    #elif isinstance(background, pd.DataFrame):
+    #    if 'Gene' not in background.columns:
+    #        raise ValueError('Gene column not found in dataframe. Please provide a valid column name for genes.')
+    #    background = background['Gene'].unique().tolist()
+    #elif background == 'Significance':
+    #    if sig_col not in foreground.columns:
+    #        raise ValueError('Significance column not found in dataframe. Please provide a valid column name for significance.')
+    #    background = combined.copy()
+    #    background = background['Gene'].unique().tolist()  
+
     
 
     
     #perform gene set enrichment analysis and save data
     for i in range(max_retries):
         try:
-            enr = gp.enrichr(foreground, background = background, gene_sets = gene_sets, organism='human')
+            enr = gp.enrichr(foreground, gene_sets = gene_sets, organism='human')
             break
-        except: 
+        except Exception as e: 
+            enrichr_error = e
             time.sleep(delay)
     else:
-        raise Exception('Failed to run enrichr analysis after ' + str(max_retries) + ' attempts. Please try again later.')
+        raise Exception('Failed to run enrichr analysis after ' + str(max_retries) + ' attempts. Please try again later. Error given by EnrichR: ' + str(enrichr_error))
     
     results = enr.results.copy()
     results['Type'] = type
@@ -652,6 +668,7 @@ def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, combined = N
     results['Genes with Differentially Included PTMs only'] = results['Genes'].apply(lambda x: ';'.join(set(x.split(';')) & (set(differential_only))))
     results['Genes with PTM with Altered Flanking Sequence only'] = results['Genes'].apply(lambda x: ';'.join(set(x.split(';')) & (set(altered_flank_only))))
     results['Genes with Both'] = results['Genes'].apply(lambda x: ';'.join(set(x.split(';')) & (set(both))))
+
 
     if return_sig_only:
         return results[results['Adjusted P-value'] <= 0.05]
@@ -746,7 +763,7 @@ def identify_change_to_specific_motif(altered_flanks, elm_motif_name, elm_classe
 
     #grab only needed info
     motif_data = altered_flanks.dropna(subset = ['Inclusion Flanking Sequence', 'Exclusion Flanking Sequence'], how = 'all').copy()
-    cols_to_keep = ['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class', 'Inclusion Flanking Sequence', 'Exclusion Flanking Sequence', 'Motif only in Inclusion', 'Motif only in Exclusion', 'Altered Positions', 'Residue Change']
+    cols_to_keep = ['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'Inclusion Flanking Sequence', 'Exclusion Flanking Sequence', 'Motif only in Inclusion', 'Motif only in Exclusion', 'Altered Positions', 'Residue Change']
     if dPSI_col is not None:
         cols_to_keep.append(dPSI_col)
 
@@ -922,8 +939,8 @@ class protein_interactions:
         interactions = annotate.combine_interaction_data(self.spliced_ptms, include_enzyme_interactions=self.include_enzyme_interactions, interaction_databases=self.interaction_databases)
         if interactions.empty:
             raise ValueError('No interaction data found in spliced PTM data. Please provide spliced PTM data with interaction information to generate network. This can be done by using the annotate module')
-        interactions['Residue'] = interactions['Residue'] + interactions['PTM Position in Canonical Isoform'].astype(int).astype(str)
-        interactions = interactions.drop(columns = ['PTM Position in Canonical Isoform'])
+        interactions['Residue'] = interactions['Residue'] + interactions['PTM Position in Isoform'].astype(int).astype(str)
+        interactions = interactions.drop(columns = ['PTM Position in Isoform'])
 
         #add regulation change information
         if 'dPSI' in self.spliced_ptms.columns:
@@ -1307,7 +1324,7 @@ class kstar_enrichment:
             ptms = ptms[(ptms["Modification"].str.contains('Phosphoserine')) | (ptms['Modification'].str.contains('Phosphothreonine'))].copy()
 
         #construct PTM column that matches KSTAR information
-        ptms['PTM'] = ptms['UniProtKB Accession'] + '_' + ptms['Residue'] + ptms['PTM Position in Canonical Isoform'].astype(int).astype(str)
+        ptms['PTM'] = ptms['UniProtKB Accession'] + '_' + ptms['Residue'] + ptms['PTM Position in Isoform'].astype(int).astype(str)
 
         #filter out any PTMs that come from alternative isoforms
         ptms = ptms[~ptms['UniProtKB Accession'].str.contains('-')]

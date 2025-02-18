@@ -50,23 +50,27 @@ def find_ptms_in_region(ptm_coordinates, chromosome, strand, start, end, gene = 
     #extract only PTM information from dataframe and return that and list (if not ptms, return empty dataframe)
     if not ptms_in_region.empty:
         #grab uniprot id and residue
-        ptms_in_region = ptms_in_region[['Source of PTM', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', loc_col, 'Modification', 'Modification Class', 'Canonical Flanking Sequence']]
+        ptms_in_region = ptms_in_region[['Source of PTM', 'UniProtKB Accession','Isoform ID',
+       'Isoform Type', 'Residue', 'PTM Position in Isoform', loc_col, 'Modification', 'Modification Class', 'Canonical Flanking Sequence', 'Constitutive', 'MS_LIT', 'MS_CST']]
         #check if ptm is associated with the same gene (if info is provided). if not, do not add
         if gene is not None:
             for i, row in ptms_in_region.iterrows():
-                if ';' in row['UniProtKB Accession']:
-                    uni_ids = row['UniProtKB Accession'].split(';')
-                    remove = True
-                    for uni in uni_ids:
-                        if gene in pose_config.uniprot_to_genename[uni.split('-')[0]].split(' '):
-                            remove = False
-                            break
+                #if ';' in row['UniProtKB Accession']:
+                #    uni_ids = row['UniProtKB Accession'].split(';')
+                #    remove = True
+                #    for uni in uni_ids:
+                #        if row['UniProtKB Accession'] in pose_config.uniprot_to_genename:
+                #            if gene in pose_config.uniprot_to_genename[uni.split('-')[0]].split(' '):
+                #                remove = False
+                #                break
 
-                    if remove:
-                        ptms_in_region.drop(i)
-                else:
-                    if gene not in pose_config.uniprot_to_genename[row['UniProtKB Accession'].split('-')[0]].split(' '):
+                #    if remove:
+                #        ptms_in_region.drop(i)
+                if row['UniProtKB Accession'] in pose_config.uniprot_to_genename:
+                    if gene not in pose_config.uniprot_to_genename[row['UniProtKB Accession']].split(' '):
                         ptms_in_region = ptms_in_region.drop(i)
+                else:
+                    ptms_in_region = ptms_in_region.drop(i)
 
             #make sure ptms still are present after filtering
             if ptms_in_region.empty:
@@ -212,7 +216,7 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
                     ptms_in_region['Modification Class'] = ptms_in_region['Modification Class'].str.split(';')
                     ptms_in_region = ptms_in_region.explode('Modification Class')
 
-                ptms_info = ptms_in_region.apply(lambda x: x['UniProtKB Accession'] + '_' + x['Residue'] + str(x['PTM Position in Canonical Isoform']) + ' (' + x['Modification Class'] + ')', axis = 1)
+                ptms_info = ptms_in_region.apply(lambda x: x['UniProtKB Accession'] + '_' + x['Residue'] + str(x['PTM Position in Isoform']) + ' (' + x['Modification Class'] + ')', axis = 1)
                 ptms_str = '/'.join(ptms_info.values)
                 spliced_ptms_list.append(ptms_str)
                 num_ptms_affected.append(ptms_in_region.shape[0])
@@ -229,7 +233,7 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
 
     #convert ptm position to float
     if spliced_ptm_info.shape[0] > 0:
-        spliced_ptm_info['PTM Position in Canonical Isoform'] = spliced_ptm_info['PTM Position in Canonical Isoform'].astype(float)
+        spliced_ptm_info['PTM Position in Isoform'] = spliced_ptm_info['PTM Position in Isoform'].astype(float)
             
     #add ptm info to original splice event dataframe
     if annotate_original_df:
@@ -322,7 +326,7 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotat
         splice_data_split = np.array_split(splice_data, PROCESSES)
         pool = multiprocessing.Pool(PROCESSES)
         #run with multiprocessing
-        results = pool.starmap(find_ptms_in_many_regions, [(splice_data_split[i], ptm_coordinates, chromosome_col, strand_col, region_start_col, region_end_col, gene_col, dPSI_col, sig_col, event_id_col, extra_cols, annotate_original_df, coordinate_type, separate_modification_types, taskbar_label) for i in range(PROCESSES)])
+        results = pool.starmap(find_ptms_in_many_regions, [(splice_data_split[i], ptm_coordinates, chromosome_col, strand_col, region_start_col, region_end_col, gene_col, dPSI_col, sig_col, event_id_col, extra_cols, annotate_original_df, coordinate_type, start_coordinate_system, end_coordinate_system, separate_modification_types, taskbar_label) for i in range(PROCESSES)])
 
         splice_data = pd.concat([res[0] for res in results])
         spliced_ptm_info = pd.concat([res[1] for res in results])
@@ -593,7 +597,7 @@ def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
         #combine mxe ptms, and then drop any PTMs that were found in both MXE's
         mxe_ptms = pd.concat([MXE_Exon1_ptms, MXE_Exon2_ptms])
 
-        columns_to_check = ['UniProtKB Accession', 'Source of PTM', 'Residue', 'PTM Position in Canonical Isoform', 'Modification', 'Modification Class', 'Gene']
+        columns_to_check = ['UniProtKB Accession', 'Source of PTM', 'Residue', 'PTM Position in Isoform', 'Modification', 'Modification Class', 'Gene']
         if dPSI_col is not None:
             columns_to_check.append('dPSI')
         if sig_col is not None:

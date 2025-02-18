@@ -19,14 +19,14 @@ annotation_col_dict = {'PhosphoSitePlus':{'Function':'PSP:ON_FUNCTION', 'Process
 
 
 
-def add_custom_annotation(spliced_ptms, annotation_data, source_name, annotation_type, annotation_col, accession_col = 'UniProtKB Accession', residue_col = 'Residue', position_col = 'PTM Position in Canonical Isoform'):
+def add_custom_annotation(spliced_ptms, annotation_data, source_name, annotation_type, annotation_col, accession_col = 'UniProtKB Accession', residue_col = 'Residue', position_col = 'PTM Position in Isoform'):
     """
     Add custom annotation data to spliced_ptms or altered flanking sequence dataframes
 
     Parameters
     ----------
     annotation_data: pandas.DataFrame
-        Dataframe containing the annotation data to be added to the spliced_ptms dataframe. Must contain columns for UniProtKB Accession, Residue, PTM Position in Canonical Isoform, and the annotation data to be added
+        Dataframe containing the annotation data to be added to the spliced_ptms dataframe. Must contain columns for UniProtKB Accession, Residue, PTM Position in Isoform, and the annotation data to be added
     source_name: str
         Name of the source of the annotation data, will be used to label the columns in the spliced_ptms dataframe
     annotation_type: str
@@ -61,7 +61,7 @@ def add_custom_annotation(spliced_ptms, annotation_data, source_name, annotation
 
     #add to splice data
     original_data_size = spliced_ptms.shape[0]
-    spliced_ptms = spliced_ptms.merge(annotation_data, how = 'left', left_on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'], right_on = [accession_col, residue_col, position_col])
+    spliced_ptms = spliced_ptms.merge(annotation_data, how = 'left', left_on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform'], right_on = [accession_col, residue_col, position_col])
     if spliced_ptms.shape[0] != original_data_size:
         raise RuntimeError('Dataframe size has changed, check for duplicates in spliced ptms or annotation dataframe')
     
@@ -93,20 +93,20 @@ def add_PSP_regulatory_site_data(spliced_ptms, file = 'Regulatory_sites.gz', rep
     regulatory_site_data = regulatory_site_data.rename(columns = {'ACC_ID':'UniProtKB Accession'})
     #drop extra modification information that is not needed
     regulatory_site_data['Residue'] = regulatory_site_data['MOD_RSD'].apply(lambda x: x.split('-')[0][0])
-    regulatory_site_data['PTM Position in Canonical Isoform'] = regulatory_site_data['MOD_RSD'].apply(lambda x: int(x.split('-')[0][1:]))
+    regulatory_site_data['PTM Position in Isoform'] = regulatory_site_data['MOD_RSD'].apply(lambda x: int(x.split('-')[0][1:]))
     #add modification type
     regulatory_site_data['Modification Class'] = regulatory_site_data['MOD_RSD'].apply(lambda x: mod_shorthand_dict[x.split('-')[1]])
 
     #restrict to human data
     regulatory_site_data = regulatory_site_data[regulatory_site_data['ORGANISM'] == 'human']
-    regulatory_site_data = regulatory_site_data[['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class', 'ON_PROCESS', 'ON_PROT_INTERACT', 'ON_OTHER_INTERACT', 'ON_FUNCTION']].drop_duplicates()
+    regulatory_site_data = regulatory_site_data[['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'ON_PROCESS', 'ON_PROT_INTERACT', 'ON_OTHER_INTERACT', 'ON_FUNCTION']].drop_duplicates()
     
     #group like modifications into a single column
-    regulatory_site_data = regulatory_site_data.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).agg(lambda x: '; '.join([y for y in x if y == y])).reset_index()
+    regulatory_site_data = regulatory_site_data.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).agg(lambda x: '; '.join([y for y in x if y == y])).reset_index()
     regulatory_site_data = regulatory_site_data.replace('', np.nan)
     
     #add 'PSP:' in front of each column
-    regulatory_site_data.columns = ['PSP:' + x if x not in ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'] else x for x in regulatory_site_data.columns]
+    regulatory_site_data.columns = ['PSP:' + x if x not in ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'] else x for x in regulatory_site_data.columns]
     
     #if splice data already has the annotation columns, remove them
     if 'PSP:ON_FUNCTION' in spliced_ptms.columns:
@@ -119,16 +119,16 @@ def add_PSP_regulatory_site_data(spliced_ptms, file = 'Regulatory_sites.gz', rep
 
     #merge with spliced_ptm info
     original_data_size = spliced_ptms.shape[0]
-    spliced_ptms = spliced_ptms.merge(regulatory_site_data, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'])
+    spliced_ptms = spliced_ptms.merge(regulatory_site_data, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'])
     if spliced_ptms.shape[0] != original_data_size:
         raise RuntimeError('Dataset size changed upon merge, please make sure there are no duplicates in spliced ptms data')
 
     
     #report the number of ptms with motif data
     if report_success:
-        num_ptms_with_known_function = spliced_ptms.dropna(subset = 'PSP:ON_FUNCTION').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_known_process = spliced_ptms.dropna(subset = 'PSP:ON_PROCESS').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_known_interaction = spliced_ptms.dropna(subset = 'PSP:ON_PROT_INTERACT').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_known_function = spliced_ptms.dropna(subset = 'PSP:ON_FUNCTION').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_known_process = spliced_ptms.dropna(subset = 'PSP:ON_PROCESS').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_known_interaction = spliced_ptms.dropna(subset = 'PSP:ON_PROT_INTERACT').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
         print(f"PhosphoSitePlus regulatory_site information added:\n\t ->{num_ptms_with_known_function} PTMs in dataset found associated with a molecular function \n\t ->{num_ptms_with_known_process} PTMs in dataset found associated with a biological process\n\t ->{num_ptms_with_known_interaction} PTMs in dataset found associated with a protein interaction")
     return spliced_ptms
 
@@ -160,7 +160,7 @@ def add_PSP_kinase_substrate_data(spliced_ptms, file = 'Kinase_Substrate_Dataset
     ks_dataset.columns = ['UniProtKB Accession', 'Residue', 'PSP:Kinase']
 
     #separate residue and position
-    ks_dataset['PTM Position in Canonical Isoform'] = ks_dataset['Residue'].apply(lambda x: int(x[1:]))
+    ks_dataset['PTM Position in Isoform'] = ks_dataset['Residue'].apply(lambda x: int(x[1:]))
     ks_dataset['Residue'] = ks_dataset['Residue'].apply(lambda x: x[0])
 
     
@@ -169,14 +169,14 @@ def add_PSP_kinase_substrate_data(spliced_ptms, file = 'Kinase_Substrate_Dataset
         spliced_ptms = spliced_ptms.drop(columns = ['PSP:Kinase'])
 
     original_data_size = spliced_ptms.shape[0]
-    spliced_ptms = spliced_ptms.merge(ks_dataset, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'])
+    spliced_ptms = spliced_ptms.merge(ks_dataset, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform'])
     if spliced_ptms.shape[0] != original_data_size:
         raise RuntimeError('Dataset size changed upon merge, please make sure there are no duplicates in spliced ptms data')
     
     
         #report the number of ptms with kinase substrate information
     if report_success:
-        num_ptms_with_KS = spliced_ptms.dropna(subset = 'PSP:Kinase').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_KS = spliced_ptms.dropna(subset = 'PSP:Kinase').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
         print(f"PhosphoSitePlus kinase-substrate interactions added: {num_ptms_with_KS} phosphorylation sites in dataset found associated with a kinase in PhosphoSitePlus")
     return spliced_ptms
 
@@ -208,7 +208,7 @@ def add_PSP_disease_association(spliced_ptms, file = 'Disease-associated_sites.g
     #drop extra modification information that is not needed
     #drop extra modification information that is not needed
     disease_associated_sites['Residue'] = disease_associated_sites['MOD_RSD'].apply(lambda x: x.split('-')[0][0])
-    disease_associated_sites['PTM Position in Canonical Isoform'] = disease_associated_sites['MOD_RSD'].apply(lambda x: int(x.split('-')[0][1:]))
+    disease_associated_sites['PTM Position in Isoform'] = disease_associated_sites['MOD_RSD'].apply(lambda x: int(x.split('-')[0][1:]))
     #add modification type
     disease_associated_sites['Modification Class'] = disease_associated_sites['MOD_RSD'].apply(lambda x: mod_shorthand_dict[x.split('-')[1]])
     #if phosphorylation, add specific residue
@@ -220,11 +220,11 @@ def add_PSP_disease_association(spliced_ptms, file = 'Disease-associated_sites.g
     #combine disease and alteration
     disease_associated_sites['ALTERATION'] = disease_associated_sites.apply(lambda x: x['DISEASE']+'->'+x['ALTERATION'] if x['ALTERATION'] == x['ALTERATION'] else x['DISEASE'], axis = 1)
     #grab only necessary columns and rename
-    disease_associated_sites = disease_associated_sites[['ACC_ID', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class', 'ALTERATION']]
-    disease_associated_sites.columns = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class', 'PSP:Disease_Association']
+    disease_associated_sites = disease_associated_sites[['ACC_ID', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'ALTERATION']]
+    disease_associated_sites.columns = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'PSP:Disease_Association']
 
     #aggregate multiple disease associations
-    disease_associated_sites = disease_associated_sites.groupby(['UniProtKB Accession', 'Residue','PTM Position in Canonical Isoform', 'Modification Class']).agg(';'.join).reset_index()
+    disease_associated_sites = disease_associated_sites.groupby(['UniProtKB Accession', 'Residue','PTM Position in Isoform', 'Modification Class']).agg(';'.join).reset_index()
 
     #if splice data already has the annotation columns, remove them
     if 'PSP:Disease_Association' in spliced_ptms.columns:
@@ -238,14 +238,14 @@ def add_PSP_disease_association(spliced_ptms, file = 'Disease-associated_sites.g
 
     #merge with spliced_ptm info
     original_data_size = spliced_ptms.shape[0]
-    spliced_ptms = spliced_ptms.merge(disease_associated_sites, how = 'left', on = ['UniProtKB Accession', 'Residue','PTM Position in Canonical Isoform', 'Modification Class'])
+    spliced_ptms = spliced_ptms.merge(disease_associated_sites, how = 'left', on = ['UniProtKB Accession', 'Residue','PTM Position in Isoform', 'Modification Class'])
     if spliced_ptms.shape[0] != original_data_size:
         raise RuntimeError('Dataset size changed upon merge, please make sure there are no duplicates in spliced ptms data')
     
     #
     #report the number of ptms with motif data
     if report_success:
-        num_ptms_with_disease = spliced_ptms.dropna(subset = 'PSP:Disease_Association').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_disease = spliced_ptms.dropna(subset = 'PSP:Disease_Association').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
         print(f"PhosphoSitePlus disease associations added: {num_ptms_with_disease} PTM sites in dataset found associated with a disease in PhosphoSitePlus")
     
     
@@ -270,7 +270,7 @@ def add_ELM_interactions(spliced_ptms, file = None, report_success =True):
     elm_interactor = []
     for i, row in spliced_ptms.iterrows():
         #grab ptm location from residue column (gives residue and position (S981), so need to remove residue and convert to int)
-        ptm_loc = int(row['PTM Position in Canonical Isoform']) if row['PTM Position in Canonical Isoform'] == row['PTM Position in Canonical Isoform'] and row['PTM Position in Canonical Isoform'] != 'none' else None
+        ptm_loc = int(row['PTM Position in Isoform']) if row['PTM Position in Isoform'] == row['PTM Position in Isoform'] and row['PTM Position in Isoform'] != 'none' else None
 
         #if data does not have position information, move to the next
         if ptm_loc is None:
@@ -313,7 +313,7 @@ def add_ELM_interactions(spliced_ptms, file = None, report_success =True):
     
     #report the number of ptms with motif data
     if report_success:
-        num_ptms_with_ELM_instance = spliced_ptms.dropna(subset = 'ELM:Interactions').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).size().shape[0]
+        num_ptms_with_ELM_instance = spliced_ptms.dropna(subset = 'ELM:Interactions').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).size().shape[0]
         print(f"ELM interaction instances added: {num_ptms_with_ELM_instance} PTMs in dataset found associated with at least one known ELM instance")
     return spliced_ptms
 
@@ -327,19 +327,19 @@ def add_ELM_matched_motifs(spliced_ptms, flank_size = 7, file = None, report_suc
 
     ptm_coordinates = pose_config.ptm_coordinates.copy()
     #create corresponding label for ptm_coordinate data
-    ptm_coordinates['PTM Label'] = ptm_coordinates['UniProtKB Accession'] + '_' + ptm_coordinates['Residue'] + ptm_coordinates['PTM Position in Canonical Isoform'].apply(lambda x: int(float(x)) if x == x else np.nan).astype(str)
+    ptm_coordinates['PTM Label'] = ptm_coordinates['UniProtKB Accession'] + '_' + ptm_coordinates['Residue'] + ptm_coordinates['PTM Position in Isoform'].apply(lambda x: int(float(x)) if x == x else np.nan).astype(str)
     
     match_list = []
     for i, row in spliced_ptms.iterrows():
         matches = []
         #grab ptm information
         #grab flanking sequence for the ptm
-        loc = int(row["PTM Position in Canonical Isoform"]) if row['PTM Position in Canonical Isoform'] == row['PTM Position in Canonical Isoform'] else np.nan
+        loc = int(row["PTM Position in Isoform"]) if row['PTM Position in Isoform'] == row['PTM Position in Isoform'] else np.nan
         ptm = row['UniProtKB Accession'] + '_' + row['Residue'] + str(loc)
 
         
         if ptm in ptm_coordinates['PTM Label'].values:
-            ptm_flanking_seq = ptm_coordinates.loc[ptm_coordinates['PTM Label'] == ptm, 'Expected Flanking Sequence'].values[0]
+            ptm_flanking_seq = ptm_coordinates.loc[ptm_coordinates['PTM Label'] == ptm, 'Canonical Flanking Sequence'].values[0]
             #make sure flanking sequence is present
             if isinstance(ptm_flanking_seq, str):
 
@@ -365,7 +365,7 @@ def add_ELM_matched_motifs(spliced_ptms, flank_size = 7, file = None, report_suc
 
     #report the number of ptms with motif data
     if report_success:
-        num_ptms_with_matched_motif = spliced_ptms.dropna(subset = 'ELM:Motif Matches').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).size().shape[0]
+        num_ptms_with_matched_motif = spliced_ptms.dropna(subset = 'ELM:Motif Matches').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).size().shape[0]
         print(f"ELM Class motif matches found: {num_ptms_with_matched_motif} PTMs in dataset found with at least one matched motif")
     return spliced_ptms
 
@@ -380,14 +380,14 @@ def add_PTMInt_data(spliced_ptms, file = None, report_success = True):
         check_file(file, expected_extension='.csv')
         PTMint = pd.read_csv(file)
 
-    PTMint = PTMint.rename(columns={'Uniprot':'UniProtKB Accession', 'AA':'Residue', 'Site':'PTM Position in Canonical Isoform'})
+    PTMint = PTMint.rename(columns={'Uniprot':'UniProtKB Accession', 'AA':'Residue', 'Site':'PTM Position in Isoform'})
     #PTMint['Site'] = PTMint['AA'] + PTMint['Site'].astype(str)
     PTMint['PTMInt:Interaction'] = PTMint['Int_gene']+'->'+PTMint['Effect']
-    PTMint = PTMint[['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'PTMInt:Interaction']]
-    #PTMint['PTM Position in Canonical Isoform'] = PTMint['PTM Position in Canonical Isoform'].astype(str)
+    PTMint = PTMint[['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'PTMInt:Interaction']]
+    #PTMint['PTM Position in Isoform'] = PTMint['PTM Position in Isoform'].astype(str)
 
     #aggregate PTMint data on the same PTMs
-    PTMint = PTMint.groupby(['UniProtKB Accession','Residue','PTM Position in Canonical Isoform'], as_index = False).agg(';'.join)
+    PTMint = PTMint.groupby(['UniProtKB Accession','Residue','PTM Position in Isoform'], as_index = False).agg(';'.join)
 
     #if splice data already has the annotation columns, remove them
     if 'PTMInt:Interaction' in spliced_ptms.columns:
@@ -395,7 +395,7 @@ def add_PTMInt_data(spliced_ptms, file = None, report_success = True):
 
     #add to splice data
     original_data_size = spliced_ptms.shape[0]
-    spliced_ptms = spliced_ptms.merge(PTMint[['UniProtKB Accession','Residue','PTM Position in Canonical Isoform', 'PTMInt:Interaction']], on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'], how = 'left')
+    spliced_ptms = spliced_ptms.merge(PTMint[['UniProtKB Accession','Residue','PTM Position in Isoform', 'PTMInt:Interaction']], on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform'], how = 'left')
     if spliced_ptms.shape[0] != original_data_size:
         raise RuntimeError('Dataframe size has changed, check for duplicates in spliced ptms dataframe')
 
@@ -460,7 +460,7 @@ def add_PTMInt_data(spliced_ptms, file = None, report_success = True):
 #    ptmcode = ptmcode.rename(columns = {'UniProtKB/Swiss-Prot ID':'UniProtKB Accession', 'Residue1':'Residue', 'Residue2':'PTMcode:Intraprotein_Interactions'})
 #    
 #    #separate residue information into separate columns, one for amino acid and one for position
-#    ptmcode['PTM Position in Canonical Isoform'] = ptmcode['Residue'].apply(lambda x: int(x[1:]))
+#    ptmcode['PTM Position in Isoform'] = ptmcode['Residue'].apply(lambda x: int(x[1:]))
 #    ptmcode['Residue'] = ptmcode['Residue'].apply(lambda x: x[0])
 #
 #        #if splice data already has the annotation columns, remove them
@@ -474,7 +474,7 @@ def add_PTMInt_data(spliced_ptms, file = None, report_success = True):
 #
 #    #add to splice data
 #    original_data_size = spliced_ptms.shape[0]
-#    spliced_ptms = spliced_ptms.merge(ptmcode, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'])
+#    spliced_ptms = spliced_ptms.merge(ptmcode, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'])
 #    if spliced_ptms.shape[0] != original_data_size:
 #        raise RuntimeError('Dataframe size has changed, check for duplicates in spliced ptms dataframe')
 #    
@@ -559,7 +559,7 @@ def add_PTMcode_interprotein(spliced_ptms, fname = None, report_success = True):
     ptmcode = ptmcode.rename(columns = {'UniProtKB/Swiss-Prot ID':'UniProtKB Accession', 'Residue1':'Residue', 'Interacting Residue':'PTMcode:Interprotein_Interactions'})
 
     #separate residue information into separate columns, one for amino acid and one for position
-    ptmcode['PTM Position in Canonical Isoform'] = ptmcode['Residue'].apply(lambda x: float(x[1:]))
+    ptmcode['PTM Position in Isoform'] = ptmcode['Residue'].apply(lambda x: float(x[1:]))
     ptmcode['Residue'] = ptmcode['Residue'].apply(lambda x: x[0])
 
             #if splice data already has the annotation columns, remove them
@@ -573,7 +573,7 @@ def add_PTMcode_interprotein(spliced_ptms, fname = None, report_success = True):
 
     #add to splice data
     original_data_size = spliced_ptms.shape[0]
-    spliced_ptms = spliced_ptms.merge(ptmcode, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'])
+    spliced_ptms = spliced_ptms.merge(ptmcode, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'])
     if spliced_ptms.shape[0] != original_data_size:
         raise RuntimeError('Dataframe size has changed, check for duplicates in spliced ptms dataframe')
     
@@ -666,14 +666,14 @@ def add_DEPOD_phosphatase_data(spliced_ptms, report_success = True):
     #extract only needed information and add phosphorylation as modification type
     #extract only needed information and add phosphorylation as modification type
     depod['Residue'] = depod['Dephosphosites'].apply(lambda x: x[0] if x == x else np.nan)
-    depod['PTM Position in Canonical Isoform'] = depod['Dephosphosites'].apply(lambda x: int(x[1:]) if x == x else np.nan)
+    depod['PTM Position in Isoform'] = depod['Dephosphosites'].apply(lambda x: int(x[1:]) if x == x else np.nan)
     depod = depod.rename({'Substrate accession numbers': 'UniProtKB Accession', 'Phosphatase entry names':'DEPOD:Phosphatase'}, axis = 1)
-    depod = depod[['DEPOD:Phosphatase', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']]
+    depod = depod[['DEPOD:Phosphatase', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform']]
     depod['Modification Class'] = 'Phosphorylation'
 
     #combine on the same PTM
     depod = depod.drop_duplicates()
-    depod = depod.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'], as_index = False)['DEPOD:Phosphatase'].agg(';'.join)
+    depod = depod.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'], as_index = False)['DEPOD:Phosphatase'].agg(';'.join)
 
         #if splice data already has the annotation columns, remove them
     if 'DEPOD:Phosphatase' in spliced_ptms.columns:
@@ -686,7 +686,7 @@ def add_DEPOD_phosphatase_data(spliced_ptms, report_success = True):
 
     #add to splice data
     original_data_size = spliced_ptms.shape[0]
-    spliced_ptms = spliced_ptms.merge(depod, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'])
+    spliced_ptms = spliced_ptms.merge(depod, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'])
     if spliced_ptms.shape[0] != original_data_size:
         raise RuntimeError('Dataframe size has changed, check for duplicates in spliced ptms dataframe')
     
@@ -706,10 +706,10 @@ def add_RegPhos_data(spliced_ptms, file = None, report_success = True):
 
     regphos = regphos.dropna(subset = 'catalytic kinase')
     #regphos['Residue'] = regphos['code'] + regphos['position'].astype(str)
-    regphos = regphos.rename(columns = {'code': 'Residue', 'position':'PTM Position in Canonical Isoform', 'AC': 'UniProtKB Accession', 'catalytic kinase': 'RegPhos:Kinase'})
+    regphos = regphos.rename(columns = {'code': 'Residue', 'position':'PTM Position in Isoform', 'AC': 'UniProtKB Accession', 'catalytic kinase': 'RegPhos:Kinase'})
     regphos['Modification Class'] = 'Phosphorylation'
-    regphos = regphos[['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class', 'RegPhos:Kinase']].dropna()
-    regphos = regphos.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).agg(';'.join).reset_index()
+    regphos = regphos[['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'RegPhos:Kinase']].dropna()
+    regphos = regphos.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).agg(';'.join).reset_index()
 
     #if splice data already has the annotation columns, remove them
     if 'RegPhos:Kinase' in spliced_ptms.columns:
@@ -722,13 +722,13 @@ def add_RegPhos_data(spliced_ptms, file = None, report_success = True):
 
     #add to splice data
     original_data_size = spliced_ptms.shape[0]
-    spliced_ptms = spliced_ptms.merge(regphos, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'])
+    spliced_ptms = spliced_ptms.merge(regphos, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'])
     if spliced_ptms.shape[0] != original_data_size:
         raise RuntimeError('Dataframe size has changed, check for duplicates in spliced ptms dataframe')
     
     #report the number of PTMs identified
     if report_success:
-        num_ptms_with_regphos_data = spliced_ptms.dropna(subset = 'RegPhos:Kinase').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).size().shape[0]
+        num_ptms_with_regphos_data = spliced_ptms.dropna(subset = 'RegPhos:Kinase').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).size().shape[0]
         print(f"RegPhos kinase-substrate data added: {num_ptms_with_regphos_data} PTMs in dataset found with kinase-substrate information")
 
     return spliced_ptms
@@ -744,7 +744,7 @@ def add_PTMsigDB_data(spliced_ptms, file = None, report_success = True):
 
     ptmsigdb['UniProtKB Accession'] = ptmsigdb['site.uniprot'].str.split(';').str[0]
     ptmsigdb['Residue'] = ptmsigdb['site.uniprot'].str.split(';').str[1].str[0]
-    ptmsigdb['PTM Position in Canonical Isoform'] = ptmsigdb['site.uniprot'].apply(lambda x: int(x.split(';')[1].split('-')[0][1:]))
+    ptmsigdb['PTM Position in Isoform'] = ptmsigdb['site.uniprot'].apply(lambda x: int(x.split(';')[1].split('-')[0][1:]))
 
     #filter out excess information in some of the site.ptm column, then convert to modification class details
     ptmsigdb['site.ptm'] = ptmsigdb['site.ptm'].apply(lambda x: x.split(';')[1].split('-')[1] if ';' in x else x)
@@ -754,13 +754,13 @@ def add_PTMsigDB_data(spliced_ptms, file = None, report_success = True):
     ptmsigdb['Signature'] = ptmsigdb['signature'] +'->'+ ptmsigdb['site.direction']
 
     #drop unneeded columns
-    ptmsigdb = ptmsigdb[['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class', 'Signature', 'category']]
+    ptmsigdb = ptmsigdb[['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'Signature', 'category']]
     ptmsigdb['Signature'] = ptmsigdb.apply(lambda x: x['Signature'].replace(x['category'] + '_', ''), axis = 1)
     ptmsigdb['category'] = 'PTMsigDB:' + ptmsigdb['category'] 
     ptmsigdb = ptmsigdb.drop_duplicates()
 
         #convert to pivot table with each category being a separate column
-    ptmsigdb = ptmsigdb.pivot_table(index = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'], columns = 'category', values = 'Signature', aggfunc=';'.join).reset_index()
+    ptmsigdb = ptmsigdb.pivot_table(index = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'], columns = 'category', values = 'Signature', aggfunc=';'.join).reset_index()
 
     #remove psp data if it is already in spliced ptms
     if 'PSP:Kinase' in spliced_ptms.columns:
@@ -783,21 +783,21 @@ def add_PTMsigDB_data(spliced_ptms, file = None, report_success = True):
 
     #merge with spliced_ptm info
     original_data_size = spliced_ptms.shape[0]
-    spliced_ptms = spliced_ptms.merge(ptmsigdb, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class'])
+    spliced_ptms = spliced_ptms.merge(ptmsigdb, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'])
     if spliced_ptms.shape[0] != original_data_size:
         raise RuntimeError('Dataset size changed upon merge, please make sure there are no duplicates in spliced ptms data')
 
 
     #report the number of ptms with motif data
     if report_success:
-        num_ptms_with_ikip = spliced_ptms.dropna(subset = 'PTMsigDB:KINASE-iKiP').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_path_bi = spliced_ptms.dropna(subset = 'PTMsigDB:PATH-BI').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_path_np= spliced_ptms.dropna(subset = 'PTMsigDB:PATH-NP').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_path_wp = spliced_ptms.dropna(subset = 'PTMsigDB:PATH-WP').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_dia_pert = spliced_ptms.dropna(subset = 'PTMsigDB:PERT-P100-DIA').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_dia2_pert = spliced_ptms.dropna(subset = 'PTMsigDB:PERT-P100-DIA2').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_prm_pert = spliced_ptms.dropna(subset = 'PTMsigDB:PERT-P100-PRM').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_psp_pert = spliced_ptms.dropna(subset = 'PTMsigDB:PERT-PSP').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_ikip = spliced_ptms.dropna(subset = 'PTMsigDB:KINASE-iKiP').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_path_bi = spliced_ptms.dropna(subset = 'PTMsigDB:PATH-BI').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_path_np= spliced_ptms.dropna(subset = 'PTMsigDB:PATH-NP').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_path_wp = spliced_ptms.dropna(subset = 'PTMsigDB:PATH-WP').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_dia_pert = spliced_ptms.dropna(subset = 'PTMsigDB:PERT-P100-DIA').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_dia2_pert = spliced_ptms.dropna(subset = 'PTMsigDB:PERT-P100-DIA2').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_prm_pert = spliced_ptms.dropna(subset = 'PTMsigDB:PERT-P100-PRM').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
+        num_ptms_with_psp_pert = spliced_ptms.dropna(subset = 'PTMsigDB:PERT-PSP').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
         print(f"PTMsigDB added:\n\t ->{num_ptms_with_ikip} PTMs associated with kinases in iKiP\n\t ->{num_ptms_with_path_wp} PTMs associated with molecular pathway signatures from WikiPathways\n\t ->{num_ptms_with_path_np} PTMs associated with molecular pathway signatures from NetPath\n\t ->{num_ptms_with_psp_pert} PTMs with PhosphoSitePlus perturbations\n\t ->{num_ptms_with_dia_pert} with perturbations in LINCS P1000 DIA dataset \n\t ->{num_ptms_with_dia2_pert} with perturbations in LINCS P1000 DIA2 dataset\n\t ->{num_ptms_with_prm_pert} with perturbations in LINCS P1000 PRM dataset")
     return spliced_ptms
 
@@ -877,7 +877,7 @@ def unify_interaction_data(spliced_ptms, interaction_col, name_dict = {}):
 
     #extract PSP data from annotated PTMs, separate cases in which single PTM has multipe interactions
     data_cols = [col for col in spliced_ptms.columns if col in ['Significance', 'dPSI']]
-    interact = spliced_ptms.dropna(subset = interaction_col)[['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class',interaction_col] + data_cols]
+    interact = spliced_ptms.dropna(subset = interaction_col)[['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class',interaction_col] + data_cols]
     if interact.empty:
         print(f"No PTMs associated with {interaction_col}")
         return interact
@@ -1105,7 +1105,7 @@ def combine_interaction_data(spliced_ptms, interaction_databases = ['PhosphoSite
     if len(interact_data) > 0:
         interact_data = pd.concat(interact_data)
         extra_cols = [col for col in interact_data.columns if col in ['dPSI', 'Significance']]
-        interact_data = interact_data.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Interacting ID', 'Type']+extra_cols, dropna = False, as_index = False)['Source'].apply(helpers.join_unique_entries)
+        interact_data = interact_data.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Interacting ID', 'Type']+extra_cols, dropna = False, as_index = False)['Source'].apply(helpers.join_unique_entries)
     
         #convert uniprot ids back to gene names for interpretability
         ptm_gene = []
@@ -1144,6 +1144,12 @@ def combine_KS_data(spliced_ptms, ks_databases = ['PhosphoSitePlus', 'RegPhos'],
     """
     if not hasattr(pose_config, 'genename_to_uniprot'):
         pose_config.genename_to_uniprot = pose_config.flip_uniprot_dict(pose_config.uniprot_to_genename)
+
+    #remove databases without kinase data in spliced ptms
+    ks_databases = [db for db in ks_databases if db + ':Kinase' in spliced_ptms.columns]
+    if len(ks_databases) == 0:
+        print('No kinase data found in spliced PTMs, skipping')
+        return spliced_ptms
 
     ks_data = []
     for i, row in spliced_ptms.iterrows():
@@ -1348,21 +1354,23 @@ def annotate_ptms(spliced_ptms, psp_regulatory_site_file = None, psp_ks_file = N
 
     if combine_similar:
         interaction_cols = ['PTMcode:Interprotein_Interactions', 'PSP:ON_PROT_INTERACT', 'PSP:Kinase', 'PTMInt:Interaction', 'RegPhos:Kinase', 'DEPOD:Phosphatase']
-        if set(interaction_cols).intersection(spliced_ptms.columns) != 0:
+        if len(set(interaction_cols).intersection(spliced_ptms.columns)) > 1:
             print('\nCombining interaction data from multiple databases')
             interact = combine_interaction_data(spliced_ptms, interaction_databases = interactions_to_combine)
             if not interact.empty:
                 interact['Combined:Interactions'] = interact['Interacting Gene']+'->'+interact['Type']
-                interact = interact.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'], dropna = False, as_index = False)['Combined:Interactions'].apply(lambda x: ';'.join(np.unique(x)))
+                interact = interact.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform'], dropna = False, as_index = False)['Combined:Interactions'].apply(lambda x: ';'.join(np.unique(x)))
                 if 'Combined:Interactions' in spliced_ptms.columns:
                     spliced_ptms = spliced_ptms.drop(columns = ['Combined:Interactions'])
     
-                spliced_ptms = spliced_ptms.merge(interact, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform'])
+                spliced_ptms = spliced_ptms.merge(interact, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform'])
             else:
                 spliced_ptms['Combined:Interactions'] = np.nan
+        ks_columns = ['PSP:Kinase', 'RegPhos:Kinase']
+        if len(set(ks_columns).intersection(spliced_ptms.columns)) > 1:
+            print('\nCombining kinase-substrate data from multiple databases')
+            spliced_ptms = combine_KS_data(spliced_ptms, ks_databases = kinases_to_combine)
 
-        #check for what kinase data is available
-        spliced_ptms = combine_KS_data(spliced_ptms, ks_databases=kinases_to_combine) #add combined kinase column
 
 
     return spliced_ptms

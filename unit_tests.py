@@ -27,7 +27,7 @@ file_dict = {'PhosphoSitePlus': {'Function':psp_regulatory_site_file, 'Process':
 
 def configure_unit_test():
     pose_config.download_translator()
-    pose_config.download_ptm_coordinates()
+    #pose_config.download_ptm_coordinates()
 
 def projection_test(dataset = 'Yang2016', check_type = 'no changes', splicegraph_file = None):
     """
@@ -60,7 +60,7 @@ def projection_test(dataset = 'Yang2016', check_type = 'no changes', splicegraph
         splice_data, spliced_ptms, altered_flanks = results
 
         #check if TSC2 S981 is in the spliced PTMs
-        spliced_ptms['Label'] = spliced_ptms['Gene'] + '_' + spliced_ptms['Residue'] + spliced_ptms['PTM Position in Canonical Isoform'].astype(str)
+        spliced_ptms['Label'] = spliced_ptms['Gene'] + '_' + spliced_ptms['Residue'] + spliced_ptms['PTM Position in Isoform'].astype(str)
         assert 'TSC2_S981' in spliced_ptms['Label'].values or 'TSC2_S981.0' in spliced_ptms['Label'].values
 
     elif dataset == 'TCGA_PRAD':
@@ -80,7 +80,7 @@ def projection_test(dataset = 'Yang2016', check_type = 'no changes', splicegraph
 
         
         #check if TSC2 S981 is in the spliced PTMs
-        spliced_ptms['Label'] = spliced_ptms['Gene'] + '_' + spliced_ptms['Residue'] + spliced_ptms['PTM Position in Canonical Isoform'].astype(str)
+        spliced_ptms['Label'] = spliced_ptms['Gene'] + '_' + spliced_ptms['Residue'] + spliced_ptms['PTM Position in Isoform'].astype(str)
         assert 'TSC2_S981' in spliced_ptms['Label'].values or 'TSC2_S981.0' in spliced_ptms['Label'].values
     else:
         raise ValueError('Dataset not recognized. Options include Yang2016 and TCGA_PRAD')
@@ -88,18 +88,18 @@ def projection_test(dataset = 'Yang2016', check_type = 'no changes', splicegraph
     #compare results to expected values, either raising an error or printing differences
     if check_type == 'no changes':
         spliced_ptms_true = np.unique(spliced_ptms_true['UniProtKB Accession'] + '_' + spliced_ptms_true['Residue'] + spliced_ptms_true['PTM Position in Canonical Isoform'].astype(float).astype(int).astype(str))
-        spliced_ptms_new = np.unique(spliced_ptms['UniProtKB Accession'] + '_' + spliced_ptms['Residue'] + spliced_ptms['PTM Position in Canonical Isoform'].astype(float).astype(int).astype(str))
+        spliced_ptms_new = np.unique(spliced_ptms['UniProtKB Accession'] + '_' + spliced_ptms['Residue'] + spliced_ptms['PTM Position in Isoform'].astype(float).astype(int).astype(str))
         intersection = set(spliced_ptms_true).intersection(set(spliced_ptms_new))
         assert len(intersection) == len(spliced_ptms_true)
 
         altered_flanks_true = np.unique(altered_flanks_true['UniProtKB Accession'] + '_' + altered_flanks_true['Residue'] + altered_flanks_true['PTM Position in Canonical Isoform'].astype(float).astype(int).astype(str))
-        altered_flanks_new = np.unique(altered_flanks['UniProtKB Accession'] + '_' + altered_flanks['Residue'] + altered_flanks['PTM Position in Canonical Isoform'].astype(float).astype(int).astype(str))
+        altered_flanks_new = np.unique(altered_flanks['UniProtKB Accession'] + '_' + altered_flanks['Residue'] + altered_flanks['PTM Position in Isoform'].astype(float).astype(int).astype(str))
         intersection = set(altered_flanks_true).intersection(set(altered_flanks_new))
         assert len(intersection) == len(altered_flanks_true)
         print('No changes found! Projection test passed!')
     elif check_type == 'report changes':
         spliced_ptms_true = np.unique(spliced_ptms_true['UniProtKB Accession'] + '_' + spliced_ptms_true['Residue'] + spliced_ptms_true['PTM Position in Canonical Isoform'].astype(float).astype(int).astype(str))
-        spliced_ptms_new = np.unique(spliced_ptms['UniProtKB Accession'] + '_' + spliced_ptms['Residue'] + spliced_ptms['PTM Position in Canonical Isoform'].astype(float).astype(int).astype(str))
+        spliced_ptms_new = np.unique(spliced_ptms['UniProtKB Accession'] + '_' + spliced_ptms['Residue'] + spliced_ptms['PTM Position in Isoform'].astype(float).astype(int).astype(str))
         only_in_reference = set(spliced_ptms_true).difference(set(spliced_ptms_new))
         only_in_new = set(spliced_ptms_new).difference(set(spliced_ptms_true))
         print('Differentially included PTMs:')
@@ -112,7 +112,7 @@ def projection_test(dataset = 'Yang2016', check_type = 'no changes', splicegraph
             print('\n')
 
         altered_flanks_true = np.unique(altered_flanks_true['UniProtKB Accession'] + '_' + altered_flanks_true['Residue'] + altered_flanks_true['PTM Position in Canonical Isoform'].astype(float).astype(int).astype(str))
-        altered_flanks_new = np.unique(altered_flanks['UniProtKB Accession'] + '_' + altered_flanks['Residue'] + altered_flanks['PTM Position in Canonical Isoform'].astype(float).astype(int).astype(str))
+        altered_flanks_new = np.unique(altered_flanks['UniProtKB Accession'] + '_' + altered_flanks['Residue'] + altered_flanks['PTM Position in Isoform'].astype(float).astype(int).astype(str))
         only_in_reference = set(altered_flanks_true).difference(set(altered_flanks_new))
         only_in_new = set(altered_flanks_new).difference(set(altered_flanks_true))
         print('Altered flanking sequences:')

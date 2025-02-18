@@ -241,8 +241,6 @@ def get_spliceseq_event_regions(gene_name, from_exon, spliced_exons, to_exon, sp
 
 def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region, spliced_region, second_flank_region, gene = None, dPSI = None, sig = None, event_id = None, flank_size = 5, coordinate_type = 'hg38', lowercase_mod = True, order_by = 'Coordinates'):
     """
-    Currently has been tested with MATS splicing events.
-
     Given flanking and spliced regions associated with a splice event, identify PTMs that have potential to have an altered flanking sequence depending on whether spliced region is included or excluded (if PTM is close to splice boundary). For these PTMs, extract the flanking sequences associated with the inclusion and exclusion cases and translate into amino acid sequences. If the PTM is not associated with a codon that codes for the expected amino acid, the PTM will be excluded from the results. 
 
     Important note: It is assumed that all region coordinates are based on a 1-based coordinate system, not 0-based, consistent with Ensembl. If using a 0-based system, please adjust the coordinates accordingly prior to running this function
@@ -368,9 +366,11 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
 
         #grab useful info from ptm dataframe
         if gene is not None:
-            ptms_in_region = ptms_in_region[['Source of PTM', 'Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class', 'Canonical Flanking Sequence']].reset_index(drop = True)
+            ptms_in_region = ptms_in_region[['Source of PTM', 'Gene', 'UniProtKB Accession','Isoform ID',
+       'Isoform Type', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'Canonical Flanking Sequence']].reset_index(drop = True)
         else:
-            ptms_in_region = ptms_in_region[['Source of PTM', 'UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform', 'Modification Class', 'Canonical Flanking Sequence']].reset_index(drop = True)
+            ptms_in_region = ptms_in_region[['Source of PTM', 'UniProtKB Accession', 'Isoform ID',
+       'Isoform Type', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'Canonical Flanking Sequence']].reset_index(drop = True)
         #add flanking sequence information to ptm dataframe
         ptms_in_region['Inclusion Flanking Sequence'] = inclusion_seq_list
         ptms_in_region['Exclusion Flanking Sequence'] = exclusion_seq_list

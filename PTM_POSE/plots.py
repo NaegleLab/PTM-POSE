@@ -81,7 +81,7 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, ax = Non
         fig, ax = plt.subplots(figsize = (5,5))
 
     if show_all_ptm_count:
-        num_ptms = [spliced_ptms.drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0]]
+        num_ptms = [spliced_ptms.drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).shape[0]]
         num_ptms_filters = ['All PTMs']
         filter_source = ['None']
     else:
@@ -93,7 +93,7 @@ def show_available_annotations(spliced_ptms, show_all_ptm_count = True, ax = Non
     ylabel_dict = {'PSP:ON_PROCESS':'Biological Process (PSP)', 'PSP:ON_FUNCTION':'Molecular Function (PSP)', 'PSP:Kinase':'Kinase (PSP)', 'PSP:Disease_Association':'Disease Association (PSP)', 'PSP:ON_PROT_INTERACT':'Interactions (PSP)', 'PSP:ON_OTHER_INTERACT':'Nonprotein Interactions (PSP)', 'ELM:Interactions':'Interactions (ELM)', 'ELM:Motif Matches':'Motif Matches (ELM)', 'PTMInt:Interaction':'Interactions (PTMInt)', 'PTMcode:Intraprotein_Interactions':'Intraprotein (PTMcode)','PTMcode:Interprotein_Interactions':'Interactions (PTMcode)', 'DEPOD:Phosphatase':'Phosphatase (DEPOD)', 'RegPhos:Kinase':'Kinase (RegPhos)', 'Combined:Kinase':'Kinase (Combined)', 'Combined:Interactions':'Interactions (Combined)'}
     available_annotations = [col for col in spliced_ptms.columns if 'Combined' in col or 'PSP:' in col or 'ELM:Interactions' in col or 'PTMInt:' in col or 'PTMcode:' in col or 'DEPOD:' in col or 'RegPhos:' in col]
     for annotation in available_annotations:
-        num_ptms.append(spliced_ptms.dropna(subset = annotation).drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Canonical Isoform']).shape[0])
+        num_ptms.append(spliced_ptms.dropna(subset = annotation).drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).shape[0])
         num_ptms_filters.append(ylabel_dict[annotation])
         filter_source.append(annotation.split(':')[0])
 
@@ -323,7 +323,7 @@ def plot_EnrichR_pies(enrichr_results, top_terms = None, terms_to_plot = None, c
 
 
 
-    ax.set_xlabel('EnrichR Combined Score', fontsize = 11)
+    ax.set_xlabel('EnrichR Combined\nScore', fontsize = 11)
 
 def get_edge_colors(interaction_graph, network_data, defaultedgecolor = 'gray', color_edges_by = 'Database', database_color_dict = {'PSP/RegPhos':'red', 'PhosphoSitePlus':'green', 'PTMcode':'blue', 'PTMInt':'gold', 'Multiple':'purple'}):
     edge_colors = []
@@ -539,7 +539,7 @@ def location_of_altered_flanking_residues(altered_flanks, figsize = (4,3), modif
     ax[0].set_ylabel('# of PTMs', fontsize = 9)
 
     #### plot specific positions of altered residues relative to PTM
-    position_breakdown = altered_flanks.explode(['Altered Positions', 'Residue Change']).copy()[['Gene', 'Residue', 'PTM Position in Canonical Isoform','Altered Positions', 'Residue Change']]
+    position_breakdown = altered_flanks.explode(['Altered Positions', 'Residue Change']).copy()[['Gene', 'Residue', 'PTM Position in Isoform','Altered Positions', 'Residue Change']]
     position_breakdown = position_breakdown.groupby('Altered Positions').size()
     ax[1].bar(position_breakdown.index, position_breakdown.values, color = 'gray')
     ax[1].set_xlim([-5.5,5.5])
@@ -580,7 +580,7 @@ def alterations_matrix(altered_flanks, modification_class = None, residue = None
         position_breakdown = position_breakdown[position_breakdown['Residue'] == residue].copy()
 
     #add ptm column to position breakdown
-    position_breakdown['PTM'] = position_breakdown['Gene'] + '_' + position_breakdown['Residue'] + position_breakdown['PTM Position in Canonical Isoform'].astype(str)
+    position_breakdown['PTM'] = position_breakdown['Gene'] + '_' + position_breakdown['Residue'] + position_breakdown['PTM Position in Isoform'].astype(str)
 
     #separate altered residue into individual rows
     position_breakdown = position_breakdown.explode(['Altered Positions', 'Residue Change']).copy()[['Gene', 'PTM','Altered Positions', 'Residue Change']]
