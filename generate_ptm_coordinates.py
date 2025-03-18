@@ -3,6 +3,12 @@ import numpy as np
 import pandas as pd
 from ExonPTMapper import mapping
 from ExonPTMapper import config as mapper_config
+from ptm_pose import pose_config
+
+from Bio import SeqIO
+import codecs
+import gzip
+import os
 
 import datetime
 import pyliftover
@@ -115,8 +121,319 @@ def convert_coordinates(ptm_coordinates, from_coord = 'hg38', to_coord = 'hg19')
 
 
 
+residue_dict = {'R': 'arginine', 'H':'histidine', 'K':'lysine', 'D':'aspartic acid', 'E':'glutamic acid', 'S': 'serine', 'T':'threonine', 'N':'asparagine', 'Q':'glutamine', 'C':'cysteine', 'U':'selenocystein', 'G':'glycine', 'P':'proline', 'A':'alanine', 'V':'valine', 'I':'isoleucine', 'L':'leucine', 'M':'methionine', 'F':'phenylalanine', 'Y':'tyrosine', 'W':'tryptophan'}
+def convert_modification_shorthand(mod, res, mod_group_type = 'fine'):
+    if mod_group_type == 'fine':
+        if mod == 'p':
+            mod_name = f'Phospho{residue_dict[res]}'
+        elif mod == 'ub':
+            mod_name = 'Ubiquitination'
+        elif mod == 'sm':
+            mod_name = 'Sumoylation'
+        elif mod == 'ga':
+            if res == 'N':
+                mod_name = 'N-Glycosylation'
+            else: #if you want a more general classification, this and T can be either just O-GalNAc or O-glycosylation
+                mod_name = 'O-GalNAc ' + residue_dict[res].capitalize()
+        elif mod == 'gl':
+            mod_name = 'O-GlcNAc ' + residue_dict[res].capitalize()
+        elif mod == 'm1' or mod == 'me':
+            mod_name = 'Methylation'
+        elif mod == 'm2':
+            mod_name = 'Dimethylation'
+        elif mod == 'm3':
+            mod_name = 'Trimethylation'
+        elif mod == 'ac':
+            mod_name = 'Acetylation'
+        else:
+            raise ValueError("ERROR: don't recognize PTM type %s"%(type))
+    elif mod_group_type == 'coarse':
+        if mod == 'p':
+            mod_name = 'Phosphorylation'
+        elif mod == 'ub':
+            mod_name = 'Ubiquitination'
+        elif mod == 'sm':
+            mod_name = 'Sumoylation'
+        elif mod == 'ga' or mod == 'gl':
+            mod_name = 'Glycosylation'
+        elif mod == 'm1' or mod == 'me' or mod == 'm2' or mod == 'm3':
+            mod_name = 'Methylation'
+        elif mod == 'ac':
+            mod_name = 'Acetylation'
+    
+    return mod_name
 
-def generate_ptm_coordinates(remap_PTMs = False, phosphositeplus_filepath = None, output_dir = None, ptm_info = None):
+def process_PSP_df(file, compressed = False, organism = None, include_flank = False, include_domain = False, include_MS = False, include_LTP = False, mod_group_type = 'fine'):
+    """
+    Process the PhosphositePlus file into a dataframe with the Uniprot ID, residue, position, and modification, and any extra columns that are requested
+
+    Parameters
+    ----------
+    file : str
+        The file to read in
+    compressed : bool
+        If the file is compressed or not
+    organism : str
+        The organism to filter the data by
+    include_flank : bool
+        If True, include the flanking amino acids
+    include_domain : bool
+        If True, include the domain
+    include_MS : bool
+        If True, include the MS_LIT and MS_CST columns
+    include_LTP : bool
+        If True, include the LT column (low throughput)
+    mod_group_type : str
+        The type of modification grouping to use (fine or coarse)
+    """
+    if compressed:
+        df = pd.read_csv(file, sep='\t', skiprows=3, compression='gzip')
+    else:
+        df = pd.read_csv(file, sep='\t', skiprows=3)
+
+    df['Residue'] = df['MOD_RSD'].apply(lambda x: x.split('-')[0][0])
+    df['Position'] = df['MOD_RSD'].apply(lambda x: int(x.split('-')[0][1:]))
+    df['Modification'] = df['MOD_RSD'].str.split('-').str[1]
+    df['Modification'] = df.apply(lambda x: convert_modification_shorthand(x['Modification'], x['Residue'], mod_group_type=mod_group_type), axis=1)
+
+    if organism is not None:
+        df = df[df['ORGANISM'] == organism]
+
+    extra_cols = []
+    if organism is not None:
+        df = df[df['ORGANISM'] == organism]
+    else:
+        extra_cols += ['ORGANISM']
+
+    if include_flank:
+        extra_cols += ['SITE_+/-7_AA']
+
+    if include_domain:
+        extra_cols += ['DOMAIN']
+
+    if include_MS:
+        extra_cols += ['MS_LIT']
+        extra_cols += ['MS_CST']
+
+    if include_LTP:
+        extra_cols += ['LT_LIT']
+
+    df = df[['ACC_ID', 'Residue', 'Position', 'Modification'] + extra_cols]
+    return df
+
+def combine_PSP_dfs(phosphositeplus_dir, compressed = True, organism = None, include_flank = False, include_domain = False, include_MS = False, include_LTP = False, mod_group_type = 'fine'):
+    extension = '.gz' if compressed else ''
+    phospho = process_PSP_df(phosphositeplus_dir+'Phosphorylation_site_dataset'+extension, compressed = compressed, organism = organism, include_flank = include_flank, include_domain = include_domain, include_MS = include_MS,include_LTP=include_LTP, mod_group_type=mod_group_type)
+    ubiq = process_PSP_df(phosphositeplus_dir+'Ubiquitination_site_dataset'+extension, compressed = compressed, organism = organism, include_flank = include_flank, include_domain = include_domain, include_MS = include_MS, include_LTP=include_LTP, mod_group_type=mod_group_type)
+    sumo = process_PSP_df(phosphositeplus_dir+'Sumoylation_site_dataset'+extension, compressed = compressed, organism = organism, include_flank = include_flank, include_domain = include_domain, include_MS = include_MS, include_LTP=include_LTP, mod_group_type=mod_group_type)
+    galnac = process_PSP_df(phosphositeplus_dir+'O-GalNAc_site_dataset'+extension, compressed = compressed, organism = organism, include_flank = include_flank, include_domain = include_domain, include_MS = include_MS, include_LTP=include_LTP, mod_group_type=mod_group_type)
+    glcnac = process_PSP_df(phosphositeplus_dir+'O-GlcNAc_site_dataset'+extension, compressed = compressed, organism = organism, include_flank = include_flank, include_domain = include_domain, include_MS = include_MS, include_LTP=include_LTP, mod_group_type=mod_group_type)
+    meth = process_PSP_df(phosphositeplus_dir+'Methylation_site_dataset'+extension, compressed = compressed, organism = organism, include_flank = include_flank, include_domain = include_domain, include_MS = include_MS, include_LTP=include_LTP, mod_group_type=mod_group_type)
+    acetyl = process_PSP_df(phosphositeplus_dir+'Acetylation_site_dataset'+extension, compressed = compressed, organism = organism, include_flank = include_flank, include_domain = include_domain, include_MS = include_MS, include_LTP=include_LTP, mod_group_type=mod_group_type)
+
+    df = pd.concat([phospho, ubiq, sumo, galnac, glcnac, meth, acetyl])
+    return df
+
+def extract_num_studies(psp_dir, pscout_data = None):
+    psp_df = combine_PSP_dfs(psp_dir, compressed = True, organism = 'human', include_MS = True, include_LTP = True, mod_group_type = 'coarse')
+
+    #get canonical isoform IDs
+    canonical_ids = mapper_config.translator[mapper_config.translator['UniProt Isoform Type'] == 'Canonical'][['UniProtKB/Swiss-Prot ID', 'UniProtKB isoform ID']].set_index('UniProtKB isoform ID').squeeze().to_dict()
+
+    #couple rare cases where the canonical isoform is listed with its isoform ID, which conflicts with how I processed the data. convert these ideas to base uniprot ID
+    psp_df_isoids = psp_df[psp_df['ACC_ID'].isin(canonical_ids.keys())].copy()
+    psp_correctids = psp_df[~psp_df['ACC_ID'].isin(canonical_ids.keys())].copy()
+    psp_df_isoids['ACC_ID'] = psp_df_isoids['ACC_ID'].map(canonical_ids)
+    psp_df = pd.concat([psp_df_isoids, psp_correctids])
+
+
+
+    #groupby number of experiments by PTM site and modification, taking the max value (some rare cases where entries are basically identical but have different numbers of experiments)
+    psp_df['PTM'] = psp_df['ACC_ID'] + '_' + psp_df['Residue'] + psp_df['Position'].astype(str)
+    psp_df = psp_df.groupby(['PTM', 'Modification'], as_index = False)[['MS_LIT', 'MS_CST', 'LT_LIT']].max()
+    psp_df = psp_df.rename(columns = {'Modification': 'Modification Class'})
+
+    if pscout_data is not None:
+        pscout_experiments = pscout_data[pscout_data['Number of Experiments'] > 0]
+        pscout_experiments = pscout_experiments.dropna(subset = 'Modification Class')
+        psp_df = psp_df.merge(pscout_experiments[['PTM', 'Number of Experiments']], on = 'PTM', how = 'outer')
+        psp_df = psp_df.fillna(0)
+        psp_df['MS_LIT'] = psp_df['MS_LIT'] + psp_df['Number of Experiments']
+        psp_df = psp_df.drop(columns = 'Number of Experiments')
+
+    return psp_df
+
+def append_num_studies(ptm_coordinates, psp_df):
+    #remove ms columns if present
+    ptm_coordinates = ptm_coordinates.drop(columns = [i for i in ['MS_LIT', 'MS_CST', 'LT_LIT'] if i in ptm_coordinates.columns])
+
+    #add PTM column to PTM coordinates, allowing for alternative isoform IDs
+    ptm_coordinates['PTM'] = ptm_coordinates.apply(lambda x: x['Isoform ID'] + '_'+ x['Residue'] + str(int(x['PTM Position in Isoform'])) if x['Isoform Type'] == 'Alternative' else x['UniProtKB Accession'] + '_'+ x['Residue'] + str(int(x['PTM Position in Isoform'])), axis = 1)
+    
+    #combine psp MS info with coordinate data, check to make sure size doesn't change
+    original_shape = ptm_coordinates.shape[0]
+    ptm_coordinates = ptm_coordinates.merge(psp_df[['PTM', 'Modification Class', 'MS_LIT', 'MS_CST', 'LT_LIT']], on = ['PTM', 'Modification Class'], how = 'left')
+    if original_shape != ptm_coordinates.shape[0]:
+        raise ValueError('Size of dataframe changed after merging PhosphoSitePlus data. Please check for duplicates.')
+    
+    #go through entries without info and make sure it is not due to isoform ID issues
+    missing_db_info = ptm_coordinates[ptm_coordinates[['MS_LIT', 'MS_CST', 'LT_LIT']].isna().all(axis = 1)]
+    ptm_coordinates = ptm_coordinates[~ptm_coordinates[['MS_LIT', 'MS_CST', 'LT_LIT']].isna().all(axis = 1)]
+    for i, row in missing_db_info.iterrows():
+        mod = row['Modification Class']
+        sources = [s for s in row['Source of PTM'].split(';') if row['Isoform ID'] not in s]
+        for s in sources:
+            tmp_data = psp_df[(psp_df['PTM'] == s) & (psp_df['Modification Class'] == mod)]
+            if tmp_data.shape[0] > 0:
+                tmp_data = tmp_data.squeeze()
+                missing_db_info.loc[i, 'MS_LIT'] = tmp_data['MS_LIT']
+                missing_db_info.loc[i, 'MS_CST'] = tmp_data['MS_CST']
+                missing_db_info.loc[i, 'LT_LIT'] = tmp_data['LT_LIT']
+                break
+
+    ptm_coordinates = pd.concat([ptm_coordinates, missing_db_info])
+    
+    return ptm_coordinates
+
+def construct_mod_conversion_dict():
+    """
+    Reformat modification conversion dataframe to a dictionary for easy conversion between modification site and modification class
+    """
+    modification_conversion = pose_config.modification_conversion[['Modification', 'Modification Class']].set_index('Modification')
+    modification_conversion = modification_conversion.replace('Dimethylation', 'Methylation')
+    modification_conversion = modification_conversion.replace('Trimethylation', 'Methylation')
+    modification_conversion = modification_conversion.squeeze().to_dict() 
+    return modification_conversion  
+
+def extract_number_compendia(ps_data_file):
+    """
+    Given a proteomescout data file, extract the number of different compendia that support a PTM site in a format that works with ptm_coordinates file. The following experiment IDs are used to check for database evidence:
+
+    1395: HPRD
+    1790: PhosphoSitePlus
+    1323: Phospho.ELM
+    1688,1803: UniProt
+    1344: O-GlycBase
+    1575: dbPTM
+
+    Parameters:
+    ------------
+    ps_data_file: str
+        Path to proteomescout data file
+
+    Returns:
+    ------------
+    ps_data: pd.DataFrame
+        DataFrame with PTM site, modification class, and number of compendia that support the PTM site
+    """
+    #load proteomescout data
+    ps_data = pd.read_csv(ps_data_file, sep = '\t')
+    ps_data = ps_data[ps_data['species'] == 'homo sapiens']
+
+    ps_data['modifications'] = ps_data['modifications'].str.split(';')
+    ps_data['evidence'] = ps_data['evidence'].str.split(';')
+    ps_data = ps_data.explode(['modifications','evidence'])
+
+    #extract site numbers and modification types into unique columns, then convert modification to broad class to match ptm coordinates dataframe
+    ps_data['site'] = ps_data['modifications'].str.split('-').str[0]
+    ps_data['Modification'] = ps_data['modifications'].apply(lambda x: '-'.join(x.split('-')[1:]))
+    modification_conversion = construct_mod_conversion_dict()
+    ps_data['Modification Class'] = ps_data['Modification'].map(modification_conversion)
+    ps_data = ps_data.drop(columns = ['Modification'])
+
+
+    #split evidence into a list, then check to see if which entries correspond to database rather than literature study
+    ps_data['evidence'] = ps_data['evidence'].apply(lambda x: [i.strip(' ') for i in x.split(',')])
+    ps_data['database evidence'] = ps_data['evidence'].apply(lambda x: set(x).intersection({'1395', '1790', '1323','1688','1803','1344','1575'}))
+    ps_data['experimental evidence'] = ps_data['evidence'].apply(lambda x: list(set(x).difference({'1395', '1790', '1323','1688','1803','1344','1575'})))
+
+    #add specific compendia with site
+    compendia_dict = {'1395':'HPRD','1790':'PhosphoSitePlus', '1323':'Phospho.ELM', '1688':'UniProt', '1803':'UniProt', '1344':'O-GlycBase','1575':'dbPTM'}
+    ps_data['Compendia'] = ps_data['database evidence'].apply(lambda x: ['ProteomeScout'] + [compendia_dict[i] for i in x])
+
+    #separate all accessions into separate rows for merge
+    ps_data['accessions'] = ps_data['accessions'].str.split(';')
+    ps_data = ps_data.explode('accessions')
+    #convert isoform IDs from having . to a - for consistency
+    ps_data['accessions'] = ps_data['accessions'].str.replace('.','-').str.strip(' ')
+
+    #create PTM column
+    ps_data['PTM'] = ps_data['accessions'] + '_' + ps_data['site'].str.strip(' ')
+    ps_data = ps_data.dropna(subset = ['PTM'])
+    
+
+    #some ptms may have multiple entries (due to multiple similar modification types), so combine them
+    ps_data = ps_data.groupby(['PTM', 'Modification Class'], as_index = False)[['Compendia', 'experimental evidence']].agg(sum)
+    ps_data['Number of Compendia'] = ps_data['Compendia'].apply(lambda x: len(set(x)))
+    ps_data['Compendia'] = ps_data['Compendia'].apply(lambda x: ';'.join(set(x)))
+    ps_data['Number of Experiments'] = ps_data['experimental evidence'].apply(lambda x: len(set(x)))
+    ps_data['experimental evidence'] = ps_data['experimental evidence'].apply(lambda x: ';'.join(set(x)))
+
+    return ps_data
+
+def append_num_compendia(ptm_coordinates, pscout_data):
+    """
+    Given a PTM coordinates dataframe and processed proteomescout data generated by `extract_num_compendia()`, append the number of compendia that support a PTM site to the PTM coordinates dataframe. Check all potential isoform IDs for compendia information.
+
+    Parameters:
+    ------------
+    ptm_coordinates: pd.DataFrame
+        DataFrame with PTM site information
+    pscout_data: pd.DataFrame
+        DataFrame with PTM site, modification class, and number of compendia that support the PTM site
+    """
+    #remove existing columns if present
+    ptm_coordinates = ptm_coordinates.drop(columns = [i for i in ['Compendia', 'Number of Compendia'] if i in ptm_coordinates.columns])
+
+    if 'PTM' not in ptm_coordinates.columns:
+        ptm_coordinates['PTM'] = ptm_coordinates.apply(lambda x: x['Isoform ID'] + '_'+ x['Residue'] + str(int(x['PTM Position in Isoform'])) if x['Isoform Type'] == 'Alternative' else x['UniProtKB Accession'] + '_'+ x['Residue'] + str(int(x['PTM Position in Isoform'])), axis = 1)
+    #merge the data
+    ptm_coordinates = ptm_coordinates.merge(pscout_data, on = ['Modification Class', 'PTM'], how = 'left')
+
+    #go through any missing entries and see if they can be filled in with other isoform IDs
+    missing_db_info = ptm_coordinates[ptm_coordinates['Number of Compendia'].isna()]
+    ptm_coordinates = ptm_coordinates[~ptm_coordinates['Compendia'].isna()]
+
+    for i, row in tqdm(missing_db_info.iterrows(), total = missing_db_info.shape[0], desc = 'Going through missing compendia data, making sure not due to isoform ID issues'):
+        mod = row['Modification Class']
+        sources = [s for s in row['Source of PTM'].split(';') if row['Isoform ID'] not in s]
+        for s in sources:
+            tmp_data = pscout_data[(pscout_data['PTM'] == s) & (pscout_data['Modification Class'] == mod)]
+            if tmp_data.shape[0] > 0:
+                tmp_data = tmp_data.squeeze()
+                missing_db_info.loc[i, 'Compendia'] = tmp_data['Compendia']
+                missing_db_info.loc[i, 'Number of Compendia'] = tmp_data['Number of Compendia']
+                break
+
+    ptm_coordinates = pd.concat([ptm_coordinates, missing_db_info])
+
+    #fill in remainder entries as PhosphoSitePlus
+    ptm_coordinates['Compendia'] = ptm_coordinates['Compendia'].fillna('PhosphoSitePlus')
+    ptm_coordinates['Number of Compendia'] = ptm_coordinates['Number of Compendia'].fillna(1)
+
+    return ptm_coordinates
+
+def separate_by_modification(ptm_coordinates, mod_mapper):
+        #separate out modification class (important for functional analysis)
+    ptm_coordinates['Modification Class'] = ptm_coordinates['Modification Class'].str.split(';')
+    ptm_coordinates = ptm_coordinates.explode('Modification Class')
+
+    #reduce modification columns to only those relevant to modification class 
+    mod_mapper = mod_mapper.squeeze()
+    mod_mapper = mod_mapper.str.split(';')
+    mod_mapper = mod_mapper.to_dict()
+
+    def filter_mods(x, mod_class):
+        """
+        Go through modification list and only keep those that are relevant to the modification class (removes mismatch due to exploded dataframe)
+        """
+        x_list = x.split(';')
+        return ';'.join([i for i in x_list if i in mod_mapper[mod_class]])
+
+    ptm_coordinates['Modification'] = ptm_coordinates.apply(lambda x: filter_mods(x['Modification'], x['Modification Class']), axis = 1)
+    return ptm_coordinates
+
+def generate_ptm_coordinates(pscout_data_file, phosphositeplus_filepath, mod_mapper, remap_PTMs = False, output_dir = None, ptm_info = None):
     mapper = mapping.PTM_mapper()
 
     if remap_PTMs:
@@ -129,21 +446,6 @@ def generate_ptm_coordinates(remap_PTMs = False, phosphositeplus_filepath = None
     
     #copy ptm_coordinates file to be edited for easier use with PTM-POSE
     ptm_coordinates = mapper.ptm_coordinates.copy()
-
-    #annotate with ptm position in canonical isoform
-    #ptm_coordinates['UniProtKB Accession'] = ptm_coordinates['Source of PTM'].apply(lambda x: x.split(';'))
-    #ptm_coordinates['Residue'] = ptm_coordinates['UniProtKB Accession'].apply(lambda x: x[0].split('_')[1][0])
-
-    #get location of PTM in canonical isoform, if found in canonical isoform
-    #ptm_coordinates['PTM Position in Isoform'] = ptm_coordinates['UniProtKB Accession'].apply(lambda x: [ptm.split('_')[1][1:] for ptm in x if ptm.split('_')[0] in config.canonical_isoIDs.values()])
-    #ptm_coordinates['PTM Position in Isoform'] = ptm_coordinates['PTM Position in Isoform'].apply(lambda x: ';'.join(x) if len(x) > 0 else np.nan)
-    #ptm_coordinates['Found in Canonical'] = ptm_coordinates['PTM Position in Isoform'].apply(lambda x: x == x)
-
-
-    #set accession to use: if canonical use the non-isoform id, else use the first isoform id in list
-    #ptm_coordinates['UniProtKB Accession'] = ptm_coordinates.apply(lambda x: ';'.join([ptm.split('-')[0]for ptm in x['UniProtKB Accession'] if ptm.split('_')[0] in config.canonical_isoIDs.values()]) if x['Found in Canonical'] else x['UniProtKB Accession'][0].split('_')[0], axis = 1) 
-        #update location of PTM to be from first isoform in list if not found in canonical isoform
-    #ptm_coordinates['PTM Position in Canonical Isoform'] = ptm_coordinates.apply(lambda x: x['PTM Position in Canonical Isoform'] if x['Found in Canonical'] else x['Source of PTM'].split(';')[0].split('_')[1][1:], axis = 1)
     ptm_coordinates = get_unique_ptm_info(ptm_coordinates)
 
 
@@ -187,8 +489,45 @@ def generate_ptm_coordinates(remap_PTMs = False, phosphositeplus_filepath = None
     #drop unnecessary columns and save
     #ptm_coordinates = ptm_coordinates.drop(columns = ['PTM Position in Canonical Isoform', 'PTM'], axis = 1)
 
-    ptm_coordinates = ptm_coordinates[['Gene name', 'UniProtKB Accession', 'Isoform ID', 'Isoform Type', 'Residue', 'PTM Position in Isoform', 'Modification', 'Modification Class', 'Chromosome/scaffold name', 'Strand', 'Gene Location (hg38)', 'Gene Location (hg19)', 'Gene Location (hg18)', 'Constitutive', 'Canonical Flanking Sequence','MS_LIT', 'MS_CST', 'Source of PTM']]
+    ptm_coordinates = ptm_coordinates[['Gene name', 'UniProtKB Accession', 'Isoform ID', 'Isoform Type', 'Residue', 'PTM Position in Isoform', 'Modification', 'Modification Class', 'Chromosome/scaffold name', 'Strand', 'Gene Location (hg38)', 'Gene Location (hg19)', 'Gene Location (hg18)', 'Constitutive', 'Canonical Flanking Sequence', 'Source of PTM']]
     ptm_coordinates = ptm_coordinates.reset_index() #there will be some non-unique genomic coordinates, so reset index to ensure unique index values
+
+    #separate out modification class (important for functional analysis)
+    ptm_coordinates = separate_by_modification(ptm_coordinates, mod_mapper)
+
+    #add filtering criteria
+    ## add number of compendia
+    pscout_data = extract_number_compendia(pscout_data_file)
+    ptm_coordinates = append_num_compendia(ptm_coordinates, pscout_data)
+
+    ## number of MS experiments (from PhosphoSitePlus, fill in any remainder with ProteomeScout experiments)
+    psp_df = generate_ptm_coordinates.extract_num_studies(phosphositeplus_filepath, pscout_data=pscout_data)
+    ptm_coordinates = generate_ptm_coordinates.append_num_studies(ptm_coordinates, psp_df)
+    
+
+
+    #do some final custom editing for outlier examples
+    missing_db_info = ptm_coordinates[ptm_coordinates[['MS_LIT', 'MS_CST', 'LT_LIT', 'Compendia']].isna().all(axis = 1)]
+    ptm_coordinates = ptm_coordinates[~ptm_coordinates[['MS_LIT', 'MS_CST', 'LT_LIT', 'Compendia']].isna().all(axis = 1)]
+            
+    #custom fixes
+    ms_lit = {'Q13765_K108':1, 'Q13765_K100':2}
+    ms_cst = {'Q13765_K108':np.nan, 'Q13765_K100':np.nan}
+    lt_lit = {'Q13765_K108':np.nan, 'Q13765_K100':np.nan}
+    custom_compendia = {'Q13765_K108':'PhosphoSitePlus;ProteomeScout', 'Q13765_K100': 'PhosphoSitePlus;ProteomeScout'}
+    custom_num_compendia = {'Q13765_K108':2, 'Q13765_K100':2}
+
+    for i,row in missing_db_info.iterrows():
+        ptm = row['PTM']
+        missing_db_info.loc[i, 'MS_LIT'] = ms_lit[ptm]
+        missing_db_info.loc[i, 'MS_CST'] = ms_cst[ptm]
+        missing_db_info.loc[i, 'LT_LIT'] = lt_lit[ptm]
+        missing_db_info.loc[i, 'Compendia'] = custom_compendia[ptm]
+        missing_db_info.loc[i, 'Number of Compendia'] = custom_num_compendia[ptm]
+
+    ptm_coordinates = pd.concat([ptm_coordinates, missing_db_info])
+
+
     if output_dir is not None:
         ptm_coordinates.to_csv(output_dir + 'ptm_coordinates.csv', index = False)
 

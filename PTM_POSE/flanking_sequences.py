@@ -4,15 +4,11 @@ from Bio.Data import CodonTable
 #standard packages
 import numpy as np
 import pandas as pd
-import re
-
 import tqdm
-import warnings
 
 #PTM pose functions
 from ptm_pose import database_interfacing as di
-from ptm_pose import project
-from ptm_pose import pose_config
+from ptm_pose import project, pose_config, helpers
 
 
 
@@ -367,10 +363,10 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
         #grab useful info from ptm dataframe
         if gene is not None:
             ptms_in_region = ptms_in_region[['Source of PTM', 'Gene', 'UniProtKB Accession','Isoform ID',
-       'Isoform Type', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'Canonical Flanking Sequence']].reset_index(drop = True)
+       'Isoform Type', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'Canonical Flanking Sequence', 'MS_LIT', 'MS_CST', 'LT_LIT', 'Compendia', 'Number of Compendia']].reset_index(drop = True)
         else:
             ptms_in_region = ptms_in_region[['Source of PTM', 'UniProtKB Accession', 'Isoform ID',
-       'Isoform Type', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'Canonical Flanking Sequence']].reset_index(drop = True)
+       'Isoform Type', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'Canonical Flanking Sequence', 'MS_LIT', 'MS_CST', 'LT_LIT', 'Compendia', 'Number of Compendia']].reset_index(drop = True)
         #add flanking sequence information to ptm dataframe
         ptms_in_region['Inclusion Flanking Sequence'] = inclusion_seq_list
         ptms_in_region['Exclusion Flanking Sequence'] = exclusion_seq_list
@@ -387,7 +383,7 @@ def get_flanking_changes(ptm_coordinates, chromosome, strand, first_flank_region
         return ptms_in_region
 
 
-def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, chromosome_col = None, strand_col = None, first_flank_start_col = None, first_flank_end_col = None, spliced_region_start_col = None, spliced_region_end_col = None, second_flank_start_col = None, second_flank_end_col = None, dPSI_col = None,  sig_col = None, event_id_col = None, gene_col = None, extra_cols = None, flank_size = 5, coordinate_type = 'hg38', start_coordinate_system = '1-based', end_coordinate_system = '1-based', lowercase_mod = True):
+def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, chromosome_col = None, strand_col = None, first_flank_start_col = None, first_flank_end_col = None, spliced_region_start_col = None, spliced_region_end_col = None, second_flank_start_col = None, second_flank_end_col = None, dPSI_col = None,  sig_col = None, event_id_col = None, gene_col = None, extra_cols = None, flank_size = 5, coordinate_type = 'hg38', start_coordinate_system = '1-based', end_coordinate_system = '1-based', lowercase_mod = True, **kwargs):
     """
     Given a DataFrame containing information about splice events, extract the flanking sequences associated with the PTMs in the flanking regions if there is potential for this to be altered. The DataFrame should contain columns for the chromosome, strand, start and stop locations of the first flanking region, spliced region, and second flanking region. The DataFrame should also contain a column for the event ID associated with the splice event. If the DataFrame does not contain the necessary columns, the function will raise an error.
 
@@ -425,6 +421,12 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
         Coordinate system used for the regions, by default 'hg38'. Other options is hg19.
     lowercase_mod : bool, optional
         Whether to lowercase the amino acid associated with the PTM in returned flanking sequences, by default True
+    start_coordinate_system : str, optional
+        Coordinate system used for the start locations of the regions, by default '1-based'. Other option is '0-based'.
+    end_coordinate_system : str, optional
+        Coordinate system used for the end locations of the regions, by default '1-based'. Other option is '0-based'.
+    kwargs : keyword arguments, optional
+        Additional keyword arguments to pass to the find_ptms_in_many_regions function, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.
     
     Returns
     -------
@@ -432,18 +434,32 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
         List containing DataFrames with the PTMs associated with the flanking regions and the amino acid sequences of the flanking regions in the inclusion and exclusion cases
     """
     #load ptm data from config if not provided
-    if ptm_coordinates is None and pose_config.ptm_coordinates is not None:
-        ptm_coordinates = pose_config.ptm_coordinates
-    elif ptm_coordinates is None:
-        raise ValueError('ptm_coordinates dataframe not provided and not found in the resource files. Please provide the ptm_coordinates dataframe with config.download_ptm_coordinates() or download the file manually. To avoid needing to download this file each time, run pose_config.download_ptm_coordinates(save = True) to save the file locally within the package directory (will take ~63MB of storage space)')
+    if ptm_coordinates is None:
+        ptm_coordinates = pose_config.ptm_coordinates.copy()
+    
+
+    #check for any keyword arguments to use for filtering
+    if kwargs:
+        filter_arguments = helpers.extract_filter_arguments(**kwargs)
+        #check any excess unused keyword arguments, report them
+        helpers.check_filter_kwargs(**filter_arguments)
+        #filter ptm coordinates file to include only ptms with desired evidence
+        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
 
     #check to make sure all required columns are provided
     if chromosome_col is None and strand_col is None and first_flank_start_col is None and first_flank_end_col is None and spliced_region_start_col is None and spliced_region_end_col is None and second_flank_start_col is None and second_flank_end_col is None:
         raise ValueError('Please provide column names for chromosome, strand, first flank start, first flank end, spliced region start, spliced region end, second flank start, and second flank end.')
+    
 
     #if chromosome is labeled with 'chr', remove
     if splice_data[chromosome_col].str.contains('chr').any():
         splice_data['chr'] = splice_data['chr'].str.strip('chr')
+
+    
+    #check for any keyword arguments to use for filtering
+    if kwargs:
+        filter_arguments = helpers.extract_filter_arguments(**kwargs)
+        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
     
 
     results = []
@@ -610,7 +626,7 @@ def get_flank_changes_from_splicegraph_single_event(event_row, splicegraph, even
     
     return ptms_of_interest
 
-def get_flanking_changes_from_splicegraph(psi_data, splicegraph, ptm_coordinates = None, dPSI_col = None, sig_col = None, event_id_col = None, extra_cols = None, gene_col = 'symbol', flank_size = 5, coordinate_type = 'hg19'):
+def get_flanking_changes_from_splicegraph(psi_data, splicegraph, ptm_coordinates = None, dPSI_col = None, sig_col = None, event_id_col = None, extra_cols = None, gene_col = 'symbol', flank_size = 5, coordinate_type = 'hg19', **kwargs):
     """
     Given a DataFrame containing information about splice events  obtained from SpliceSeq and the corresponding splicegraph, extract the flanking sequences of PTMs that are nearby the splice boundary (potential for flanking sequence to be altered). Coordinate information of individual exons should be found in splicegraph. You can also provide columns with specific psi or significance information. Extra cols not in these categories can be provided with extra_cols parameter.
 
@@ -636,6 +652,8 @@ def get_flanking_changes_from_splicegraph(psi_data, splicegraph, ptm_coordinates
         Number of amino acids to include flanking the PTM, by default 5
     coordinate_type : str, optional
         Coordinate system used for the regions, by default 'hg19'. Other options is hg38.
+    **kwargs: additional keyword arguments
+        Additional keyword arguments, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.
 
     Returns
     -------
@@ -643,10 +661,18 @@ def get_flanking_changes_from_splicegraph(psi_data, splicegraph, ptm_coordinates
         DataFrame containing the PTMs associated with the flanking regions that are altered, and the flanking sequences that arise depending on whether the flanking sequence is included or not
     """
     #load ptm data from config if not provided
-    if ptm_coordinates is None and pose_config.ptm_coordinates is not None:
+    if ptm_coordinates is None:
         ptm_coordinates = pose_config.ptm_coordinates.copy()
-    elif ptm_coordinates is None:
-        raise ValueError('ptm_coordinates dataframe not provided and not found in the resource files. Please provide the ptm_coordinates dataframe with config.download_ptm_coordinates() or download the file manually. To avoid needing to download this file each time, run pose_config.download_ptm_coordinates(save = True) to save the file locally within the package directory (will take ~63MB of storage space)')
+    
+    
+
+    #check for any keyword arguments to use for filtering
+    if kwargs:
+        filter_arguments = helpers.extract_filter_arguments(**kwargs)
+        #check any excess unused keyword arguments, report them
+        helpers.check_filter_kwargs(**filter_arguments)
+        #filter ptm coordinates file to include only ptms with desired evidence
+        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
 
     #load spliceseq
     splicegraph['Region ID'] = splicegraph['Symbol'] + '_' + splicegraph['Exon'].astype(str)
@@ -681,7 +707,7 @@ def get_flanking_changes_from_splicegraph(psi_data, splicegraph, ptm_coordinates
     return altered_flanks
 
 
-def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fiveASS_events = None, threeASS_events = None, RI_events = None, coordinate_type = 'hg38', dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None):
+def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fiveASS_events = None, threeASS_events = None, RI_events = None, coordinate_type = 'hg38', dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None, **kwargs):
     """
     Given splice events identified rMATS extract quantified PTMs that are nearby the splice boundary (potential for flanking sequence to be altered). Coordinate information of individual exons should be found in splicegraph. You can also provide columns with specific psi or significance information. Extra cols not in these categories can be provided with extra_cols parameter. 
 
@@ -709,7 +735,23 @@ def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fi
         Column name indicating significance of the event. Default is 'FDR'.
     extra_cols: list
         List of column names for additional information to add to the results. Default is None.
+    **kwargs: additional keyword arguments
+        Additional keyword arguments, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.
     """
+        #load ptm data from config if not provided
+    if ptm_coordinates is None:
+        ptm_coordinates = pose_config.ptm_coordinates.copy()
+    
+    
+
+    #check for any keyword arguments to use for filtering
+    if kwargs:
+        filter_arguments = helpers.extract_filter_arguments(**kwargs)
+        #check any excess unused keyword arguments, report them
+        helpers.check_filter_kwargs(**filter_arguments)
+        #filter ptm coordinates file to include only ptms with desired evidence
+        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
+
     spliced_flanks = []
     if SE_events is not None:
         if SE_events['chr'].str.contains('chr').any():

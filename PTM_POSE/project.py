@@ -4,7 +4,7 @@ import pandas as pd
 import multiprocessing
 import datetime
 
-from ptm_pose import pose_config
+from ptm_pose import pose_config, helpers
 from ptm_pose import flanking_sequences as fs
 
 from tqdm import tqdm
@@ -51,7 +51,7 @@ def find_ptms_in_region(ptm_coordinates, chromosome, strand, start, end, gene = 
     if not ptms_in_region.empty:
         #grab uniprot id and residue
         ptms_in_region = ptms_in_region[['Source of PTM', 'UniProtKB Accession','Isoform ID',
-       'Isoform Type', 'Residue', 'PTM Position in Isoform', loc_col, 'Modification', 'Modification Class', 'Canonical Flanking Sequence', 'Constitutive', 'MS_LIT', 'MS_CST']]
+       'Isoform Type', 'Residue', 'PTM Position in Isoform', loc_col, 'Modification', 'Modification Class', 'Canonical Flanking Sequence', 'Constitutive', 'MS_LIT', 'MS_CST', 'LT_LIT', 'Compendia', 'Number of Compendia']]
         #check if ptm is associated with the same gene (if info is provided). if not, do not add
         if gene is not None:
             for i, row in ptms_in_region.iterrows():
@@ -220,7 +220,7 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
                 ptms_str = '/'.join(ptms_info.values)
                 spliced_ptms_list.append(ptms_str)
                 num_ptms_affected.append(ptms_in_region.shape[0])
-                num_unique_ptm_sites.append(ptms_in_region.groupby(['UniProtKB Accession', 'Residue']).size().shape[0])
+                num_unique_ptm_sites.append(ptms_in_region.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).size().shape[0])
             else:
                 spliced_ptms_list.append(np.nan)
                 num_ptms_affected.append(0)
@@ -241,11 +241,13 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
         region_data['Number of PTMs Affected'] = num_ptms_affected
         region_data['Number of Unique PTM Sites by Position'] = num_unique_ptm_sites
         region_data['Event Length'] = (region_data[region_end_col] - region_data[region_start_col]).abs()
-        region_data['PTM Density (PTMs/bp)'] = region_data['Number of Unique PTM Sites by Position']/(region_data[region_end_col] - region_data[region_start_col]).abs()
+        region_data['PTM Density (PTMs/bp)'] = (region_data['Number of Unique PTM Sites by Position']*3)/region_data['Event Length'] #multiply by 3 to convert aa to bp (3 bp per codon)
 
     return region_data, spliced_ptm_info
+
+
     
-def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotate_original_df = True, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'exonStart_0base', region_end_col = 'exonEnd', dPSI_col = None, sig_col = None, event_id_col = None, gene_col = None, extra_cols = None, separate_modification_types = False, coordinate_type = 'hg38', start_coordinate_system = '1-based', end_coordinate_system = '1-based', taskbar_label = None, PROCESSES = 1):
+def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotate_original_df = True, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'exonStart_0base', region_end_col = 'exonEnd', dPSI_col = None, sig_col = None, event_id_col = None, gene_col = None, extra_cols = None, separate_modification_types = False, coordinate_type = 'hg38', start_coordinate_system = '1-based', end_coordinate_system = '1-based', taskbar_label = None, PROCESSES = 1, **kwargs):
     """
     Given splice event quantification data, project PTMs onto the regions impacted by the splice events. Assumes that the splice event data will have chromosome, strand, and genomic start/end positions for the regions of interest, and each row of the splice_event_data corresponds to a unique region.
 
@@ -289,6 +291,8 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotat
         Label to display in the tqdm progress bar. Default is None, which will automatically state "Projecting PTMs onto regions using ----- coordinates".
     PROCESSES: int
         Number of processes to use for multiprocessing. Default is 1 (single processing)
+    **kwargs: additional keyword arguments
+        Additional keyword arguments to pass to the find_ptms_in_many_regions function, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.
 
     Returns
     -------
@@ -298,15 +302,26 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotat
         dataframe containing the original splice data with an additional column 'PTMs' that contains the PTMs found in the region of interest, in the format of 'SiteNumber(ModificationType)'. If no PTMs are found, the value will be np.nan.
     """
     #load ptm data from config if not provided
-    if ptm_coordinates is None and pose_config.ptm_coordinates is not None:
-        ptm_coordinates = pose_config.ptm_coordinates
-    elif ptm_coordinates is None:
-        raise ValueError('ptm_coordinates dataframe not provided and not found in the resource files. Please provide the ptm_coordinates dataframe with pose_config.download_ptm_coordinates() or download the file manually. To avoid needing to download this file each time, run pose_config.download_ptm_coordinates(save = True) to save the file locally within the package directory (will take ~63MB of storage space)')
+    if ptm_coordinates is None:
+        ptm_coordinates = pose_config.ptm_coordinates.copy()
+    
+    
+    #check for any keyword arguments to use for filtering
+    if kwargs:
+        filter_arguments = helpers.extract_filter_arguments(**kwargs)
+        #check any excess unused keyword arguments, report them
+        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
 
     if taskbar_label is None:
         taskbar_label = 'Projecting PTMs onto splice events using ' + coordinate_type + ' coordinates.'
 
-
+    #check for any keyword arguments to use for filtering
+    if kwargs:
+        filter_arguments = helpers.extract_filter_arguments(**kwargs)
+        #check any excess unused keyword arguments, report them
+        helpers.check_filter_kwargs(**filter_arguments)
+        #filter ptm coordinates file to include only ptms with desired evidence
+        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
 
     #copy
     splice_data = splice_data.copy()
@@ -339,7 +354,7 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotat
 
 
 
-def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_events = None, threeASS_events = None, RI_events = None, MXE_events = None, coordinate_type = 'hg38', identify_flanking_sequences = False, dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None, separate_modification_types = False, PROCESSES = 1):
+def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_events = None, threeASS_events = None, RI_events = None, MXE_events = None, coordinate_type = 'hg38', identify_flanking_sequences = False, dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None, separate_modification_types = False, PROCESSES = 1, **kwargs):
     """
     Given splice quantification from the MATS algorithm, annotate with PTMs that are found in the differentially included regions.
 
@@ -369,7 +384,23 @@ def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
         Indicate whether residues with multiple modifications (i.e. phosphorylation and acetylation) should be treated as separate PTMs and be placed in unique rows of the output dataframe. Default is False.
     PROCESSES: int
         Number of processes to use for multiprocessing. Default is 1.
+    **kwargs: additional keyword arguments
+        Additional keyword arguments to pass to the find_ptms_in_many_regions function, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.
     """
+    #load ptm data from config if not provided
+    if ptm_coordinates is None:
+        ptm_coordinates = pose_config.ptm_coordinates.copy()
+    
+
+    #check for any keyword arguments to use for filtering
+    if kwargs:
+        filter_arguments = helpers.extract_filter_arguments(**kwargs)
+        #check any excess unused keyword arguments, report them
+        helpers.check_filter_kwargs(**filter_arguments)
+        #filter ptm coordinates file to include only ptms with desired evidence
+        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
+
+
     print(f'Projecting PTMs onto MATS splice events using {coordinate_type} coordinates.')
     #reformat chromosome name format
     spliced_events = {}
@@ -642,7 +673,50 @@ def add_splicegraph_info(psi_data, splicegraph, purpose = 'inclusion'):
     else:
         raise ValueError('Purpose must be either inclusion or flanking. Please provide the correct purpose for the splicegraph information.')
 
-def project_ptms_onto_SpliceSeq(psi_data, splicegraph, gene_col ='symbol', dPSI_col = None, sig_col = None, extra_cols = None, coordinate_type = 'hg19', separate_modification_types = False, identify_flanking_sequences = False, flank_size = 5, PROCESSES = 1):
+def project_ptms_onto_SpliceSeq(psi_data, splicegraph, gene_col ='symbol', dPSI_col = None, sig_col = None, extra_cols = None, coordinate_type = 'hg19', separate_modification_types = False, identify_flanking_sequences = False, flank_size = 5, PROCESSES = 1, **kwargs):
+    """
+    Given splice event quantification from SpliceSeq (such as what can be downloaded from TCGASpliceSeq), annotate with PTMs that are found in the differentially included regions.
+
+    Parameters
+    ----------
+    psi_data: pandas.DataFrame
+        dataframe containing splice event quantification from SpliceSeq. Must contain the following columns: 'symbol', 'exons', 'splice_type'.
+    splicegraph: pandas.DataFrame
+        dataframe containing exon information from the splicegraph used during splice event quantification. Must contain the following columns: 'Symbol', 'Exon', 'Chr_Start', 'Chr_Stop'.
+    gene_col: str
+        column name in psi_data that contains the gene name. Default is 'symbol'.
+    dPSI_col: str
+        column name in psi_data that contains the delta PSI value for the splice event. Default is None, which will not include this information in the output.
+    sig_col: str
+        column name in psi_data that contains the significance value for the splice event. Default is None, which will not include this information in the output.
+    extra_cols: list
+        list of additional columns to include in the output dataframe. Default is None, which will not include any additional columns.
+    coordinate_type: str
+        indicates the coordinate system used for the start and end positions. Either hg38 or hg19. Default is 'hg19'.
+    separate_modification_types: bool
+        Indicate whether to store PTM sites with multiple modification types as multiple rows. For example, if a site at K100 was both an acetylation and methylation site, these will be separated into unique rows with the same site number but different modification types. Default is True.
+    identify_flanking_sequences: bool
+        Indicate whether to identify and return the flanking sequences for the splice events. Default is False.
+    flank_size: int
+        Size of the flanking sequence to extract from the splice event. Default is 5, which will extract 5 bases upstream and downstream of the splice event. Only relevant if identify_flanking_sequences is True.
+    PROCESSES: int
+        Number of processes to use for multiprocessing. Default is 1 (single processing).
+    **kwargs: additional keyword arguments
+        Additional keyword arguments to pass to the find_ptms_in_many_regions function, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.
+    """
+    #load ptm data from config if not provided
+    if ptm_coordinates is None:
+        ptm_coordinates = pose_config.ptm_coordinates.copy()
+    
+
+    #check for any keyword arguments to use for filtering
+    if kwargs:
+        filter_arguments = helpers.extract_filter_arguments(**kwargs)
+        #check any excess unused keyword arguments, report them
+        helpers.check_filter_kwargs(**filter_arguments)
+        #filter ptm coordinates file to include only ptms with desired evidence
+        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
+
     #remove ME events from this analysis
     print('Removing ME events from analysis')
     psi_data = psi_data[psi_data['splice_type'] != 'ME'].copy()
