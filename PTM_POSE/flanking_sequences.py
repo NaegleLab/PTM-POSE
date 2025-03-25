@@ -707,7 +707,7 @@ def get_flanking_changes_from_splicegraph(psi_data, splicegraph, ptm_coordinates
     return altered_flanks
 
 
-def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fiveASS_events = None, threeASS_events = None, RI_events = None, coordinate_type = 'hg38', dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None, **kwargs):
+def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, A5SS_events = None, A3SS_events = None, RI_events = None, coordinate_type = 'hg38', dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None, **kwargs):
     """
     Given splice events identified rMATS extract quantified PTMs that are nearby the splice boundary (potential for flanking sequence to be altered). Coordinate information of individual exons should be found in splicegraph. You can also provide columns with specific psi or significance information. Extra cols not in these categories can be provided with extra_cols parameter. 
 
@@ -719,9 +719,9 @@ def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fi
         dataframe containing PTM information, including chromosome, strand, and genomic location of PTMs. If none, will use the PTM coordinates from the pose_config file.
     SE_events: pandas.DataFrame
         dataframe containing skipped exon event information from MATS
-    fiveASS_events: pandas.DataFrame
+    A5SS_events: pandas.DataFrame
         dataframe containing 5' alternative splice site event information from MATS
-    threeASS_events: pandas.DataFrame
+    A3SS_events: pandas.DataFrame
         dataframe containing 3' alternative splice site event information from MATS
     RI_events: pandas.DataFrame
         dataframe containing retained intron event information from MATS
@@ -778,9 +778,9 @@ def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fi
         SE_flanks['Event Type'] = 'SE'
         spliced_flanks.append(SE_flanks)
 
-    if fiveASS_events is not None:
-        if fiveASS_events['chr'].str.contains('chr').any():
-            fiveASS_events['chr'] = fiveASS_events['chr'].apply(lambda x: x[3:])
+    if A5SS_events is not None:
+        if A5SS_events['chr'].str.contains('chr').any():
+            A5SS_events['chr'] = A5SS_events['chr'].apply(lambda x: x[3:])
 
         #set the relevent start and end regions of the spliced out region, which are different depending on the strand
         region_start = []
@@ -789,7 +789,7 @@ def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fi
         first_flank_end = []
         second_flank_end = []
         second_flank_start = []
-        for i, row in fiveASS_events.iterrows():
+        for i, row in A5SS_events.iterrows():
             strand = row['strand']
             if strand == '+':
                 region_start.append(row['shortEE'])
@@ -806,27 +806,27 @@ def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fi
                 first_flank_start.append(row['flankingES'])
                 first_flank_end.append(row['flankingEE'])
 
-        fiveASS_events['event_start'] = region_start
-        fiveASS_events['event_end'] = region_end
-        fiveASS_events['first_flank_start'] = first_flank_start
-        fiveASS_events['first_flank_end'] = first_flank_end
-        fiveASS_events['second_flank_start'] = second_flank_start
-        fiveASS_events['second_flank_end'] = second_flank_end
+        A5SS_events['event_start'] = region_start
+        A5SS_events['event_end'] = region_end
+        A5SS_events['first_flank_start'] = first_flank_start
+        A5SS_events['first_flank_end'] = first_flank_end
+        A5SS_events['second_flank_start'] = second_flank_start
+        A5SS_events['second_flank_end'] = second_flank_end
         
 
         #set specific as id
 
-        fiveASS_events['AS ID'] =  "5ASS_" + fiveASS_events.index.astype(str)
+        A5SS_events['AS ID'] =  "5ASS_" + A5SS_events.index.astype(str)
 
 
         print("Identifying flanking sequences for 5'ASS events.")
-        fiveASS_flanks = get_flanking_changes_from_splice_data(fiveASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end',dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system='0-based')
+        fiveASS_flanks = get_flanking_changes_from_splice_data(A5SS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end',dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system='0-based')
         fiveASS_flanks['Event Type'] = '5ASS'
         spliced_flanks.append(fiveASS_flanks)
     
-    if threeASS_events is not None:
-        if threeASS_events['chr'].str.contains('chr').any():
-            threeASS_events['chr'] = threeASS_events['chr'].apply(lambda x: x[3:])
+    if A3SS_events is not None:
+        if A3SS_events['chr'].str.contains('chr').any():
+            A3SS_events['chr'] = A3SS_events['chr'].apply(lambda x: x[3:])
 
         #set the relevent start and end regions of the spliced out region, which are different depending on the strand
         region_start = []
@@ -835,7 +835,7 @@ def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fi
         first_flank_end = []
         second_flank_end = []
         second_flank_start = []
-        for i, row in threeASS_events.iterrows():
+        for i, row in A3SS_events.iterrows():
             strand = row['strand']
             if strand == '+':
                 region_start.append(row['longExonStart_0base'])
@@ -854,21 +854,21 @@ def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, fi
 
 
         #save region info
-        threeASS_events['event_start'] = region_start
-        threeASS_events['event_end'] = region_end
-        threeASS_events['first_flank_start'] = first_flank_start
-        threeASS_events['first_flank_end'] = first_flank_end
-        threeASS_events['second_flank_start'] = second_flank_start
-        threeASS_events['second_flank_end'] = second_flank_end
+        A3SS_events['event_start'] = region_start
+        A3SS_events['event_end'] = region_end
+        A3SS_events['first_flank_start'] = first_flank_start
+        A3SS_events['first_flank_end'] = first_flank_end
+        A3SS_events['second_flank_start'] = second_flank_start
+        A3SS_events['second_flank_end'] = second_flank_end
 
         #add event ids
-        threeASS_events['AS ID'] = "3ASS_" + threeASS_events.index.astype(str)
+        A3SS_events['AS ID'] = "3ASS_" + A3SS_events.index.astype(str)
 
 
 
             #identify ptms with altered flanking sequences
         print("Identifying flanking sequences for 3' ASS events.")
-        threeASS_flanks = get_flanking_changes_from_splice_data(threeASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end', dPSI_col=dPSI_col, sig_col = dPSI_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system='0-based')
+        threeASS_flanks = get_flanking_changes_from_splice_data(A3SS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end', dPSI_col=dPSI_col, sig_col = dPSI_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system='0-based')
         threeASS_flanks['Event Type'] = '3ASS'
         spliced_flanks.append(threeASS_flanks)
 

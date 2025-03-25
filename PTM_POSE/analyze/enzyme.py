@@ -3,6 +3,7 @@ import pandas as pd
 import pickle
 
 import os
+from tqdm import tqdm
 
 #plotting functions
 import matplotlib.pyplot as plt
@@ -353,7 +354,20 @@ class KSEA:
         if modification is not None:
             ptms = ptms[ptms['Modification Class'] == modification]
 
-        self.annot_col = {'OmniPath':'OmniPath:Writer Enzyme'} 
+        #if omnipath database is used, make sure it was specified to either look at reader or writer enzymes
+        if 'OmniPath' in database and database not in ['OmniPath Writer', 'OmniPath Eraser']:
+            raise ValueError('OmniPath database must be either "OmniPath Writer" or "OmniPath Eraser"')
+        elif database == 'OmniPath Writer':
+            self.annot_col = 'OmniPath:Writer Enzyme'  #use writer enzyme annotations
+        elif database == 'OmniPath Eraser':
+            self.annot_col = 'OmniPath:Eraser Enzyme'
+        elif database not in ['PhosphoSitePlus', 'DEPOD', 'RegPhos', 'OmniPath Writer', 'OmniPath Eraser']:
+            raise ValueError('database must be either "OmniPath Writer", "OmniPath Eraser", "PhosphoSitePlus", "DEPOD", or "RegPhos"')
+        else:
+            self.annot_col = f'{database}:Enzyme'  #use enzyme annotations for other databases
+        
+        #check to make sure annotation column is present
+
         ptms[self.annot_col] = ptms[self.annot_col].str.split(';')
         ptms = ptms.explode(self.annot_col)
  
@@ -365,40 +379,17 @@ class KSEA:
         ptms = ptms.explode(self.annot_col)
        
         #find overlap between network and experiment
-        if modification is not None and database == 'OmniPath':
+        ptms = helpers.add_ptm_column(ptms)
+        if modification is not None:
             self.exp_substrates = list(ptms['PTM'] + '_' + ptms['Modification Class'])
         else:
             self.exp_substrates = list(ptms['PTM'])
 
         self.site_overlap = list(set(self.exp_substrates).intersection(set(self.net_substrates)))
         
-        #separate annotations for the network
-        self.annot_col = {'OmniPath Writer':'OmniPath:Writer Enzyme'} 
-        ptms
-        #find unique kinases
-        self.kinases = network[kinase_col].unique()
         
-        #extract substrate info for each kinase in the network
-        self.ks_info = {}
-        for kin in self.kinases:
-            tmp_net = network[network[kinase_col] == kin]
-            kinase_substrates = list(tmp_net['KSTAR_ACCESSION']+'_'+tmp_net['KSTAR_SITE'])
-            self.ks_info[kin] = kinase_substrates
-        
-        #If data_cols is none, look for columns starting with 'data:'
-        if data_cols is None:
-            self.data_cols = [col for col in self.experiment.columns if 'data:' in col]
-        else:
-            self.data_cols = data_cols
-            
-                #if data hasn't been log transformed, do so now
-        if log_transform:
-            self.experiment[self.data_cols] = np.log2(self.experiment[self.data_cols])
-            #if an values returned -inf (0s in the dataframe), change to NaN and notify user
-            if -np.inf in self.experiment[self.data_cols].values:
-                self.experiment.replace([-np.inf, np.inf], np.nan, inplace = True)
-                print('Log transform produced -inf values (0s in the data columns). Replaced with NaN.')
-       
+
+
 
         self.all_results = {}
         self.zscore = pd.DataFrame(None, columns = self.data_cols, index = self.kinases)
@@ -509,7 +500,7 @@ class KSEA:
         self.m.to_csv(f'{odir}{fname}_m.tsv', sep = '\t')
 
 class kstar_enrichment:
-    def __init__(self, significant_ptms, network_dir, background_ptms = None, phospho_type = 'Y'):
+    def __init__(self, spliced_ptms, network_dir, background_ptms = None, impact_type = ['All', 'Included', 'Excluded'], phospho_type = 'Y', **kwargs):
         """
         Given spliced ptm or PTMs with altered flanks and a single kstar network, get enrichment for each kinase in the network using a hypergeometric. Assumes the  data has already been reduced to the modification of interest (phosphotyrosine or phoshoserine/threonine)
 
@@ -517,10 +508,12 @@ class kstar_enrichment:
         ----------
         network_dir : dict
             dictionary of networks with kinase-substrate information
-        spliced_ptms : pandas dataframe
-            all PTMs of interest
+        ptms : pandas dataframe
+            differentially included ptms
         background_ptms: pd.DataFrame
             PTMs to consider as the background for enrichment purposes, which should overlap with the spliced ptms information provided (an example might be all identified events, whether or not they are significant). If not provided, will use all ptms in the phosphoproteome.
+        impact_type: list of str or str
+            type of impacts to perform enrichment analysis for. Can be 'All' (all significantly differentially included sites), 'Included' (sites with dPSI > 0), and/or 'Excluded' (sites with dPSI < 0). Default is to perform enrichment on all three groups.
         phospho_type : str 
             type of phosphorylation event to extract. Can either by phosphotyrosine ('Y') or phosphoserine/threonine ('ST'). Default is 'Y'.
 
@@ -534,18 +527,47 @@ class kstar_enrichment:
             phospho_type = ['Y', 'ST']
         else:
             raise ValueError('phospho_type must be either Y, ST, or All')
+
+        if isinstance(impact_type, list):
+            #if impact type includes inclusion and/or exclusion, check if dPSI is present and assign impact type accordingly
+            if 'Included' in impact_type or 'Excluded' in impact_type:
+                if 'dPSI' in spliced_ptms.columns:
+                    spliced_ptms['Impact'] = spliced_ptms['dPSI'].apply(lambda x: 'Included' if x > 0 else 'Excluded')
+                else:
+                    raise ValueError('spliced_ptms must contain dPSI column to determine impact type, please either provide dPSI or restrict impact_type to "All"')
+            self.impact_type = impact_type
+        elif isinstance(impact_type, str):
+            if impact_type == 'Included' or impact_type == 'Excluded':
+                if 'dPSI' not in spliced_ptms.columns:
+                    raise ValueError('spliced_ptms must contain dPSI column to determine impact type, please either provide dPSI or restrict impact_type to "All"')
+                else:
+                    spliced_ptms['Impact'] = spliced_ptms['dPSI'].apply(lambda x: 'Included' if x > 0 else 'Excluded')
+                    self.impact_type = [impact_type]
+            elif impact_type == 'All':
+                self.impact_type = ['All']
+            else:
+                raise ValueError('impact_type must be at least one of either "All", "Included", or "Excluded"')
         
         self.significant_ptms = {}
         self.background_ptms = {}
         self.networks = {}
         for ptype in phospho_type:
+            if ptype == 'Y':
+                print('\nProcessing differentially included phosphotyrosine data')
+            elif ptype == 'ST':
+                print('\nProcessing differentially included phosphoserine/threonine data')
             #process ptms to only include specific phosphorylation data needed
-            self.significant_ptms[ptype] = self.process_ptms(significant_ptms, phospho_type = ptype)
+            self.significant_ptms[ptype] = self.process_ptms(spliced_ptms, phospho_type = ptype, **kwargs)
+
             #load background, either from provided data or from all phosphoproteome data
+            if ptype == 'Y':
+                print('\nProcessing background phosphotyrosine data')
+            elif ptype == 'ST':
+                print('\nProcessing background phosphoserine/threonine data')
             if background_ptms is not None:
-                self.background_ptms[ptype] = self.process_ptms(background_ptms, phospho_type=ptype)
+                self.background_ptms[ptype] = self.process_ptms(background_ptms, phospho_type=ptype, min_dpsi = 0, alpha = 1.1, **kwargs)
             else:
-                self.background_ptms[ptype] = self.process_ptms(pose_config.ptm_coordinates.copy(), phospho_type = ptype)
+                self.background_ptms[ptype] = self.process_ptms(pose_config.ptm_coordinates.copy(), phospho_type = ptype, min_dpsi = 0, alpha = 1.1, **kwargs)
 
             #load kstar networks
             self.networks[ptype] = self.load_networks(network_dir, phospho_type = ptype)
@@ -577,7 +599,7 @@ class kstar_enrichment:
         return networks
 
 
-    def process_ptms(self, ptms, phospho_type = 'Y'):
+    def process_ptms(self, ptms, phospho_type = 'Y', **kwargs):
         """
         Given ptm information, restrict data to include only the phosphorylation type of interest and add a PTM column for matching information from KSTAR
 
@@ -594,20 +616,22 @@ class kstar_enrichment:
         """
 
         #restrict to ptms to phosphorylation type of interest
+        ptms = ptms[(ptms['Modification Class'] == 'Phosphorylation')].copy()
         if phospho_type == 'Y':
-            ptms = ptms[ptms['Modification'].str.contains('Phosphotyrosine')].copy()
+            ptms = ptms[ptms['Residue'] == 'Y'].copy()
         elif phospho_type == 'ST':
-            ptms = ptms[(ptms["Modification"].str.contains('Phosphoserine')) | (ptms['Modification'].str.contains('Phosphothreonine'))].copy()
+            ptms = ptms[ptms['Residue'].isin(['S', 'T'])].copy()
+        else:
+            raise ValueError('phospho_type must be either Y or ST')
+        
+        ptms = helpers.filter_ptms(ptms, **kwargs)
 
         #construct PTM column that matches KSTAR information
         ptms['PTM'] = ptms['UniProtKB Accession'] + '_' + ptms['Residue'] + ptms['PTM Position in Isoform'].astype(int).astype(str)
-
-        #filter out any PTMs that come from alternative isoforms
-        ptms = ptms[~ptms['UniProtKB Accession'].str.contains('-')]
         return ptms
 
     
-    def get_enrichment_single_network(self, network_key, phospho_type = 'Y'):
+    def get_enrichment_single_network(self, network_key, impact_type = 'All', phospho_type = 'Y'):
         """
         in progress
         """
@@ -615,7 +639,15 @@ class kstar_enrichment:
         network['PTM'] = network['KSTAR_ACCESSION'] + '_' + network['KSTAR_SITE']
 
         #add network information to all significant data
-        sig_ptms = self.significant_ptms[phospho_type][['PTM']].drop_duplicates()
+        if impact_type == 'All':
+            sig_ptms = self.significant_ptms[phospho_type][['PTM']].drop_duplicates()
+        elif impact_type == 'Included':
+            sig_ptms = self.significant_ptms[phospho_type][self.significant_ptms[phospho_type]['Impact'] == 'Included'][['PTM']].drop_duplicates()
+        elif impact_type == 'Excluded':
+            sig_ptms = self.significant_ptms[phospho_type][self.significant_ptms[phospho_type]['Impact'] == 'Excluded'][['PTM']].drop_duplicates()
+        else:
+            raise ValueError('impact_type must be either "All", "Included", or "Excluded"')
+        
         sig_ptms_kstar = sig_ptms.merge(network[['KSTAR_KINASE','PTM']], on = 'PTM')
 
         #repeat for background data
@@ -639,7 +671,7 @@ class kstar_enrichment:
 
         return results
     
-    def get_enrichment_all_networks(self, phospho_type = 'Y'):
+    def get_enrichment_all_networks(self, impact_type = 'All', phospho_type = 'Y'):
         """
         Given prostate data and a dictionary of kstar networks, get enrichment for each kinase in each network in the prostate data. Assumes the prostate data has already been reduced to the modification of interest (phosphotyrosine or phoshoserine/threonine)
 
@@ -654,7 +686,7 @@ class kstar_enrichment:
         """
         results = {}
         for network in self.networks[phospho_type]:
-            results[network] = self.get_enrichment_single_network(network_key=network, phospho_type=phospho_type)
+            results[network] = self.get_enrichment_single_network(network_key=network, impact_type=impact_type, phospho_type=phospho_type)
         return results
 
     def extract_enrichment(self, results):
@@ -679,13 +711,19 @@ class kstar_enrichment:
         enrichment = {}
         median = {}
         for ptype in self.phospho_type:
-            results = self.get_enrichment_all_networks(phospho_type=ptype)
-            enrichment[ptype] = self.extract_enrichment(results)
-            median[ptype] = enrichment[ptype]['median']
+            enrichment[ptype] = {}
+            median_impacts = {}
+            for impact in tqdm(self.impact_type, desc = f'Running enrichment for {ptype} data'):
+                results = self.get_enrichment_all_networks(phospho_type=ptype, impact_type = impact)
+                enrichment[ptype][impact] = self.extract_enrichment(results)
+                median_impacts[impact] = enrichment[ptype][impact]['median']
+            
+            median[ptype] = pd.DataFrame(median_impacts)
+
         self.enrichment_all = enrichment
         self.median_enrichment = median
 
-    def return_enriched_kinases(self, alpha = 0.05):
+    def return_enriched_kinases(self, impact_type = 'All', alpha = 0.05):
         """
         Return kinases with a median p-value less than the provided alpha value (substrates are enriched among the significant PTMs)
 
@@ -699,16 +737,16 @@ class kstar_enrichment:
 
         sig_enrichment = {}
         for ptype in self.phospho_type:
-            sig_enrichment[ptype] = self.median_enrichment[ptype][self.median_enrichment[ptype] < alpha].index.values
+            tmp_data = self.median_enrichment[ptype][impact_type].copy()
+            sig_enrichment[ptype] = tmp_data[tmp_data < alpha].index.values
         return sig_enrichment
     
-    def dotplot(self, ptype = 'Y', ax = None, facecolor = 'white', title = '', size_legend = True, color_legend = True, max_size = None, sig_kinases_only = True, alpha = 0.05, dotsize = 5, 
-                 colormap={0: '#6b838f', 1: '#FF3300'},
-                 labelmap = None,
+    def dotplot(self, ptype = 'Y', impact_types = ['All', 'Included', 'Excluded'], kinase_axis = 'x', ax = None, facecolor = 'white', title = '', size_legend = False, color_legend = True, max_size = None, sig_kinases_only = True, alpha = 0.05, dotsize = 5, 
+                 colormap={0: '#6b838f', 1: sns.color_palette('colorblind')[1]},
+                 labelmap = {0: 'FPR > %0.2f'%(0.05), 1:'FPR <= %0.2f'%(0.05)},
                  legend_title = 'p-value', size_number = 5, size_color = 'gray', 
                  color_title = 'Significant', markersize = 10, 
-                 legend_distance = 1.0,
-                 xlabel = True, ylabel = True, x_label_dict = None, kinase_dict = None, figsize = (5,5)):
+                 legend_distance = 1.0, figsize = (5,5)):
         """
         Generates the dotplot plot, where size is determined by values dataframe and color is determined by significant dataframe. This is a stripped down version of the code used in KSTAR to generate the dotplot for the kinase activities
         
@@ -724,21 +762,30 @@ class kstar_enrichment:
         ax.set_facecolor(facecolor)
         ax.set_title(title)
 
-        plt_data = self.median_enrichment[ptype]
+        plt_data = self.median_enrichment[ptype][impact_types]
+        if isinstance(plt_data, pd.Series):
+            plt_data = pd.DataFrame(plt_data)
+        
         if sig_kinases_only:
-            plt_data = plt_data[plt_data < alpha]
+            plt_data = plt_data[(plt_data < alpha).any(axis = 1)]
+            if plt_data.empty:
+                raise ValueError('No significant kinases found with p-value < %0.2f'%(alpha))
+        
+        if kinase_axis == 'x':
+            plt_data = plt_data.T
+        elif kinase_axis == 'y':
+            plt_data = plt_data.copy()
+        else:
+            raise ValueError('kinase_axis must be either "x" or "y"')
         
         # Transform Data
         columns = list(plt_data.columns)
         values = -np.log10(plt_data).copy()
-        colors = plt_data.copy()
+        colors = ((plt_data <= alpha) *1).copy()
         values['row_index'] = np.arange(len(values)) * multiplier + offset
         colors['row_index'] = np.arange(len(colors)) * multiplier + offset
 
 
-        plt_data = self.median_enrichment[ptype]
-        if sig_kinases_only:
-            plt_data = plt_data[plt_data < alpha]
 
         melt = values.melt(id_vars = 'row_index')
         values.drop(columns = ['row_index'], inplace = True)
@@ -753,12 +800,12 @@ class kstar_enrichment:
         y = melt['row_index'][::-1]    #needs to be done in reverse order to maintain order in the dataframe
         
         
-        s = melt.value * self.dotsize
+        s = melt.value * dotsize
         
         #check to see if more than 2 values are given (fprs). Otherwise get color based on binary significance
-        if self.binary_sig:
-            #get color for each datapoint based on significance
-            melt_color['color'] = [self.colormap.get(l,'black') for l in melt_color.value]
+
+        #get color for each datapoint based on significance
+        melt_color['color'] = [colormap.get(l,'black') for l in melt_color.value]
 
             
         c = melt_color['color']
@@ -768,12 +815,12 @@ class kstar_enrichment:
         if color_legend:
             #create the legend
             color_legend = []
-            for color_key in self.colormap.keys():
+            for color_key in colormap.keys():
                 color_legend.append(
-                    Line2D([0], [0], marker='o', color='w', label=self.labelmap[color_key],
-                            markerfacecolor= self.colormap[color_key], markersize=self.markersize),
+                    Line2D([0], [0], marker='o', color='w', label=labelmap[color_key],
+                            markerfacecolor= colormap[color_key], markersize=markersize),
                 )     
-            legend1 = ax.legend(handles=color_legend, loc=f'upper right', bbox_to_anchor=(self.legend_distance,1), title = self.color_title)  
+            legend1 = ax.legend(handles=color_legend, loc=f'upper right', bbox_to_anchor=(legend_distance,1), title = color_title)  
 
             legend1.set_clip_on(False)
             ax.add_artist(legend1)
@@ -784,27 +831,31 @@ class kstar_enrichment:
         if size_legend:
             #check to see if max pval parameter was given: if so, use to create custom legend
             if max_size is not None:
-                s_label = np.arange(max_size/self.size_number,max_size+1,max_size/self.size_number).astype(int)
-                dsize = [s*self.dotsize for s in s_label]
+                s_label = np.arange(max_size/size_number,max_size+1,max_size/size_number).astype(int)
+                dsize = [s*dotsize for s in s_label]
                 legend_elements = []
                 for element, s in zip(s_label, dsize):
-                    legend_elements.append(Line2D([0],[0], marker='o', color = 'w', markersize = s**0.5, markerfacecolor = self.size_color, label = element))
-                legend2 = ax.legend(handles = legend_elements, loc = f'lower right', title = self.legend_title, bbox_to_anchor=(self.legend_distance,0))        
+                    legend_elements.append(Line2D([0],[0], marker='o', color = 'w', markersize = s**0.5, markerfacecolor = size_color, label = element))
+                legend2 = ax.legend(handles = legend_elements, loc = f'lower right', title = legend_title, bbox_to_anchor=(legend_distance,0))        
             else:
-                kw = dict(prop="sizes", num=self.size_number, color=self.size_color, func=lambda s: s/self.dotsize) 
+                kw = dict(prop="sizes", num=size_number, color=size_color, func=lambda s: s/dotsize) 
                 legend2 = ax.legend(*scatter.legend_elements(**kw),
-                        loc=f'lower right', title=self.legend_title, bbox_to_anchor=(self.legend_distance,0)) 
-            #ax.add_artist(legend2)
+                        loc=f'lower right', title=legend_title, bbox_to_anchor=(legend_distance,0)) 
+            ax.add_artist(legend2)
 
         
         # Add Additional Plotting Information
         ax.tick_params(axis = 'x', rotation = 90)
         ax.yaxis.set_ticks(np.arange(len(values)) * multiplier + offset)
         ax.xaxis.set_ticks(np.arange(len(columns)) * multiplier + offset)
+
+
+        ax.set_xticklabels(plt_data.columns)
+        ax.set_yticklabels(plt_data.index[::-1])  #reverse order to match the dataframe
         
         #adjust x and y scale so that data is always equally spaced
-        ax.set_ylim([0,len(self.values)*self.multiplier])
-        ax.set_xlim([0,len(columns)*self.multiplier])
+        ax.set_ylim([0,len(values)*multiplier])
+        ax.set_xlim([0,len(columns)*multiplier])
         return ax 
     
  

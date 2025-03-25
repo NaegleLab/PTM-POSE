@@ -30,9 +30,10 @@ def combine_outputs(spliced_ptms, altered_flanks,  include_stop_codon_introducti
     #filter spliced_ptms and altered_flanks dataframes to remove insignificant events or PTMs with low evidence
     if kwargs:
         filter_arguments = helpers.extract_filter_kwargs(**kwargs)
-        helpers.check_filter_kwargs(**filter_arguments)
-        spliced_ptms = helpers.filter_ptms(spliced_ptms, **kwargs)
-        altered_flanks = helpers.filter_ptms(altered_flanks, **kwargs)
+        helpers.check_filter_kwargs(filter_arguments)
+        spliced_ptms = helpers.filter_ptms(spliced_ptms, **filter_arguments)
+        filter_arguments['remove_novel'] = False  #keep novel PTMs in altered flanks, as these are not removed from isoform
+        altered_flanks = helpers.filter_ptms(altered_flanks, **filter_arguments)
 
     #extract specific direction of splicing change and add to dataframe
     spliced_ptms['Impact'] = spliced_ptms['dPSI'].apply(lambda x: 'Included' if x > 0 else 'Excluded')
@@ -65,7 +66,7 @@ def combine_outputs(spliced_ptms, altered_flanks,  include_stop_codon_introducti
     if 'Significance' in spliced_ptms.columns and 'Significance' in altered_flanks.columns:
         sig_cols.append('Significance')
 
-    shared_columns = ['Impact', 'Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'] + sig_cols + annotation_columns
+    shared_columns = ['Impact', 'Gene', 'UniProtKB Accession', 'Isoform ID', 'Isoform Type', 'Residue', 'PTM Position in Isoform', 'Modification Class'] + sig_cols + annotation_columns
     combined = pd.concat([spliced_ptms[shared_columns], altered_flanks[shared_columns]])
     combined = combined.groupby([col for col in combined.columns if col != 'Impact'], as_index = False, dropna = False)['Impact'].apply(lambda x: ';'.join(set(x)))
 

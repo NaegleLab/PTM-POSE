@@ -11,6 +11,7 @@ import networkx as nx
 
 
 #custom stat functions
+from ptm_pose.analyze import annotations
 from ptm_pose import annotate, helpers
 
 
@@ -47,7 +48,7 @@ def get_edge_colors(interaction_graph, network_data, defaultedgecolor = 'gray', 
     return edge_colors, legend_handles
 
 
-def plot_interaction_network(interaction_graph, network_data, network_stats = None, modified_color = 'red', modified_node_size = 10, interacting_color = 'lightblue', interacting_node_size = 1, defaultedgecolor = 'gray', color_edges_by = 'Same', seed = 200, legend_fontsize = 8, ax = None, proteins_to_label = None, labelcolor = 'black'):
+def plot_interaction_network(interaction_graph, network_data, network_stats = None, modified_color = 'red', modified_node_size = 10, interacting_color = 'lightblue', interacting_node_size = 1, defaultedgecolor = 'gray', color_edges_by = 'Same', seed = 200, legend_fontsize = 8, ax = None, proteins_to_label = None, labelcolor = 'black', legend = True):
     """
     Given the interaction graph and network data outputted from analyze.protein_interactions, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs. by default, will only label proteins 
 
@@ -114,17 +115,18 @@ def plot_interaction_network(interaction_graph, network_data, network_stats = No
     nx.draw(interaction_graph, node_size = node_sizes, node_color = node_colors, edge_color = edge_colors, style = edge_style, ax = ax)
 
     #add legend for colored nodes
-    modified_node = mlines.Line2D([0], [0], color='w',marker = 'o', markersize=modified_node_size,linewidth = 0.2, markerfacecolor = modified_color, markeredgecolor=modified_color, label='Spliced Protein')
-    interacting_node = mlines.Line2D([0], [0], color='w', markerfacecolor = interacting_color, markeredgecolor=interacting_color, marker = 'o', markersize=interacting_node_size, linewidth = 0.2, label='Interacting Protein')
-    solid_line = mlines.Line2D([0], [0], color='gray', linestyle = 'solid', label = 'Interaction increases')
-    dashdot_line = mlines.Line2D([0], [0], color='gray', linestyle = 'dashdot', label = 'Interaction impact unclear')
-    dotted_line = mlines.Line2D([0], [0], color='gray', linestyle = 'dotted', label = 'Interaction decreases')
-    handles = [solid_line,dashdot_line, dotted_line, modified_node, interacting_node]
-    net_legend = ax.legend(handles = handles, loc = 'upper center', ncol = 2, fontsize = legend_fontsize, bbox_to_anchor = (0.5, 1.1))
-    ax.add_artist(net_legend)
+    if legend:
+        modified_node = mlines.Line2D([0], [0], color='w',marker = 'o', markersize=modified_node_size,linewidth = 0.2, markerfacecolor = modified_color, markeredgecolor=modified_color, label='Spliced Protein')
+        interacting_node = mlines.Line2D([0], [0], color='w', markerfacecolor = interacting_color, markeredgecolor=interacting_color, marker = 'o', markersize=interacting_node_size, linewidth = 0.2, label='Interacting Protein')
+        solid_line = mlines.Line2D([0], [0], color='gray', linestyle = 'solid', label = 'Interaction increases')
+        dashdot_line = mlines.Line2D([0], [0], color='gray', linestyle = 'dashdot', label = 'Interaction impact unclear')
+        dotted_line = mlines.Line2D([0], [0], color='gray', linestyle = 'dotted', label = 'Interaction decreases')
+        handles = [solid_line,dashdot_line, dotted_line, modified_node, interacting_node]
+        net_legend = ax.legend(handles = handles, loc = 'upper center', ncol = 2, fontsize = legend_fontsize, bbox_to_anchor = (0.5, 1.1))
+        ax.add_artist(net_legend)
 
-    if color_edges_by == 'Database':
-        ax.legend(handles = edge_legend, loc = 'lower center', ncol = 1, fontsize = legend_fontsize, bbox_to_anchor = (0.5, -0.15), title = 'Interaction Source')
+        if color_edges_by == 'Database':
+            ax.legend(handles = edge_legend, loc = 'lower center', ncol = 1, fontsize = legend_fontsize, bbox_to_anchor = (0.5, -0.15), title = 'Interaction Source')
 
 
     #if requested, label specific proteins in the network
@@ -232,12 +234,29 @@ class protein_interactions:
     def __init__(self, spliced_ptms, include_enzyme_interactions = True, interaction_databases = ['PhosphoSitePlus', 'PTMcode', 'PTMInt', 'RegPhos', 'DEPOD', 'ELM', 'OmniPath'], **kwargs):
         filter_arguments = helpers.extract_filter_kwargs(**kwargs)
         helpers.check_filter_kwargs(filter_arguments)
-        self.spliced_ptms = helpers.filter_ptms(spliced_ptms, **filter_arguments)
-        if self.spliced_ptms.empty:
+        spliced_ptms = helpers.filter_ptms(spliced_ptms, **filter_arguments)
+        if spliced_ptms.empty:
             raise ValueError('No spliced PTMs found in provided data after filtering PTMs and events. Consider reducing filter stringency.')
         
         self.include_enzyme_interactions = include_enzyme_interactions
         self.interaction_databases = interaction_databases
+
+        #go through and add interaction information for any database that are not appended to the spliced_ptms dataframe
+        available_annotations = annotations.get_available_annotations(spliced_ptms)
+        available_interactions = available_annotations[available_annotations['Annotation Type'] == 'Interactions']
+        if self.include_enzyme_interactions:
+            enzyme_annotations = available_annotations[available_annotations['Annotation Type'] == 'Enzyme']
+
+
+        #go through and add interaction information that is not in the spliced_ptms dataframe
+        for db in self.interaction_databases:
+            if f'{db}:Interactions' not in spliced_ptms.columns and db in available_interactions['Database'].values:
+                spliced_ptms = annotate.append_from_gmt(spliced_ptms, database = db, annot_type = 'Interactions')
+
+            if f'{db}:Enzyme' not in spliced_ptms.columns and self.include_enzyme_interactions and db in enzyme_annotations['Database'].values:
+                spliced_ptms = annotate.append_from_gmt(spliced_ptms, database = db, annot_type = 'Enzyme')
+
+        self.spliced_ptms = spliced_ptms
 
 
     def get_interaction_network(self, node_type = 'Gene'):
@@ -351,7 +370,7 @@ class protein_interactions:
         print(f'                      \t Betweenness = {self.network_stats.loc[protein, "Betweenness"]} (Rank: {network_ranks.loc[protein, "Betweenness"]})')
         print(f'                      \t Closeness = {self.network_stats.loc[protein, "Closeness"]} (Rank: {network_ranks.loc[protein, "Closeness"]})')
 
-    def plot_interaction_network(self, modified_color = 'red', modified_node_size = 10, interacting_color = 'lightblue', interacting_node_size = 5, defaultedgecolor = 'gray', color_edges_by = 'Same', seed = 200, ax = None, proteins_to_label = None, labelcolor = 'black'):
+    def plot_interaction_network(self, modified_color = 'red', modified_node_size = 10, interacting_color = 'lightblue', interacting_node_size = 5, defaultedgecolor = 'gray', color_edges_by = 'Same', seed = 200, ax = None, proteins_to_label = None, labelcolor = 'black', legend = True):
         """
         Given the interactiong graph and network data outputted from analyze.get_interaction_network, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs. by default, will only label proteins 
 
@@ -378,7 +397,7 @@ class protein_interactions:
         if not hasattr(self, 'network_stats'):
             self.get_interaction_stats()
 
-        plot_interaction_network(self.interaction_graph, self.network_data, self.network_stats, modified_color = modified_color, modified_node_size = modified_node_size, interacting_color = interacting_color, interacting_node_size = interacting_node_size, defaultedgecolor = defaultedgecolor, color_edges_by=color_edges_by, seed = seed, ax = ax, proteins_to_label = proteins_to_label, labelcolor = labelcolor)
+        plot_interaction_network(self.interaction_graph, self.network_data, self.network_stats, modified_color = modified_color, modified_node_size = modified_node_size, interacting_color = interacting_color, interacting_node_size = interacting_node_size, defaultedgecolor = defaultedgecolor, color_edges_by=color_edges_by, seed = seed, ax = ax, proteins_to_label = proteins_to_label, labelcolor = labelcolor, legend = legend)
 
     def plot_network_centrality(self,  centrality_measure = 'Degree', top_N = 10, modified_color = 'red', interacting_color = 'black', ax = None):
         if not hasattr(self, 'interaction_graph'):

@@ -308,7 +308,7 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotat
     
     #check for any keyword arguments to use for filtering
     if kwargs:
-        filter_arguments = helpers.extract_filter_arguments(**kwargs)
+        filter_arguments = helpers.extract_filter_kwargs(**kwargs)
         #check any excess unused keyword arguments, report them
         ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
 
@@ -317,11 +317,11 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotat
 
     #check for any keyword arguments to use for filtering
     if kwargs:
-        filter_arguments = helpers.extract_filter_arguments(**kwargs)
+        filter_arguments = helpers.extract_filter_kwargs(**kwargs)
         #check any excess unused keyword arguments, report them
-        helpers.check_filter_kwargs(**filter_arguments)
+        helpers.check_filter_kwargs(filter_arguments)
         #filter ptm coordinates file to include only ptms with desired evidence
-        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
+        ptm_coordinates = helpers.filter_ptms(ptm_coordinates, **filter_arguments)
 
     #copy
     splice_data = splice_data.copy()
@@ -354,7 +354,7 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotat
 
 
 
-def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_events = None, threeASS_events = None, RI_events = None, MXE_events = None, coordinate_type = 'hg38', identify_flanking_sequences = False, dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None, separate_modification_types = False, PROCESSES = 1, **kwargs):
+def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, A5SS_events = None, A3SS_events = None, RI_events = None, MXE_events = None, coordinate_type = 'hg38', identify_flanking_sequences = False, dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None, separate_modification_types = False, PROCESSES = 1, **kwargs):
     """
     Given splice quantification from the MATS algorithm, annotate with PTMs that are found in the differentially included regions.
 
@@ -364,9 +364,9 @@ def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
         dataframe containing PTM information, including chromosome, strand, and genomic location of PTMs
     SE_events: pandas.DataFrame
         dataframe containing skipped exon event information from MATS
-    fiveASS_events: pandas.DataFrame
+    A5SS_events: pandas.DataFrame
         dataframe containing 5' alternative splice site event information from MATS
-    threeASS_events: pandas.DataFrame
+    A3SS_events: pandas.DataFrame
         dataframe containing 3' alternative splice site event information from MATS
     RI_events: pandas.DataFrame
         dataframe containing retained intron event information from MATS
@@ -394,11 +394,11 @@ def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
 
     #check for any keyword arguments to use for filtering
     if kwargs:
-        filter_arguments = helpers.extract_filter_arguments(**kwargs)
+        filter_arguments = helpers.extract_filter_kwargs(**kwargs)
         #check any excess unused keyword arguments, report them
-        helpers.check_filter_kwargs(**filter_arguments)
+        helpers.check_filter_kwargs(filter_arguments)
         #filter ptm coordinates file to include only ptms with desired evidence
-        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
+        ptm_coordinates = helpers.filter_ptms(ptm_coordinates, **filter_arguments)
 
 
     print(f'Projecting PTMs onto MATS splice events using {coordinate_type} coordinates.')
@@ -445,9 +445,9 @@ def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
     else:
         print('Skipped exon event data (SE_events) not provided, skipping')
     
-    if fiveASS_events is not None:
-        if fiveASS_events['chr'].str.contains('chr').any():
-            fiveASS_events['chr'] = fiveASS_events['chr'].apply(lambda x: x[3:])
+    if A5SS_events is not None:
+        if A5SS_events['chr'].str.contains('chr').any():
+            A5SS_events['chr'] = A5SS['chr'].apply(lambda x: x[3:])
 
         #set the relevent start and end regions of the spliced out region, which are different depending on the strand
         region_start = []
@@ -456,7 +456,7 @@ def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
         first_flank_end = []
         second_flank_end = []
         second_flank_start = []
-        for i, row in fiveASS_events.iterrows():
+        for i, row in A5SS_events.iterrows():
             strand = row['strand']
             if strand == '+':
                 region_start.append(row['shortEE'])
@@ -475,46 +475,46 @@ def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
                     first_flank_start.append(row['flankingES'])
                     first_flank_end.append(row['flankingEE'])
 
-        fiveASS_events['event_start'] = region_start
-        fiveASS_events['event_end'] = region_end
+        A5SS_events['event_start'] = region_start
+        A5SS_events['event_end'] = region_end
         if identify_flanking_sequences:
-            fiveASS_events['first_flank_start'] = first_flank_start
-            fiveASS_events['first_flank_end'] = first_flank_end
-            fiveASS_events['second_flank_start'] = second_flank_start
-            fiveASS_events['second_flank_end'] = second_flank_end
+            A5SS_events['first_flank_start'] = first_flank_start
+            A5SS_events['first_flank_end'] = first_flank_end
+            A5SS_events['second_flank_start'] = second_flank_start
+            A5SS_events['second_flank_end'] = second_flank_end
         
 
         #set specific as id
 
-        fiveASS_events['AS ID'] =  "5ASS_" + fiveASS_events.index.astype(str)
+        A5SS_events['AS ID'] =  "5ASS_" + A5SS_events.index.astype(str)
 
         #check to make sure there is enough information to do multiprocessing if that is desired
-        if PROCESSES*4 > fiveASS_events.shape[0]:
+        if PROCESSES*4 > A5SS_events.shape[0]:
             fiveASS_processes = 1
         else:
             fiveASS_processes = PROCESSES
 
         #identify PTMs found within spliced regions
-        spliced_events['5ASS'], fiveASS_ptms = project_ptms_onto_splice_events(fiveASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'event_start', region_end_col = 'event_end', event_id_col = 'AS ID', dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol', coordinate_type=coordinate_type, start_coordinate_system = '0-based', extra_cols = extra_cols, taskbar_label = "5' ASS events", separate_modification_types=separate_modification_types, PROCESSES = fiveASS_processes)
+        spliced_events['5ASS'], fiveASS_ptms = project_ptms_onto_splice_events(A5SS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'event_start', region_end_col = 'event_end', event_id_col = 'AS ID', dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol', coordinate_type=coordinate_type, start_coordinate_system = '0-based', extra_cols = extra_cols, taskbar_label = "5' ASS events", separate_modification_types=separate_modification_types, PROCESSES = fiveASS_processes)
         fiveASS_ptms['Event Type'] = '5ASS'
         spliced_ptms.append(fiveASS_ptms)
 
         #identify ptms with altered flanking sequences
         if identify_flanking_sequences:
             print("Identifying flanking sequences for 5'ASS events.")
-            fiveASS_flanks = fs.get_flanking_changes_from_splice_data(fiveASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end',dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system='0-based')
+            fiveASS_flanks = fs.get_flanking_changes_from_splice_data(A5SS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end',dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system='0-based')
             fiveASS_flanks['Event Type'] = '5ASS'
             spliced_flanks.append(fiveASS_flanks)
     else:
-        print("5' ASS event data (fiveASS_events) not provided, skipping.")
+        print("5' ASS event data (A5SS_events) not provided, skipping.")
     
-    if threeASS_events is not None:
+    if A3SS_events is not None:
 
         if RI_events['chr'].str.contains('chr').any():
             RI_events['chr'] = RI_events['chr'].apply(lambda x: x[3:])
 
-        if threeASS_events['chr'].str.contains('chr').any():
-            threeASS_events['chr'] = threeASS_events['chr'].apply(lambda x: x[3:])
+        if A3SS_events['chr'].str.contains('chr').any():
+            A3SS_events['chr'] = A3SS_events['chr'].apply(lambda x: x[3:])
 
         #set the relevent start and end regions of the spliced out region, which are different depending on the strand
         region_start = []
@@ -523,7 +523,7 @@ def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
         first_flank_end = []
         second_flank_end = []
         second_flank_start = []
-        for i, row in threeASS_events.iterrows():
+        for i, row in A3SS_events.iterrows():
             strand = row['strand']
             if strand == '+':
                 region_start.append(row['longExonStart_0base'])
@@ -544,37 +544,37 @@ def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, fiveASS_eve
 
 
         #save region info
-        threeASS_events['event_start'] = region_start
-        threeASS_events['event_end'] = region_end
+        A3SS_events['event_start'] = region_start
+        A3SS_events['event_end'] = region_end
         if identify_flanking_sequences:
-            threeASS_events['first_flank_start'] = first_flank_start
-            threeASS_events['first_flank_end'] = first_flank_end
-            threeASS_events['second_flank_start'] = second_flank_start
-            threeASS_events['second_flank_end'] = second_flank_end
+            A3SS_events['first_flank_start'] = first_flank_start
+            A3SS_events['first_flank_end'] = first_flank_end
+            A3SS_events['second_flank_start'] = second_flank_start
+            A3SS_events['second_flank_end'] = second_flank_end
 
         #add event ids
-        threeASS_events['AS ID'] = "3ASS_" + threeASS_events.index.astype(str)
+        A3SS_events['AS ID'] = "3ASS_" + A3SS_events.index.astype(str)
 
         #check to make sure there is enough information to do multiprocessing if that is desired
-        if PROCESSES*4 > threeASS_events.shape[0]:
+        if PROCESSES*4 > A3SS_events.shape[0]:
             threeASS_processes = 1
         else:
             threeASS_processes = PROCESSES
 
-        spliced_events['3ASS'], threeASS_ptms = project_ptms_onto_splice_events(threeASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'event_start', region_end_col = 'event_end', event_id_col = 'AS ID', dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system = '0-based', taskbar_label = "3' ASS events", separate_modification_types=separate_modification_types, PROCESSES = threeASS_processes)
+        spliced_events['3ASS'], threeASS_ptms = project_ptms_onto_splice_events(A3SS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'event_start', region_end_col = 'event_end', event_id_col = 'AS ID', dPSI_col=dPSI_col, sig_col = sig_col, gene_col = 'geneSymbol', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system = '0-based', taskbar_label = "3' ASS events", separate_modification_types=separate_modification_types, PROCESSES = threeASS_processes)
         threeASS_ptms['Event Type'] = '3ASS'
         spliced_ptms.append(threeASS_ptms)
 
             #identify ptms with altered flanking sequences
         if identify_flanking_sequences:
             print("Identifying flanking sequences for 3' ASS events.")
-            threeASS_flanks = fs.get_flanking_changes_from_splice_data(threeASS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end', dPSI_col=dPSI_col, sig_col = dPSI_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system='0-based')
+            threeASS_flanks = fs.get_flanking_changes_from_splice_data(A3SS_events, ptm_coordinates, chromosome_col = 'chr', strand_col = 'strand', spliced_region_start_col = 'event_start', spliced_region_end_col = 'event_end', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end', dPSI_col=dPSI_col, sig_col = dPSI_col, gene_col = 'geneSymbol',  event_id_col = 'AS ID', extra_cols = extra_cols, coordinate_type=coordinate_type, start_coordinate_system='0-based')
             threeASS_flanks['Event Type'] = '3ASS'
             spliced_flanks.append(threeASS_flanks)
 
 
     else:
-        print("3' ASS event data (threeASS_events) not provided, skipping")
+        print("3' ASS event data (A3SS_events) not provided, skipping")
 
     if RI_events is not None:
 
@@ -711,9 +711,9 @@ def project_ptms_onto_SpliceSeq(psi_data, splicegraph, gene_col ='symbol', dPSI_
 
     #check for any keyword arguments to use for filtering
     if kwargs:
-        filter_arguments = helpers.extract_filter_arguments(**kwargs)
+        filter_arguments = helpers.extract_filter_kwargs(**kwargs)
         #check any excess unused keyword arguments, report them
-        helpers.check_filter_kwargs(**filter_arguments)
+        helpers.check_filter_kwargs(filter_arguments)
         #filter ptm coordinates file to include only ptms with desired evidence
         ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
 

@@ -1,21 +1,16 @@
 import numpy as np
 import pandas as pd
-import pickle
 
 import os
 import time
 
 #plotting 
 import matplotlib.pyplot as plt
-import matplotlib.lines as mlines
+import matplotlib.patches as mpatches
 import seaborn as sns
-from ptm_pose import plots as pose_plots
 
 #analysis packages
-from Bio.Align import PairwiseAligner
 import gseapy as gp
-import networkx as nx
-import re
 
 
 #custom stat functions
@@ -27,73 +22,58 @@ package_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 
-def get_annotation_col(spliced_ptms, annotation_type = 'Function', database = 'PhosphoSitePlus'):
-    """
-    Given the database of interest and annotation type, return the annotation column that will be found in a annotated spliced_ptm dataframe
+#def get_annot_col(spliced_ptms, annot_type = 'Function', database = 'PhosphoSitePlus'):
+#    """
+#    Given the database of interest and annotation type, return the annotation column that will be found in a annotated spliced_ptm dataframe
 
-    Parameters
-    ----------
-    spliced_ptms: pd.DataFrame
-        Dataframe with PTM annotations added from annotate module
-    annotation_type: str
-        Type of annotation to pull from spliced_ptms dataframe. Available information depends on the selected database. Default is 'Function'.
-    database: str
-        database from which PTMs are pulled. Options include 'PhosphoSitePlus', 'ELM', 'PTMInt', 'PTMcode', 'DEPOD', and 'RegPhos'. Default is 'PhosphoSitePlus'.
+#    Parameters
+#    ----------
+#    spliced_ptms: pd.DataFrame
+#        Dataframe with PTM annotations added from annotate module
+#    annot_type: str
+#        Type of annotation to pull from spliced_ptms dataframe. Available information depends on the selected database. Default is 'Function'.
+#    database: str
+#        database from which PTMs are pulled. Options include 'PhosphoSitePlus', 'ELM', 'PTMInt', 'PTMcode', 'DEPOD', and 'RegPhos'. Default is 'PhosphoSitePlus'.
 
-    Returns
-    -------
-    annotation_col: str
-        Column name in spliced_ptms dataframe that contains the requested annotation
-    """
-    if database == 'Combined':
-        if f'Combined:{annotation_type}' not in spliced_ptms.columns:
-            raise ValueError(f'Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.{pose_config.annotation_function_dict[database]} function to append this information.')
-        return f'Combined:{annotation_type}'
-    elif annotation_type in pose_config.annotation_col_dict[database].keys():
-        annotation_col = pose_config.annotation_col_dict[database][annotation_type]
-        if annotation_col not in spliced_ptms.columns:
-            raise ValueError(f'Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.{pose_config.annotation_function_dict[database][annotation_type]} function to append this information.')
-        return annotation_col
-    else:
-        raise ValueError(f"Invalid annotation type for {database}. Available annotation data for {database} includes: {', '.join(pose_config.annotation_col_dict[database].keys())}")
+#    Returns
+#    -------
+#    annot_col: str
+#        Column name in spliced_ptms dataframe that contains the requested annotation
+#    """
+#    if database == 'Combined':
+#        if f'Combined:{annot_type}' not in spliced_ptms.columns:
+#            raise ValueError(f'Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.{pose_config.annotation_function_dict[database]} function to append this information.')
+#        return f'Combined:{annot_type}'
+#    elif annot_type in pose_config.annot_col_dict[database].keys():
+#        annot_col = pose_config.annot_col_dict[database][annot_type]
+#        if annot_col not in spliced_ptms.columns:
+#            raise ValueError(f'Requested annotation data has not yet been added to spliced_ptms dataframe. Please run the annotate.{pose_config.annotation_function_dict[database][annot_type]} function to append this information.')
+#        return annot_col
+#    else:
+#        raise ValueError(f"Invalid annotation type for {database}. Available annotation data for {database} includes: {', '.join(pose_config.annot_col_dict[database].keys())}")
 
-
-def simplify_annotation(annotation, sep = ','):
-    """
-    Given an annotation, remove additional information such as whether or not a function is increasing or decreasing. For example, 'cell growth, induced' would be simplified to 'cell growth'
-
-    Parameters
-    ----------
-    annotation: str
-        Annotation to simplify
-    sep: str
-        Separator that splits the core annotation from additional detail. Default is ','. Assumes the first element is the core annotation.
-
-    Returns
-    -------
-    annotation: str
-        Simplified annotation
-    """
-    annotation = annotation.split(sep)[0].strip(' ') if annotation == annotation else annotation
-    return annotation
-
-def collapse_annotations(annotations, database = 'PhosphoSitePlus', annotation_type = 'Function'):
-    sep_dict = {'PhosphoSitePlus':{'Function':',', 'Process':',','Interactions':'(', 'Disease':'->', 'Perturbation':'->'}, 'ELM': {'Interactions': ' ', 'Motif Match': ' '}, 'PTMInt':{'Interactions':'->'}, 'PTMcode':{'Interactions':'_', 'Intraprotein':' '}, 'RegPhos':{'Kinase':' '}, 'DEPOD':{'Phosphatase':' '}, 'Combined':{'Kinase':' ', 'Interactions':'->'}, 'PTMsigDB': {'WikiPathway':'->', 'NetPath':'->','mSigDB':'->', 'Perturbation (DIA2)':'->', 'Perturbation (DIA)': '->', 'Perturbation (PRM)':'->','Kinase':'->'}}
-    
-    if annotation_type == 'Kinase' and database != 'PTMsigDB':
-        collapsed = annotations
-    else:
-        sep = sep_dict[database][annotation_type]
-        collapsed = []
-        for annot in annotations:
-            if annot == annot:
-                collapsed.append(simplify_annotation(annot, sep = sep))
-            else:
-                collapsed.append(annot)
-    return collapsed
+def get_available_annotations(spliced_ptms):
+    available_gmt = annotate.get_available_gmt_annotations(format = 'dataframe')
+    available_gmt['Appended to PTM data?'] = 'No'
 
 
-def get_ptm_annotations(ptms, annotation_type = 'Function', database = 'PhosphoSitePlus', collapse_on_similar = False, dPSI_col = None, sig_col = None, **kwargs):
+    #check to see if any annotations have been added to the spliced_ptms dataframe
+    annot_cols = [col for col in spliced_ptms.columns if ':' in col]
+    database_list = []
+    annot_type_list = []
+    for a in annot_cols:
+        database_list.append(a.split(':')[0])
+        annot_type_list.append(a.split(':')[1])
+    available_in_df = pd.DataFrame({'Database':database_list, 'Annotation Type':annot_type_list, 'Appended to PTM data?': 'Yes'})
+
+    #combine the two dataframes and remove duplicates
+    available_annots = pd.concat([available_in_df, available_gmt]).drop_duplicates(keep = 'first', subset = ['Database', 'Annotation Type']).reset_index(drop = True)
+    available_annots.sort_values(by = 'Annotation Type')
+    return available_annots
+
+
+
+def get_ptm_annotations(ptms, annot_type = 'Function', database = 'PhosphoSitePlus', collapse_on_similar = False, min_dpsi = 0.1, alpha = 0.05,  **kwargs):
     """
     Given spliced ptm information obtained from project and annotate modules, grab PTMs in spliced ptms associated with specific PTM modules
 
@@ -101,34 +81,43 @@ def get_ptm_annotations(ptms, annotation_type = 'Function', database = 'PhosphoS
     ----------
     spliced_ptms: pd.DataFrame
         PTMs projected onto splicing events and with annotations appended from various databases
-    annotation_type: str
+    annot_type: str
         Type of annotation to pull from spliced_ptms dataframe. Available information depends on the selected database. Default is 'Function'.
     database: str
         database from which PTMs are pulled. Options include 'PhosphoSitePlus', 'ELM', or 'PTMInt'. ELM and PTMInt data will automatically be downloaded, but due to download restrictions, PhosphoSitePlus data must be manually downloaded and annotated in the spliced_ptms data using functions from the annotate module. Default is 'PhosphoSitePlus'.
     mod_class: str
         modification class to subset 
     """
-    #check to make sure requested annotation is available
-    if database != 'Combined':
-        annotation_col = get_annotation_col(ptms, database = database, annotation_type = annotation_type)
+    if database == 'PTMsigDB':
+        if annot_type == 'Perturbation':
+            raise ValueError('PTMsigDB has multiple perturbation datasets. Please specify which dataset to use. Options are: "Perturbation-DIA","Perturbation-DIA2", "Perturbation-PRM".')
+        elif annot_type == 'Pathway':
+            raise ValueError('PTMsigDB has multiple pathway datasets. Please specify which dataset to use. Options are: "Pathway-WikiPathway", "Pathway-NetPath", "Pathway-BI"')
+        else:
+            annot_col = f'{database}:{annot_type}'
     else:
-        annotation_col = f'Combined:{annotation_type}'
+        annot_col = f'{database}:{annot_type}'
+    
+    #check to see if requested annotation information is annotated to the spliced_ptms dataframe, if not, append information
+    if annot_col not in ptms.columns:
+        ptms = annotate.append_from_gmt(ptms, database = database, annot_type = annot_type).copy()
+        ptms = ptms.dropna(subset = annot_col)
+
 
 
     #check to make sure requested annotation is available
-    if kwargs:
-        filter_arguments = helpers.extract_filter_kwargs(**kwargs)
-        helpers.check_filter_kwargs(filter_arguments)
-        ptms_of_interest = helpers.filter_ptms(ptms, **filter_arguments)
-        
+    filter_arguments = helpers.extract_filter_kwargs(min_dpsi = min_dpsi, alpha = alpha, **kwargs)
+    helpers.check_filter_kwargs(filter_arguments)
+    ptms_of_interest = helpers.filter_ptms(ptms, **filter_arguments)
+
 
     #extract relevant annotation and remove PTMs without an annotation
     if 'Impact' not in ptms_of_interest.columns and 'dPSI' in ptms_of_interest.columns:
         ptms_of_interest['Impact'] = ptms_of_interest['dPSI'].apply(lambda x: 'Included' if x > 0 else 'Excluded')
 
-    optional_cols = [col for col in ptms_of_interest.columns if col in ['Impact', 'dPSI', 'Significance'] or col == dPSI_col or col == sig_col ]
-    annotations = ptms_of_interest[['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'] + [annotation_col] + optional_cols].copy()
-    annotations = annotations.dropna(subset = annotation_col).drop_duplicates()
+    optional_cols = [col for col in ptms_of_interest.columns if col in ['Impact', 'dPSI', 'Significance']]
+    annotations = ptms_of_interest[['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'] + [annot_col] + optional_cols].copy()
+    annotations = annotations.dropna(subset = annot_col).drop_duplicates()
 
     if annotations.empty:
         print("No PTMs with associated annotation")
@@ -139,138 +128,61 @@ def get_ptm_annotations(ptms, annotation_type = 'Function', database = 'PhosphoS
 
     #separate distinct modification annotations in unique rows
     annotations_exploded = annotations.copy()
-    annotations_exploded[annotation_col] = annotations_exploded[annotation_col].apply(lambda x: x.split(';') if isinstance(x, str) else np.nan)
-    annotations_exploded = annotations_exploded.explode(annotation_col)
-    annotations_exploded[annotation_col] = annotations_exploded[annotation_col].apply(lambda x: x.strip() if isinstance(x, str) else np.nan)
+    annotations_exploded[annot_col] = annotations_exploded[annot_col].apply(lambda x: x.split(';') if isinstance(x, str) else np.nan)
+    annotations_exploded = annotations_exploded.explode(annot_col)
+    annotations_exploded[annot_col] = annotations_exploded[annot_col].apply(lambda x: x.strip() if isinstance(x, str) else np.nan)
     
     #if desired collapse similar annotations (for example, same function but increasing or decreasing)
     if collapse_on_similar:
-        annotations_exploded[annotation_col] = collapse_annotations(annotations_exploded[annotation_col].values, database = database, annotation_type = annotation_type)
+        annotations_exploded[annot_col] = annotate.collapse_annotations(annotations_exploded[annot_col].values, database = database, annot_type = annot_type)
         annotations_exploded.drop_duplicates(inplace = True)
-        annotations = annotations_exploded.groupby([col for col in annotations_exploded.columns if col != annotation_col], as_index = False, dropna = False)[annotation_col].apply(lambda x: ';'.join(set(x)))
+        annotations = annotations_exploded.groupby([col for col in annotations_exploded.columns if col != annot_col], as_index = False, dropna = False)[annot_col].apply(lambda x: ';'.join(set(x)))
     
     #get the number of annotations found
-    annotation_counts = annotations_exploded.drop_duplicates(subset = ['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform'] + [annotation_col])[annotation_col].value_counts()
+    annotation_counts = annotations_exploded.drop_duplicates(subset = ['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform'] + [annot_col])[annot_col].value_counts()
+
 
     #additional_counts
     sub_counts = []
+    impact_type = []
     if 'Impact' in annotations_exploded.columns:
         for imp in ['Included', 'Excluded', 'Altered Flank']:
             tmp_annotations = annotations_exploded[annotations_exploded['Impact'] == imp].copy()
-            tmp_annotations = tmp_annotations.drop_duplicates(subset = ['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform'] + [annotation_col])
-            sub_counts.append(tmp_annotations[annotation_col].value_counts())
+            if not tmp_annotations.empty:
+                tmp_annotations = tmp_annotations.drop_duplicates(subset = ['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform'] + [annot_col])
+                sub_counts.append(tmp_annotations[annot_col].value_counts())
+                impact_type.append(imp)
     
         annotation_counts = pd.concat([annotation_counts] + sub_counts, axis = 1)
-        annotation_counts.columns = ['All Impacted', 'Included', 'Excluded', 'Altered Flank']
+        annotation_counts.columns = ['All Impacted'] + impact_type 
         annotation_counts = annotation_counts.replace(np.nan, 0)
     
     #combine repeat entries for same PTM (with multiple impacts)
     annotations = annotations.groupby(['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform'], as_index = False).agg(lambda x: ';'.join(set([str(i) for i in x if i == i])))
 
+
+    if database == 'PTMcode': #convert to readable gene name
+        annotation_counts.index = [pose_config.uniprot_to_genename[i].split(' ')[0] if i in pose_config.uniprot_to_genename.keys() else i for i in annotation_counts.index]
+
     return annotations, annotation_counts
 
-def get_annotation_categories(spliced_ptms):
-    """
-    Given spliced ptm information, return the available annotation categories that have been appended to dataframe
 
-    Parameters
-    ----------
-    spliced_ptms: pd.DataFrame
-        PTMs projected onto splicing events and with annotations appended from various databases
-
-    Returns
-    -------
-    annot_categories: pd.DataFrame
-        Dataframe that indicates the available databases, annotations from each database, and column associated with that annotation
-    """
-    database_list = []
-    type_list = []
-    column_list = []
-    #get available phosphositeplus annotations
-    for col in spliced_ptms.columns:
-        if ':' in col:
-            database = col.split(':')[0] if 'PSP' not in col else 'PhosphoSitePlus'
-            if database != 'Combined' and database != 'Unnamed':
-                col_dict = pose_config.annotation_col_dict[database]
-
-                #flip through annotation types in col_dict and add the one that matches the column
-                for key, value in col_dict.items():
-                    if value == col:
-                        type_list.append(key)
-                        database_list.append(database)
-                        column_list.append(col)
-            elif database == 'Combined':
-                type_list.append(col.split(':')[1])
-                database_list.append('Combined')
-                column_list.append(col)
-            else:
-                continue
-
-    if len(type_list) > 0:
-        annot_categories = pd.DataFrame({'database':database_list, 'annotation_type':type_list, 'column': column_list}).sort_values(by = 'database')
-        return annot_categories
+def get_background_annotation_counts(database = 'PhosphoSitePlus', annot_type = 'Function', **kwargs):
+    if kwargs:
+        filter_arguments = helpers.extract_filter_kwargs(report_removed = False, **kwargs)
+        helpers.check_filter_kwargs(filter_arguments)
+        background_ptms = helpers.filter_ptms(pose_config.ptm_coordinates, **filter_arguments)
+        background_ptms = background_ptms.rename(columns = {'Gene name':'Gene'})
+        _, background_annotation_count = get_ptm_annotations(background_ptms, annot_type = annot_type, database = database, report_removed = False, **kwargs)
+        background_size = background_ptms.drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).shape[0]
     else:
-        print('No annotation information found. Please run functions from annotate module to append annotation information')
-        return None
+        annotation_dict = annotate.process_database_annotations(database = database, annot_type=annot_type, key_type = 'annotation')
+        background_annotation_count = pd.Series(annotation_dict).apply(len)
+        background_size = pose_config.ptm_coordinates.drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).shape[0]
+    return background_annotation_count, background_size
 
 
-def construct_background(file = None, annotation_type = 'Function', database = 'PhosphoSitePlus', modification = None, collapse_on_similar = False, save = False):
-    ptm_coordinates = pose_config.ptm_coordinates.copy()
-    ptm_coordinates = ptm_coordinates.rename({'Gene name':'Gene'}, axis = 1)
-    if modification is not None:
-        ptm_coordinates = ptm_coordinates[ptm_coordinates['Modification Class'].str.contains(modification)].copy()
-        if ptm_coordinates.empty:
-            raise ValueError(f'No PTMs found with modification class {modification}. Please provide a valid modification class. Examples include Phosphorylation, Glycosylation, Ubiquitination, etc.')
-    
-        
-    if database == 'PhosphoSitePlus':
-        if file is None:
-            raise ValueError('Please provide PhosphoSitePlus source file to construct the background dataframe')
-        elif annotation_type in ['Function', 'Process', 'Interactions']:
-            ptm_coordinates = annotate.add_PSP_regulatory_site_data(ptm_coordinates, file = file, report_success=False)
-        elif annotation_type == 'Kinase':
-            ptm_coordinates = annotate.add_PSP_kinase_substrate_data(ptm_coordinates, file = file, report_success=False)
-        elif annotation_type == 'Disease':
-            ptm_coordinates = annotate.add_PSP_disease_association(ptm_coordinates, file = file, report_success=False)
-        elif annotation_type == 'Perturbation':
-            ptm_coordinates = annotate.add_PTMsigDB_data(ptm_coordinates, file = file, report_success=False)
-    if database == 'ELM':
-        if annotation_type == 'Interactions':
-            ptm_coordinates = annotate.add_ELM_interactions(ptm_coordinates, file = file, report_success = False)
-        elif annotation_type == 'Motif Match':
-            ptm_coordinates = annotate.add_ELM_matched_motifs(ptm_coordinates, file = file, report_success = False)
-    if database == 'PTMInt':
-        ptm_coordinates = annotate.add_PTMInt_data(ptm_coordinates, file = file, report_success=False)
-    if database == 'PTMcode':
-        if annotation_type == 'Intraprotein':
-            ptm_coordinates = annotate.add_PTMcode_intraprotein(ptm_coordinates, file = file, report_success=False)
-        elif annotation_type == 'Interactions':
-            ptm_coordinates = annotate.add_PTMcode_interprotein(ptm_coordinates, file = file, report_success=False)
-    if database == 'RegPhos':
-        ptm_coordinates = annotate.add_RegPhos_data(ptm_coordinates, file = file, report_success=False)
-    if database == 'DEPOD':
-        ptm_coordinates = annotate.add_DEPOD_phosphatase_data(ptm_coordinates, report_success=False)
-    if database == 'PTMsigDB':
-        ptm_coordinates = annotate.add_PTMsigDB_data(ptm_coordinates, file = file, report_success=False)
-    if database == 'Combined':
-        raise ValueError('Combined information is not supported for constructing background data from entire proteome at this time. Please provide a specific database to construct background data.')
-    
-
-    _, annotation_counts = get_ptm_annotations(ptm_coordinates, annotation_type = annotation_type, database = database, collapse_on_similar = collapse_on_similar)
-    if save:
-        package_dir = os.path.dirname(os.path.abspath(__file__))
-        if collapse_on_similar and modification is not None:
-            annotation_counts.to_csv(package_dir + f'/Resource_Files/background_annotations/{database}_{annotation_type}_{modification}_collapsed.csv')
-        elif collapse_on_similar:
-            annotation_counts.to_csv(package_dir + f'/Resource_Files/background_annotations/{database}_{annotation_type}_collapsed.csv')
-        elif modification is not None:
-            annotation_counts.to_csv(package_dir + f'/Resource_Files/background_annotations/{database}_{annotation_type}_{modification}.csv')
-        else:
-            annotation_counts.to_csv(package_dir + f'/Resource_Files/background_annotations/{database}_{annotation_type}.csv')
-
-    return annotation_counts
-
-def get_enrichment_inputs(ptms,  annotation_type = 'Function', database = 'PhosphoSitePlus', background_type = 'pregenerated', background = None, collapse_on_similar = False, mod_class = None, alpha = 0.05, min_dPSI = 0, annotation_file = None, save_background = False):
+def get_enrichment_inputs(ptms,  annot_type = 'Function', database = 'PhosphoSitePlus', background_type = 'all', background = None, collapse_on_similar = False, mod_class = None, alpha = 0.05, min_dpsi = 0.1, **kwargs):
     """
     Given the spliced ptms, altered_flanks, or combined PTMs dataframe, identify the number of PTMs corresponding to specific annotations in the foreground (PTMs impacted by splicing) and the background (all PTMs in the proteome or all PTMs in dataset not impacted by splicing). This information can be used to calculate the enrichment of specific annotations among PTMs impacted by splicing. Several options are provided for constructing the background data: pregenerated (based on entire proteome in the ptm_coordinates dataframe) or significance (foreground PTMs are extracted from provided spliced PTMs based on significance and minimum delta PSI)
 
@@ -279,103 +191,75 @@ def get_enrichment_inputs(ptms,  annotation_type = 'Function', database = 'Phosp
     spliced_ptms: pd.DataFrame
 
     """
-    if background_type == 'pregenerated':
-        print('Using pregenerated background information on all PTMs in the proteome.')
-        #first look for pregenerated background data
-        try:
-            background_annotation_count = pose_config.download_background(annotation_type = annotation_type, database = database, mod_class = mod_class, collapsed=collapse_on_similar)
-        except:
-            if annotation_file is None:
-                print('Note: To avoid having to constructing background each time (which is slower), you can choose to set save_background = True to save the background data to Resource Files in package directory.')
-            background_annotation_count = construct_background(file = annotation_file, annotation_type = annotation_type, database = database, collapse_on_similar = collapse_on_similar, save = save_background)
+    if background_type == 'all':
+        background_annotation_count, background_size = get_background_annotation_counts(database = database, annot_type = annot_type, **kwargs)
 
-        if mod_class is None:
-            background_size = pose_config.ptm_coordinates.drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).shape[0]
-        else:
-            background_size = pose_config.ptm_coordinates[pose_config.ptm_coordinates['Modification Class'].str.contains(mod_class)].drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).shape[0]
+        background_size = pose_config.ptm_coordinates.drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).shape[0]
 
+        #filter ptms
+        filter_arguments = helpers.extract_filter_kwargs(min_dpsi = min_dpsi, alpha = alpha, modification_class = mod_class, report_removed = False, **kwargs)
+        helpers.check_filter_kwargs(filter_arguments)
+        ptms = helpers.filter_ptms(ptms, **filter_arguments)
     elif background_type == 'significance':
-        if 'Significance' not in spliced_ptms.columns or 'dPSI' not in spliced_ptms.columns:
+        if 'Significance' not in ptms.columns or 'dPSI' not in ptms.columns:
             raise ValueError('Significance and dPSI columns must be present in spliced_ptms dataframe to construct a background based on significance (these columns must be provided during projection).')
-        
-        background = spliced_ptms.copy()
+        #filter ptms if any kwargs are provided
+        if kwargs:
+            filter_arguments = helpers.extract_filter_kwargs(min_dpsi = 0, alpha = 1, modification_class = mod_class, report_removed = False, **kwargs)
+            helpers.check_filter_kwargs(filter_arguments)
+            ptms = helpers.filter_ptms(ptms, **filter_arguments)
+
+
+        background = ptms.copy()
         #restrict sample to significantly spliced ptms
-        spliced_ptms = spliced_ptms[(spliced_ptms['Significance'] <= alpha) & (spliced_ptms['dPSI'].abs() >= min_dPSI)].copy()
+        ptms = ptms[(ptms['Significance'] <= alpha) & (ptms['dPSI'].abs() >= min_dpsi)].copy()
 
 
         #check to make sure there are significant PTMs in the data and that there is a difference in the number of significant and background PTMs
-        if spliced_ptms.shape[0] == 0:
+        if ptms.shape[0] == 0:
             raise ValueError('No significantly spliced PTMs found in the data')
-        elif spliced_ptms.shape[0] == background.shape[0]:
-            raise ValueError(f'The foreground and background PTM sets are the same size when considering significance. Please provide a different background set with the background_ptms parameter, or make sure spliced_ptms also includes non-significant PTMs. Instead using pregenerated background sets of the whole proteome.')
+        elif ptms.shape[0] == background.shape[0]:
+            raise ValueError(f'The foreground and background PTM sets are the same size when considering significance. Please check data or use "all" for the background_type parameter.')
         else:
-            if mod_class is not None:
-                background = summarize.get_modification_class_data(background, mod_class)
             #remove impact from background columns if present
             cols_to_remove = [col for col in ['dPSI', 'Significance', 'Impact'] if col in background.columns]
             if len(cols_to_remove) > 0:
                 background = background.drop(columns = cols_to_remove)
         #get background counts
-            background_size = background.shape[0]
-        _, background_annotation_count = get_ptm_annotations(background, annotation_type = annotation_type, database = database, collapse_on_similar = collapse_on_similar)
-    #elif background is not None: #if custom background is provided
-    #    print('Using the provided custom background')
-    #    if isinstance(background, list) or isinstance(background, np.ndarray):
-    #        #from list of PTM strings, separate into uniprot id, residue, and position
-    #        uniprot_id = [ptm.split('_')[0] for ptm in background]
-    #        residue = [ptm.split('_')[1][0] for ptm in background]
-    #        position = [int(ptm.split('_')[1][1:]) for ptm in background]
-    #        background = pd.DataFrame({'UniProtKB Accession':uniprot_id, 'Residue':residue, 'PTM Position in Isoform':position, 'Modification Class':mod_class})
-    #    if isinstance(background, pd.DataFrame):
-    #        #check to make sure ptm data has key columns to identify ptms
-    #        if 'UniProtKB Accession' not in background.columns or 'Residue' not in background.columns or 'PTM Position in Isoform' not in background.columns or #'Modification Class' not in background.columns:
-    #            raise ValueError('Background dataframe must have UniProtKB Accession, Residue, PTM Position in Isoform, and Modification Class columns to identify PTMs')
-            
-    #        #restrict to specific modification class
-    #        if mod_class is not None and 'Modification Class' in background.columns:
-    #            background = get_modification_class_data(background, mod_class)
-    #        elif mod_class is not None:
-    #            raise ValueError('Custom background dataframe must have a Modification Class column to subset by modification class.')
-    #    else:
-    #        raise ValueError('Custom backgrounds must be provided as a list/array of PTMs in the form of "P00533_Y1068" (Uniprot ID followed by site number) or as a custom background dataframe with UniProtKB Accession, Residue, PTM Position in Isoform, and Modification Class columns.')
-        
-    #    background = annotate.add_annotation(background, annotation_type = annotation_type, database = database, check_existing = True, file = annotation_file)    
-    #    background_size = background.drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).shape[0]
-
+            background_size = background.drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).shape[0]
         #get background counts
-    #    _, background_annotation_count = get_ptm_annotations(background, annotation_type = annotation_type, database = database, collapse_on_similar = collapse_on_similar)
-    #elif background_type == 'custom':
-    #    raise ValueError('Please provide a custom background dataframe or list of PTMs to use as the background if wanting to use custom background data.')    
+        _, background_annotation_count = get_ptm_annotations(background, annot_type = annot_type, database = database, collapse_on_similar = collapse_on_similar)
     else:
-        raise ValueError('Invalid background type. Must be pregenerated (default) or significance')
+        raise ValueError('Invalid background type. Must be all (default) or significance')
 
-    #get counts
-    foreground_size = spliced_ptms.shape[0]
-    annotation_details, foreground_annotation_count = get_ptm_annotations(spliced_ptms, annotation_type = annotation_type, database = database, collapse_on_similar=collapse_on_similar)
+    #get foreground counts and size
+    foreground_size = ptms.shape[0]
+    annotation_details, foreground_annotation_count = get_ptm_annotations(ptms, annot_type = annot_type, database = database, collapse_on_similar = collapse_on_similar, min_dpsi = min_dpsi, alpha = alpha, report_removed = False, **kwargs)
+
 
     #process annotation details into usable format
     if annotation_details is None:
         print('No PTMs with requested annotation type, so could not perform enrichment analysis')
         return np.repeat(None, 5)
     else:
-        annotation_col = get_annotation_col(spliced_ptms, database = database, annotation_type = annotation_type)
-        annotation_details[annotation_col] = annotation_details[annotation_col].str.split(';')
-        annotation_details = annotation_details.explode(annotation_col)
-        annotation_details[annotation_col] = annotation_details[annotation_col].str.strip()
+        annot_col = f'{database}:{annot_type}'
+        annotation_details[annot_col] = annotation_details[annot_col].str.split(';')
+        annotation_details = annotation_details.explode(annot_col)
+        annotation_details[annot_col] = annotation_details[annot_col].str.strip()
         annotation_details['PTM'] = annotation_details['Gene'] + '_' + annotation_details['Residue'] + annotation_details['PTM Position in Isoform'].astype(int).astype(str)
-        annotation_details = annotation_details.groupby(annotation_col)['PTM'].agg(';'.join)
+        annotation_details = annotation_details.groupby(annot_col)['PTM'].agg(';'.join)
     
     return foreground_annotation_count, foreground_size, background_annotation_count, background_size, annotation_details
 
 
-def annotation_enrichment(ptms, database = 'PhosphoSitePlus', annotation_type = 'Function', background_type = 'pregenerated', collapse_on_similar = False, mod_class = None, alpha = None, min_dPSI = None, annotation_file = None, save_background = False, **kwargs):#
+def annotation_enrichment(ptms, database = 'PhosphoSitePlus', annot_type = 'Function', background_type = 'all', collapse_on_similar = False, mod_class = None, alpha = 0.05, min_dpsi = 0.1, **kwargs):#
     """
     In progress, needs to be tested
 
     Given spliced ptm information (differential inclusion, altered flanking sequences, or both), calculate the enrichment of specific annotations in the dataset using a hypergeometric test. Background data can be provided/constructed in a few ways:
 
-    1. Use preconstructed background data for the annotation of interest, which considers the entire proteome present in the ptm_coordinates dataframe. While this is the default, it may not be the most accurate representation of your data, so you may alternative decide to use the other options which will be more specific to your context.
-    2. Use the alpha and min_dPSI parameter to construct a foreground that only includes significantly spliced PTMs, and use the entire provided spliced_ptms dataframe as the background. This will allow you to compare the enrichment of specific annotations in the significantly spliced PTMs compared to the entire dataset. Will do this automatically if alpha or min_dPSI is provided.
+    1. Use annotations from the entire phosphoproteome
+    2. Use the alpha and min_dpsi parameter to construct a foreground that only includes significantly spliced PTMs, and use the entire provided spliced_ptms dataframe as the background. This will allow you to compare the enrichment of specific annotations in the significantly spliced PTMs compared to the entire dataset. Will do this automatically if alpha or min_dpsi is provided.
 
     Parameters
     ----------
@@ -383,25 +267,24 @@ def annotation_enrichment(ptms, database = 'PhosphoSitePlus', annotation_type = 
         Dataframe with PTMs projected onto splicing events and with annotations appended from various databases
     database: str
         database from which PTMs are pulled. Options include 'PhosphoSitePlus', 'ELM', 'PTMInt', 'PTMcode', 'DEPOD', 'RegPhos', 'PTMsigDB'. Default is 'PhosphoSitePlus'.
-    annotation_type: str
+    annot_type: str
         Type of annotation to pull from spliced_ptms dataframe. Available information depends on the selected database. Default is 'Function'.
     background_type: str
-        how to construct the background data. Options include 'pregenerated' (default) and 'significance'. If 'significance' is selected, the alpha and min_dPSI parameters must be provided. Otherwise, will use whole proteome in the ptm_coordinates dataframe as the background.
+        how to construct the background data. Options include 'pregenerated' (default) and 'significance'. If 'significance' is selected, the alpha and min_dpsi parameters must be provided. Otherwise, will use whole proteome in the ptm_coordinates dataframe as the background.
     collapse_on_similar: bool
         Whether to collapse similar annotations (for example, increasing and decreasing functions) into a single category. Default is False.
     mod_class: str
         modification class to subset, if any
     alpha: float
         significance threshold to use to subset foreground PTMs. Default is None.
-    min_dPSI: float
+    min_dpsi: float
         minimum delta PSI value to use to subset foreground PTMs. Default is None.
     annotation_file: str
         file to use to annotate custom background data. Default is None.
     save_background: bool
         Whether to save the background data constructed from the ptm_coordinates dataframe into Resource_Files within package. Default is False.
     """
-    
-    foreground_annotation_count, foreground_size, background_annotations, background_size, annotation_details = get_enrichment_inputs(ptms, background_type = background_type, annotation_type = annotation_type, database = database, collapse_on_similar = collapse_on_similar, mod_class = mod_class, alpha = alpha, min_dPSI = min_dPSI, annotation_file = annotation_file, save_background = save_background)
+    foreground_annotation_count, foreground_size, background_annotations, background_size, annotation_details = get_enrichment_inputs(ptms, background_type = background_type, annot_type = annot_type, database = database, collapse_on_similar = collapse_on_similar, mod_class = mod_class, alpha = alpha, min_dpsi = min_dpsi)
     
 
     if foreground_annotation_count is not None:
@@ -430,7 +313,7 @@ def annotation_enrichment(ptms, database = 'PhosphoSitePlus', annotation_type = 
     return results
 
 
-def plot_available_annotations(spliced_ptms, show_all_ptm_count = True, ax = None):
+def plot_available_annotations(ptms, only_annotations_in_data = False, show_all_ptm_count = False, ax = None, **kwargs):
     """
     Given a dataframe with ptm annotations added, show the number of PTMs associated with each annotation type
 
@@ -443,11 +326,18 @@ def plot_available_annotations(spliced_ptms, show_all_ptm_count = True, ax = Non
     ax: matplotlib.Axes
         Axis to plot on. If None, will create new figure. Default is None.
     """
+    if kwargs:
+        filter_arguments = helpers.extract_filter_kwargs(report_removed = False, **kwargs)
+        helpers.check_filter_kwargs(filter_arguments)
+        ptms = helpers.filter_ptms(ptms, **filter_arguments)
+    else:
+        ptms = ptms.copy()
+
     if ax is None:
         fig, ax = plt.subplots(figsize = (5,5))
 
     if show_all_ptm_count:
-        num_ptms = [spliced_ptms.drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).shape[0]]
+        num_ptms = [ptms.drop_duplicates(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).shape[0]]
         num_ptms_filters = ['All PTMs']
         filter_source = ['None']
     else:
@@ -455,27 +345,44 @@ def plot_available_annotations(spliced_ptms, show_all_ptm_count = True, ax = Non
         num_ptms_filters = []
         filter_source = []
 
-    #look for annotations and add counts to lists
-    ylabel_dict = {'PSP:ON_PROCESS':'Biological Process (PSP)', 'PSP:ON_FUNCTION':'Molecular Function (PSP)', 'PSP:Kinase':'Kinase (PSP)', 'PSP:Disease_Association':'Disease Association (PSP)', 'PSP:ON_PROT_INTERACT':'Interactions (PSP)', 'PSP:ON_OTHER_INTERACT':'Nonprotein Interactions (PSP)', 'ELM:Interactions':'Interactions (ELM)', 'ELM:Motif Matches':'Motif Matches (ELM)', 'PTMInt:Interaction':'Interactions (PTMInt)', 'PTMcode:Intraprotein_Interactions':'Intraprotein (PTMcode)','PTMcode:Interprotein_Interactions':'Interactions (PTMcode)', 'DEPOD:Phosphatase':'Phosphatase (DEPOD)', 'RegPhos:Kinase':'Kinase (RegPhos)', 'Combined:Kinase':'Kinase (Combined)', 'Combined:Interactions':'Interactions (Combined)'}
-    available_annotations = [col for col in spliced_ptms.columns if 'Combined' in col or 'PSP:' in col or 'ELM:Interactions' in col or 'PTMInt:' in col or 'PTMcode:' in col or 'DEPOD:' in col or 'RegPhos:' in col]
-    for annotation in available_annotations:
-        num_ptms.append(spliced_ptms.dropna(subset = annotation).drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).shape[0])
-        num_ptms_filters.append(ylabel_dict[annotation])
-        filter_source.append(annotation.split(':')[0])
+ 
+
+    available_annotations = get_available_annotations(ptms)
+    available_annotations = available_annotations.sort_values(by = ['Database', 'Annotation Type'])
+    if only_annotations_in_data:
+        available_annotations = available_annotations[available_annotations['Appended to PTM data?'] == 'Yes']
+
+    for _, row in available_annotations.iterrows():
+        annot_col = f"{row['Database']}:{row['Annotation Type']}"
+        if annot_col not in ptms.columns:
+            ptms = annotate.append_from_gmt(ptms, database = row['Database'], annot_type = row['Annotation Type'])
+        
+        num_ptms.append(ptms.dropna(subset = annot_col).drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).shape[0])
+        num_ptms_filters.append(f"{row['Annotation Type']}({row['Database']})")
+        filter_source.append(row['Database'])
+
+    plt_data = pd.DataFrame({'PTM Count': num_ptms, 'Annotation Type': num_ptms_filters, 'Source': filter_source})
+    plt_data = plt_data.sort_values(by = 'PTM Count', ascending = True)
+    #remove annotations with 0 PTMs
+    plt_data = plt_data[plt_data['PTM Count'] > 0]
 
     
     #plot bar plot
     #color bars based on datasource
-    palette = {'None': 'gray', 'PSP': 'blue', 'ELM': 'green', 'PTMInt':'red', 'PTMcode':'purple', 'DEPOD':'orange', 'RegPhos':'gold', 'Combined':'black'}
+    databases = available_annotations['Database'].unique()
+    #construct a color palette for the databases, with "None" as gray
+    palette = {db: col for db, col in zip(databases, sns.color_palette("rainbow", len(databases)))}
+    palette['None'] = 'gray' #set "None" to gray for all PTMs (whether or not associated with annotation)
     colors = []
-    for source in filter_source:
+    for source in plt_data['Source']:
         colors.append(palette[source])
 
-    ax.barh(num_ptms_filters[::-1], num_ptms[::-1], color = colors[::-1])
+
+    ax.barh(plt_data['Annotation Type'], plt_data['PTM Count'], color = colors)
     ax.set_xlabel('Number of PTMs with annotation')
     
     #annotate with number of PTMs
-    for i, num_ptm in enumerate(num_ptms[::-1]):
+    for i, num_ptm in enumerate(plt_data['PTM Count']):
         ax.text(num_ptm, i, str(num_ptm), ha = 'left', va = 'center')
 
     #create legend
@@ -484,14 +391,16 @@ def plot_available_annotations(spliced_ptms, show_all_ptm_count = True, ax = Non
     ax.legend(handles, labels, title = 'Annotation Source')
     plt.show()
 
-def plot_annotation_counts(spliced_ptms, database = 'PhosphoSitePlus', annot_type = 'Function', collapse_on_similar = True, colors = None, fontsize = 10, top_terms = 5, legend = True, legend_loc = None, title = None, title_type = 'database', ax = None, **kwargs):
+def plot_annotation_counts(spliced_ptms = None, altered_flanks = None, database = 'PhosphoSitePlus', annot_type = 'Function', collapse_on_similar = True, colors = None, fontsize = 10, top_terms = 5, legend = False, legend_loc = (1.05,0.5), title = None, title_type = 'database', ax = None, **kwargs):
     """
     Given a dataframe with PTM annotations added, plot the top annotations associated with the PTMs
 
     Parameters
     ----------
     spliced_ptms: pd.DataFrame
-        Dataframe with PTMs and annotations added
+        Dataframe with differentially included PTMs
+    altered_flanks: pd.DataFrame
+        Dataframe with PTMs associated with altered flanking sequences
     database: str
         Database to use for annotations. Default is 'PhosphoSitePlus'.
     annot_type: str
@@ -519,7 +428,18 @@ def plot_annotation_counts(spliced_ptms, database = 'PhosphoSitePlus', annot_typ
     **kwargs: additional keyword arguments
         Additional keyword arguments, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.
     """
-    _, annotation_counts = get_ptm_annotations(spliced_ptms, annotation_type = annot_type, database = database, collapse_on_similar = collapse_on_similar, kwargs = kwargs)
+    #check what was provided as input, combine if both are provided
+    if spliced_ptms is None and altered_flanks is None:
+        raise ValueError('Must provide either spliced_ptms or altered_flanks dataframe to plot annotation counts')
+    elif spliced_ptms is not None and altered_flanks is not None:
+        ptms = summarize.combine_outputs(spliced_ptms, altered_flanks, report_removed = False, **kwargs)
+    elif spliced_ptms is not None:
+        ptms = spliced_ptms.copy()
+    else:
+        ptms = altered_flanks.copy()
+    
+    #get number of PTMs associated with each annotation
+    _, annotation_counts = get_ptm_annotations(ptms, annot_type = annot_type, database = database, collapse_on_similar = collapse_on_similar, report_removed = False, kwargs = kwargs)
     if annotation_counts is None:
         return None
 
@@ -527,24 +447,30 @@ def plot_annotation_counts(spliced_ptms, database = 'PhosphoSitePlus', annot_typ
     if ax is None:
         fig, ax = plt.subplots(figsize = (2,3))
 
-    if database == 'PTMcode': #convert to readable gene name
-        annotation_counts.index = [pose_config.uniprot_to_genename[i].split(' ')[0] if i in pose_config.uniprot_to_genename.keys() else i for i in annotation_counts.index]
 
     if colors is None:
         colors = ['lightgrey', 'gray', 'white']
 
-    if isinstance(annotation_counts, pd.Series):
+    #grab counts for plot
+    if isinstance(annotation_counts, pd.Series): #if only one impact
         annotation_counts = annotation_counts.head(top_terms).sort_values(ascending = True)
         if isinstance(colors, list) or isinstance(colors, np.ndarray):
             colors = colors[0]
         
         ax.barh(annotation_counts.index, annotation_counts.values, color = colors, edgecolor = 'black')
         legend = False
-    else:
+    else: # if multiple impact types (Included, Excluded, Altered Flank)
+        legend_labels = ['All Impacted']
         annotation_counts = annotation_counts.head(top_terms).sort_values(by = 'All Impacted', ascending = True)
-        ax.barh(annotation_counts['Excluded'].index, annotation_counts['Excluded'].values, height = 1, edgecolor = 'black', color = colors[0])
-        ax.barh(annotation_counts['Included'].index, annotation_counts['Included'].values, left = annotation_counts['Excluded'].values, height = 1, color = colors[1], edgecolor = 'black')
-        ax.barh(annotation_counts['Altered Flank'].index, annotation_counts['Altered Flank'].values, left = annotation_counts['Excluded'].values+annotation_counts['Included'].values, height = 1, color = colors[2], edgecolor = 'black')
+        if 'Excluded' in annotation_counts.columns:
+            ax.barh(annotation_counts['Excluded'].index, annotation_counts['Excluded'].values, height = 1, edgecolor = 'black', color = colors[0])
+            legend_labels.append('Excluded')
+        if 'Included' in annotation_counts.columns:
+            ax.barh(annotation_counts['Included'].index, annotation_counts['Included'].values, left = annotation_counts['Excluded'].values, height = 1, color = colors[1], edgecolor = 'black')
+            legend_labels.append('Included')
+        if 'Altered Flank' in annotation_counts.columns:
+            ax.barh(annotation_counts['Altered Flank'].index, annotation_counts['Altered Flank'].values, left = annotation_counts['Excluded'].values+annotation_counts['Included'].values, height = 1, color = colors[2], edgecolor = 'black')
+            legend_labels.append('Altered Flank')
     #ax.set_xticks([0,50,100,150])
     ax.set_ylabel('', fontsize = fontsize)
     ax.set_xlabel('Number of PTMs', fontsize = fontsize)
@@ -556,21 +482,24 @@ def plot_annotation_counts(spliced_ptms, database = 'PhosphoSitePlus', annot_typ
     elif title_type == 'database':
         ax.set_title(f'{database}', fontsize = fontsize, weight = 'bold')
 
-    #label_dict = {'EXONT:Name':'Exon Ontology Term', 'PSP:ON_PROCESS':'Biological Process (PSP)', 'PSP:ON_FUNCTION':'Molecular Function (PSP)', 'Combined:Kinase':'Kinase'}
-    #ax.text(-1*ax.get_xlim()[1]/10, top_terms-0.2, label_dict[term_to_plot], weight = 'bold', ha = 'right', fontsize = 8)
+
     x_label_dict = {'Function':'Number of PTMs\nassociated with Function', 'Process':'Number of PTMs\nassociated with Process', 'Disease':'Number of PTMs\nassociated with Disease', 'Kinase':'Number of Phosphosites\ntargeted by Kinase', 'Interactions': 'Number of PTMs\nthat regulate interaction\n with protein','Motif Match':'Number of PTMs\nfound within a\nmotif instance', 'Intraprotein': 'Number of PTMs\nthat are important\for intraprotein\n interactions','Phosphatase':'Number of Phosphosites\ntargeted by Phosphatase', 'Perturbation (DIA2)': "Number of PTMs\nAffected by Perturbation\n(Measured by DIA)", 'Perturbation (PRM)': 'Number of PTMs\nAffected by Perturbation\n(Measured by PRM)', 'NetPath':'Number of PTMs/Genes\nassociated with NetPath', 'Perturbation':'Number of PTMs\nAffected by Perturbation'}
     ax.set_xlabel(x_label_dict[annot_type], fontsize = fontsize)
     
     #make a custom legend
     if legend:
-        import matplotlib.patches as mpatches
-        handles = [mpatches.Patch(facecolor = colors[0], edgecolor = 'black', label = 'Excluded'), mpatches.Patch(facecolor = colors[1], edgecolor = 'black', label = 'Included'),mpatches.Patch(facecolor = colors[2], edgecolor = 'black', label = 'Altered Flank')]
-        ax.legend(handles = handles, ncol = 1, fontsize = fontsize - 2, title = 'Type of Impact', title_fontsize = fontsize - 1, loc = 'upper right', bbox_to_anchor = legend_loc)
+        handles = []
+        for i, impact in enumerate(['Included', 'Excluded', 'Altered Flank']):
+            if impact in legend_labels:
+                handles.append(mpatches.Patch(facecolor = colors[i], edgecolor = 'black', label = impact))
 
-    return ax
+
+        ax.legend(handles = handles, ncol = 1, fontsize = fontsize - 2, title = 'Type of Impact', title_fontsize = fontsize - 1, loc = legend_loc)
+
+    #return ax
 
 
-def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, sig_col = 'Significance', dpsi_col = 'dPSI', alpha = 0.05, min_dPSI = None, gene_sets = ['KEGG_2021_Human', 'GO_Biological_Process_2023', 'GO_Cellular_Component_2023', 'GO_Molecular_Function_2023','Reactome_2022'], background = None, return_sig_only = True, max_retries = 5, delay = 10, **kwargs):
+def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, sig_col = 'Significance', dpsi_col = 'dPSI', alpha = 0.05, min_dpsi = None, gene_sets = ['GO_Biological_Process_2023', 'Reactome_2022'], background = None, return_sig_only = True, max_retries = 5, delay = 10, **kwargs):
     """
     Given spliced_ptms and/or altered_flanks dataframes (or the dataframes combined from combine_outputs()), perform gene set enrichment analysis using the enrichr API
 
@@ -604,27 +533,7 @@ def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, sig_col = 'S
     if background is not None:
         raise ValueError('Background data not supported at this time, but will be added in future versions. Please set background = None, which will use all genes in the gene set database as the background.')
     
-    #if combined is not None:
-    #    if spliced_ptms is not None or altered_flanks is not None:
-    #        print('If combined dataframe is provided, you do not need to include spliced_ptms or altered_flanks dataframes. Ignoring these inputs.')
-
-    #    foreground = combined.copy()
-    #    type = 'Differentially Included + Altered Flanking Sequences'
-
-        #isolate the type of impact on the gene
-    #    combined_on_gene = combined.groupby('Gene')['Impact'].apply(lambda x: ';'.join(set(x)))
-    #    included = combined_on_gene.str.contains('Included')
-    #    excluded = combined_on_gene.str.contains('Excluded')
-    #    differential = included | excluded
-    #    altered_flank = combined_on_gene.str.contains('Altered Flank')
-
-    #    altered_flank_only = altered_flank & ~differential
-    #    differential_only = differential & ~altered_flank
-    #    both = differential & altered_flank
-        
-    #    altered_flank_only = combined_on_gene[altered_flank_only].index.tolist()
-    #    differential_only = combined_on_gene[differential_only].index.tolist()
-    #    both = combined_on_gene[both].index.tolist()
+    #grab the genes associated with impacted PTMs
     if spliced_ptms is not None and altered_flanks is not None:
         #gene information (total and spliced genes)
         combined = summarize.combine_outputs(spliced_ptms, altered_flanks, **kwargs)
@@ -667,35 +576,22 @@ def gene_set_enrichment(spliced_ptms = None, altered_flanks = None, sig_col = 'S
         raise ValueError('No dataframes provided. Please provide spliced_ptms, altered_flanks, or the combined dataframe.')
     
     #restrict to significant ptms, if available
-    if sig_col in foreground.columns and (min_dPSI is not None and dpsi_col in foreground.columns):
+    if sig_col in foreground.columns and (min_dpsi is not None and dpsi_col in foreground.columns):
         foreground = foreground[foreground[sig_col] <= alpha].copy()
-        foreground = foreground[foreground[dpsi_col].abs() >= min_dPSI]
+        foreground = foreground[foreground[dpsi_col].abs() >= min_dpsi]
     elif sig_col in foreground.columns:
-        if min_dPSI is not None:
+        if min_dpsi is not None:
             print('`min_dpsi` provided but `dpsi_col` not found in dataframe. Ignoring `min_dpsi` parameter. Please indicate correct column name for dPSI values and rerun if desired.')
         foreground = foreground[foreground[sig_col] <= alpha].copy()
-    elif min_dPSI is not None and 'dPSI' in combined.columns:
+    elif min_dpsi is not None and 'dPSI' in combined.columns:
         print('`sig_col` not found in dataframe. Ignoring `alpha` parameter. Please indicate correct column name for Significance and rerun if desired.')
-        foreground = combined[combined['dPSI'].abs() >= min_dPSI].copy()
+        foreground = combined[combined['dPSI'].abs() >= min_dpsi].copy()
     else:
-        print('Significance column not found and min_dPSI not provided. All PTMs in dataframe will be considered as the foreground')
+        print('Significance column not found and min_dpsi not provided. All PTMs in dataframe will be considered as the foreground')
 
     foreground = foreground['Gene'].unique().tolist()   
 
-    #construct background
-    #if isinstance(background, list):
-    #    pass
-    #elif isinstance(background, np.ndarray):
-    #    background = list(background)
-    #elif isinstance(background, pd.DataFrame):
-    #    if 'Gene' not in background.columns:
-    #        raise ValueError('Gene column not found in dataframe. Please provide a valid column name for genes.')
-    #    background = background['Gene'].unique().tolist()
-    #elif background == 'Significance':
-    #    if sig_col not in foreground.columns:
-    #        raise ValueError('Significance column not found in dataframe. Please provide a valid column name for significance.')
-    #    background = combined.copy()
-    #    background = background['Gene'].unique().tolist()  
+
 
     
 

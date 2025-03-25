@@ -2,6 +2,12 @@ import pandas as pd
 import numpy as np
 from ptm_pose import pose_config
 
+#try importing pyliftover (optional dependency) for genomic coordinate conversion
+try:
+    import pyliftover
+except ImportError:
+    pyliftover = None
+
 def extract_filter_kwargs(**kwargs):
     """
     Given keyword arguments from another function, extract all arguments that correspond to filter argument
@@ -153,7 +159,7 @@ def filter_ptms_by_evidence(ptms, report_removed = False, min_studies = 0, min_M
     
     return filtered_ptms
 
-def filter_ptms(ptms, report_removed = True, min_dpsi = 0.2, alpha = 0.05, modification_class = None, min_studies = 0, min_MS_observations = 0, min_LTP_studies = 0, min_compendia = 0, phospho_only_evidence_filter = False, remove_novel = True):
+def filter_ptms(ptms, report_removed = True, min_dpsi = 0.1, alpha = 0.05, modification_class = None, min_studies = 0, min_MS_observations = 0, min_LTP_studies = 0, min_compendia = 0, phospho_only_evidence_filter = False, remove_novel = False):
     """
     Filter PTMs on various criteria, including significance of splice event, number of prior studies site has been observed in, and number of compendia site has been observed in
     """
@@ -195,21 +201,35 @@ def filter_ptms(ptms, report_removed = True, min_dpsi = 0.2, alpha = 0.05, modif
 
     return filtered_ptms
 
+def get_ptm_label(ptm_row, id_type = 'uniprot', consider_isoforms = True):
+    """
+    Given a row of PTM information, return a string that uniquely identifies the PTM based on the UniProtKB accession, residue, and position in isoform
+    """
+    if id_type not in ['uniprot', 'gene']:
+        raise ValueError("id_type must be either 'uniprot' or 'gene'")
+    elif id_type == 'uniprot':
+        if consider_isoforms:
+            if ptm_row['Isoform Type'] == 'Canonical':
+                return f"{ptm_row['UniProtKB Accession']}_{ptm_row['Residue']}{int(ptm_row['PTM Position in Isoform'])}"
+            else: 
+                return f"{ptm_row['Isoform ID']}_{ptm_row['Residue']}{int(ptm_row['PTM Position in Isoform'])}"
+        else:
+            return f"{ptm_row['UniProtKB Accession']}_{ptm_row['Residue']}{int(ptm_row['PTM Position in Isoform'])}"
+    elif id_type == 'gene':
+        return f"{ptm_row['Gene']}_{ptm_row['Residue']}{int(ptm_row['PTM Position in Isoform'])}"
 
-def add_ptm_column(ptms, id_type = 'uniprot'):
+def add_ptm_column(ptms, id_type = 'uniprot', consider_isoforms = True):
     """
     Given a dataframe of PTM information, add a column that uniquely identifies each PTM based on the UniProtKB accession, residue, and position in isoform
     """
     if id_type not in ['uniprot', 'gene']:
         raise ValueError("id_type must be either 'uniprot' or 'gene'")
-    elif id_type == 'uniprot':
-        ptms['PTM'] = ptms.apply(lambda x: x['UniProtKB Accession'] + '_' + x['Residue'] + str(int(x['PTM Position in Isoform'])) if x['Isoform Type'] == 'Canonical' else x['Isoform ID'] + '_' + x['Residue'] + str(int(x['PTM Position in Isoform'])), axis = 1)
-    elif id_type == 'gene':
-        ptms['PTM'] = ptms.apply(lambda x: x['Gene Symbol'] + '_' + x['Residue'] + str(int(x['PTM Position in Isoform'])), axis = 1)
+
+    ptms['PTM'] = ptms.apply(lambda x: get_ptm_label(x, id_type = id_type, consider_isoforms = consider_isoforms), axis = 1)
     return ptms
 
 
-def load_example_data(spliced_ptms = False, altered_flanks = False):
+def load_example_data(spliced_ptms = False, altered_flanks = False, annotated_data = False):
     """Download example data for PTM-POSE, which is generated from applying PTM-POSE pipeline to MATS data from Yang et al, 2016
     
     Parameters
@@ -227,17 +247,121 @@ def load_example_data(spliced_ptms = False, altered_flanks = False):
         DataFrame containing example data for PTMs with altered flanking sequences. Returns only if altered_flanks is true
     
     """
-    if spliced_ptms and altered_flanks:
+    output_data = []
+    if annotated_data:
+        annotated_data = pd.read_csv(pose_config.resource_dir + '/Example/splice_data.csv')
+        output_data.append(annotated_data)
+    if spliced_ptms:
         spliced_ptms = pd.read_csv(pose_config.resource_dir + '/Example/spliced_ptms.csv')
+        output_data.append(spliced_ptms)
+    if altered_flanks:
         altered_flanks = pd.read_csv(pose_config.resource_dir + '/Example/altered_flanks.csv')
-        return spliced_ptms, altered_flanks
-    elif spliced_ptms:
-        spliced_ptms = pd.read_csv(pose_config.resource_dir + '/Example/spliced_ptms.csv')
-        return spliced_ptms
-    elif altered_flanks:
-        altered_flanks = pd.read_csv(pose_config.resource_dir + '/Example/altered_flanks.csv')
-        return altered_flanks
+        output_data.append(altered_flanks)
 
+    if len(output_data) == 1:
+        return output_data[0]
+    elif len(output_data) > 1:
+        return output_data
+    else:
+        raise ValueError("No data was requested. Please set spliced_ptms, altered_flanks, or annotated_data to True to load example data.")
+    
+def convert_genomic_coordinates(loc, chromosome, strand, from_coord = 'hg19', to_coord = 'hg38', liftover_object = None):
+    """
+    Convert genomic coordinates from one genome assembly to another using pyliftover, if available. If not, will raise an error.
+
+    Parameters
+    ----------
+    loc: int
+        Genomic location to convert
+    chromosome: str
+        Chromosome of the genomic location to convert
+    strand: str
+        Strand of the genomic location to convert, either '+' or '-'
+    """
+    if liftover_object is None and pyliftover is not None:
+        liftover_object = pyliftover.LiftOver(from_coord, to_coord)
+    elif liftover_object is None:
+        raise ValueError("Liftover object must be provided or pyliftover must be installed to convert genomic coordinates")
+    
+    #convert strand
+    strand = convert_strand_symbol(strand)
+
+    chromosome = f'chr{chromosome}'
+    try:
+        results = liftover_object.convert_coordinate(chromosome, loc - 1, strand)
+    except:
+        print('Error')
+        print(chromosome, loc, strand)
+
+    if len(results) > 0:
+        new_chromosome = results[0][0]
+        new_strand = results[0][2]
+        if new_chromosome == chromosome and new_strand == strand:
+            return int(results[0][1]) + 1
+        else:
+            return -1
+    else:
+        return np.nan
+    
+def convert_genomic_coordinates_df(df, from_coord = 'hg19', to_coord = 'hg38', loc_col = 'Genomic Location', chromosome_col = 'Chromosome', strand_col = 'Strand', output_col = None):
+    """
+    Convert genomic coordinates from one genome assembly to another using pyliftover, if available. If not, will raise an error.
+
+    Parameters
+    ----------
+    df: pandas DataFrame
+        DataFrame containing genomic coordinates to convert
+    from_coord: str
+        Genome assembly to convert from (default: 'hg19')
+    to_coord: str
+        Genome assembly to convert to (default: 'hg38')
+    loc_col: str
+        Column name for genomic location in the dataframe (default: 'Genomic Location')
+    chromosome_col: str
+        Column name for chromosome in the dataframe (default: 'Chromosome')
+    strand_col: str
+        Column name for strand in the dataframe (default: 'Strand')
+
+    Returns
+    -------
+    pandas DataFrame
+        DataFrame with converted genomic coordinates in a new column labeled 'Genomic Location (<to_coord>)'
+    """
+    if pyliftover is None:
+        raise ImportError("pyliftover must be installed to convert genomic coordinates. Please install it using 'pip install pyliftover'.")
+    
+    liftover_object = pyliftover.LiftOver(from_coord, to_coord)
+    
+    if output_col is None:
+        output_col = f'Genomic Location ({to_coord})'
+
+
+    df = df.copy()
+    df[f'Genomic Location ({to_coord})'] = df.apply(lambda x: convert_genomic_coordinates(x[loc_col], x[chromosome_col], x[strand_col], from_coord=from_coord, to_coord=to_coord, liftover_object=liftover_object), axis=1)
+    
+    return df
+    
+def convert_strand_symbol(strand):
+    """
+    Given DNA strand information, make sure the strand information is in integer format (1 for forward, -1 for reverse). This is intended to convert from string format ('+' or '-') to integer format (1 or -1), but will return the input if it is already in integer format.
+
+    Parameters
+    ----------
+    strand: str or int
+        DNA strand information, either as a string ('+' or '-') or an integer (1 or -1)
+
+    Returns
+    -------
+    int
+        DNA strand information as an integer (1 for forward, -1 for reverse)
+    """
+    if isinstance(strand, str):
+        if strand == '+' or strand == '1':
+            return 1
+        elif strand == '-' or strand == '-1':
+            return -1
+    else:
+        return strand
 
 def join_unique_entries(x, sep = ';'):
     """
