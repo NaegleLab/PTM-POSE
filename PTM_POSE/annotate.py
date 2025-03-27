@@ -59,6 +59,28 @@ def get_available_gmt_annotations(format = 'dict'):
         raise ValueError("format must be either 'dict' or 'dataframe'")
     return available_annots
 
+
+def get_available_annotations(spliced_ptms):
+    available_gmt = get_available_gmt_annotations(format = 'dataframe')
+    available_gmt['Appended to PTM data?'] = 'No'
+
+
+    #check to see if any annotations have been added to the spliced_ptms dataframe
+    annot_cols = [col for col in spliced_ptms.columns if ':' in col]
+    database_list = []
+    annot_type_list = []
+    for a in annot_cols:
+        database_list.append(a.split(':')[0])
+        annot_type_list.append(a.split(':')[1])
+    available_in_df = pd.DataFrame({'Database':database_list, 'Annotation Type':annot_type_list, 'Appended to PTM data?': 'Yes'})
+
+    #combine the two dataframes and remove duplicates
+    available_annots = pd.concat([available_in_df, available_gmt]).drop_duplicates(keep = 'first', subset = ['Database', 'Annotation Type']).reset_index(drop = True)
+    available_annots.sort_values(by = 'Annotation Type')
+    return available_annots
+
+
+
 def add_custom_annotation(ptms, annotation_data, source_name, annotation_type, annotation_col, accession_col = 'UniProtKB Accession', residue_col = 'Residue', position_col = 'PTM Position in Isoform'):
     """
     Add custom annotation data to ptms or altered flanking sequence dataframes
@@ -266,7 +288,7 @@ def append_from_gmt(ptms, database = None, annot_type = None, gmt_df = None, col
             column_name = 'Annotation'
     elif database is not None and annot_type is not None:
         annotation_dict = process_database_annotations(database = database, annot_type = annot_type, key_type = 'ptm', **kwargs)
-        column_name = f'{database}:{annot_type}' if column_name is None else column_name #from database and annot_type
+        column_name = f'{database}:{annot_type.replace(' ', '_')}' if column_name is None else column_name #from database and annot_type
     else:
         raise ValueError("You must either provide the gmt-formatted dataframe or both the database and annot_type you would like to use.")
 
@@ -280,6 +302,13 @@ def append_from_gmt(ptms, database = None, annot_type = None, gmt_df = None, col
 
     #drop the label and PTM columns
     ptms = ptms.drop(columns = ['Label', 'PTM'])
+
+    #report the number of ptms added
+    total = ptms.dropna(subset = column_name).shape[0]
+    if total == 0:
+        print(f'No PTMs found for {column_name}')
+    else:
+        print(f'{total} PTMs found with annotations from {column_name}')
 
     return ptms
 
@@ -953,46 +982,6 @@ def construct_RegPhos_gmt_file(file = None, odir = None, overwrite = False):
     regphos_gmt = construct_gmt_df(regphos, 'RegPhos:Kinase', description = 'RegPhos:Enzyme', odir = odir, fname = 'Enzyme', compressed=True)
 
 
-def add_RegPhos_data(ptms, file = None, report_success = True):
-    """
-    Given PTM data (spliced ptms or altered flanks) and RegPhos download file, append annotation information to ptm dataframe. You will need to download data from RegPhos first
-    """
-    if file is None:  #database no longer appears active
-        #regphos = pd.read_csv('http://140.138.144.141/~RegPhos/download/RegPhos_Phos_human.txt', sep = '\t', dtype = {'position':int, 'description':str,'catalytic kinase':str, 'reference':'str'})
-        raise ValueError('Please provide the RegPhos data file')
-    
-    check_file(file, expected_extension = '.txt')
-    regphos = pd.read_csv(file, sep = '\t')
-
-    regphos = regphos.dropna(subset = 'catalytic kinase')
-    #regphos['Residue'] = regphos['code'] + regphos['position'].astype(str)
-    regphos = regphos.rename(columns = {'code': 'Residue', 'position':'PTM Position in Isoform', 'AC': 'UniProtKB Accession', 'catalytic kinase': 'RegPhos:Kinase'})
-    regphos['Modification Class'] = 'Phosphorylation'
-    regphos = regphos[['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'RegPhos:Kinase']].dropna()
-    regphos = regphos.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).agg(';'.join).reset_index()
-
-    #if splice data already has the annotation columns, remove them
-    if 'RegPhos:Kinase' in ptms.columns:
-        ptms = ptms.drop(columns = ['RegPhos:Kinase'])
-
-    #explode dataframe on modifications
-    if ptms['Modification Class'].str.contains(';').any():
-        ptms['Modification Class'] = ptms['Modification Class'].str.split(';')
-        ptms = ptms.explode('Modification Class').reset_index(drop = True)
-
-    #add to splice data
-    original_data_size = ptms.shape[0]
-    ptms = ptms.merge(regphos, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'])
-    if ptms.shape[0] != original_data_size:
-        raise RuntimeError('Dataframe size has changed, check for duplicates in spliced ptms dataframe')
-    
-    #report the number of PTMs identified
-    if report_success:
-        num_ptms_with_regphos_data = ptms.dropna(subset = 'RegPhos:Kinase').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).size().shape[0]
-        print(f"RegPhos kinase-substrate data added: {num_ptms_with_regphos_data} PTMs in dataset found with kinase-substrate information")
-
-    return ptms
-
 def construct_PTMsigDB_gmt_files(file, odir = None, overwrite = False, process_PSP_data = True):
     #check if gmt file already exists
     if odir is None:
@@ -1068,77 +1057,6 @@ def construct_PTMsigDB_gmt_files(file, odir = None, overwrite = False, process_P
 
 
 
-
-def add_PTMsigDB_data(ptms, file = None, report_success = True):
-    """
-    Given PTM data (spliced ptms or altered flanks) and PTMsigDB excel data, append annotation information to ptm dataframe. You will need to download data from PTMsigDB first (https://proteomics.broadapps.org/ptmsigdb/)
-    """
-    if file is None:
-        raise ValueError('Please provide the excel file for PTMsigDB data, which can be downloaded here: https://proteomics.broadapps.org/ptmsigdb/')
-    #    ptmsigdb = pd.read_excel('https://proteomics.broadapps.org/ptmsigdb/_w_8b062d9e/appff37efd164a676afcc8e6e42e6058e01/session/a2b28c4ed29deadd6779fdd26aec33c1/download/download.xlsx?w=8b062d9e', sheet_name = 'human')
-    #else:
-    check_file(file, expected_extension = '.xlsx')
-    ptmsigdb = pd.read_excel(file, sheet_name = 'human')
-
-
-    ptmsigdb['UniProtKB Accession'] = ptmsigdb['site.uniprot'].str.split(';').str[0]
-    ptmsigdb['Residue'] = ptmsigdb['site.uniprot'].str.split(';').str[1].str[0]
-    ptmsigdb['PTM Position in Isoform'] = ptmsigdb['site.uniprot'].apply(lambda x: int(x.split(';')[1].split('-')[0][1:]))
-
-    #filter out excess information in some of the site.ptm column, then convert to modification class details
-    ptmsigdb['site.ptm'] = ptmsigdb['site.ptm'].apply(lambda x: x.split(';')[1].split('-')[1] if ';' in x else x)
-    ptmsigdb['Modification Class'] = ptmsigdb['site.ptm'].map(mod_shorthand_dict)
-
-    #combine signature and direction for annotation column
-    ptmsigdb['Signature'] = ptmsigdb['signature'] +'->'+ ptmsigdb['site.direction']
-
-    #drop unneeded columns
-    ptmsigdb = ptmsigdb[['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class', 'Signature', 'category']]
-    ptmsigdb['Signature'] = ptmsigdb.apply(lambda x: x['Signature'].replace(x['category'] + '_', ''), axis = 1)
-    ptmsigdb['category'] = 'PTMsigDB:' + ptmsigdb['category'] 
-    ptmsigdb = ptmsigdb.drop_duplicates()
-
-        #convert to pivot table with each category being a separate column
-    ptmsigdb = ptmsigdb.pivot_table(index = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'], columns = 'category', values = 'Signature', aggfunc=';'.join).reset_index()
-
-    #remove psp data if it is already in spliced ptms
-    if 'PSP:Kinase' in ptms.columns:
-        ptmsigdb = ptmsigdb.drop(columns = 'PTMsigDB:KINASE-PSP')
-
-    if 'PSP:Disease_Association' in ptms.columns:
-        ptmsigdb = ptmsigdb.drop(columns = 'PTMsigDB:DISEASE-PSP')
-
-
-    #if splice data already has the annotation columns, remove them
-    if 'PTMsigDB:PATH-BI' in ptms.columns:
-        cols_in_data = [col for col in ptms.columns if 'PTMsigDB' in col]
-        ptms = ptms.drop(columns = cols_in_data)
-
-
-    #explode dataframe on modifications
-    if ptms['Modification Class'].str.contains(';').any():
-        ptms['Modification Class'] = ptms['Modification Class'].str.split(';')
-        ptms = ptms.explode('Modification Class').reset_index(drop = True)
-
-    #merge with spliced_ptm info
-    original_data_size = ptms.shape[0]
-    ptms = ptms.merge(ptmsigdb, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class'])
-    if ptms.shape[0] != original_data_size:
-        raise RuntimeError('Dataset size changed upon merge, please make sure there are no duplicates in spliced ptms data')
-
-
-    #report the number of ptms with motif data
-    if report_success:
-        num_ptms_with_ikip = ptms.dropna(subset = 'PTMsigDB:KINASE-iKiP').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_path_bi = ptms.dropna(subset = 'PTMsigDB:PATH-BI').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_path_np= ptms.dropna(subset = 'PTMsigDB:PATH-NP').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_path_wp = ptms.dropna(subset = 'PTMsigDB:PATH-WP').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_dia_pert = ptms.dropna(subset = 'PTMsigDB:PERT-P100-DIA').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_dia2_pert = ptms.dropna(subset = 'PTMsigDB:PERT-P100-DIA2').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_prm_pert = ptms.dropna(subset = 'PTMsigDB:PERT-P100-PRM').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
-        num_ptms_with_psp_pert = ptms.dropna(subset = 'PTMsigDB:PERT-PSP').groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).size().shape[0]
-        print(f"PTMsigDB added:\n\t ->{num_ptms_with_ikip} PTMs associated with kinases in iKiP\n\t ->{num_ptms_with_path_wp} PTMs associated with molecular pathway signatures from WikiPathways\n\t ->{num_ptms_with_path_np} PTMs associated with molecular pathway signatures from NetPath\n\t ->{num_ptms_with_psp_pert} PTMs with PhosphoSitePlus perturbations\n\t ->{num_ptms_with_dia_pert} with perturbations in LINCS P1000 DIA dataset \n\t ->{num_ptms_with_dia2_pert} with perturbations in LINCS P1000 DIA2 dataset\n\t ->{num_ptms_with_prm_pert} with perturbations in LINCS P1000 PRM dataset")
-    return ptms
 
 def construct_omnipath_gmt_file(min_sources = 1, min_references = 1, convert_to_gene_name = True, odir = None, overwrite = False):
     #try importing omnipath, if not print error message prompting user to install omnipath
@@ -1337,7 +1255,7 @@ def convert_PSP_label_to_UniProt(label):
 
 def extract_interaction_details(interaction, column = "PhosphoSitePlus:Interactions"):
 
-    interaction_types = {'PTMcode:Interactions':'INDUCES', 'PhosphoSitePlus:Enzyme':'REGULATES', 'DEPOD:Enzyme':'REGULATES', 'RegPhos:Enzyme':'REGULATES', 'Combined:Enzyme':'REGULATES', 'ELM:Interactions':'UNCLEAR'}
+    interaction_types = {'PTMcode:Interactions':'INDUCES', 'PhosphoSitePlus:Enzyme':'REGULATES', 'DEPOD:Enzyme':'REGULATES', 'RegPhos:Enzyme':'REGULATES', 'Combined:Enzyme':'REGULATES', 'ELM:Interactions':'UNCLEAR', 'OmniPath:Writer_Enzyme':'REGULATES', 'OmniPath:Eraser_Enzyme':'REGULATES'}
     if column == 'PhosphoSitePlus:Interactions':
         type = interaction.split('(')[1].split(')')[0]
         protein = interaction.split('(')[0].strip(' ')
@@ -1378,11 +1296,7 @@ def unify_interaction_data(ptms, interaction_col, name_dict = {}):
 
     #extract PSP data from annotated PTMs, separate cases in which single PTM has multipe interactions
     data_cols = [col for col in ptms.columns if col in ['Significance', 'dPSI']]
-    interact = ptms.dropna(subset = interaction_col)
-    if interact.empty:
-        print(f"No PTMs associated with {interaction_col}")
-        return interact
-    ptms = helpers.add_ptm_column(ptms)
+
 
     interact = ptms.dropna(subset = interaction_col)[['Gene', 'UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class',interaction_col] + data_cols]
     if interact.empty:
@@ -1404,7 +1318,7 @@ def unify_interaction_data(ptms, interaction_col, name_dict = {}):
         
 
     #convert interacting protein to uniprot id for databases that are not reported in uniprot ids
-    if interaction_col not in ['PTMcode:Interactions', 'ELM:Interactions', 'PTMInt:Interaction']:
+    if interaction_col not in ['PTMcode:Interactions', 'ELM:Interactions', 'PTMInt:Interactions']:
         interacting_id = []
         missed_genes = []
         for gene in interact['Interacting Protein']:
@@ -1426,7 +1340,9 @@ def unify_interaction_data(ptms, interaction_col, name_dict = {}):
         #save information
         interact['Interacting ID'] = interacting_id
         interact = interact.dropna(subset = 'Interacting ID')
-
+        #make sure there are interactions
+        if interact.empty:
+            return interact
 
         #check if there multiple in one row
         if interact['Interacting ID'].str.contains(';').any():
@@ -1443,102 +1359,7 @@ def unify_interaction_data(ptms, interaction_col, name_dict = {}):
 
     return interact
 
-
-def add_annotation(ptms, database = 'PhosphoSitePlus', annotation_type = 'Function', file = None, check_existing = False, **kwargs):
-    """
-    Given a desired database and annotation type, add the corresponding annotation data to the spliced ptm dataframe
-
-    Parameters
-    ----------
-    ptms: pd.DataFrame
-        Dataframe containing PTM data
-    database: str
-        Database to extract annotation data from. Options include 'PhosphoSitePlus', 'PTMcode', 'PTMInt', 'RegPhos', 'DEPOD'
-    annotation_type: str
-        Type of annotation to extract. Options include 'Function', 'Process', 'Interactions', 'Disease', 'Kinase', 'Phosphatase', but depend on the specific database (run analyze.get_annotation_categories())
-    file: str
-        File path to annotation data. If None, will download from online source, except for PhosphoSitePlus (due to licensing restrictions)
-    """
-    if check_existing:
-        annot_col = annotation_col_dict[database][annotation_type]
-        if annot_col in ptms.columns:
-            print(f"Annotation data for {database} {annotation_type} already present in provided dataframe, skipping. If you would like to update annotation data, set check_existing = False")
-            return ptms
-
-    if database == "PhosphoSitePlus":
-        if annotation_type in ['Function', 'Process', 'Interactions']:
-            check_file(file, expected_extension='.gz')
-            ptms = add_PSP_regulatory_site_data(ptms, file = file)
-        elif annotation_type == 'Disease':
-            check_file(file, expected_extension='.gz')
-            ptms = add_PSP_disease_association(ptms, file = file)
-        elif annotation_type == 'Enzyme':
-            check_file(file, expected_extension='.gz')
-            ptms = add_PSP_kinase_substrate_data(ptms, file = file)
-        else:
-            raise ValueError(f"Annotation type {annotation_type} not recognized for PhosphoSitePlus")
-    elif database == 'OmniPath':
-        if annotation_type == 'Enzyme':
-            ptms = add_omnipath_data(ptms, **kwargs)
-        else:
-            raise ValueError(f"Annotation type {annotation_type} not recognized for OmniPath")
-    elif database == 'PTMsigDB':
-        check_file(file, expected_extension='.xlsx')
-        ptms = add_PTMsigDB_data(ptms, file = file, **kwargs)
-    elif database == 'PTMcode':
-        #if annotation_type == 'Intraprotein':
-        #    if file is not None:
-        #        check_file(file, expected_extension='.gz')
-        #        ptms = add_PTMcode_intraprotein(ptms, file = file)
-        #    else:
-        #        ptms = add_PTMcode_intraprotein(ptms)
-        if annotation_type == 'Interactions':
-            if file is not None:
-                check_file(file, expected_extension='.gz')
-                ptms = add_PTMcode_interprotein(ptms, file = file)
-            else:
-                ptms = add_PTMcode_interprotein(ptms)
-        else:
-            raise ValueError(f"Annotation type {annotation_type} not recognized for PTMcode")
-    elif database == 'PTMInt':
-        if annotation_type == 'Interactions':
-            if file is not None:
-                check_file(file, expected_extension='.csv')
-                ptms = add_PTMInt_data(ptms, file = file)
-            else:
-                ptms = add_PTMInt_data(ptms)
-        else:
-            raise ValueError(f"Annotation type {annotation_type} not recognized for PTMInt")
-    elif database == 'RegPhos':
-        if annotation_type == 'Enzyme':
-            if file is not None:
-                check_file(file, expected_extension='.txt')
-                ptms = add_RegPhos_data(ptms, file = file)
-            else:
-                ptms = add_RegPhos_data(ptms)
-        else:
-            raise ValueError(f"Annotation type {annotation_type} not recognized for RegPhos")
-    elif database == 'DEPOD':
-        if annotation_type == 'Phosphatase':
-            ptms = add_DEPOD_phosphatase_data(ptms, file = file)
-        else:
-            raise ValueError(f"Annotation type {annotation_type} not recognized for RegPhos")
-    elif database == 'Combined':
-        if annotation_type == 'Enzyme':
-            if 'PSP:Kinase' not in ptms.columns:
-                raise ValueError("PhosphoSitePlus kinase data not found in spliced PTM dataframe, please annotate with this first")
-            if 'RegPhos:Kinase' not in ptms.columns:
-                ptms = add_RegPhos_data(ptms)
-            ptms = combine_enzyme_data(ptms)
-        elif annotation_type == 'Interactions':
-            ptms = combine_interaction_data(ptms)
-    else:
-        raise ValueError(f"Database {database} not recognized")
-    
-    return ptms
-    
-
-def combine_interaction_data(ptms, interaction_databases = ['PhosphoSitePlus', 'PTMcode', 'PTMInt', 'RegPhos', 'DEPOD', 'ELM'], include_enzyme_interactions = True):
+def combine_interaction_data(ptms, interaction_databases = ['PhosphoSitePlus', 'PTMcode', 'PTMInt', 'RegPhos', 'DEPOD'], include_enzyme_interactions = True):
     """
     Given annotated spliced ptm data, extract interaction data from various databases and combine into a single dataframe. This will include the interacting protein, the type of interaction, and the source of the interaction data
 
@@ -1557,49 +1378,69 @@ def combine_interaction_data(ptms, interaction_databases = ['PhosphoSitePlus', '
         List of dataframes containing PTMs and their interacting proteins, the type of influence the PTM has on the interaction (DISRUPTS, INDUCES, or REGULATES), and the source of the interaction data
 
     """
+    
+    #go through and add interaction information for any database that are not appended to the spliced_ptms dataframe
+    available_annotations = get_available_annotations(ptms)
+    available_interactions = available_annotations[available_annotations['Annotation Type'] == 'Interactions']
+    if include_enzyme_interactions:
+        enzyme_annotations = available_annotations[available_annotations['Annotation Type'] == 'Enzyme']
+
+    #go through and add interaction information that is not in the ptms dataframe
+    for db in interaction_databases:
+        if db == "OmniPath" and include_enzyme_interactions:
+            if 'OmniPath:Writer_Enzyme' not in ptms.columns:
+                ptms = append_from_gmt(ptms, database = db, annot_type = 'Writer Enzyme')
+            if 'OmniPath:Eraser_Enzyme' not in ptms.columns:
+                ptms = append_from_gmt(ptms, database = 'OmniPath', annot_type = 'Eraser Enzyme')
+        else:
+            if f'{db}:Interactions' not in ptms.columns and db in available_interactions['Database'].values:
+                ptms = append_from_gmt(ptms, database = db, annot_type = 'Interactions')
+
+            if f'{db}:Enzyme' not in ptms.columns and include_enzyme_interactions:
+                if db in enzyme_annotations['Database'].values:
+                    ptms = append_from_gmt(ptms, database = db, annot_type = 'Enzyme')
+
+    print(f'\nCombining interaction information from {', '.join(interaction_databases)}')
     interact_data = []
     for database in interaction_databases:
-        if f'{database}:Interactions' not in ptms.columns and (f'{database}:Enzyme' not in ptms.columns or f'{database}:Writer Enzyme' not in ptms.columns or f'{database}:Eraser Enzyme' not in ptms.columns):
+        if f'{database}:Interactions' not in ptms.columns and (f'{database}:Enzyme' not in ptms.columns and f'{database}:Writer_Enzyme' not in ptms.columns and f'{database}:Eraser_Enzyme' not in ptms.columns):
             print(f"No interaction data found for {database}, skipping")
             continue
         else:
             interaction_col = f'{database}:Interactions'
             if interaction_col in ptms.columns:
                 if not ptms[interaction_col].isna().all():
-                    print(f'{database} interaction data found and added')
                     interact = unify_interaction_data(ptms, interaction_col, pose_config.psp_name_dict)
                     interact['Source'] = database
                     interact_data.append(interact)
                 elif database in ['PhosphoSitePlus', 'PTMcode', 'PTMInt', 'ELM']:
                     print(f"No PTMs with interaction information from {database}, skipping")
         
-        if include_enzyme_interactions:
-            #dictionary to convert kinase names to gene names
-            ks_genes_to_uniprot = {'ABL1(ABL)':'P00519', 'ACK':'Q07912', 'AURC':'Q9UQB9', 'ERK1(MAPK3)':'P27361','ERK2(MAPK1)':'P28482',  'ERK5(MAPK7)':'Q13164','JNK1(MAPK8)':'P45983', 'CK1A':'P48729', 'JNK2(MAPK9)':'P45984', 'JNK3(MAPK10)':'P53779', 'P38A(MAPK14)':'Q16539','P38B(MAPK11)':'Q15759', 'P38G(MAPK12)':'P53778','P70S6K' :'Q9UBS0', 'PAK':'Q13153', 'PKCZ':'Q05513', 'CK2A':'P19784', 'ABL2':'P42684', 'AMPKA1':'Q13131', 'AMPKA2':'Q13131', 'AURB':'Q96GD4', 'CAMK1A':'Q14012', 'CDC42BP':'Q9Y5S2','CK1D':'P48730','CK1E':'P49674','CK2B':'P67870','DMPK1':'Q09013', 'DNAPK':'P78527','DSDNA KINASE':'P78527', 'EG3 KINASE':'P49840','ERK3(MAPK6)':'Q16659','GSK3':'P49840', 'MRCKA':'Q5VT25', 'P38D(MAPK13)':'O15264','P70S6KB':'Q9UBS0','PDKC':'P78527','PKCH':'P24723','PKCI':'P41743','PKCT':'Q04759','PKD3':'O94806','PKG1':'Q13976','PKG2':'Q13237','SMMLCK':'Q15746'}
+            if include_enzyme_interactions:
+                #dictionary to convert kinase names to gene names
+                ks_genes_to_uniprot = {'ABL1(ABL)':'P00519', 'ACK':'Q07912', 'AURC':'Q9UQB9', 'ERK1(MAPK3)':'P27361','ERK2(MAPK1)':'P28482',  'ERK5(MAPK7)':'Q13164','JNK1(MAPK8)':'P45983', 'CK1A':'P48729', 'JNK2(MAPK9)':'P45984', 'JNK3(MAPK10)':'P53779', 'P38A(MAPK14)':'Q16539','P38B(MAPK11)':'Q15759', 'P38G(MAPK12)':'P53778','P70S6K' :'Q9UBS0', 'PAK':'Q13153', 'PKCZ':'Q05513', 'CK2A':'P19784', 'ABL2':'P42684', 'AMPKA1':'Q13131', 'AMPKA2':'Q13131', 'AURB':'Q96GD4', 'CAMK1A':'Q14012', 'CDC42BP':'Q9Y5S2','CK1D':'P48730','CK1E':'P49674','CK2B':'P67870','DMPK1':'Q09013', 'DNAPK':'P78527','DSDNA KINASE':'P78527', 'EG3 KINASE':'P49840','ERK3(MAPK6)':'Q16659','GSK3':'P49840', 'MRCKA':'Q5VT25', 'P38D(MAPK13)':'O15264','P70S6KB':'Q9UBS0','PDKC':'P78527','PKCH':'P24723','PKCI':'P41743','PKCT':'Q04759','PKD3':'O94806','PKG1':'Q13976','PKG2':'Q13237','SMMLCK':'Q15746'}
 
-            enzyme_col = f'{database}:Enzyme'
-            if enzyme_col in ptms.columns:
-                if not ptms[enzyme_col].isna().all():
-                    print(f'{database} enzyme interaction data found and added')
-                    interact = unify_interaction_data(ptms, interaction_col, pose_config.psp_name_dict)
-                    interact['Source'] = database
-                    interact_data.append(interact)
-                elif database in ['PhosphoSitePlus', 'RegPhos', 'DEPOD']:
-                    print(f"No PTMs with enzyme information from {database}, skipping")
+                enzyme_col = f'{database}:Enzyme'
+                if enzyme_col in ptms.columns:
+                    if not ptms[enzyme_col].isna().all():
+                        interact = unify_interaction_data(ptms, enzyme_col, pose_config.psp_name_dict)
+                        interact['Source'] = database
+                        interact_data.append(interact)
+                    elif database in ['PhosphoSitePlus', 'RegPhos', 'DEPOD']:
+                        print(f"No PTMs with enzyme information from {database}, skipping")
 
-            if database == 'OmniPath' and ('OmniPath:Writer Enzyme' in ptms.columns or 'OmniPath:Eraser Enzyme' in ptms.columns):
-                if 'OmniPath:Writer Enzyme' in ptms.columns and not ptms['OmniPath:Writer Enzyme'].isna().all():
-                    print('OmniPath writer enzyme data found and added')
-                    interact = unify_interaction_data(ptms, 'OmniPath:Writer Enzyme', ks_genes_to_uniprot)
-                    interact['Source'] = database
-                    interact_data.append(interact)
-                if 'OmniPath:Eraser Enzyme' in ptms.columns and not ptms['OmniPath:Eraser Enzyme'].isna().all():
-                    print('OmniPath eraser enzyme data found and added')
-                    interact = unify_interaction_data(ptms, 'OmniPath:Eraser Enzyme', ks_genes_to_uniprot)
-                    interact['Source'] = database
-                    interact_data.append(interact)
-            else:
-                print(f"No PTMs with enzyme information from {database}, skipping")
+                if database == 'OmniPath' and ('OmniPath:Writer_Enzyme' in ptms.columns or 'OmniPath:Eraser_Enzyme' in ptms.columns):
+                    if 'OmniPath:Writer_Enzyme' in ptms.columns and not ptms['OmniPath:Writer_Enzyme'].isna().all():
+                        interact = unify_interaction_data(ptms, 'OmniPath:Writer_Enzyme', ks_genes_to_uniprot)
+                        interact['Source'] = database
+                        interact_data.append(interact)
+                    if 'OmniPath:Eraser_Enzyme' in ptms.columns and not ptms['OmniPath:Eraser_Enzyme'].isna().all():
+                        interact = unify_interaction_data(ptms, 'OmniPath:Eraser_Enzyme', ks_genes_to_uniprot)
+                        interact['Source'] = database
+                        interact_data.append(interact)
+                elif database == 'OmniPath':
+                    print(f"No PTMs with enzyme information from OmniPath found, skipping")
+
 
 
     if len(interact_data) > 0:

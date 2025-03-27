@@ -284,7 +284,7 @@ def convert_genomic_coordinates(loc, chromosome, strand, from_coord = 'hg19', to
         raise ValueError("Liftover object must be provided or pyliftover must be installed to convert genomic coordinates")
     
     #convert strand
-    strand = convert_strand_symbol(strand)
+    strand = convert_strand_symbol(strand, to = 'symbol')
 
     chromosome = f'chr{chromosome}'
     try:
@@ -337,11 +337,11 @@ def convert_genomic_coordinates_df(df, from_coord = 'hg19', to_coord = 'hg38', l
 
 
     df = df.copy()
-    df[f'Genomic Location ({to_coord})'] = df.apply(lambda x: convert_genomic_coordinates(x[loc_col], x[chromosome_col], x[strand_col], from_coord=from_coord, to_coord=to_coord, liftover_object=liftover_object), axis=1)
+    df[output_col] = df.apply(lambda x: convert_genomic_coordinates(x[loc_col], x[chromosome_col], x[strand_col], from_coord=from_coord, to_coord=to_coord, liftover_object=liftover_object), axis=1)
     
     return df
     
-def convert_strand_symbol(strand):
+def convert_strand_symbol(strand, to = 'int'):
     """
     Given DNA strand information, make sure the strand information is in integer format (1 for forward, -1 for reverse). This is intended to convert from string format ('+' or '-') to integer format (1 or -1), but will return the input if it is already in integer format.
 
@@ -355,13 +355,23 @@ def convert_strand_symbol(strand):
     int
         DNA strand information as an integer (1 for forward, -1 for reverse)
     """
-    if isinstance(strand, str):
-        if strand == '+' or strand == '1':
-            return 1
-        elif strand == '-' or strand == '-1':
-            return -1
+    if to == 'int':
+        if isinstance(strand, str):
+            if strand == '+' or strand == '1':
+                return 1
+            elif strand == '-' or strand == '-1':
+                return -1
+        else:
+            return strand
+    elif to == 'symbol':
+        if isinstance(strand, str):
+            return strand
+        elif strand == -1:
+            return '-'
+        elif strand == 1:
+            return '+'
     else:
-        return strand
+        raise ValueError("`to` must be either 'int' or 'symbol'")
 
 def join_unique_entries(x, sep = ';'):
     """
