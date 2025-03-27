@@ -8,14 +8,12 @@ from tqdm import tqdm
 #plotting functions
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 import seaborn as sns
 
-#custom stat functions
-from ptm_pose import stat_utils, pose_config, helpers
+#custom stat functions and other helper functions
+from ptm_pose import stat_utils, pose_config, helpers, annotate
 import scipy.stats as stats
-from statsmodels.stats.multitest import fdrcorrection
-
-#annotate functions
 
 
 
@@ -32,6 +30,17 @@ package_dir = os.path.dirname(os.path.abspath(__file__))
 def compare_KL_for_sequence(inclusion_seq, exclusion_seq, dpsi = None, comparison_type = 'percentile'):
     """
     Given two sequences, compare the kinase library scores, percentiles, or ranks for each sequence. Optionally, provide a dPSI value to calculate the relative change in preference for each kinase.
+
+    Parameters
+    ----------
+    inclusion_seq : str
+        sequence to score for inclusion preference, with modification lowercased
+    exclusion_seq : str
+        sequence to score for exclusion preference, with modification lowercased
+    dpsi : float
+        dPSI value for the PTM event, which will be used to calculate the relative change in preference for each kinase (score difference * dPSI). Default is None.
+    comparison_type : str
+        type of comparison to perform. Can be 'percentile', 'score', or 'rank'. Default is 'percentile'.
     """
 
     #get percentiles for inclusion sequence
@@ -66,6 +75,24 @@ def compare_KL_for_sequence(inclusion_seq, exclusion_seq, dpsi = None, compariso
 def get_all_KL_scores(seq_data, seq_col, kin_type = ['ser_thr', 'tyrosine'], score_type = 'percentiles'):
     """
     Given a dataset with flanking sequences, score each flanking sequence
+
+    Parameters
+    ----------
+    seq_data : pandas dataframe
+        processed dataframe containing flanking sequences to score
+    seq_col : str
+        column in seq_data containing the flanking sequences
+    kin_type : list
+        list of kinase types to score. Can be 'ser_thr' or 'ST' for serine/threonine kinases, or 'tyrosine' or 'Y' for tyrosine kinases. Default is ['ser_thr', 'tyrosine'].
+    score_type : str
+        type of score to calculate. Can be 'percentile', 'score', or 'rank'. Default is 'percentile'.
+
+    Returns
+    -------
+    merged_data : dict
+        dictionary containing the merged dataframes for each kinase type with KinaseLibrary scores
+    
+    
     """
     phospho_predict = kl.PhosphoProteomics(seq_data, seq_col = seq_col)
     if isinstance(kin_type, list):
@@ -96,6 +123,19 @@ class KL_flank_analysis:
     def __init__(self, altered_flanks, metric = 'percentile', alpha = 0.05, min_dpsi = 0.2, **kwargs):
         """
         Class for comparing kinase preferences for inclusion and exclusion sequences from altered flanking sequences, using motif scoring from Kinase Library.
+
+        Parameters
+        ----------
+        altered_flanks : pandas dataframe
+            dataframe containing altered flanking sequences (output during projection), including columns for 'Region ID', 'Gene', 'Residue', 'PTM Position in Isoform', 'Inclusion Flanking Sequence', 'Exclusion Flanking Sequence', 'Modification Class', and 'dPSI'.
+        metric : str
+            metric to use for scoring. Can be 'percentile', 'score', or 'rank'. Default is 'percentile'.
+        alpha : float
+            significance threshold for p-value. Default is 0.05.
+        min_dpsi : float
+            effect size threshold for dPSI. Default is 0.2.
+        **kwargs : dict
+            additional keyword arguments to pass to the filter_ptms function
         """
 
         #check to make sure kinase library is installed
@@ -126,6 +166,9 @@ class KL_flank_analysis:
         
 
     def analyze_single_ptm(self, gene, loc):
+        """
+        Score a single PTM for its flanking sequence in the inclusion and exclusion isoforms using Kinase-Library
+        """
         ptm_data = self.altered_flanks[(self.altered_flanks['Gene'] == gene) & (self.altered_flanks['PTM Position in Isoform'] == loc)].copy()
         #remove duplicate entries with same splice event and .drop_duplicates(subset = ['Inclusion Flanking Sequence', 'Exclusion Flanking Sequence', 'Region ID'])
         if ptm_data.shape[0] == 0:
@@ -146,6 +189,9 @@ class KL_flank_analysis:
         return results
     
     def score_all_ptms(self):
+        """
+        Score the flanking sequences of PTMs for both the inclusion and exclusion isoforms using Kinase-Library
+        """
         inclusion_sequences = self.altered_flanks[[col for col in self.altered_flanks.columns if 'Exclusion' not in col]].copy()
         exclusion_sequences = self.altered_flanks[[col for col in self.altered_flanks.columns if 'Inclusion' not in col]].copy()
 
@@ -187,6 +233,9 @@ class KL_flank_analysis:
         return percentile_df
 
     def combine_score_dfs(self):
+        """
+        Combine the inclusion and exclusion score dataframes into a single dataframe that calculates differences in predicted preference between inclusion and exclusion isoforms
+        """
         if not hasattr(self, 'inclusion_percentile') or not hasattr(self, 'exclusion_percentile'):
             self.score_all_ptms()
 
@@ -222,7 +271,18 @@ class KL_flank_analysis:
 
     def get_kinases_with_largest_changes(self, kinase_type = 'ST', top_n = 5, difference_type = 'relative', agg = 'median'):
         """
-        Get the top n kinases with the largest changes in preference for inclusion or exclusion isoforms
+        Get the top n kinases with the largest changes in preference for inclusion or exclusion isoforms. Difference can be calculated as the normal difference in preference, the absolute difference in preference, or the relative change in preference (normalized by magnitude of splicing change, or dPSI).
+
+        Parameters
+        ----------
+        kinase_type : str
+            type of kinase to restrict analysis to. Can be 'ST' or 'ser_thr' for serine/threonine kinases, or 'Y' or 'tyrosine' for tyrosine kinases. Default is 'ST'.
+        top_n : int
+            number of top kinases to return. Default is 5.
+        difference_type : str
+            type of difference to calculate. Can be 'normal' (difference in preference), 'absolute' (absolute difference in preference), or 'relative' (relative change in preference normalized by magnitude of splicing change, or dPSI). Default is 'relative'.
+        agg : str
+            aggregation function to use across all interactions for calculating top kinases. Default is 'median'.
         """
         #grab kinase of interest
         if kinase_type == 'ST' or kinase_type == 'ser_thr':
@@ -273,7 +333,24 @@ class KL_flank_analysis:
             ax.set_ylabel(f'Difference\nin {metric_type.capitalize()}')
 
     def plot_top_changes(self, gene = None, loc = None, top_n = 10, difference_type = 'relative', metric_type = 'percentile', ax = None):
-        ""
+        """
+        Plot the top n changes in preference after an altered flanking sequence event, either for a all events, a specific gene, or a specific PTM. Top changes can be calculated by percentile change, absolute percentile change, or relative change in preference (percentile change in affinity*dPSI)
+
+        Parameters
+        ----------
+        gene : str
+            gene to restrict analysis to. Default is None, which will analyze all PTMs.
+        loc : int
+            location of PTM to restrict analysis to. Default is None, which will analyze all PTMs for the given gene or for all genes (if gene = None).
+        top_n : int
+            number of top changes to plot. Default is 10.
+        difference_type : str
+            type of difference to plot. Can be 'normal' (difference in preference), 'absolute' (absolute difference in preference), or 'relative' (relative change in preference normalized by magnitude of splicing change, or dPSI). Default is 'relative'.
+        metric_type : str
+            type of metric to plot. Default is 'percentile'.
+        ax : matplotlib axis
+            axis to plot on. Default is None, which will create a new figure and axis.
+        """
         if not hasattr(self, 'summary_df'):
             self.analyze_all_ptms()
 
@@ -329,7 +406,7 @@ class KL_flank_analysis:
 
 
 class KSEA:
-    def __init__(self, ptms, alpha = 0.05, dpsi = 0.2, database = 'OmniPath Writer', modification = None, log_transform = True):
+    def __init__(self, ptms, database = 'OmniPath Writer', modification = None, min_dpsi = None, alpha = None, **kwargs):
         """
         Adapted version of the Kinase Substrate Enrichment Algorithm (KSEA) from Casado et al. 2013. This version is designed to work with the PTM-POSE pipeline and uses the OmniPath database as default for enzyme-substrate information.
 
@@ -347,12 +424,14 @@ class KSEA:
             modification type to restrict analysis to. Default is None, which includes all modifications. If provided, should be one of the modification classes in the 'Modification Class' column of the ptms dataframe.
         
         """
-        #process ptms
-        if 'PTM' not in ptms.columns:
-            ptms = helpers.add_ptm_column(ptms)
 
-        if modification is not None:
-            ptms = ptms[ptms['Modification Class'] == modification]
+        #filter ptms if desired
+        if min_dpsi is None:
+            min_dpsi = 0
+        if alpha is None:
+            alpha = 1.1
+        #filter ptms
+        ptms = helpers.filter_ptms(ptms, modification_class = modification, min_dpsi = min_dpsi, alpha = alpha, **kwargs)
 
         #if omnipath database is used, make sure it was specified to either look at reader or writer enzymes
         if 'OmniPath' in database and database not in ['OmniPath Writer', 'OmniPath Eraser']:
@@ -366,47 +445,69 @@ class KSEA:
         else:
             self.annot_col = f'{database}:Enzyme'  #use enzyme annotations for other databases
         
-        #check to make sure annotation column is present
-
-        ptms[self.annot_col] = ptms[self.annot_col].str.split(';')
-        ptms = ptms.explode(self.annot_col)
- 
-        self.ptms = ptms.copy()
-        self.sig_ptms = self.ptms[(self.ptms['p-value'] < alpha) & (self.ptms['dPSI'] > dpsi)].copy()
-
-        self.annot_col = {'OmniPath':'OmniPath:Writer Enzyme'} 
-        ptms[self.annot_col] = ptms[self.annot_col].str.split(';')
-        ptms = ptms.explode(self.annot_col)
-       
-        #find overlap between network and experiment
-        ptms = helpers.add_ptm_column(ptms)
-        if modification is not None:
-            self.exp_substrates = list(ptms['PTM'] + '_' + ptms['Modification Class'])
+        #load annotations
+        if database == 'OmniPath Writer':
+            self.annotations = annotate.process_database_annotations(database = 'OmniPath', annot_type = 'Writer Enzyme')
+        elif database == 'OmniPath Eraser':
+            self.annotations = annotate.process_database_annotations(database = 'OmniPath', annot_type = 'Eraser Enzyme')
         else:
-            self.exp_substrates = list(ptms['PTM'])
+            self.annotations = annotate.process_database_annotations(database = database, annot_type = 'Enzyme')
 
-        self.site_overlap = list(set(self.exp_substrates).intersection(set(self.net_substrates)))
-        
-        
+        self.enzymes = list(self.annotations.keys())
 
+        #add labels to the ptms dataframe
+        ptms = helpers.add_ptm_column(ptms)
+        ptms['Label'] = ptms['PTM'] + '-' + ptms['Modification Class']
+        self.ptms = ptms
 
-
-        self.all_results = {}
-        self.zscore = pd.DataFrame(None, columns = self.data_cols, index = self.kinases)
-        self.pvals = pd.DataFrame(None, columns = self.data_cols, index = self.kinases)
-        self.FDR = pd.DataFrame(None, columns = self.data_cols, index = self.kinases)
-        self.m = pd.DataFrame(None, columns = self.data_cols, index = self.kinases)
-
-        
-    def runKSEA(self):
+    def runKSEA_singleenzyme(self, enzyme):
         """
-        Perform KSEA analysis for each kinase with substrates identified in experiment, with quantitative information
-        found in  data_col
-        
+        Given a single enzyme, calculate the zscore for the enzyme based on the dPSI values of the PTMs in the dataframe.
+
         Parameters
         ----------
-        data_col: string
-            which data column to perform KSEA analysis on
+        enzyme : str
+            enzyme to calculate zscore for
+
+        Returns
+        -------
+        z : float
+            zscore for the enzyme
+        m : int
+            number of identified substrates for the enzyme in the dataset
+        """
+        annot = self.annotations[enzyme]
+        #check the possible residues and modifications for the current enzyme (for establishing background)
+        residues = set([x.split('_')[1][0] for x in annot])
+        mod = set([x.split('-')[1] for x in annot])
+
+        #filter the ptms dataframe to only include those that match the current enzyme
+        tmp_ptms = self.ptms[(self.ptms['Residue'].isin(residues)) & (self.ptms['Modification Class'].isin(mod))]
+        if tmp_ptms.empty:
+            return np.nan, np.nan
+        
+        #get number of sites associated with enzyme
+        m = tmp_ptms[tmp_ptms['Label'].isin(annot)].shape[0] 
+        if m == 0:
+            return np.nan, np.nan
+
+        
+        #calculate the mean dPSI for all residues
+        p_mean = tmp_ptms['dPSI'].mean()
+        #calculate the mean dPSI for all residues modified by the current enzyme
+        s_mean = tmp_ptms[tmp_ptms['Label'].isin(annot)]['dPSI'].mean()
+        #calculate the stdev of dPSI for all residues
+        p_std = tmp_ptms['dPSI'].std()
+        #calculate the zscore for the current enzyme
+        z = ((s_mean - p_mean) * (m**0.5)) / (p_std )
+        return z, m
+
+
+
+    def runKSEA(self):
+        """
+        Perform KSEA-style analysis for each kinase with substrates identified in experiment using dPSI values as quantitative measure.
+
             
         Returns
         -------
@@ -421,83 +522,70 @@ class KSEA:
         m: pandas dataframe
             dataframe which contains number of identified substrates for each kianse from all data columns, updated with new m calculated for data_col
         """
+        results = pd.DataFrame(np.nan, columns = ['z', 'p', 'FDR', 'm'], index = self.enzymes)
+        #iterate through each possible enzyme
+        for enzyme in self.annotations:
+            #get the zscore and number of substrates for the current enzyme
+            z, m = self.runKSEA_singleenzyme(enzyme)
+            results.loc[enzyme, 'm'] = m
+            results.loc[enzyme, 'z'] = z
 
-        #if experiment has the same kinase column as network, remove it (don't need it)
-        if self.kinase_col in tmp_exp.columns:
-            tmp_exp.drop(self.kinase_col, axis = 1, inplace = True)
-        #merge network and experiment, keep important columns, and average log2FC for the same sites
-        merged_network = self.network.merge(self.sig_ptms, on = ['KSTAR_ACCESSION', 'KSTAR_SITE'])
-        merged_network = merged_network[[self.kinase_col,'KSTAR_ACCESSION', 'KSTAR_SITE', 'log2FC']]
-        network_agg = merged_network.groupby(by = [self.kinase_col,'KSTAR_ACCESSION','KSTAR_SITE']).aggregate('mean').reset_index()
-        
-        #perform KSEA analysis, as implemented in Casado et al.
-        meanFC = network_agg.groupby(by = self.kinase_col)['log2FC'].mean().reset_index()
-        meanFC['Enrichment'] = meanFC['log2FC']/abs(np.mean(tmp_exp['dPSI']))
-        meanFC['m'] = network_agg.groupby(by = self.kinase_col)['dPSI'].count().values
-        meanFC['zscore'] = (meanFC['log2FC'] - np.mean(tmp_exp['log2FC']))*(meanFC['m'])**0.5/np.std(tmp_exp['log2FC'])
-        meanFC['pval'] = stats.norm.cdf(-abs(meanFC['zscore'].values))
-        meanFC['FDR'] = fdrcorrection(meanFC['pval'])[1]
-        
-        
-        self.all_results[data_col] = meanFC
-        self.zscore.loc[meanFC[self.kinase_col].values, data_col] = meanFC['zscore'].values
-        self.pvals.loc[meanFC[self.kinase_col].values, data_col] = meanFC['pval'].values
-        self.FDR.loc[meanFC[self.kinase_col].values, data_col] = meanFC['FDR'].values
-        self.m.loc[meanFC[self.kinase_col].values, data_col] = meanFC['m'].values
-        
-    def runKSEA(self):
-        """
-        Perform KSEA analysis on all data columns in the experiment
-        """
-        for col in self.data_cols:
-            self.runKSEA_singleExperiment(col)
-        
-        #drop kinases that don't have any predictions in any experiment
-        self.zscore.dropna(how = 'all', inplace = True)
-        self.pvals.dropna(how = 'all', inplace = True)
-        self.FDR.dropna(how = 'all', inplace = True)
-        self.m.dropna(how = 'all', inplace = True)
+        #calculate p-values and FDR for the results
+        results = results.dropna(how = 'all')
+        results['p'] = stats.norm.cdf(-abs(results['z'].values))
+        results = results.sort_values(by = 'p', ascending = True)
+        results['FDR'] = stat_utils.adjustP(results['p'].values, method = 'BH')
+        self.results = results
 
-    def plotResults(self, name = None, figsize = (10,10), ax = None, corrected = True):
+    def plot_results(self, show_substrate_count = True, ax = None):
         """
-        Plots KSEA zscores using a horizontal bar chart, sorted according to zscores
-        and with significant bars colored with red
+        Create a horizontal barplot of KSEA results, coloring based on significance and annotating with the number of substrates (if desired)
+
+        Parameters
+        ----------
+        show_substrate_count : bool
+            whether to show the number of substrates on the right side of the plot. Default is True.
+        ax : matplotlib axis
+            axis to plot on. Default is None, which will create a new figure and axis.
         """
-        if name is None:
-            print('Please indicate which result you would like to plot')
-        else:
-            cmap = sns.color_palette('colorblind')
-            
-            if ax is None:
-                fig, ax = plt.subplots(figsize = figsize)
-            
-            plot_data = KSEA.zscore[name].sort_values(ascending = True)
-            plot_data.dropna(inplace = True)
-            kinases = plot_data.index
+        #create horizontal barplot of KSEA results, coloring based on significance
 
-            #plot
-            bar = ax.barh(kinases, plot_data, color = '#6B838F')
-            
-            #color Zscore with p <= 0.05
-            if corrected:
-                significance = (KSEA.FDR.loc[kinases,name] <= 0.05)
-                sig_loc = np.where(significance)[0]
-            else:
-                significance = (KSEA.pvals.loc[kinases,name] <= 0.05)
-                sig_loc = np.where(significance)[0]
-                
-            for loc in sig_loc:
-                bar[loc].set(color = '#FF3300')
 
-            ax.set_xlabel('Z-score')
+        plt_data = self.results.copy()
+        #sort results by zscore
+        plt_data =  plt_data.sort_values('z')
+
+        #plot results
+        if ax is None:
+            fig_height = len(plt_data)*0.2
+            fig, ax = plt.subplots(figsize = (3.5, fig_height))
+
+        colors = ['grey' if x > 0.05 else 'red' for x in plt_data['FDR']]
+        ax.barh(plt_data.index, plt_data['z'], color = colors, edgecolor = 'black')
+        ax.axvline(0, color = 'black')
+
+        #set xlim to be equal on either side of 0
+        xlim = round(plt_data['z'].abs().max())
+        ax.set_xlim(-xlim, xlim)
+
+        ax.set_xlabel('z-score')
+
+        #add legend for significance
+        legend_elements = [Patch(facecolor='grey', edgecolor='black', label='FDR > 0.05'), Patch(facecolor='red', edgecolor='black', label=r'$FDR \leq 0.05$')]
+        ax.legend(handles = legend_elements)
+
+        #annotate with number of substrates on the right side of plot
+        if show_substrate_count:
+            ax.text(xlim+0.1, len(plt_data)+1, 'm', va = 'center', ha = 'center', fontweight = 'bold')
+            for i, v in enumerate(plt_data['m']):
+                ax.text(xlim+0.1, i, str(int(v)), va = 'center', ha = 'center')
         
-    def saveResults(self, fname = 'ksea', odir = ''):
+    def save_results(self, fname = 'ksea_results', odir = ''):
         """
         Saves zscores, FDR, and m for all data columns in seperate .tsv files
         """
-        self.zscore.to_csv(f'{odir}{fname}_zscore.tsv', sep = '\t')
-        self.FDR.to_csv(f'{odir}{fname}_FDR.tsv', sep = '\t')
-        self.m.to_csv(f'{odir}{fname}_m.tsv', sep = '\t')
+        self.results.to_csv(f'{odir}{fname}.tsv', sep = '\t')
+
 
 class kstar_enrichment:
     def __init__(self, spliced_ptms, network_dir, background_ptms = None, impact_type = ['All', 'Included', 'Excluded'], phospho_type = 'Y', **kwargs):
