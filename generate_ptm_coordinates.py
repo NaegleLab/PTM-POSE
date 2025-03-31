@@ -527,6 +527,9 @@ def generate_ptm_coordinates(pscout_data_file, phosphositeplus_filepath, mod_map
 
     ptm_coordinates = pd.concat([ptm_coordinates, missing_db_info])
 
+    
+    ptm_coordinates[['Number of Compendia', 'Number of Experiments', 'MS_LIT', 'MS_CST', 'LT_LIT']] = ptm_coordinates[['Number of Compendia', 'Number of Experiments', 'MS_LIT', 'MS_CST', 'LT_LIT']].fillna(0).astype(int)
+
 
     if output_dir is not None:
         ptm_coordinates.to_csv(output_dir + 'ptm_coordinates.csv', index = False)
