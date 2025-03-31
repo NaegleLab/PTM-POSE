@@ -10,7 +10,7 @@ import seaborn as sns
 #custom stat functions
 from ptm_pose import helpers
 
-def combine_outputs(spliced_ptms, altered_flanks,  include_stop_codon_introduction = False, remove_conflicting = True, **kwargs):
+def combine_outputs(spliced_ptms, altered_flanks, report_removed_annotations = True,  include_stop_codon_introduction = False, remove_conflicting = True, **kwargs):
     """
     Given the spliced_ptms (differentially included) and altered_flanks (altered flanking sequences) dataframes obtained from project and flanking_sequences modules, combine the two into a single dataframe that categorizes each PTM by the impact on the PTM site
 
@@ -51,7 +51,7 @@ def combine_outputs(spliced_ptms, altered_flanks,  include_stop_codon_introducti
     annotation_columns_in_spliced_ptms = [col for col in spliced_ptms.columns if ':' in col]
     annotation_columns_in_altered_flanks = [col for col in altered_flanks.columns if ':' in col]
     annotation_columns = list(set(annotation_columns_in_spliced_ptms).intersection(annotation_columns_in_altered_flanks))
-    if len(annotation_columns) != annotation_columns_in_spliced_ptms:
+    if len(annotation_columns) != annotation_columns_in_spliced_ptms and report_removed_annotations:
         annotation_columns_only_in_spliced = list(set(annotation_columns_in_spliced_ptms) - set(annotation_columns_in_altered_flanks))
         annotation_columns_only_in_altered = list(set(annotation_columns_in_altered_flanks) - set(annotation_columns_in_spliced_ptms))
         if len(annotation_columns_only_in_spliced) > 0:
@@ -102,15 +102,22 @@ def get_modification_counts(ptms, **kwargs):
     modification_counts = modification_counts.sort_values(ascending = True)
     return modification_counts
 
-def get_modification_class_data(spliced_ptms, mod_class):
+def get_modification_class_data(ptms, mod_class):
+    """
+    Given ptm dataframe and a specific modification class, return a dataframe with only the PTMs of that class
+
+    Parameters
+    ----------
+    ptms : pd.DataFrame
+        Dataframe with ptm information, such as the spliced_ptms or altered_flanks dataframe obtained during projection
+    mod_class : str
+        
+        The modification class to filter by, e.g. 'Phosphorylation', 'Acetylation', etc.
+    """
     #check if specific modification class was provided and subset data by modification if so
-    if mod_class in spliced_ptms['Modification Class'].values:
-        ptms_of_interest = spliced_ptms[spliced_ptms['Modification Class'].str.contains(mod_class)].copy()
-    else:
-        ptms_of_interest['Modification Class'] = ptms_of_interest['Modification Class'].apply(lambda x: x.split(';') if x == x else np.nan)
-        ptms_of_interest = ptms_of_interest.explode('Modification Class').dropna(subset = 'Modification Class')
-        available_ptms = ptms_of_interest['Modification Class'].unique()
-        raise ValueError(f"Requested modification class not present in the data. The available modifications include {', '.join(available_ptms)}")
+    ptms_of_interest = ptms[ptms['Modification Class'] == mod_class].copy()
+    if ptms_of_interest.empty:
+        raise ValueError(f"No PTMs found for modification class '{mod_class}'. Please check the input data or choose a different modification class.")
 
     return ptms_of_interest
 

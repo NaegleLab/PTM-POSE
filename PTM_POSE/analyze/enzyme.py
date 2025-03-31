@@ -20,9 +20,8 @@ import scipy.stats as stats
 #optional analysis packages
 try:
     import kinase_library as kl
-    kinase_library = True
 except ImportError:
-    kinase_library = False
+    kl = None
 
 package_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -42,7 +41,10 @@ def compare_KL_for_sequence(inclusion_seq, exclusion_seq, dpsi = None, compariso
     comparison_type : str
         type of comparison to perform. Can be 'percentile', 'score', or 'rank'. Default is 'percentile'.
     """
-
+    if kl is None:
+        print('Kinase library package not installed. To use this functionality, please install the kinase library package by running `pip install kinase-library`')
+        return None
+    
     #get percentiles for inclusion sequence
     s_inc = kl.Substrate(inclusion_seq)
     inn_perc = s_inc.percentile(sort_by = 'name')
@@ -94,6 +96,10 @@ def get_all_KL_scores(seq_data, seq_col, kin_type = ['ser_thr', 'tyrosine'], sco
     
     
     """
+    if kl is None:
+        print('Kinase library package not installed. To use this functionality, please install the kinase library package by running `pip install kinase-library`')
+        return None
+    
     phospho_predict = kl.PhosphoProteomics(seq_data, seq_col = seq_col)
     if isinstance(kin_type, list):
         if len(kin_type) == 1:
@@ -139,7 +145,7 @@ class KL_flank_analysis:
         """
 
         #check to make sure kinase library is installed
-        if not kinase_library:
+        if kl is None:
             print('Kinase library package not installed. To use this functionality, please install the kinase library package by running `pip install kinase-library`')
             return None
         #reduce to phosphorylation sites
@@ -240,20 +246,20 @@ class KL_flank_analysis:
             self.score_all_ptms()
 
         melted_inclusion = pd.concat(
-            [self.melt_percentile_df(flank_type = 'Inclusion', kin_type = 'ser_thr'), 
-            self.melt_percentile_df(flank_type = 'Inclusion', kin_type = 'tyrosine')]
+            [self.melt_score_df(flank_type = 'Inclusion', kin_type = 'ser_thr'), 
+            self.melt_score_df(flank_type = 'Inclusion', kin_type = 'tyrosine')]
         )
-        melted_inclusion = melted_inclusion.rename(columns = {'Percentile': f'Inclusion {self.score_type}'})
+        melted_inclusion = melted_inclusion.rename(columns = {self.metric.capitalize(): f'Inclusion {self.metric.capitalize()}'})
 
         melted_exclusion = pd.concat(
-            [self.melt_percentile_df(flank_type = 'Exclusion', kin_type = 'ser_thr'), 
-            self.melt_percentile_df(flank_type = 'Inclusion', kin_type = 'tyrosine')]
+            [self.melt_score_df(flank_type = 'Exclusion', kin_type = 'ser_thr'), 
+            self.melt_score_df(flank_type = 'Inclusion', kin_type = 'tyrosine')]
         )
-        melted_exclusion = melted_exclusion.rename(columns = {'Percentile': f'Exclusion {self.score_type}'})
+        melted_exclusion = melted_exclusion.rename(columns = {self.metric.capitalize(): f'Exclusion {self.metric.capitalize()}'})
         combined = melted_inclusion.merge(melted_exclusion, on = ['Region ID', 'Gene', 'Residue', 'PTM Position in Isoform', 'Kinase'] + self.optional_cols, how = 'inner')
         
         #calculate the difference
-        combined['Difference'] = combined[f'Inclusion {self.score_type}'] - combined[f'Exclusion {self.score_type}']
+        combined['Difference'] = combined[f'Inclusion {self.metric.capitalize()}'] - combined[f'Exclusion {self.metric.capitalize()}']
         combined['Absolute Difference'] = combined['Difference'].abs()
         combined = combined.sort_values(by = 'Absolute Difference', ascending = False)
 
@@ -293,7 +299,7 @@ class KL_flank_analysis:
         if difference_type == 'normal':
             comp_col = 'Absolute Difference'
         elif difference_type == 'absolute':
-            comp_col == 'Absolute Difference'
+            comp_col = 'Absolute Difference'
         elif difference_type == 'relative':
             comp_col = 'Relative Change in Preference'
             kinase_df['Absolute Relative'] = kinase_df['Relative Change in Preference'].abs()
@@ -440,8 +446,12 @@ class KSEA:
             self.annot_col = 'OmniPath:Writer Enzyme'  #use writer enzyme annotations
         elif database == 'OmniPath Eraser':
             self.annot_col = 'OmniPath:Eraser Enzyme'
-        elif database not in ['PhosphoSitePlus', 'DEPOD', 'RegPhos', 'OmniPath Writer', 'OmniPath Eraser']:
-            raise ValueError('database must be either "OmniPath Writer", "OmniPath Eraser", "PhosphoSitePlus", "DEPOD", or "RegPhos"')
+        elif database == 'Combined Writer':
+            self.annot_col = 'Combined:Writer_Enzyme'
+        elif database == 'Combined Eraser':
+            self.annot_col = 'Combined:Eraser_Enzyme'
+        elif database not in ['PhosphoSitePlus', 'DEPOD', 'RegPhos', 'OmniPath Writer', 'OmniPath Eraser', 'Combined Writer', 'Combined Eraser']:
+            raise ValueError('database must be either "OmniPath Writer", "OmniPath Eraser", "PhosphoSitePlus", "DEPOD", "RegPhos", "Combined Writer", or "Combined Eraser"')
         else:
             self.annot_col = f'{database}:Enzyme'  #use enzyme annotations for other databases
         
@@ -450,6 +460,11 @@ class KSEA:
             self.annotations = annotate.process_database_annotations(database = 'OmniPath', annot_type = 'Writer Enzyme')
         elif database == 'OmniPath Eraser':
             self.annotations = annotate.process_database_annotations(database = 'OmniPath', annot_type = 'Eraser Enzyme')
+        elif database == 'Combined Writer' or database == 'Combined Eraser':
+            if self.annot_col not in ptms.columns:
+                ptms = annotate.combine_enzyme_data(ptms)
+
+            self.annotations = annotate.construct_annotation_dict_from_df(ptms, annot_col = self.annot_col, key_type = 'annotation')
         else:
             self.annotations = annotate.process_database_annotations(database = database, annot_type = 'Enzyme')
 
@@ -829,12 +844,12 @@ class kstar_enrichment:
             sig_enrichment[ptype] = tmp_data[tmp_data < alpha].index.values
         return sig_enrichment
     
-    def dotplot(self, ptype = 'Y', impact_types = ['All', 'Included', 'Excluded'], kinase_axis = 'x', ax = None, facecolor = 'white', title = '', size_legend = False, color_legend = True, max_size = None, sig_kinases_only = True, alpha = 0.05, dotsize = 5, 
+    def dotplot(self, ptype = 'Y', impact_types = ['All', 'Included', 'Excluded'], kinase_axis = 'x', ax = None, facecolor = 'white', title = '', size_legend = False, color_legend = True, max_size = None, sig_kinases_only = True, alpha = 0.05, dotsize = 20, 
                  colormap={0: '#6b838f', 1: sns.color_palette('colorblind')[1]},
                  labelmap = {0: 'FPR > %0.2f'%(0.05), 1:'FPR <= %0.2f'%(0.05)},
                  legend_title = 'p-value', size_number = 5, size_color = 'gray', 
                  color_title = 'Significant', markersize = 10, 
-                 legend_distance = 1.0, figsize = (5,5)):
+                 legend_distance = 1.0, figsize = (4,4)):
         """
         Generates the dotplot plot, where size is determined by values dataframe and color is determined by significant dataframe. This is a stripped down version of the code used in KSTAR to generate the dotplot for the kinase activities
         

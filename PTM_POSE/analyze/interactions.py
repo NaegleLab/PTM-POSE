@@ -11,11 +11,337 @@ import networkx as nx
 
 
 #custom stat functions
-from ptm_pose.analyze import annotations
 from ptm_pose import annotate, helpers
 
 
+
+
+class protein_interactions:
+    """
+    Class to assess interactions facilitated by PTMs in splicing network
+
+    Parameters
+    ----------
+    spliced_ptms: pd.DataFrame
+        Dataframe with PTMs projected onto splicing events and with annotations appended from various databases
+    include_enzyme_interactions: bool
+        Whether to include interactions with enzymes in the network, such as kinase-substrate interactions. Default is True
+    interaction_databases: list
+        List of databases whose information to include in the network. Default is ['PhosphoSitePlus', 'PTMcode', 'PTMInt', 'RegPhos', 'DEPOD', 'ELM']
+    **kwargs: additional keyword arguments
+        Additional keyword arguments, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.
+
+    Attributes
+    ----------
+    interaction_graph: nx.Graph
+        NetworkX graph object representing the interaction network, created from analyze.get_interaction_network
+    network_data: pd.DataFrame
+        Dataframe containing details about specifici protein interactions (including which protein contains the spliced PTMs)
+    network_stats: pd.DataFrame
+        Dataframe containing network statistics for each protein in the interaction network, obtained from analyze.get_interaction_stats(). Default is None, which will not label any proteins in the network.
+    """
+    def __init__(self, spliced_ptms, include_enzyme_interactions = True, interaction_databases = ['PhosphoSitePlus', 'PTMcode', 'PTMInt', 'RegPhos', 'DEPOD', 'OmniPath'], **kwargs):
+        filter_arguments = helpers.extract_filter_kwargs(**kwargs)
+        helpers.check_filter_kwargs(filter_arguments)
+        spliced_ptms = helpers.filter_ptms(spliced_ptms, **filter_arguments)
+        if spliced_ptms.empty:
+            raise ValueError('No spliced PTMs found in provided data after filtering PTMs and events. Consider reducing filter stringency.')
+        
+        self.include_enzyme_interactions = include_enzyme_interactions
+        self.interaction_databases = interaction_databases
+
+
+
+        self.spliced_ptms = spliced_ptms
+        self.get_interaction_network()
+
+
+    def get_interaction_network(self, node_type = 'Gene'):
+        """
+        Given the spliced PTM data, extract interaction information and construct a dataframe containing all possible interactions driven by PTMs, either centered around specific PTMs or specific genes.
+
+        Parameters
+        ----------
+        node_type: str
+            What to define interactions by. Can either be by 'PTM', which will consider each PTM as a separate node, or by 'Gene', which will aggregate information across all PTMs of a single gene into a single node. Default is 'Gene'
+        """
+        if node_type not in ['Gene', 'PTM']:
+            raise ValueError("node_type parameter (which dictates whether to consider interactions at PTM or gene level) can be either Gene or PTM")
+        
+        #extract interaction information in provided data
+        interactions = annotate.combine_interaction_data(self.spliced_ptms, include_enzyme_interactions=self.include_enzyme_interactions, interaction_databases=self.interaction_databases)
+        if interactions.empty:
+            raise ValueError('No interaction data found in spliced PTM data.')
+        interactions['Residue'] = interactions['Residue'] + interactions['PTM Position in Isoform'].astype(int).astype(str)
+        interactions = interactions.drop(columns = ['PTM Position in Isoform'])
+
+        #add regulation change information
+        if 'dPSI' in self.spliced_ptms.columns:
+            interactions['Regulation Change'] = interactions.apply(lambda x: '+' if x['Type'] != 'DISRUPTS' and x['dPSI'] > 0 else '+' if x['Type'] == 'DISRUPTS' and x['dPSI'] < 0 else '-', axis = 1)
+            grouping_cols = ['Residue', 'Type', 'Source', 'dPSI', 'Regulation Change']
+            interactions['dPSI'] = interactions['dPSI'].apply(str)
+        else:
+            grouping_cols = ['Residue', 'Type', 'Source']
+
+        #extract gene_specific network information
+        if node_type == 'Gene':
+            network_data = interactions.groupby(['Modified Gene', 'Interacting Gene'], as_index = False)[grouping_cols].agg(helpers.join_unique_entries)
+            #generate network with all possible PTM-associated interactions
+            interaction_graph = nx.from_pandas_edgelist(network_data, source = 'Modified Gene', target = 'Interacting Gene')
+        else:
+            interactions['Spliced PTM'] = interactions['Modified Gene'] + '_' + interactions['Residue']
+            network_data = interactions.groupby(['Spliced PTM', 'Interacting Gene'], as_index = False)[grouping_cols].agg(helpers.join_unique_entries)
+            network_data = network_data.drop(columns = ['Residue'])
+            
+            #generate network with all possible PTM-associated interactions
+            interaction_graph = nx.from_pandas_edgelist(network_data, source = 'Spliced PTM', target = 'Interacting Gene')
+
+        self.network_data = network_data
+        self.interaction_graph = interaction_graph
+
+
+    def get_interaction_stats(self):
+        """
+        Given the networkx interaction graph, calculate various network centrality measures to identify the most relevant PTMs or genes in the network
+        """
+        #calculate network centrality measures
+        self.network_stats = get_interaction_stats(self.interaction_graph)
+
+    def get_protein_interaction_network(self, protein):
+        """
+        Given a specific protein, return the network data for that protein
+
+        Parameters
+        ----------
+        protein: str
+            Gene name of the protein of interest
+
+        Returns
+        -------
+        protein_network: pd.DataFrame
+            Dataframe containing network data for the protein of interest
+        """
+        if not hasattr(self, 'network_data'):
+            self.get_interaction_network()
+
+        if protein not in self.network_data['Modified Gene'].unique():
+            print(f'{protein} is not found in the network data. Please provide a valid gene name.')
+            return None
+        
+        protein_network = self.network_data[self.network_data['Modified Gene'] == protein]
+        protein_network = protein_network.drop(columns = ['Modified Gene'])
+        protein_network = protein_network.rename(columns = {'Residue': 'Spliced PTMs facilitating Interacting'})
+        return protein_network
+
+    def summarize_protein_network(self, protein):
+        """
+        Given a protein of interest, summarize the network data for that protein
+
+        Parameters
+        ----------
+        protein: str
+            Gene name of the protein of interest
+        """
+        if not hasattr(self, 'network_data'):
+            self.get_interaction_network()
+
+        if not hasattr(self, 'network_stats'):
+            self.get_interaction_stats()
+
+        protein_network = self.network_data[self.network_data['Modified Gene'] == protein]
+        increased_interactions = protein_network.loc[protein_network['Regulation Change'] == '+', 'Interacting Gene'].values
+        decreased_interactions = protein_network.loc[protein_network['Regulation Change'] == '-', 'Interacting Gene'].values
+        ambiguous_interactions = protein_network.loc[protein_network['Regulation Change'].str.contains(';'), 'Interacting Gene'].values
+
+        #print interactions
+        if len(increased_interactions) > 0:
+            print(f"Increased interaction likelihoods: {', '.join(increased_interactions)}")
+        if len(decreased_interactions) > 0:
+            print(f"Decreased interaction likelihoods: {', '.join(decreased_interactions)}")
+        if len(ambiguous_interactions) > 0:
+            print(f"Ambiguous interaction impact: {', '.join(ambiguous_interactions)}")
+
+        network_ranks = self.network_stats.rank(ascending = False).astype(int)
+        print(f'Number of interactions: {self.network_stats.loc[protein, "Degree"]} (Rank: {network_ranks.loc[protein, "Degree"]})')
+        print(f'Centrality measures - \t Degree = {self.network_stats.loc[protein, "Degree Centrality"]} (Rank: {network_ranks.loc[protein, "Degree Centrality"]})')
+        print(f'                      \t Betweenness = {self.network_stats.loc[protein, "Betweenness"]} (Rank: {network_ranks.loc[protein, "Betweenness"]})')
+        print(f'                      \t Closeness = {self.network_stats.loc[protein, "Closeness"]} (Rank: {network_ranks.loc[protein, "Closeness"]})')
+
+    def compare_to_nease(self, nease_edges):
+        """
+        Given the network edges generated by NEASE, compare the network edges generated by NEASE to the network edges generated by the PTM-driven interactions
+
+        Parameters
+        ----------
+        nease_edges : pd.DataFrame
+            Interactions found by NEASE, which is the output of nease.get_edges() function after running NEASE (see nease_runner module for example)
+        
+        Returns
+        -------
+        nease_comparison : pd.DataFrame
+            Dataframe containing the all edges found by NEASE and PTM-POSE. This will include edges that are unique to NEASE, unique to PTM-POSE, and common between the two.
+        """
+        if not hasattr(self, 'interaction_graph'):
+            self.get_interaction_network()
+
+        nease_edges['Affected binding'] = nease_edges['Affected binding'].apply(lambda x: x.split(','))
+        nease_edges = nease_edges.explode('Affected binding')
+
+        nease_nw = nx.from_pandas_edgelist(nease_edges, source = 'Gene name', target = 'Affected binding')
+
+        #construct graphs with only overlapping edges or unique edges
+        common_graph = nx.intersection(nease_nw, self.interaction_graph)
+
+        #nease only graph
+        nease_only_graph = nease_nw.copy()
+        nease_only_graph.remove_edges_from(e for e in nease_nw.edges() if e in self.interaction_graph.edges())
+
+        #ptm only graph
+        ptm_only_graph = self.interaction_graph.copy()
+        ptm_only_graph.remove_edges_from(e for e in self.interaction_graph.edges() if e in nease_nw.edges())
+
+        #convert ptm_only_graph edges to pandas dataframe
+        ptm_edges = nx.to_pandas_edgelist(ptm_only_graph)
+        ptm_edges['PTM-POSE'] = True
+        ptm_edges['NEASE'] = False
+
+        #convert nease_only_graph edges to pandas dataframe
+        nease_edges = nx.to_pandas_edgelist(nease_only_graph)
+        nease_edges['NEASE'] = True
+        nease_edges['PTM-POSE'] = False
+
+        #convert common_graph edges to pandas dataframe
+        common_edges = nx.to_pandas_edgelist(common_graph)
+        common_edges['NEASE'] = True
+        common_edges['PTM-POSE'] = True
+
+        #combine all edges into one dataframe
+        combined_edges = pd.concat([ptm_edges, nease_edges, common_edges])
+        self.nease_comparison = combined_edges
+
+    def plot_nease_comparison(self, nease_edges = None, ax = None):
+        """
+        Given the comparison data generated by compare_to_nease, plot the number of edges identified by NEASE and PTM-POSE
+
+        Parameters
+        ----------
+        ax : matplotlib.pyplot.Axes
+            axes to plot on
+        nease_edges : pd.DataFrame, optional
+                Interactions found by NEASE, which is the output of nease.get_edges() function after running NEASE (see nease_runner module for example). Only needed if you have not run comparison_to_nease() previously
+        """
+        #check if nease_comparison exists already, if not generate if data is provided
+        if not hasattr(self, 'nease_comparison') and nease_edges is not None:
+            self.compare_to_nease(nease_edges)
+        elif not hasattr(self, 'nease_comparison'):
+            raise ValueError('No NEASE comparison data found. Please provide nease_edges to compare to PTM-POSE network or run `compare_to_nease()` first.')
+        
+        
+        if ax is None:
+            fig, ax = plt.subplots(figsize = (3,2))
+        
+        #extract counts
+        common_edges = self.nease_comparison[self.nease_comparison['NEASE'] & self.nease_comparison['PTM-POSE']].shape[0]
+        ptm_only_edges = self.nease_comparison[self.nease_comparison['PTM-POSE'] & ~self.nease_comparison['NEASE']].shape[0]
+        nease_only_edges = self.nease_comparison[self.nease_comparison['NEASE'] & ~self.nease_comparison['PTM-POSE']].shape[0]
+
+        #plot barplot
+        ax.barh(['Identified with NEASE\nand PTM-POSE', 'PTM-POSE\n(PTM-Specific)','NEASE\n(Exon-Specific)'], [common_edges, ptm_only_edges, nease_only_edges], color = 'gray', edgecolor = 'black', height=0.9)
+        ax.tick_params(labelsize = 9)
+        ax.set_xlabel('Number of Interactions\nImpacted By Splicing', fontsize = 10)
+
+
+
+    def plot_interaction_network(self, modified_color = 'red', modified_node_size = 10, interacting_color = 'lightblue', interacting_node_size = 5, defaultedgecolor = 'gray', color_edges_by = 'Same', seed = 200, ax = None, proteins_to_label = None, labelcolor = 'black', legend = True):
+        """
+        Given the interactiong graph and network data outputted from analyze.get_interaction_network, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs. by default, will only label proteins 
+
+        Parameters
+        ----------
+        modified_color: str
+            Color to use for nodes that are modified by splicing. Default is 'red'
+        modified_node_size: int
+            Size of nodes that are modified by splicing. Default is 10
+        interacting_color: str
+            Color to use for nodes that interact with modified nodes. Default is 'lightblue'
+        interacting_node_size: int
+            Size of nodes that interact with modified nodes. Default is 5
+        defaultedgecolor: str
+            Color to use for edges in the network. Default is 'gray'. Can choose to color by database by providing a dictionary with database names as keys and colors as values or by specifying 'database' as color
+        color_edges_by: str
+            
+            How to color edges in the network. Default is 'Same', which will color all edges the same color. Can also specify 'Database' to color edges based on the database they are from. If using 'Database', please provide a dictionary with database names as keys and colors as values in defaultedgecolor parameter.
+        seed: int
+            Seed to use for random number generator. Default is 200
+        ax: matplotlib.pyplot.Axes
+            Axes object to plot the network. Default is None
+        """
+        if not hasattr(self, 'interaction_graph'):
+            self.get_interaction_network()
+
+        if not hasattr(self, 'network_stats'):
+            self.get_interaction_stats()
+
+        # if include nease comparison, combine graphs
+        #if nease_edges is not None:
+        #    nease_edges['Affected binding'] = nease_edges['Affected binding'].apply(lambda x: x.split(','))
+        #    nease_edges = nease_edges.explode('Affected binding')
+
+        #    nease_nw = nx.from_pandas_edgelist(nease_edges, source = 'Gene name', target = 'Affected binding')
+
+            #combine graphs
+        #    plt_graph = nx.compose(self.interaction_graph, nease_nw)
+        #else:
+        #    plt_graph = self.interaction_graph.copy()
+        plt_graph = self.interaction_graph.copy()
+
+
+        plot_interaction_network(plt_graph, self.network_data, self.network_stats, modified_color = modified_color, modified_node_size = modified_node_size, interacting_color = interacting_color, interacting_node_size = interacting_node_size, defaultedgecolor = defaultedgecolor, color_edges_by=color_edges_by, seed = seed, ax = ax, proteins_to_label = proteins_to_label, labelcolor = labelcolor, legend = legend)
+
+    def plot_network_centrality(self,  centrality_measure = 'Degree', top_N = 10, modified_color = 'red', interacting_color = 'black', ax = None):
+        """
+        Plot the centrality measure for the top N proteins in the interaction network based on a specified centrality measure. This will help identify the most relevant PTMs/genes in the network.
+
+        Parameters
+        ----------
+        centrality_measure: str
+            How to calculate centrality. Options include 'Degree', 'Degree Centrality', 'Betweenness Centrality', 'Closeness Centrality', and 'Eigenvector Centrality'. Default is 'Degree'.
+        top_N: int
+            Number of top proteins to plot based on the centrality measure. Default is 10.
+        modified_color: str
+            Color to use for proteins that are spliced. Default is 'red'.
+        interacting_color: str
+            Color to use for proteins that are not spliced. Default is 'black'.
+        ax: matplotlib.pyplot.Axes
+            Axes object to plot the centrality bar plot. If None, a new figure will be created. Default is None.
+        """
+        if not hasattr(self, 'interaction_graph'):
+            self.get_interaction_network()
+        if not hasattr(self, 'network_stats'):
+            self.get_interaction_stats()
+
+        plot_network_centrality(self.network_stats, self.network_data, centrality_measure=centrality_measure,top_N = top_N, modified_color = modified_color, interacting_color = interacting_color, ax = ax)
+
+
 def get_edge_colors(interaction_graph, network_data, defaultedgecolor = 'gray', color_edges_by = 'Database', database_color_dict = {'PSP/RegPhos':'red', 'PhosphoSitePlus':'green', 'PTMcode':'blue', 'PTMInt':'gold', 'Multiple':'purple'}):
+    """
+    Get the edge colors to use for a provided networkx graph, either plotting all edges the same color or coloring them based on the database they are from.
+
+    Parameters
+    ----------
+    interaction_graph: nx.Graph
+        networkx graph containing the interaction network
+    network_data: pd.DataFrame
+        specific network edge data that contains information on which database the interaction is from and any other relevant information (such as regulation change)
+    defaultedgecolor : 'str'
+        Default color to use for edges if no specific database color is found. Default is 'gray'.
+    color_edges_by : str
+        How to color the edges. Options are 'Database' to color by the database they are from, or 'Same' to color all edges the same color. Default is 'Database'.
+    database_color_dict : dict
+        Colors to use for specific databases
+    
+
+    """
     edge_colors = []
     legend_handles = {}
     for edge in interaction_graph.edges:
@@ -206,285 +532,3 @@ def get_interaction_stats(interaction_graph):
     betweenness_centrality = nx.betweenness_centrality(interaction_graph)
     network_stats = pd.DataFrame({'Degree': dict(interaction_graph.degree()), 'Degree Centrality':degree_centrality, 'Closeness':closeness_centrality,'Betweenness':betweenness_centrality})
     return network_stats
-
-class protein_interactions:
-    """
-    Class to assess interactions facilitated by PTMs in splicing network
-
-    Parameters
-    ----------
-    spliced_ptms: pd.DataFrame
-        Dataframe with PTMs projected onto splicing events and with annotations appended from various databases
-    include_enzyme_interactions: bool
-        Whether to include interactions with enzymes in the network, such as kinase-substrate interactions. Default is True
-    interaction_databases: list
-        List of databases whose information to include in the network. Default is ['PhosphoSitePlus', 'PTMcode', 'PTMInt', 'RegPhos', 'DEPOD', 'ELM']
-    **kwargs: additional keyword arguments
-        Additional keyword arguments, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.
-
-    Attributes
-    ----------
-    interaction_graph: nx.Graph
-        NetworkX graph object representing the interaction network, created from analyze.get_interaction_network
-    network_data: pd.DataFrame
-        Dataframe containing details about specifici protein interactions (including which protein contains the spliced PTMs)
-    network_stats: pd.DataFrame
-        Dataframe containing network statistics for each protein in the interaction network, obtained from analyze.get_interaction_stats(). Default is None, which will not label any proteins in the network.
-    """
-    def __init__(self, spliced_ptms, include_enzyme_interactions = True, interaction_databases = ['PhosphoSitePlus', 'PTMcode', 'PTMInt', 'RegPhos', 'DEPOD', 'OmniPath'], **kwargs):
-        filter_arguments = helpers.extract_filter_kwargs(**kwargs)
-        helpers.check_filter_kwargs(filter_arguments)
-        spliced_ptms = helpers.filter_ptms(spliced_ptms, **filter_arguments)
-        if spliced_ptms.empty:
-            raise ValueError('No spliced PTMs found in provided data after filtering PTMs and events. Consider reducing filter stringency.')
-        
-        self.include_enzyme_interactions = include_enzyme_interactions
-        self.interaction_databases = interaction_databases
-
-        #go through and add interaction information for any database that are not appended to the spliced_ptms dataframe
-        #available_annotations = annotations.get_available_annotations(spliced_ptms)
-        #available_interactions = available_annotations[available_annotations['Annotation Type'] == 'Interactions']
-        #if self.include_enzyme_interactions:
-        #    enzyme_annotations = available_annotations[available_annotations['Annotation Type'] == 'Enzyme']
-
-
-        #go through and add interaction information that is not in the spliced_ptms dataframe
-        #for db in self.interaction_databases:
-        #    if f'{db}:Interactions' not in spliced_ptms.columns and db in available_interactions['Database'].values:
-        #        spliced_ptms = annotate.append_from_gmt(spliced_ptms, database = db, annot_type = 'Interactions')
-
-        #    if f'{db}:Enzyme' not in spliced_ptms.columns and self.include_enzyme_interactions and db in enzyme_annotations['Database'].values:
-        #        spliced_ptms = annotate.append_from_gmt(spliced_ptms, database = db, annot_type = 'Enzyme')
-
-        self.spliced_ptms = spliced_ptms
-        self.get_interaction_network()
-
-
-    def get_interaction_network(self, node_type = 'Gene'):
-        """
-        Given the spliced PTM data, extract interaction information and construct a dataframe containing all possible interactions driven by PTMs, either centered around specific PTMs or specific genes.
-
-        Parameters
-        ----------
-        node_type: str
-            What to define interactions by. Can either be by 'PTM', which will consider each PTM as a separate node, or by 'Gene', which will aggregate information across all PTMs of a single gene into a single node. Default is 'Gene'
-        """
-        if node_type not in ['Gene', 'PTM']:
-            raise ValueError("node_type parameter (which dictates whether to consider interactions at PTM or gene level) can be either Gene or PTM")
-        
-        #extract interaction information in provided data
-        interactions = annotate.combine_interaction_data(self.spliced_ptms, include_enzyme_interactions=self.include_enzyme_interactions, interaction_databases=self.interaction_databases)
-        if interactions.empty:
-            raise ValueError('No interaction data found in spliced PTM data.')
-        interactions['Residue'] = interactions['Residue'] + interactions['PTM Position in Isoform'].astype(int).astype(str)
-        interactions = interactions.drop(columns = ['PTM Position in Isoform'])
-
-        #add regulation change information
-        if 'dPSI' in self.spliced_ptms.columns:
-            interactions['Regulation Change'] = interactions.apply(lambda x: '+' if x['Type'] != 'DISRUPTS' and x['dPSI'] > 0 else '+' if x['Type'] == 'DISRUPTS' and x['dPSI'] < 0 else '-', axis = 1)
-            grouping_cols = ['Residue', 'Type', 'Source', 'dPSI', 'Regulation Change']
-            interactions['dPSI'] = interactions['dPSI'].apply(str)
-        else:
-            grouping_cols = ['Residue', 'Type', 'Source']
-
-        #extract gene_specific network information
-        if node_type == 'Gene':
-            network_data = interactions.groupby(['Modified Gene', 'Interacting Gene'], as_index = False)[grouping_cols].agg(helpers.join_unique_entries)
-            #generate network with all possible PTM-associated interactions
-            interaction_graph = nx.from_pandas_edgelist(network_data, source = 'Modified Gene', target = 'Interacting Gene')
-        else:
-            interactions['Spliced PTM'] = interactions['Modified Gene'] + '_' + interactions['Residue']
-            network_data = interactions.groupby(['Spliced PTM', 'Interacting Gene'], as_index = False)[grouping_cols].agg(helpers.join_unique_entries)
-            network_data = network_data.drop(columns = ['Residue'])
-            
-            #generate network with all possible PTM-associated interactions
-            interaction_graph = nx.from_pandas_edgelist(network_data, source = 'Spliced PTM', target = 'Interacting Gene')
-
-        self.network_data = network_data
-        self.interaction_graph = interaction_graph
-
-
-    def get_interaction_stats(self):
-        """
-        Given the networkx interaction graph, calculate various network centrality measures to identify the most relevant PTMs or genes in the network
-        """
-        #calculate network centrality measures
-        self.network_stats = get_interaction_stats(self.interaction_graph)
-
-    def get_protein_interaction_network(self, protein):
-        """
-        Given a specific protein, return the network data for that protein
-
-        Parameters
-        ----------
-        protein: str
-            Gene name of the protein of interest
-
-        Returns
-        -------
-        protein_network: pd.DataFrame
-            Dataframe containing network data for the protein of interest
-        """
-        if not hasattr(self, 'network_data'):
-            self.get_interaction_network()
-
-        if protein not in self.network_data['Modified Gene'].unique():
-            print(f'{protein} is not found in the network data. Please provide a valid gene name.')
-            return None
-        
-        protein_network = self.network_data[self.network_data['Modified Gene'] == protein]
-        protein_network = protein_network.drop(columns = ['Modified Gene'])
-        protein_network = protein_network.rename(columns = {'Residue': 'Spliced PTMs facilitating Interacting'})
-        return protein_network
-
-    def summarize_protein_network(self, protein):
-        """
-        Given a protein of interest, summarize the network data for that protein
-
-        Parameters
-        ----------
-        protein: str
-            Gene name of the protein of interest
-        """
-        if not hasattr(self, 'network_data'):
-            self.get_interaction_network()
-
-        if not hasattr(self, 'network_stats'):
-            self.get_interaction_stats()
-
-        protein_network = self.network_data[self.network_data['Modified Gene'] == protein]
-        increased_interactions = protein_network.loc[protein_network['Regulation Change'] == '+', 'Interacting Gene'].values
-        decreased_interactions = protein_network.loc[protein_network['Regulation Change'] == '-', 'Interacting Gene'].values
-        ambiguous_interactions = protein_network.loc[protein_network['Regulation Change'].str.contains(';'), 'Interacting Gene'].values
-
-        #print interactions
-        if len(increased_interactions) > 0:
-            print(f"Increased interaction likelihoods: {', '.join(increased_interactions)}")
-        if len(decreased_interactions) > 0:
-            print(f"Decreased interaction likelihoods: {', '.join(decreased_interactions)}")
-        if len(ambiguous_interactions) > 0:
-            print(f"Ambiguous interaction impact: {', '.join(ambiguous_interactions)}")
-
-        network_ranks = self.network_stats.rank(ascending = False).astype(int)
-        print(f'Number of interactions: {self.network_stats.loc[protein, "Degree"]} (Rank: {network_ranks.loc[protein, "Degree"]})')
-        print(f'Centrality measures - \t Degree = {self.network_stats.loc[protein, "Degree Centrality"]} (Rank: {network_ranks.loc[protein, "Degree Centrality"]})')
-        print(f'                      \t Betweenness = {self.network_stats.loc[protein, "Betweenness"]} (Rank: {network_ranks.loc[protein, "Betweenness"]})')
-        print(f'                      \t Closeness = {self.network_stats.loc[protein, "Closeness"]} (Rank: {network_ranks.loc[protein, "Closeness"]})')
-
-    def compare_to_nease(self, nease_edges):
-        """
-        Given the network edges generated by NEASE, compare the network edges generated by NEASE to the network edges generated by the PTM-driven interactions
-        """
-        if not hasattr(self, 'interaction_graph'):
-            self.get_interaction_network()
-
-        nease_edges['Affected binding'] = nease_edges['Affected binding'].apply(lambda x: x.split(','))
-        nease_edges = nease_edges.explode('Affected binding')
-
-        nease_nw = nx.from_pandas_edgelist(nease_edges, source = 'Gene name', target = 'Affected binding')
-
-        #construct graphs with only overlapping edges or unique edges
-        common_graph = nx.intersection(nease_nw, self.interaction_graph)
-
-        #nease only graph
-        nease_only_graph = nease_nw.copy()
-        nease_only_graph.remove_edges_from(e for e in nease_nw.edges() if e in self.interaction_graph.edges())
-
-        #ptm only graph
-        ptm_only_graph = self.interaction_graph.copy()
-        ptm_only_graph.remove_edges_from(e for e in self.interaction_graph.edges() if e in self.nease_nw.edges())
-
-        #convert ptm_only_graph edges to pandas dataframe
-        ptm_edges = nx.to_pandas_edgelist(ptm_only_graph)
-        ptm_edges['PTM-POSE'] = True
-        ptm_edges['NEASE'] = False
-
-        #convert nease_only_graph edges to pandas dataframe
-        nease_edges = nx.to_pandas_edgelist(nease_only_graph)
-        nease_edges['NEASE'] = True
-        nease_edges['PTM-POSE'] = False
-
-        #convert common_graph edges to pandas dataframe
-        common_edges = nx.to_pandas_edgelist(common_graph)
-        common_edges['NEASE'] = True
-        common_edges['PTM-POSE'] = True
-
-        #combine all edges into one dataframe
-        combined_edges = pd.concat([ptm_edges, nease_edges, common_edges])
-        self.nease_comparison = combined_edges
-
-    def plot_nease_comparison(self, ax = None, **kwargs):
-        """
-        Given the comparison data generated by compare_to_nease, plot the number of edges identified by NEASE and PTM-POSE
-        """
-        #check if nease_comparison exists already, if not generate if data is provided
-        if not hasattr(self, 'nease_comparison') and 'nease_edges' in kwargs:
-            self.compare_to_nease(kwargs['nease_edges'])
-        elif not hasattr(self, 'nease_comparison'):
-            raise ValueError('No NEASE comparison data found. Please provide nease_edges to compare to PTM-POSE network or run `compare_to_nease()` first.')
-        
-        
-        if ax is None:
-            fig, ax = plt.subplots(figsize = (3,2))
-        
-        #extract counts
-        common_edges = self.nease_comparison[self.nease_comparison['NEASE'] & self.nease_comparison['PTM-POSE']].shape[0]
-        ptm_only_edges = self.nease_comparison[self.nease_comparison['PTM-POSE'] & ~self.nease_comparison['NEASE']].shape[0]
-        nease_only_edges = self.nease_comparison[self.nease_comparison['NEASE'] & ~self.nease_comparison['PTM-POSE']].shape[0]
-
-        #plot barplot
-        ax.barh(['Identified with NEASE\nand PTM-POSE', 'PTM-POSE\n(PTM-Specific)','NEASE\n(Exon-Specific)'], [common_edges, ptm_only_edges, nease_only_edges], color = 'gray', edgecolor = 'black', height=0.9)
-        ax.tick_params(labelsize = 9)
-        ax.set_xlabel('Number of Interactions\nImpacted By Splicing', fontsize = 10)
-
-
-
-    def plot_interaction_network(self, modified_color = 'red', modified_node_size = 10, interacting_color = 'lightblue', interacting_node_size = 5, defaultedgecolor = 'gray', color_edges_by = 'Same', seed = 200, ax = None, proteins_to_label = None, labelcolor = 'black', legend = True, include_nease_comparison = False):
-        """
-        Given the interactiong graph and network data outputted from analyze.get_interaction_network, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs. by default, will only label proteins 
-
-        Parameters
-        ----------
-        modified_color: str
-            Color to use for nodes that are modified by splicing. Default is 'red'
-        modified_node_size: int
-            Size of nodes that are modified by splicing. Default is 10
-        interacting_color: str
-            Color to use for nodes that interact with modified nodes. Default is 'lightblue'
-        interacting_node_size: int
-            Size of nodes that interact with modified nodes. Default is 5
-        edgecolor: str
-            Color to use for edges in the network. Default is 'gray'. Can choose to color by database by providing a dictionary with database names as keys and colors as values or by specifying 'database' as color
-        seed: int
-            Seed to use for random number generator. Default is 200
-        ax: matplotlib.pyplot.Axes
-            Axes object to plot the network. Default is None
-        """
-        if not hasattr(self, 'interaction_graph'):
-            self.get_interaction_network()
-
-        if not hasattr(self, 'network_stats'):
-            self.get_interaction_stats()
-
-        # if include nease comparison, combine graphs
-        if nease_edges is not None:
-            nease_edges['Affected binding'] = nease_edges['Affected binding'].apply(lambda x: x.split(','))
-            nease_edges = nease_edges.explode('Affected binding')
-
-            nease_nw = nx.from_pandas_edgelist(nease_edges, source = 'Gene name', target = 'Affected binding')
-
-            #combine graphs
-            plt_graph = nx.compose(self.interaction_graph, nease_nw)
-        else:
-            plt_graph = self.interaction_graph.copy()
-
-
-        plot_interaction_network(plt_graph, self.network_data, self.network_stats, modified_color = modified_color, modified_node_size = modified_node_size, interacting_color = interacting_color, interacting_node_size = interacting_node_size, defaultedgecolor = defaultedgecolor, color_edges_by=color_edges_by, seed = seed, ax = ax, proteins_to_label = proteins_to_label, labelcolor = labelcolor, legend = legend)
-
-    def plot_network_centrality(self,  centrality_measure = 'Degree', top_N = 10, modified_color = 'red', interacting_color = 'black', ax = None):
-        if not hasattr(self, 'interaction_graph'):
-            self.get_interaction_network()
-        if not hasattr(self, 'network_stats'):
-            self.get_interaction_stats()
-
-        plot_network_centrality(self.network_stats, self.network_data, centrality_measure=centrality_measure,top_N = top_N, modified_color = modified_color, interacting_color = interacting_color, ax = ax)

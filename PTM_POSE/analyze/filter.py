@@ -72,7 +72,29 @@ def plot_filter_impact(ptms, output_type = 'count', topn = 10, ax = None, **kwar
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
 
-def assess_filter_range(ptms, min_value = 0, max_value = None, step = None, filter_type = 'min_studies', phospho_only_evidence_filter = True, ax = None, fontsize = 11):
+def assess_filter_range(ptms, min_value = 0, max_value = None, step = None, filter_type = 'min_studies', phospho_only_evidence_filter = False, ax = None, fontsize = 11):
+    """
+    Given a dataframe of PTMs and a PTM evidence filter type, assess how adjusting the filter value impacts the number of PTMs and the fraction of those PTMs that are phosphorylated. This is done by plotting the number of PTMs and the fraction of phosphorylated PTMs as a function of the filter value.
+
+    Parameters
+    ----------
+    ptms : pd.DataFrame
+        Dataframe containing PTM data, either the spliced_ptms or altered_flank data
+    min_value : int, optional
+        The minimum value for the filter. The default is 0.
+    max_value : int, optional      
+        The maximum value for the filter. If None, the maximum value will be determined based on the filter type. The default is None.
+    step : int, optional
+        The step size for the filter. If None, the step size will be determined based on the maximum value. The default is None.
+    filter_type : str, optional
+        The type of filter to apply. Must be one of ['min_studies', 'min_compendia', 'min_MS', 'min_LTP']. The default is 'min_studies'.
+    phospho_only_evidence_filter : bool, optional
+        Whether to apply the phospho only evidence filter (only filter phosphorylatio sites). The default is False.
+    ax : matplotlib.axes.Axes, optional
+        The axes to plot on. If None, a new figure and axes will be created. The default is None.
+    fontsize : int, optional
+        The font size for the plot. The default is 11.
+    """
     num_ptms = []
     frac_phospho = []
 
@@ -92,8 +114,10 @@ def assess_filter_range(ptms, min_value = 0, max_value = None, step = None, filt
             max_value = ptms['LT_LIT'].max()
     
     #if specific step value not provided, round to nearest 10% of max value
-    if step is None:
+    if step is None and max_value >= 1:
         step = round(max_value/10)
+    elif step is None and max_value < 1:
+        step = max_value/10
 
     #filter PTMs using the indicated filter type method for value in range
     x = np.arange(min_value, int(max_value) + 1, step)

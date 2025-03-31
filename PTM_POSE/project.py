@@ -247,7 +247,7 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
 
 
     
-def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotate_original_df = True, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'exonStart_0base', region_end_col = 'exonEnd', dPSI_col = None, sig_col = None, event_id_col = None, gene_col = None, extra_cols = None, separate_modification_types = False, coordinate_type = 'hg38', start_coordinate_system = '1-based', end_coordinate_system = '1-based', taskbar_label = None, PROCESSES = 1, **kwargs):
+def project_ptms_onto_splice_events(splice_data,annotate_original_df = True, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'exonStart_0base', region_end_col = 'exonEnd', dPSI_col = None, sig_col = None, event_id_col = None, gene_col = None, extra_cols = None, separate_modification_types = False, coordinate_type = 'hg38', start_coordinate_system = '1-based', end_coordinate_system = '1-based', taskbar_label = None,  ptm_coordinates = None,PROCESSES = 1, **kwargs):
     """
     Given splice event quantification data, project PTMs onto the regions impacted by the splice events. Assumes that the splice event data will have chromosome, strand, and genomic start/end positions for the regions of interest, and each row of the splice_event_data corresponds to a unique region.
 
@@ -310,18 +310,12 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotat
     if kwargs:
         filter_arguments = helpers.extract_filter_kwargs(**kwargs)
         #check any excess unused keyword arguments, report them
-        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
-
-    if taskbar_label is None:
-        taskbar_label = 'Projecting PTMs onto splice events using ' + coordinate_type + ' coordinates.'
-
-    #check for any keyword arguments to use for filtering
-    if kwargs:
-        filter_arguments = helpers.extract_filter_kwargs(**kwargs)
-        #check any excess unused keyword arguments, report them
         helpers.check_filter_kwargs(filter_arguments)
         #filter ptm coordinates file to include only ptms with desired evidence
         ptm_coordinates = helpers.filter_ptms(ptm_coordinates, **filter_arguments)
+
+    if taskbar_label is None:
+        taskbar_label = 'Projecting PTMs onto splice events using ' + coordinate_type + ' coordinates.'
 
     #copy
     splice_data = splice_data.copy()
@@ -354,7 +348,7 @@ def project_ptms_onto_splice_events(splice_data, ptm_coordinates = None, annotat
 
 
 
-def project_ptms_onto_MATS(ptm_coordinates = None, SE_events = None, A5SS_events = None, A3SS_events = None, RI_events = None, MXE_events = None, coordinate_type = 'hg38', identify_flanking_sequences = False, dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None, separate_modification_types = False, PROCESSES = 1, **kwargs):
+def project_ptms_onto_MATS(SE_events = None, A5SS_events = None, A3SS_events = None, RI_events = None, MXE_events = None, coordinate_type = 'hg38', identify_flanking_sequences = False, dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None, separate_modification_types = False, PROCESSES = 1,ptm_coordinates = None, **kwargs):
     """
     Given splice quantification from the MATS algorithm, annotate with PTMs that are found in the differentially included regions.
 
@@ -673,7 +667,7 @@ def add_splicegraph_info(psi_data, splicegraph, purpose = 'inclusion'):
     else:
         raise ValueError('Purpose must be either inclusion or flanking. Please provide the correct purpose for the splicegraph information.')
 
-def project_ptms_onto_SpliceSeq(psi_data, splicegraph, gene_col ='symbol', dPSI_col = None, sig_col = None, extra_cols = None, coordinate_type = 'hg19', separate_modification_types = False, identify_flanking_sequences = False, flank_size = 5, PROCESSES = 1, **kwargs):
+def project_ptms_onto_SpliceSeq(psi_data, splicegraph, gene_col ='symbol', dPSI_col = None, sig_col = None, extra_cols = None, coordinate_type = 'hg19', separate_modification_types = False, identify_flanking_sequences = False, flank_size = 5, ptm_coordinates = None, PROCESSES = 1, **kwargs):
     """
     Given splice event quantification from SpliceSeq (such as what can be downloaded from TCGASpliceSeq), annotate with PTMs that are found in the differentially included regions.
 
@@ -715,21 +709,28 @@ def project_ptms_onto_SpliceSeq(psi_data, splicegraph, gene_col ='symbol', dPSI_
         #check any excess unused keyword arguments, report them
         helpers.check_filter_kwargs(filter_arguments)
         #filter ptm coordinates file to include only ptms with desired evidence
-        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
+        ptm_coordinates = helpers.filter_ptms(ptm_coordinates, **filter_arguments)
 
     #remove ME events from this analysis
+    overlapping_columns = set(psi_data.columns).intersection({'Chromosome', 'Strand', 'Chr_Start', 'Chr_Stop'})
+    if len(overlapping_columns) > 0:
+        #drop columns that will be added from splicegraph
+        psi_data = psi_data.drop(columns=overlapping_columns)
+
     print('Removing ME events from analysis')
-    psi_data = psi_data[psi_data['splice_type'] != 'ME'].copy()
+    spliced_data = psi_data.copy()
+    spliced_data = spliced_data[spliced_data['splice_type'] != 'ME'].copy()
 
     #split exons into individual exons
-    psi_data['Individual exon'] = psi_data['exons'].apply(lambda x: x.split(':'))
-    psi_data = psi_data.explode('Individual exon').drop_duplicates()
-    psi_data['Individual exon'] = psi_data['Individual exon'].astype(float)
+    spliced_data['Individual exon'] = spliced_data['exons'].apply(lambda x: x.split(':'))
+    spliced_data = spliced_data.explode('Individual exon').drop_duplicates()
+    spliced_data['Individual exon'] = spliced_data['Individual exon'].astype(float)
 
     #add gene location information to psi data from spliceseq
-
-    spliced_data = psi_data.merge(splicegraph, left_on = ['symbol', 'Individual exon'], right_on = ['Symbol', 'Exon'], how = 'left')
+    
+    spliced_data = spliced_data.merge(splicegraph.copy(), left_on = ['symbol', 'Individual exon'], right_on = ['Symbol', 'Exon'], how = 'left')
     spliced_data = spliced_data.rename(columns = {'Chr_Start': 'spliced_region_start', 'Chr_Stop': 'spliced_region_end'})
+
 
     print('Projecting PTMs onto SpliceSeq data')
     spliced_data, spliced_ptms = project_ptms_onto_splice_events(spliced_data, chromosome_col = 'Chromosome', strand_col = 'Strand', gene_col = 'symbol', region_start_col = 'spliced_region_start', region_end_col = 'spliced_region_end', event_id_col = 'as_id',dPSI_col = dPSI_col, sig_col = sig_col, extra_cols = extra_cols, separate_modification_types = separate_modification_types, coordinate_type = coordinate_type, PROCESSES = PROCESSES)

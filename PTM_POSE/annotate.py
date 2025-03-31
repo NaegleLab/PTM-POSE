@@ -16,13 +16,7 @@ except ImportError:
 #dictionaries for converting modification codes to modification names in PhosphoSitePlus data
 mod_shorthand_dict = {'p': 'Phosphorylation', 'ca':'Caspase Cleavage', 'hy':'Hydroxylation', 'sn':'S-Nitrosylation', 'ng':'Glycosylation', 'ub': 'Ubiquitination', 'pa': "Palmitoylation",'ne':'Neddylation','sc':'Succinylation', 'sm': 'Sumoylation', 'ga': 'Glycosylation', 'gl': 'Glycosylation', 'ac': 'Acetylation', 'me':'Methylation', 'm1':'Methylation', 'm2': 'Dimethylation', 'm3':'Trimethylation'}
 residue_dict = {'P': 'proline', 'Y':'tyrosine', 'S':'serine', 'T':'threonine', 'H':'histidine', 'D':'aspartic acid', 'I':'isoleucine', 'K':'lysine', 'R':'arginine', 'G':'glycine', 'N':'asparagine', 'M':'methionine'}
-annotation_col_dict = {'PhosphoSitePlus':{'Function':'PSP:ON_FUNCTION', 'Process':'PSP:ON_PROCESS', 'Interactions':'PSP:ON_PROT_INTERACT', 'Disease':'PSP:Disease_Association', 'Kinase':'PSP:Enzyme','Perturbation':'PTMsigDB:PSP-PERT'},
-                        'ELM':{'Interactions':'ELM:Interactions', 'Motif Match':'ELM:Motif Matches'},
-                        'PTMcode':{'Intraprotein':'PTMcode:Intraprotein_Interactions', 'Interactions':'PTMcode:Interprotein_Interactions'},
-                        'PTMInt':{'Interactions':'PTMInt:Interactions'},
-                        'RegPhos':{'Kinase':'RegPhos:Kinase'},
-                        'DEPOD':{'Phosphatase':'DEPOD:Phosphatase'},
-                        'PTMsigDB': {'WikiPathway':'PTMsigDB:PATH-WP', 'NetPath':'PTMsigDB:PATH-NP','mSigDB':'PTMsigDB:PATH-BI', 'Pertubation (DIA2)':'PTMsigDB:PERT-P100-DIA2', 'Perturbation (DIA)': 'PTMsigDB:PERT-P100-DIA', 'Perturbation (PRM)':'PTMsigDB:PERT-P100-PRM'}}
+
 
 
 def get_available_gmt_annotations(format = 'dict'):
@@ -211,7 +205,106 @@ def construct_annotation_dict_from_gmt(gmt_df, key_type = 'annotation'):
 
     return annotation_dict
 
+def construct_annotation_dict_from_df(ptms, annot_col, key_type = 'annotation'):
+    """
+    Given an annotated PTM dataframe, construct a dictionary mapping each item to its annotations, with either the annotation as key or PTM as the key
+
+    Parameters
+    ----------
+    ptms : pd.DataFrame
+        Dataframe containing PTM data with annotation data, could be either spliced_ptm or altered_flanks dataframe
+    annot_col : str
+        Column name in the dataframe that contains the annotation data to construct the dictionary from. 
+    key_type : str
+        Whether the annotation or ptm should be the key of the output dictionary. Default is annotation
+    """
+    ptms = ptms.dropna(subset = annot_col).copy()
+    #add PTM label column
+    ptms = helpers.add_ptm_column(ptms)
+    ptms['Label'] = ptms['PTM'] + '-' + ptms['Modification Class']
+    #split annotations
+    ptms[annot_col] = ptms[annot_col].str.split(';')
+    # Create a dictionary mapping each item to its annotations (or vice versa)
+    if key_type == 'ptm':
+        annotation_dict = ptms.set_index('Label')
+        annotation_dict = annotation_dict[annot_col].to_dict()
+    elif key_type == 'annotation':
+        annotation_dict = ptms.explode(annot_col)
+        annotation_dict = annotation_dict.groupby(annot_col)['Label'].apply(set).to_dict()
+    return annotation_dict
+
+
+def check_gmt_file(gmt_file, database, annot_type, automatic_download = False, odir = None, **kwargs):
+    """
+    Given a gmt file path, check to make sure it exists. If it doesn't, either raise error or download and save a gmt file in the provided directory.
+
+    Parameters
+    ----------
+    gmt_file : str
+        file path to gmt file
+    database : str
+        name of database associated with gmt file
+    annot_type : str
+        type of annotation to check for. This is used to provide more specific error messages
+    automatic download: bool
+        whether to automatically download data and process into gmt file if it does not exist and can be done. Default is false
+    odir : str or None
+        location to save annotations, if automatic download is true
+    kwargs : additional keyword arguments
+        Passes additional keyword arguments to annotation specific functions. For example, you could pass min_sources for the construct_omnipath_gmt() function 
+    """
+    if not os.path.exists(gmt_file):
+        if database == 'PhosphoSitePlus':
+            raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or use `construct_PhosphoSitePlus_gmt_file()` to create file in resource directory.")
+        elif database == 'PTMsigDB':
+            raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or use `construct_PTMsigDB_gmt_file()` to create file in resource directory.")
+        elif database == 'RegPhos':
+            raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or use `construct_RegPhos_gmt_file()` to create file in resource directory.")
+        elif database == 'PTMInt':
+            if automatic_download:
+                construct_PTMInt_gmt_file(odir = odir, overwrite = True)
+            else:
+                raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or set automatic_download=True to automatically create gmt file in provided resource directory.")
+        elif database == 'PTMcode':
+            if automatic_download:
+                construct_PTMcode_interprotein_gmt_file(odir = odir)
+            else:
+                raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or set automatic_download=True to automatically create gmt file in provided resource directory.")
+        elif database == 'OmniPath':
+            if automatic_download:
+                if omnipath is None:
+                    raise ImportError("OmniPath is not installed. Please install OmniPath to use this database.")
+                else:
+                    construct_omnipath_gmt_file(odir = odir, **kwargs)
+            else:
+                raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or set automatic_download=True to automatically create gmt file in provided resource directory.")
+        elif database == 'DEPOD':
+            if automatic_download:
+                construct_DEPOD_gmt_file(odir = odir)
+            else:
+                raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or set automatic_download=True to automatically create gmt file in provided resource directory.")
+
 def process_database_annotations(database = 'PhosphoSitePlus', annot_type = 'Function', key_type = 'annotation', collapsed = False, resource_dir = None, automatic_download = False, **kwargs):
+    """
+    Given a database and annotation type, find and process the annotations into a dictionary mapping each PTM to its annotations, or vice versa
+
+    Parameters
+    ----------
+    database: str
+        source of annotation
+    annot_type : str
+        type of annotation to retrieve
+    key_type : str
+        whether the annotation or ptm should be the key of the output dictionary. Default is annotation
+    collapsed : bool
+        whether to combine annotations for similar types into a single annotation. For example, 'cell growth, induced' and 'cell growth, inhibited' would be simplified to 'cell growth'. Default is False.
+    resource_dir : str or None
+        location of annotations. By default, this will look for annotations in PTM-POSE resource directory
+    automatic_download: bool
+        Whether to automatically download annotations that are not yet present in resource files directory
+    kwargs : additional keyword arguments
+        Passes additional keyword arguments to annotation specific functions. For example, you could pass min_sources for the construct_omnipath_gmt() function 
+    """
     if resource_dir is None:
         resource_dir = pose_config.package_dir
     
@@ -224,45 +317,16 @@ def process_database_annotations(database = 'PhosphoSitePlus', annot_type = 'Fun
         raise ValueError("OmniPath has two enzyme annotations, one for writer enzymes and one for eraser enzymes. Please specify which enzyme you would like to use with the annot_type parameter. Options are: 'Writer_Enzyme' or 'Eraser_Enzyme'")
     
     #check existence of the gmt file, download if automatic_download is True and does not exist
-    gmt_file = os.path.join(resource_dir, 'Resource_Files', 'Annotations', database, f'{annot_type}.gmt.gz')
     if database == 'OmniPath':
-        if annot_type == 'Writer Enzyme':
+        if annot_type == 'Writer Enzyme' or annot_type == 'Writer_Enzyme':
             gmt_file = os.path.join(resource_dir, 'Resource_Files', 'Annotations', database, 'Writer_Enzyme.gmt.gz')
-        elif annot_type == 'Eraser Enzyme':
+        elif annot_type == 'Eraser Enzyme' or annot_type == 'Eraser_Enzyme':
             gmt_file = os.path.join(resource_dir, 'Resource_Files', 'Annotations', database, 'Eraser_Enzyme.gmt.gz')
-        else:
-            raise ValueError("OmniPath has two enzyme annotations, one for writer enzymes and one for eraser enzymes. Please specify which enzyme you would like to use with the annot_type parameter. Options are: 'Writer Enzyme' or 'Eraser Enzyme'")
-        
-    if not os.path.exists(gmt_file):
-        if database == 'PhosphoSitePlus':
-            raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or use `construct_PhosphoSitePlus_gmt_file()` to create file in resource directory.")
-        elif database == 'PTMsigDB':
-            raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or use `construct_PTMsigDB_gmt_file()` to create file in resource directory.")
-        elif database == 'RegPhos':
-            raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or use `construct_RegPhos_gmt_file()` to create file in resource directory.")
-        elif database == 'PTMInt':
-            if automatic_download:
-                construct_PTMInt_gmt_file(odir = resource_dir, overwrite = True)
-            else:
-                raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or set automatic_download=True to automatically create gmt file in provided resource directory.")
-        elif database == 'PTMcode':
-            if automatic_download:
-                construct_PTMcode_interprotein_gmt_file(odir = resource_dir)
-            else:
-                raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or set automatic_download=True to automatically create gmt file in provided resource directory.")
-        elif database == 'OmniPath':
-            if automatic_download:
-                if omnipath is None:
-                    raise ImportError("OmniPath is not installed. Please install OmniPath to use this database.")
-                else:
-                    construct_omnipath_gmt_file(odir = resource_dir, **kwargs)
-            else:
-                raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or set automatic_download=True to automatically create gmt file in provided resource directory.")
-        elif database == 'DEPOD':
-            if automatic_download:
-                construct_DEPOD_gmt_file(odir = resource_dir)
-            else:
-                raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or set automatic_download=True to automatically create gmt file in provided resource directory.")
+    else:
+        gmt_file = os.path.join(resource_dir, 'Resource_Files', 'Annotations', database, f'{annot_type}.gmt.gz')
+
+    check_gmt_file(gmt_file, database = database, annot_type = annot_type, automatic_download = automatic_download, odir = resource_dir, **kwargs)        
+
     
     #load gmt df
     gmt_df = load_gmt_file(gmt_file)
@@ -280,6 +344,23 @@ def process_database_annotations(database = 'PhosphoSitePlus', annot_type = 'Fun
 def append_from_gmt(ptms, database = None, annot_type = None, gmt_df = None, column_name = None, **kwargs):
     """
     Given a gmt annotation file format, add the annotations to the ptms dataframe
+
+    Parameters
+    ----------
+    ptms : pd.DataFrame
+        dataframe containing ptm information, which can be the spliced_ptms or altered_flanks dataframe generated during projection
+    database : str
+        Name of the database for the annotation. Used to identify proper annotation if gmt_df not provided
+    annot_type : str
+        Type of annotation to append to the ptms dataframe
+    gmt_df : pd.DataFrame 
+        If using custom gmt file, provide the dataframe loaded from the GMT file. This will override the database and annot_type parameters if provided.
+    column_name : str or None
+        
+        Name of the column to use for the annotations in the ptms dataframe. If None, will use a default name based on the database and annot_type. Default is None.
+    **kwargs : additional keyword arguments
+        Passes additional keyword arguments to annotation specific functions. For example, you could pass min_sources for the construct_omnipath_gmt() function 
+    
     """
     #create dictionary mapping each ptm to its annotations
     if gmt_df is not None:
@@ -313,6 +394,28 @@ def append_from_gmt(ptms, database = None, annot_type = None, gmt_df = None, col
     return ptms
 
 def construct_gmt_df(df, annotation_col, description = np.nan, annotation_separator = None, odir = None, fname = None, compressed = True):
+    """
+    Given annotation data, construct a dataframe in the gmt file format. Save if odir and fname are provided
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        
+        Dataframe containing the annotation data to be converted to GMT format. Must contain columns for UniProtKB Accession, Residue, PTM Position in Isoform, and the annotation data to be added.
+    annotation_col : str
+        
+        Column name in the dataframe that contains the annotation data to be added to the GMT file. This will be used as the annotation column in the output GMT file.
+    description : str or np.nan
+        description to add to description column
+    annotation_separator : str or None
+        what separator to use for splitting annotations in the annotation_col. If None, will not split annotations. Default is None.
+    odir : str or None
+        file path to output directory where the GMT file will be saved. If None, will not save. Default is None.
+    fname : str or None:
+        name of output file. If None, will use the annotation_col as the file name. Default is None.
+    compressed : bool
+        whether to save gmt file in gzip format. Default is True.
+    """
     # add label columns to give each row a unique PTM + Modification identifier
     if 'Label' not in df.columns:
         df['PTM'] = df['UniProtKB Accession'] + '_' + df['Residue'] + df['PTM Position in Isoform'].astype(int).astype(str)
@@ -355,6 +458,34 @@ def construct_gmt_df(df, annotation_col, description = np.nan, annotation_separa
     return df
 
 def construct_custom_gmt_file(annotation_df, database, annot_type, annot_col, accession_col = 'UniProtKB Accession', residue_col = 'Residue', position_col = 'PTM Position in Isofrom', odir = None, **kwargs):
+    """
+    Function for constructing a gmt file for annotations not currently provided by PTM-POSE. Ideally, these annotations should be partially processed to have the same format as PTM-POSE annotations. For example, they should have columns for UniProtKB Accession, Residue, PTM Position in Isoform, and the annotation data to be added.
+
+    Parameters
+    ----------
+    annotation_df: pandas.DataFrame
+        Dataframe containing the annotation data to be added to the ptms dataframe. Must contain columns for UniProtKB Accession, Residue, PTM Position in Isoform, and the annotation data to be added.
+    database : str
+        Name of the database for the annotation. This will be used to create the output directory and file name.
+    annot_type : str
+        
+        Type of annotation data being added. This will be used to create the output file name and description.
+    annot_col : str  
+        Column name in the annotation data that contains the annotation data to be added to the ptms dataframe. This will be used as the annotation column in the output GMT file.
+    accession_col : str
+        
+        Column name in the annotation data that contains the UniProtKB Accession information. Default is 'UniProtKB Accession'.
+    residue_col : str
+        
+        Column name in the annotation data that contains the residue information. Default is 'Residue'.
+    position_col : str
+        Column name in the annotation data that contains the PTM position information. Default is 'PTM Position in Isoform'.
+    odir : str or None
+        
+        Path to the output directory where the GMT file will be saved. If None, will save to the default resource directory for annotations. Default is None.
+    kwargs : additional keyword arguments
+        additional keywords to pass to construct_gmt_df function. This can include parameters such as annotation_separator, description, and compressed.
+    """
     #check to make sure annotation data has the necessary columns
     if not all([x in annotation_df.columns for x in [accession_col, residue_col, position_col]]):
         missing_cols = ', '.join([x for x in [accession_col, residue_col, position_col] if x not in annotation_df.columns])
@@ -389,6 +520,20 @@ def construct_custom_gmt_file(annotation_df, database, annot_type, annot_col, ac
 def construct_PhosphoSitePlus_gmt_files(regulatory_site_file = None, kinase_substrate_file = None, disease_association_file = None, odir = None, overwrite = False):
     """
     Given three PhosphoSitePlus annotation files, convert to readily usable format with PTM-POSE in gmt file format
+
+    Parameters
+    ----------
+    regulatory_site_file: str or None
+        
+        Path to the PhosphoSitePlus regulatory site file (gzipped). If None, will skip creating function annotations.
+    kinase_substrate_file: str or None
+        Path to the PhosphoSitePlus kinase-substrate file (gzipped). If None, will skip creating kinase-substrate annotations.
+    disease_association_file: str or None
+        Path to the PhosphoSitePlus disease association file (gzipped). If None, will skip creating disease association annotations.
+    odir : str or None
+        Path to the output directory where the GMT files will be saved. If None, will save to the default resource directory for PhosphoSitePlus annotations.
+    overwrite : bool
+        If True, will overwrite existing GMT files if they already exist. If False, will skip creating the GMT files if they already exist. Default is False.
     """
     if odir is None:
         odir = os.path.join(pose_config.package_dir, 'Resource_Files','Annotations', 'PhosphoSitePlus')
@@ -426,15 +571,15 @@ def construct_PhosphoSitePlus_gmt_files(regulatory_site_file = None, kinase_subs
 
             #for each available type of annotation, create a gmt file
             function = construct_gmt_df(regulatory_site_data, 'ON_FUNCTION', description = 'PSP:ON_FUNCTION', annotation_separator = ';', odir = odir, fname = 'Function', compressed=True)
-            print(f"PhosphoSitePlus Function gmt file created at {odir + 'Process.gmt.gz'}")
+            print(f"PhosphoSitePlus Function gmt file created at {odir + '/Function.gmt.gz'}")
 
             #biological processes
             process = construct_gmt_df(regulatory_site_data, 'ON_PROCESS', description = 'PSP:ON_PROCESS', annotation_separator = ';', odir = odir, fname = 'Process', compressed=True)
-            print(f"PhosphoSitePlus Biological Process gmt file created at {odir + 'Process.gmt.gz'}")
+            print(f"PhosphoSitePlus Biological Process gmt file created at {odir + '/Process.gmt.gz'}")
 
             #protein interactions
             interactions = construct_gmt_df(regulatory_site_data, 'ON_PROT_INTERACT', description = "PSP:ON_PROT_INTERACT", annotation_separator = ';', odir = odir, fname = 'Interactions', compressed=True)
-            print(f"PhosphoSitePlus Protein Interactions gmt file created at {odir + 'Interactions.gmt.gz'}")
+            print(f"PhosphoSitePlus Protein Interactions gmt file created at {odir + '/Interactions.gmt.gz'}")
 
     #check if kinase substrate file is provided
     if kinase_substrate_file:
@@ -455,7 +600,7 @@ def construct_PhosphoSitePlus_gmt_files(regulatory_site_file = None, kinase_subs
             ks_dataset['Label'] = ks_dataset['PTM'] + '-Phosphorylation'
 
             kinase_gmt = construct_gmt_df(ks_dataset, 'GENE', description = 'PSP:Kinase', odir = odir, fname = 'Enzyme', compressed = True)
-            print(f"PhosphoSitePlus Kinase-Substrate gmt file created at {odir + 'Interactions.gmt.gz'}")
+            print(f"PhosphoSitePlus Kinase-Substrate gmt file created at {odir + '/Enzyme.gmt.gz'}")
 
     #check if disease association file is provided
     if disease_association_file:
@@ -495,7 +640,7 @@ def construct_PhosphoSitePlus_gmt_files(regulatory_site_file = None, kinase_subs
 
             construct_gmt_df(disease_associated_sites, annotation_col = 'ALTERATION', description = 'PSP:Disease_Association', odir = odir, fname = 'Disease', compressed=True)
 
-            print(f"PhosphoSitePlus Disease-association gmt file created at {odir + 'Process.gmt.gz'}")
+            print(f"PhosphoSitePlus Disease-association gmt file created at {odir + '/Disease.gmt.gz'}")
     
 
 
@@ -649,6 +794,22 @@ def add_ELM_matched_motifs(ptms, flank_size = 7, file = None, report_success = T
     return ptms
 
 def construct_PTMInt_gmt_file(file = None, odir = None, overwrite = False, max_retries = 5, delay = 10):
+    """
+    Download and process PTMInt interaction data to create gmt files for PTM-POSE
+
+    Parameters
+    ----------
+    file : str, optional
+        Path to the PTMInt data file. If not provided, the data will be downloaded directly from the PTMInt website. Default is None.
+    odir : str, optional
+        Output directory for the gmt file. If not provided, will default to the PTM-POSE resource directory for annotations. Default is None.
+    overwrite : bool, optional
+        If True, will overwrite any existing gmt files in the output directory. If False, will skip the creation of the gmt file if it already exists. Default is False.
+    max_retries : int, optional
+        Number of times to retry downloading the PTMInt data if the download fails. Default is 5.
+    delay : int, optional
+        Amount of time to wait (in seconds) before retrying the download if it fails. Default is 10 seconds.
+    """
     #find output directory for gmt files
     if odir is None:
         odir = os.path.join(pose_config.package_dir, 'Resource_Files','Annotations', 'PTMint')
@@ -726,6 +887,17 @@ def extract_ids_PTMcode(df, col = '## Protein1'):
 def construct_PTMcode_interprotein_gmt_file(file = None, odir = None, overwrite = False, max_retries = 5, delay = 10):
     """
     Given the PTMcode interprotein interaction data, convert to readily usable format with PTM-POSE in gmt file format
+
+    file: str
+        Path to the PTMcode interprotein interaction data file. If not provided, the data will be downloaded directly from the PTMcode website
+    odir : str
+        Output directory for the gmt file. If not provided, will default to the PTM-POSE resource directory for annotations
+    overwrite : bool, optional
+        If True, will overwrite any existing gmt files in the output directory. If False, will skip the creation of the gmt file if it already exists. Default is False.
+    max_retries : int, optional
+        Number of times to retry downloading the PTMcode data if the initial attempt fails. Default is 5.
+    delay : int, optional
+        Number of seconds to wait between retries if the download fails. Default is 10 seconds.
     """
     if odir is None:
         odir = os.path.join(pose_config.package_dir, 'Resource_Files','Annotations', 'PTMcode')
@@ -806,6 +978,16 @@ def construct_PTMcode_interprotein_gmt_file(file = None, odir = None, overwrite 
 def extract_positions_from_DEPOD(x):
     """
     Given string object consisting of multiple modifications in the form of 'Residue-Position' separated by ', ', extract the residue and position. Ignore any excess details in the string.
+
+    Parameters
+    ----------
+    x : str
+        dephosphosite entry from DEPOD data
+
+    Returns
+    -------
+    new_x :str
+        ptm residue and position in format that PTM-POSE recognizes
     """
     x = x.split('[')[0].split(', ')
     #for each residue in list, find location of 'Ser', 'Thr' and 'Tyr' in the string (should either have '-' or a number immediately after it)
@@ -851,7 +1033,21 @@ def extract_positions_from_DEPOD(x):
     
     return new_x
 
-def construct_DEPOD_gmt_file(file = None, odir = None, overwrite = False, max_retries = 5, delay = 10):
+def construct_DEPOD_gmt_file(odir = None, overwrite = False, max_retries = 5, delay = 10):
+    """
+    Download and process DEPOD data to create a GMT file for PTM-POSE. DEPOD contains information on dephosphorylation sites and their corresponding substrates.
+
+    Parameters
+    ----------
+    odir : str, optional
+        Output directory for the GMT file. If not provided, it will default to the 'Resource_Files/Annotations/DEPOD' directory within the PTM-POSE package directory.
+    overwrite : bool, optional
+        If True, will overwrite any existing GMT file in the output directory. If False and the GMT file already exists, the function will skip processing and print a message.
+    max_retries : int, optional
+        Number of times to try downloading data from DEPOD
+    delay : int, optional
+        Delay in seconds between download attempts. Default is 10 seconds.
+    """
     #check if gmt file already exists
     if odir is None:
         odir = os.path.join(pose_config.package_dir, 'Resource_Files','Annotations', 'DEPOD')
@@ -953,6 +1149,14 @@ def construct_DEPOD_gmt_file(file = None, odir = None, overwrite = False, max_re
 
 
 def construct_RegPhos_gmt_file(file = None, odir = None, overwrite = False):
+    """
+    file : str
+        RegPhos text file path. This file can be downloaded from the RegPhos website. If None, the function will raise an error.
+    odir : str
+        Output directory for the gmt files. If None, will default to the PTM-POSE resource directory.
+    overwrite : bool, optional
+        If True, will overwrite any existing gmt files in the output directory. Default is False.
+    """
     #check if gmt file already exists
     if odir is None:
         odir = os.path.join(pose_config.package_dir, 'Resource_Files','Annotations', 'RegPhos')
@@ -983,6 +1187,20 @@ def construct_RegPhos_gmt_file(file = None, odir = None, overwrite = False):
 
 
 def construct_PTMsigDB_gmt_files(file, odir = None, overwrite = False, process_PSP_data = True):
+    """
+    Given the PTMsigDB xlsx file, convert to readily usable format with PTM-POSE in gmt file format. This will also process the PhosphoSitePlus data in PTMsigDB if requested.
+
+    Parameters
+    ----------
+    file : str
+        PTMsigDB excel file path. This file can be downloaded from the PTMsigDB website.
+    odir : str
+        Output directory for the gmt files. If None, will default to the PTM-POSE resource directory.
+    overwrite : bool, optional
+        If True, will overwrite any existing gmt files in the output directory. Default is False.
+    process_PSP_data : bool, optional
+        If True, will process the PhosphoSitePlus data included in the PTMsigDB file, but only if not already found in odir. Default is True.
+    """
     #check if gmt file already exists
     if odir is None:
         ptmsigdb_odir = os.path.join(pose_config.package_dir, 'Resource_Files','Annotations', 'PTMsigDB')
@@ -1058,7 +1276,21 @@ def construct_PTMsigDB_gmt_files(file, odir = None, overwrite = False, process_P
 
 
 
-def construct_omnipath_gmt_file(min_sources = 1, min_references = 1, convert_to_gene_name = True, odir = None, overwrite = False):
+def construct_omnipath_gmt_file(min_sources = 1, min_references = 1, convert_to_gene_name = True, odir = None):
+    """
+    Download enzyme-substrate interactions from the OmniPath database. The data will be filtered based on the number of sources and references specified. The resulting data will be split into two categories: 'Writer' enzymes, which add the modification, and 'Eraser' enzymes, which remove the modification. The output will be saved as GMT files in resource files directory.
+
+    Parameter
+    ---------
+    min_sources : int
+        Minimum number of sources (i.e. database) for an enzyme-substrate interaction to be included. Default is 1.
+    min_references : int
+        Minimum number of literature references for an enzyme-substrate interactino to be included. Default is 1
+    convert_to_gene_name : bool
+        Whether to convert identifier to gene name
+    odir : str or None
+        Output directory for the GMT files. If None, the package resource file will be used. Default is None.
+    """
     #try importing omnipath, if not print error message prompting user to install omnipath
     if 'omnipath' not in globals():
         raise ImportError('Optional dependency `omnipath` required to run this package, but is not installed. Please run `pip install omnipath` then reimport the annotate module.')
@@ -1254,6 +1486,9 @@ def convert_PSP_label_to_UniProt(label):
         #missed_genes.append(gene)
 
 def extract_interaction_details(interaction, column = "PhosphoSitePlus:Interactions"):
+    """
+    Given an interaction string from a specific database, extract the type of interaction and the interacting protein. This is required as different databases format their interaction strings differently.
+    """
 
     interaction_types = {'PTMcode:Interactions':'INDUCES', 'PhosphoSitePlus:Enzyme':'REGULATES', 'DEPOD:Enzyme':'REGULATES', 'RegPhos:Enzyme':'REGULATES', 'Combined:Enzyme':'REGULATES', 'ELM:Interactions':'UNCLEAR', 'OmniPath:Writer_Enzyme':'REGULATES', 'OmniPath:Eraser_Enzyme':'REGULATES'}
     if column == 'PhosphoSitePlus:Interactions':
@@ -1486,15 +1721,26 @@ def combine_enzyme_data(ptms, enzyme_databases = ['PhosphoSitePlus', 'RegPhos', 
     if not hasattr(pose_config, 'genename_to_uniprot'):
         pose_config.genename_to_uniprot = pose_config.flip_uniprot_dict(pose_config.uniprot_to_genename)
 
+    #get enzyme data for each database, if not appended
+    for db in enzyme_databases:
+        if db == 'OmniPath':
+            if 'OmniPath:Writer Enzyme' not in ptms.columns:
+                ptms = append_from_gmt(ptms, database = db, annot_type = 'Writer Enzyme')
+            if 'OmniPath:Eraser Enzyme' not in ptms.columns:
+                ptms = append_from_gmt(ptms, database = db, annot_type = 'Eraser Enzyme')
+        else:
+            if f'{db}:Enzyme' not in ptms.columns:
+                ptms = append_from_gmt(ptms, database = db, annot_type = 'Enzyme')
+
     #remove databases without kinase data in spliced ptms
-    writer_databases = [db for db in enzyme_databases if db + ':Enzyme' in ptms.columns or db + ':Writer Enzyme' in ptms.columns]
+    writer_databases = [db for db in enzyme_databases if db + ':Enzyme' in ptms.columns or db + ':Writer_Enzyme' in ptms.columns]
     if len(writer_databases) <= 1:
         print('1 or fewer writer enzyme data columns found in spliced PTMs, skipping')
         skip_writer = True
     else:
         skip_writer = False
 
-    eraser_databases = [db for db in enzyme_databases if db + ':Eraser Enzyme' in ptms.columns or (db == 'DEPOD' and db + ':Enzyme') in ptms.columns]
+    eraser_databases = [db for db in enzyme_databases if db + ':Eraser_Enzyme' in ptms.columns or (db == 'DEPOD' and db + ':Enzyme') in ptms.columns]
     if len(eraser_databases) <= 1:
         print('1 or fewer eraser enzyme data columns found in spliced PTMs, skipping')
         skip_eraser = True
@@ -1558,9 +1804,9 @@ def combine_enzyme_data(ptms, enzyme_databases = ['PhosphoSitePlus', 'RegPhos', 
                 eraser_data.append(np.nan)
 
     if not skip_writer:
-        ptms['Combined:Writer Enzyme'] = writer_data
+        ptms['Combined:Writer_Enzyme'] = writer_data
     if not skip_eraser:
-        ptms['Combined:Eraser Enzyme'] = eraser_data
+        ptms['Combined:Eraser_Enzyme'] = eraser_data
 
     return ptms
 
@@ -1624,7 +1870,7 @@ def annotate_ptms_with_gmt(ptms, databases = ['PhosphoSitePlus', 'RegPhos', 'PTM
 
 
 
-def annotate_ptms(ptms, psp_regulatory_site_file = None, psp_ks_file = None, psp_disease_file = None, elm_interactions = False, elm_motifs = False, PTMint = False, PTMcode_interprotein = False, DEPOD = False, RegPhos = False, ptmsigdb_file = None, omnipath = True, interactions_to_combine = ['PTMcode', 'PhosphoSitePlus', 'RegPhos', 'PTMInt', 'OmniPath'], enzymes_to_combine = ['PhosphoSitePlus', 'RegPhos', 'OmniPath', 'DEPOD'], combine_similar = True, report_success = True, **kwargs):
+def annotate_ptms(ptms, annot_type = 'All', phosphositeplus = True, ptmsigdb = True, ptmcode = True, ptmint = True, omnipath = True, regphos = True, depod = True, elm = False, interactions_to_combine = 'All', enzymes_to_combine = "All", combine_similar = True, report_success = True, **kwargs):
     """
     Given spliced ptm data, add annotations from various databases. The annotations that can be added are the following:
     
@@ -1639,30 +1885,8 @@ def annotate_ptms(ptms, psp_regulatory_site_file = None, psp_ks_file = None, psp
     ----------
     ptms: pd.DataFrame
         Spliced PTM data from project module
-    psp_regulatory_site_file: str
-        File path to PhosphoSitePlus regulatory site data
-    psp_ks_file: str
-        File path to PhosphoSitePlus kinase-substrate data
-    psp_disease_file: str
-        File path to PhosphoSitePlus disease association data
-    elm_interactions: bool or str
-        If True, download ELM interaction data automatically. If str, provide file path to ELM interaction data
-    elm_motifs: bool or str
-        If True, download ELM motif data automatically. If str, provide file path to ELM motif data
-    PTMint: bool
-        If True, download PTMInt data automatically
-    PTMcode_intraprotein: bool or str
-        If True, download PTMcode intraprotein data automatically. If str, provide file path to PTMcode intraprotein data
-    PTMcode_interprotein: bool or str
-        If True, download PTMcode interprotein data automatically. If str, provide file path to PTMcode interprotein data
-    DEPOD: bool
-        If True, download DEPOD data automatically
-    RegPhos: bool
-        If True, download RegPhos data automatically
-    ptmsigdb_file: str
-        File path to PTMsigDB data
-    omnipath: bool
-        Whether to include OmniPath data. Default is True
+    psp_regulatory : bool
+
     interactions_to_combine: list
         List of databases to combine interaction data from. Default is ['PTMcode', 'PhosphoSitePlus', 'RegPhos', 'PTMInt']
     kinases_to_combine: list
@@ -1670,112 +1894,97 @@ def annotate_ptms(ptms, psp_regulatory_site_file = None, psp_ks_file = None, psp
     combine_similar: bool
         Whether to combine annotations of similar information (kinase, interactions, etc) from multiple databases into another column labeled as 'Combined'. Default is True
     """
-    if psp_regulatory_site_file is not None:
-        try:
-            check_file(psp_regulatory_site_file, expected_extension='.gz')
-            ptms = add_PSP_regulatory_site_data(ptms, file = psp_regulatory_site_file, report_success=report_success)
-        except Exception as e:
-            raise RuntimeError(f'Error adding PhosphoSitePlus regulatory site data. Error message: {e}')
-    if psp_ks_file is not None:
-        try:    
-            check_file(psp_ks_file, expected_extension='.gz')
-            ptms = add_PSP_kinase_substrate_data(ptms, file = psp_ks_file, report_success=report_success)
-        except Exception as e:
-            raise RuntimeError(f'Error adding PhosphoSitePlus kinase-substrate data. Error message: {e}')
-    if psp_disease_file is not None:
-        try:
-            check_file(psp_disease_file, expected_extension='.gz')
-            ptms = add_PSP_disease_association(ptms, file = psp_disease_file, report_success=report_success)
-        except Exception as e:
-            raise RuntimeError(f'Error adding PhosphoSitePlus disease association data. Error message: {e}')
-    if elm_interactions:
-        try:
-            if isinstance(elm_interactions, bool):
-                ptms = add_ELM_interactions(ptms, report_success=report_success)
-            elif isinstance(elm_interactions, str):
-                check_file(elm_interactions, expected_extension='.tsv')
-                ptms = add_ELM_interactions(ptms, file = elm_interactions, report_success=report_success)
-            else:
-                raise ValueError('elm_interactions must be either a boolean (download elm data automatically, slower) or a string (path to elm data tsv file, faster)')
-        except Exception as e:
-            raise RuntimeError(f'Error adding ELM interaction data. Error message: {e}')
-    if elm_motifs:
-        try:
-            if isinstance(elm_motifs, bool):
-                ptms = add_ELM_matched_motifs(ptms, report_success=report_success)
-            elif isinstance(elm_motifs, str):
-                check_file(elm_motifs, expected_extension='.tsv')
-                ptms = add_ELM_matched_motifs(ptms, file = elm_motifs, report_success=report_success)
-            else:
-                raise ValueError('elm_interactions must be either a boolean (download elm data automatically, slower) or a string (path to elm data tsv file, faster)')
-        except Exception as e:
-            raise RuntimeError(f'Error adding ELM motif matches. Error message: {e}')
-    if PTMint:
-        try:
-            if isinstance(PTMint, bool):
-                ptms = add_PTMInt_data(ptms, report_success=report_success)  # download PTMInt data automatically
-            elif isinstance(PTMint, str):
-                check_file(PTMint, expected_extension='.csv')
-                ptms = add_PTMInt_data(ptms, file = PTMint, report_success=report_success)  # use provided PTMInt data csv file
-            else:
-                raise ValueError('PTMint must be either a boolean (download PTMInt data automatically, slower) or a string (path to PTMInt data csv file, faster)')
-        except Exception as e:
-            raise RuntimeError(f'Error adding PTMInt interaction data. Error message: {e}')
-    if PTMcode_interprotein:
-        try:
-            if isinstance(PTMcode_interprotein, bool):
-                ptms = add_PTMcode_interprotein(ptms, report_success=report_success)  # download PTMcode data automatically
-            elif isinstance(PTMcode_interprotein, str):
-                check_file(PTMcode_interprotein, expected_extension='.gz')
-                ptms = add_PTMcode_interprotein(ptms, fname = PTMcode_interprotein, report_success=report_success)  # use provided PTMcode data gz file
-            else:
-                raise ValueError('PTMcode_interprotein must be either a boolean (download PTMcode data automatically, slower) or a string (path to PTMcode data file, faster)')
-        except Exception as e:
-            raise RuntimeError(f'Error adding PTMcode interprotein interaction data. Error message: {e}')
-    if DEPOD:
-        try:
-            ptms = add_DEPOD_phosphatase_data(ptms, report_success=report_success)
-        except Exception as e:
-            raise RuntimeError(f'Error adding DEPOD phosphatase data. Error message: {e}')
-    if RegPhos:
-        try:
-            if isinstance(RegPhos, str):
-                check_file(RegPhos, expected_extension='.txt')
-                ptms = add_RegPhos_data(ptms, file = RegPhos, report_success=report_success)  # use provided RegPhos data txt file
-            else:
-                ptms = add_RegPhos_data(ptms)
-        except Exception as e:
-            raise RuntimeError(f'Error adding RegPhos kinase substrate data data. Error message: {e}')
-    if ptmsigdb_file is not None:
-        try:
-            ptms = add_PTMsigDB_data(ptms, file = ptmsigdb_file, report_success=report_success)
-        except Exception as e:
-            raise RuntimeError(f'Error adding PTMsigDB data. Error message: {e}')
-    if omnipath:
-        try:
-            ptms = add_omnipath_data(ptms, report_success=report_success, **kwargs)
-        except Exception as e:
-            raise RuntimeError(f'Error adding OmniPath data. Error message: {e}')
+    #go through and add interaction information for any database that are not appended to the spliced_ptms dataframe
+    available_annotations = get_available_annotations(ptms)
+    available_annotation_dict = available_annotations.groupby('Database')['Annotation Type'].apply(set)
+
+    if annot_type == 'All':
+        annot_type = ['Function', 'Process', 'Interactions', 'Enzyme', 'Perturbation', 'Pathway', 'Motif']
+
+    #go through and add interaction information that is not in the ptms dataframe
+    for atype in annot_type:
+        if omnipath and atype == 'Enzyme':
+            ptms = append_from_gmt(ptms, database = 'OmniPath', annot_type = 'Writer Enzyme')
+            ptms = append_from_gmt(ptms, database = 'OmniPath', annot_type = 'Eraser Enzyme')
+        elif ptmsigdb and atype == 'Perturbation':
+            ptms = append_from_gmt(ptms, database = 'PTMsigDB', annot_type = 'Perturbation-DIA')
+            ptms = append_from_gmt(ptms, database = 'PTMsigDB', annot_type = 'Perturbation-DIA2')
+            ptms = append_from_gmt(ptms, database = 'PTMsigDB', annot_type = 'Perturbation-PRM')
+        elif ptmsigdb and atype == 'Pathway':
+            ptms = append_from_gmt(ptms, database = 'PTMsigDB', annot_type = 'Pathway-WikiPathways')
+            ptms = append_from_gmt(ptms, database = 'PTMsigDB', annot_type = 'Pathway-NetPath')
+        
+        #if phosphositeplus data available, add
+        if phosphositeplus and atype in available_annotation_dict['PhosphoSitePlus']:
+            try:
+                ptms = append_from_gmt(ptms, database = 'PhosphoSitePlus', annot_type = atype, report_success=report_success)
+            except Exception as e:
+                raise RuntimeError(f'Error adding PhosphoSitePlus {atype} data. Error message: {e}')
+        
+        if ptmsigdb and atype in available_annotation_dict['PTMsigDB']:
+            try:
+                ptms = append_from_gmt(ptms, database = 'PTMsigDB', annot_type = atype, report_success=report_success)
+            except Exception as e:
+                raise RuntimeError(f'Error adding PTMsigDB {atype} data. Error message: {e}')
+        if ptmint and atype in available_annotation_dict['PTMInt']:
+            try:
+                ptms = append_from_gmt(ptms, database = 'PTMint', annot_type = atype, report_success=report_success)
+            except Exception as e:
+                raise RuntimeError(f'Error adding PTMint {atype} data. Error message: {e}')
+        if ptmcode and atype in available_annotation_dict['PTMcode']:
+            try: 
+                ptms = append_from_gmt(ptms, database = 'PTMcode', annot_type = atype, report_success=report_success)
+            except Exception as e:
+                raise RuntimeError(f'Error adding PTMcode {atype} data. Error message: {e}')
+        if regphos and atype in available_annotation_dict['RegPhos']:
+            try:
+                ptms = append_from_gmt(ptms, database = 'RegPhos', annot_type = atype, report_success=report_success)
+            except Exception as e:
+                raise RuntimeError(f'Error adding RegPhos {atype} data. Error message: {e}')
+        if depod and atype in available_annotation_dict['DEPOD']:
+            try:
+                ptms = append_from_gmt(ptms, database = 'DEPOD', annot_type = atype, report_success=report_success)
+            except Exception as e:
+                raise RuntimeError(f'Error adding DEPOD {atype} data. Error message: {e}')
+        if elm:
+            if atype == 'Interactions':
+                try:
+                    ptms = add_ELM_interactions(ptms, report_success=report_success)  # download ELM interaction data automatically
+                except Exception as e:
+                    raise RuntimeError(f'Error adding ELM {atype} data. Error message: {e}')
+            elif atype == 'Motif':
+                try:
+                    ptms = add_ELM_matched_motifs(ptms, report_success=report_success)  # download ELM motif matches automatically
+                except Exception as e:
+                    raise RuntimeError(f'Error adding ELM {atype} data. Error message: {e}')
+
 
     if combine_similar:
-        interaction_cols = ['PTMcode:Interprotein_Interactions', 'PSP:ON_PROT_INTERACT', 'PSP:Kinase', 'PTMInt:Interaction', 'RegPhos:Kinase', 'DEPOD:Phosphatase']
-        if len(set(interaction_cols).intersection(ptms.columns)) > 1:
-            print('\nCombining interaction data from multiple databases')
-            interact = combine_interaction_data(ptms, interaction_databases = interactions_to_combine)
-            if not interact.empty:
-                interact['Combined:Interactions'] = interact['Interacting Gene']+'->'+interact['Type']
-                interact = interact.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform'], dropna = False, as_index = False)['Combined:Interactions'].apply(lambda x: ';'.join(np.unique(x)))
-                if 'Combined:Interactions' in ptms.columns:
-                    ptms = ptms.drop(columns = ['Combined:Interactions'])
-    
-                ptms = ptms.merge(interact, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform'])
-            else:
-                ptms['Combined:Interactions'] = np.nan
+        if interactions_to_combine == 'All':
+            interaction_annotations = available_annotations[available_annotations['Annotation Type'] == 'Interactions']
+            interactions_to_combine = interaction_annotations['Database'].unique().tolist()
+        elif not isinstance(interactions_to_combine, list):
+            raise TypeError('`interactions_to_combine` must either be "All" or a list of database names')
 
-        print('\nCombining kinase-substrate data from multiple databases')
-        ptms = combine_enzyme_data(ptms, enzyme_databases = kinases_to_combine)
+        print('\nCombining interaction data from multiple databases')
+        interact = combine_interaction_data(ptms, interaction_databases = interactions_to_combine)
+        if not interact.empty:
+            interact['Combined:Interactions'] = interact['Interacting Gene']+'->'+interact['Type']
+            interact = interact.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform'], dropna = False, as_index = False)['Combined:Interactions'].apply(lambda x: ';'.join(np.unique(x)))
+            if 'Combined:Interactions' in ptms.columns:
+                ptms = ptms.drop(columns = ['Combined:Interactions'])
 
+            ptms = ptms.merge(interact, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform'])
+        else:
+            ptms['Combined:Interactions'] = np.nan
 
+        if enzymes_to_combine == 'All':
+            enzyme_annotations = available_annotations[available_annotations['Annotation Type'] == 'Enzyme']
+            enzymes_to_combine = enzyme_annotations['Database'].unique().tolist()
+        elif not isinstance(enzymes_to_combine, list):
+            
+            raise TypeError('`enzymes_to_combine` must either be "All" or a list of database names')
+        ptms = combine_enzyme_data(ptms, enzyme_databases = enzymes_to_combine)
 
     return ptms
 
