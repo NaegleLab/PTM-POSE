@@ -1292,8 +1292,8 @@ def construct_omnipath_gmt_file(min_sources = 1, min_references = 1, convert_to_
         Output directory for the GMT files. If None, the package resource file will be used. Default is None.
     """
     #try importing omnipath, if not print error message prompting user to install omnipath
-    if 'omnipath' not in globals():
-        raise ImportError('Optional dependency `omnipath` required to run this package, but is not installed. Please run `pip install omnipath` then reimport the annotate module.')
+    if omnipath is None:
+        raise ImportError('Optional dependency `omnipath` required to run this function, but is not installed. Please run `pip install omnipath` then reimport the annotate module.')
     
     if odir is None:
         odir = os.path.join(pose_config.package_dir, 'Resource_Files','Annotations', 'OmniPath')

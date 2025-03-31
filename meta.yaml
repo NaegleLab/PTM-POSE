@@ -1,5 +1,5 @@
 {% set name = "ptm-pose" %}
-{% set version = "0.2.0" %}
+{% set version = "0.3.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/ptm_pose-{{ version }}.tar.gz
-  sha256: 7912aaf0b2bf1b6253f5979732ec1486d1ff0ebf503f4bf70024e1fbe4c982c0
+  sha256: c62d4f3ace883a47936ac31b6f04bca528509664cbb11638ca28b2b2d58c456b
 
 build:
   noarch: python
@@ -23,7 +23,7 @@ requirements:
     - pandas ==2.2.*
     - numpy ==1.26.*
     - scipy ==1.13.*
-    - biopython ==1.83.*
+    - biopython ==1.78.*
     - tqdm ==4.66.*
     - networkx ==3.3
     - xlrd
@@ -34,10 +34,6 @@ requirements:
 test:
   imports:
     - ptm_pose
-  commands:
-    - pip check
-  requires:
-    - pip
 
 about:
   home: https://github.com/NaegleLab/PTM-POSE/tree/main

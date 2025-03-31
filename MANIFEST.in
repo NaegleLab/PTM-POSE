@@ -1,1 +1,10 @@
-include ptm_pose/Resource_Files/modification_conversion.csv
+include ptm_pose/Resource_Files/*
+include ptm_pose/Resource_Files/Example/*
+
+#annotations
+include ptm_pose/Resource_Files/Annotations/DEPOD/*
+include ptm_pose/Resource_Files/Annotations/PhosphoSitePlus/*
+include ptm_pose/Resource_Files/Annotations/iKiP/*
+include ptm_pose/Resource_Files/Annotations/PTMsigDB/*
+include ptm_pose/Resource_Files/Annotations/RegPhos/*
+

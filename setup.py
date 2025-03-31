@@ -8,11 +8,11 @@ long_description = (this_directory / "README.md").read_text()
 # Run setup
 setup(
     name="ptm_pose",
-    version="0.2.0",
+    version="0.3.0",
     author="Naegle Lab",
     author_email="kmn4mj@virginia.edu",
     url="https://github.com/NaegleLab/PTM-POSE/tree/main",
-    install_requires=['pandas==2.2.*', 'numpy==1.26.*', 'scipy==1.13.*', 'biopython==1.83.*', 'tqdm==4.66.*', 'gseapy==1.1.*', 'networkx==3.3', 'xlrd', 'matplotlib','seaborn', 'requests'],
+    install_requires=['pandas==2.2.*', 'numpy==1.26.*', 'scipy==1.13.*', 'biopython==1.83.*', 'tqdm==4.66.*', 'networkx==3.3', 'xlrd', 'matplotlib','seaborn', 'requests'],
     license='GNU General Public License v3',
     description='PTM-POSE: PTM Projection onto Splice Events',
     long_description=long_description,
