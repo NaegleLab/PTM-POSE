@@ -1,13 +1,14 @@
-Full Analysis Examples
-======================
-
-ESRP1 knockdown (MATS output)
------------------------------
+Examples
+========
 
 .. toctree::
-	:maxdepth: 3
-	
-	ESRP1_knockdown.ipynb
+    :maxdepth: 2
+
+    ESRP1_knockdown
+    ESRP1_in_Prostate
+
+
+
 	
 
 

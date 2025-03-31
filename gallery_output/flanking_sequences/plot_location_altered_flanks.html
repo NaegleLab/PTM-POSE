@@ -1,0 +1,602 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Probing where and how PTM flanking sequences are altered &#8212; PTM-POSE</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=d2a3a1a5"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gallery_output/flanking_sequences/plot_location_altered_flanks';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Frequently Asked Questions" href="../../faq.html" />
+    <link rel="prev" title="Identify altered SH2 domain motifs" href="plot_sh2_domain_motifs.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.3.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PTM-POSE</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Dependencies.html">Dependencies</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../PTM_POSE.html">PTM-POSE Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../Examples/Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../Examples/ESRP1_knockdown.html">ESRP1 Knockdown (MATS output)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Examples/ESRP1_in_Prostate.html">ESRP1 Expression in Prostate Cancer (TCGASpliceSeq output)</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Analysis Gallery</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Gallery</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../A_Overview_of_Spliced_PTMs/index.html">General Overview of Spliced PTMs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../A_Overview_of_Spliced_PTMs/plot_NumberOfPTMs.html">Inspecting types of PTMs impacted by splicing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../A_Overview_of_Spliced_PTMs/plot_PTM_annotations.html">Inspecting number of PTMs with annotation information available</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../A_Overview_of_Spliced_PTMs/plot_filter_impact.html">Impact of filtering PTMs</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../FunctionEnrichment/index.html">Functional Impact of Spliced PTMs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../FunctionEnrichment/plot_num_annotations.html">Identifying available PTM-specific annotation information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../FunctionEnrichment/plot_geneset_enrichment.html">Identify enriched gene sets associated with differentially spliced PTMs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../FunctionEnrichment/plot_specific_annotation.html">Assessing enriched PTM functions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../Networks/index.html">Impact on protein interaction and regulatory networks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Networks/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Networks/plot_protein_interactions.html">Protein interactions network</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">Analyzing altered flanking sequences</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plot_sequence_comparison.html">Inspect difference of flanking sequence due to splice event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plot_sh2_domain_motifs.html">Identify altered SH2 domain motifs</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Probing where and how PTM flanking sequences are altered</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/NaegleLab/PTM-POSE" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/gallery_output/flanking_sequences/plot_location_altered_flanks.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Probing where and how PTM flanking sequences are altered</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-gallery-output-flanking-sequences-plot-location-altered-flanks-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="probing-where-and-how-ptm-flanking-sequences-are-altered">
+<span id="sphx-glr-gallery-output-flanking-sequences-plot-location-altered-flanks-py"></span><h1>Probing where and how PTM flanking sequences are altered<a class="headerlink" href="#probing-where-and-how-ptm-flanking-sequences-are-altered" title="Link to this heading">#</a></h1>
+<p>In order to understand how PTMs may be altered due to splicing events, it is useful to identify the flanking sequences of the PTMs and how they may be altered due to nearby splice events (as identified by flanking sequence module). Once we have, this information we can analyze and visualize where the alterations in the flanking sequences occur. First, we need to compare the flanking sequences of PTMs based on whether an exonic region is included or excluded using the <cite>compare_flanking_sequences</cite> function in PTM-POSE.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ptm_pose</span> <span class="kn">import</span> <span class="n">helpers</span>
+<span class="kn">from</span> <span class="nn">ptm_pose.analyze</span> <span class="kn">import</span> <span class="n">flank_analysis</span> <span class="k">as</span> <span class="n">afs</span>
+
+
+<span class="c1">#load example altered flanking sequence data</span>
+<span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">load_example_data</span><span class="p">(</span><span class="n">altered_flanks</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">afs</span><span class="o">.</span><span class="n">compare_flanking_sequences</span><span class="p">(</span><span class="n">altered_flanks</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Comparison of flanking sequences:&#39;</span><span class="p">)</span>
+<span class="n">altered_flanks</span><span class="p">[[</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">,</span> <span class="s1">&#39;Modification Class&#39;</span><span class="p">,</span> <span class="s1">&#39;Inclusion Flanking Sequence&#39;</span><span class="p">,</span> <span class="s1">&#39;Exclusion Flanking Sequence&#39;</span><span class="p">,</span> <span class="s1">&#39;Sequence Identity&#39;</span><span class="p">,</span> <span class="s1">&#39;Altered Positions&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue Change&#39;</span><span class="p">,</span> <span class="s1">&#39;Altered Flank Side&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Comparison of flanking sequences:
+</pre></div>
+</div>
+<div class="output_subarea output_html rendered_html output_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>UniProtKB Accession</th>
+      <th>Residue</th>
+      <th>PTM Position in Isoform</th>
+      <th>Modification Class</th>
+      <th>Inclusion Flanking Sequence</th>
+      <th>Exclusion Flanking Sequence</th>
+      <th>Sequence Identity</th>
+      <th>Altered Positions</th>
+      <th>Residue Change</th>
+      <th>Altered Flank Side</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Q68EM7</td>
+      <td>S</td>
+      <td>497</td>
+      <td>Phosphorylation</td>
+      <td>LVKKEsFGVKL</td>
+      <td>LVKKEsPPKPK</td>
+      <td>0.636364</td>
+      <td>[1.0, 2.0, 3.0, 4.0, 5.0]</td>
+      <td>[F-&gt;P, G-&gt;P, V-&gt;K, K-&gt;P, L-&gt;K]</td>
+      <td>C-term only</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Q68EM7</td>
+      <td>S</td>
+      <td>497</td>
+      <td>Phosphorylation</td>
+      <td>LVKKEsFGVKL</td>
+      <td>LVKKEsPPKPK</td>
+      <td>0.636364</td>
+      <td>[1.0, 2.0, 3.0, 4.0, 5.0]</td>
+      <td>[F-&gt;P, G-&gt;P, V-&gt;K, K-&gt;P, L-&gt;K]</td>
+      <td>C-term only</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>P01116</td>
+      <td>K</td>
+      <td>147</td>
+      <td>Acetylation</td>
+      <td>IETSAkTRQRV</td>
+      <td>IETSAkTRQGV</td>
+      <td>0.909091</td>
+      <td>[4.0]</td>
+      <td>[R-&gt;G]</td>
+      <td>C-term only</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>P01116</td>
+      <td>K</td>
+      <td>147</td>
+      <td>Ubiquitination</td>
+      <td>IETSAkTRQRV</td>
+      <td>IETSAkTRQGV</td>
+      <td>0.909091</td>
+      <td>[4.0]</td>
+      <td>[R-&gt;G]</td>
+      <td>C-term only</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>P01116</td>
+      <td>T</td>
+      <td>148</td>
+      <td>Phosphorylation</td>
+      <td>ETSAKtRQRVE</td>
+      <td>ETSAKtRQGVD</td>
+      <td>0.818182</td>
+      <td>[3.0, 5.0]</td>
+      <td>[R-&gt;G, E-&gt;D]</td>
+      <td>C-term only</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+<br />
+<br /><p>Note, we only calculate these metrics for cases where altered flanking sequences do not cause a stop codon to be introduced, as this is harder to interpret (such as for the first PTM in the list). The above table will indicate the positions in the flanking sequence that are altered, how similar the altered flanking sequence is to the original flanking sequence, and the specific residue change that takes place. We can also plot some of this information to get a better sense of the distribution of altered flanking sequences:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">afs</span><span class="o">.</span><span class="n">plot_location_of_altered_flanking_residues</span><span class="p">(</span><span class="n">altered_flanks</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_plot_location_altered_flanks_001.png" srcset="../../_images/sphx_glr_plot_location_altered_flanks_001.png" alt="plot location altered flanks" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/srcrowl/miniconda3/envs/pose_doc/lib/python3.12/site-packages/ptm_pose/analyze/flank_analysis.py:360: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+  ax[0].set_xticklabels([&#39;N-term\nonly&#39;, &#39;C-term\nonly&#39;])
+</pre></div>
+</div>
+<p>We can even create the same plot for specific modification types or residues, as well as label the specific residue changes that occur:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">afs</span><span class="o">.</span><span class="n">plot_location_of_altered_flanking_residues</span><span class="p">(</span><span class="n">altered_flanks</span><span class="p">,</span> <span class="n">modification_class</span><span class="o">=</span><span class="s1">&#39;Acetylation&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_plot_location_altered_flanks_002.png" srcset="../../_images/sphx_glr_plot_location_altered_flanks_002.png" alt="plot location altered flanks" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/srcrowl/miniconda3/envs/pose_doc/lib/python3.12/site-packages/ptm_pose/analyze/flank_analysis.py:360: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+  ax[0].set_xticklabels([&#39;N-term\nonly&#39;, &#39;C-term\nonly&#39;])
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.287 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-gallery-output-flanking-sequences-plot-location-altered-flanks-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/d3c4b136e703a93e02c197a5e6738936/plot_location_altered_flanks.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_location_altered_flanks.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/f531721c2eaab9af96eb4776c15ce8f9/plot_location_altered_flanks.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_location_altered_flanks.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/f3ad0f0a689e58570a67e794612f3066/plot_location_altered_flanks.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">plot_location_altered_flanks.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="plot_sh2_domain_motifs.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Identify altered SH2 domain motifs</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../../faq.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Frequently Asked Questions</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Naegle Lab
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Naegle Lab.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

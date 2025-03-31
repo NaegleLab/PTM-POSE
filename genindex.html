@@ -1,9 +1,8 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
@@ -16,42 +15,43 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
-  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
-
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
-  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/documentation_options.js?v=d2a3a1a5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.3.0" />
   </head>
   
   
@@ -67,19 +67,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -87,7 +76,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -95,8 +83,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -114,7 +102,8 @@
       
         
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -144,36 +133,62 @@
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="Overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Dependencies.html">Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Installation</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="PTM_POSE.html">PTM-POSE Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="General_Instructions.html">Running PTM-POSE</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="gallery_output/index.html">Types of Analysis Performed with PTM-POSE</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gallery_output/plot_protein_interactions.html">Identify protein interactions that may be impacted by splicing of PTMs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gallery_output/plot_num_annotations.html">Inspecting number of PTMs with annotation information available</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gallery_output/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gallery_output/plot_location_altered_flanks.html">Probing where and how PTM flanking sequences are altered</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="Examples/Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="Examples/ESRP1_knockdown.html">ESRP1 Knockdown (MATS output)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Examples/ESRP1_in_Prostate.html">ESRP1 Expression in Prostate Cancer (TCGASpliceSeq output)</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="Examples/Examples.html">Full Analysis Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="Examples/ESRP1_knockdown.html">Project PTMs onto ESRP1 knockdown data from MATS (Yang et al, 2016)</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Analysis Gallery</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="gallery_output/index.html">Gallery</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery_output/A_Overview_of_Spliced_PTMs/index.html">General Overview of Spliced PTMs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/A_Overview_of_Spliced_PTMs/plot_NumberOfPTMs.html">Inspecting types of PTMs impacted by splicing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/A_Overview_of_Spliced_PTMs/plot_PTM_annotations.html">Inspecting number of PTMs with annotation information available</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/A_Overview_of_Spliced_PTMs/plot_filter_impact.html">Impact of filtering PTMs</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery_output/FunctionEnrichment/index.html">Functional Impact of Spliced PTMs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/FunctionEnrichment/plot_num_annotations.html">Identifying available PTM-specific annotation information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/FunctionEnrichment/plot_geneset_enrichment.html">Identify enriched gene sets associated with differentially spliced PTMs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/FunctionEnrichment/plot_specific_annotation.html">Assessing enriched PTM functions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery_output/Networks/index.html">Impact on protein interaction and regulatory networks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/Networks/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/Networks/plot_protein_interactions.html">Protein interactions network</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery_output/flanking_sequences/index.html">Analyzing altered flanking sequences</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/flanking_sequences/plot_sequence_comparison.html">Inspect difference of flanking sequence due to splice event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/flanking_sequences/plot_sh2_domain_motifs.html">Identify altered SH2 domain motifs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/flanking_sequences/plot_location_altered_flanks.html">Probing where and how PTM flanking sequences are altered</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 </ul>
@@ -188,9 +203,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -254,24 +274,16 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
+</button>
 
 </div></div>
       
@@ -307,35 +319,31 @@ document.write(`
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#S"><strong>S</strong></a>
- | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.add_annotation">add_annotation() (in module ptm_pose.annotate)</a>
-</li>
       <li><a href="PTM_POSE.html#ptm_pose.annotate.add_custom_annotation">add_custom_annotation() (in module ptm_pose.annotate)</a>
 </li>
       <li><a href="PTM_POSE.html#ptm_pose.annotate.add_ELM_interactions">add_ELM_interactions() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.add_PSP_disease_association">add_PSP_disease_association() (in module ptm_pose.annotate)</a>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.add_ELM_matched_motifs">add_ELM_matched_motifs() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.add_PSP_kinase_substrate_data">add_PSP_kinase_substrate_data() (in module ptm_pose.annotate)</a>
-</li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.add_PSP_regulatory_site_data">add_PSP_regulatory_site_data() (in module ptm_pose.annotate)</a>
-</li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.add_PTMInt_data">add_PTMInt_data() (in module ptm_pose.annotate)</a>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.add_omnipath_data">add_omnipath_data() (in module ptm_pose.annotate)</a>
 </li>
       <li><a href="PTM_POSE.html#ptm_pose.annotate.annotate_ptms">annotate_ptms() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#id0">annotation_enrichment() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.annotation_enrichment">[1]</a>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.annotation_enrichment">annotation_enrichment() (in module ptm_pose.analyze.annotations)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.append_from_gmt">append_from_gmt() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -345,15 +353,41 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="PTM_POSE.html#ptm_pose.annotate.check_file">check_file() (in module ptm_pose.annotate)</a>
 </li>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.check_gmt_file">check_gmt_file() (in module ptm_pose.annotate)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.combine_enzyme_data">combine_enzyme_data() (in module ptm_pose.annotate)</a>
+</li>
       <li><a href="PTM_POSE.html#ptm_pose.annotate.combine_interaction_data">combine_interaction_data() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.combine_KS_data">combine_KS_data() (in module ptm_pose.annotate)</a>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.summarize.combine_outputs">combine_outputs() (in module ptm_pose.analyze.summarize)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.flanking_sequences.compare_inclusion_motifs">compare_inclusion_motifs() (in module ptm_pose.analyze.flanking_sequences)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.enzyme.compare_KL_for_sequence">compare_KL_for_sequence() (in module ptm_pose.analyze.enzyme)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.compare_to_nease">compare_to_nease() (ptm_pose.analyze.interactions.protein_interactions method)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_annotation_dict_from_gmt">construct_annotation_dict_from_gmt() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#id1">combine_outputs() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.combine_outputs">[1]</a>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_custom_gmt_file">construct_custom_gmt_file() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#id2">compare_inclusion_motifs() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.compare_inclusion_motifs">[1]</a>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_DEPOD_gmt_file">construct_DEPOD_gmt_file() (in module ptm_pose.annotate)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_gmt_df">construct_gmt_df() (in module ptm_pose.annotate)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_omnipath_gmt_file">construct_omnipath_gmt_file() (in module ptm_pose.annotate)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_PhosphoSitePlus_gmt_files">construct_PhosphoSitePlus_gmt_files() (in module ptm_pose.annotate)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_PTMcode_interprotein_gmt_file">construct_PTMcode_interprotein_gmt_file() (in module ptm_pose.annotate)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_PTMInt_gmt_file">construct_PTMInt_gmt_file() (in module ptm_pose.annotate)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_PTMsigDB_gmt_files">construct_PTMsigDB_gmt_files() (in module ptm_pose.annotate)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_RegPhos_gmt_file">construct_RegPhos_gmt_file() (in module ptm_pose.annotate)</a>
 </li>
       <li><a href="PTM_POSE.html#ptm_pose.annotate.convert_PSP_label_to_UniProt">convert_PSP_label_to_UniProt() (in module ptm_pose.annotate)</a>
 </li>
@@ -363,7 +397,11 @@ document.write(`
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.pose_config.download_ptm_coordinates">download_ptm_coordinates() (in module ptm_pose.pose_config)</a>
+      <li><a href="PTM_POSE.html#ptm_pose.pose_config.download_translator">download_translator() (in module ptm_pose.pose_config)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.draw_pie">draw_pie() (in module ptm_pose.analyze.annotations)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -371,13 +409,13 @@ document.write(`
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#id3">edit_sequence_for_kinase_library() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.edit_sequence_for_kinase_library">[1]</a>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.extract_ids_PTMcode">extract_ids_PTMcode() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.extract_positions_from_DEPOD">extract_positions_from_DEPOD() (in module ptm_pose.annotate)</a>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.extract_interaction_details">extract_interaction_details() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.extract_region_from_splicegraph">extract_region_from_splicegraph() (in module ptm_pose.flanking_sequences)</a>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.extract_positions_from_DEPOD">extract_positions_from_DEPOD() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -385,11 +423,13 @@ document.write(`
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#id5">find_motifs() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.find_motifs">[1]</a>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.flanking_sequences.find_motifs">find_motifs() (in module ptm_pose.analyze.flanking_sequences)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#id4">findAlteredPositions() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.findAlteredPositions">[1]</a>
+      <li><a href="PTM_POSE.html#ptm_pose.project.find_ptms_in_region">find_ptms_in_region() (in module ptm_pose.project)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.flanking_sequences.findAlteredPositions">findAlteredPositions() (in module ptm_pose.analyze.flanking_sequences)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -397,37 +437,55 @@ document.write(`
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#id6">gene_set_enrichment() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.gene_set_enrichment">[1]</a>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.gene_set_enrichment">gene_set_enrichment() (in module ptm_pose.analyze.annotations)</a>
 </li>
-      <li><a href="PTM_POSE.html#id8">get_annotation_categories() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.get_annotation_categories">[1]</a>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.enzyme.get_all_KL_scores">get_all_KL_scores() (in module ptm_pose.analyze.enzyme)</a>
 </li>
-      <li><a href="PTM_POSE.html#id9">get_annotation_col() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.get_annotation_col">[1]</a>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.get_available_annotations">get_available_annotations() (in module ptm_pose.analyze.annotations)</a>
 </li>
-      <li><a href="PTM_POSE.html#id10">get_enrichment_inputs() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.get_enrichment_inputs">[1]</a>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.get_available_gmt_annotations">get_available_gmt_annotations() (in module ptm_pose.annotate)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.get_background_annotation_counts">get_background_annotation_counts() (in module ptm_pose.analyze.annotations)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.get_edge_colors">get_edge_colors() (in module ptm_pose.analyze.interactions)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.get_enrichment_inputs">get_enrichment_inputs() (in module ptm_pose.analyze.annotations)</a>
 </li>
       <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes">get_flanking_changes() (in module ptm_pose.flanking_sequences)</a>
 </li>
+      <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_rMATS">get_flanking_changes_from_rMATS() (in module ptm_pose.flanking_sequences)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_splice_data">get_flanking_changes_from_splice_data() (in module ptm_pose.flanking_sequences)</a>
 </li>
       <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_splicegraph">get_flanking_changes_from_splicegraph() (in module ptm_pose.flanking_sequences)</a>
 </li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_interaction_network">get_interaction_network() (ptm_pose.analyze.interactions.protein_interactions method)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.get_interaction_stats">get_interaction_stats() (in module ptm_pose.analyze.interactions)</a>
+
+      <ul>
+        <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_interaction_stats">(ptm_pose.analyze.interactions.protein_interactions method)</a>
+</li>
+      </ul></li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_class_data">get_modification_class_data() (in module ptm_pose.analyze.summarize)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_counts">get_modification_counts() (in module ptm_pose.analyze.summarize)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_protein_interaction_network">get_protein_interaction_network() (ptm_pose.analyze.interactions.protein_interactions method)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.get_ptm_annotations">get_ptm_annotations() (in module ptm_pose.analyze.annotations)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.flanking_sequences.getSequenceIdentity">getSequenceIdentity() (in module ptm_pose.analyze.flanking_sequences)</a>
+</li>
   </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_sequence">get_flanking_sequence() (in module ptm_pose.flanking_sequences)</a>
-</li>
-      <li><a href="PTM_POSE.html#id11">get_modification_counts() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.get_modification_counts">[1]</a>
-</li>
-      <li><a href="PTM_POSE.html#id12">get_ptm_annotations() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.get_ptm_annotations">[1]</a>
-</li>
-      <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.get_ptm_locs_in_spliced_sequences">get_ptm_locs_in_spliced_sequences() (in module ptm_pose.flanking_sequences)</a>
-</li>
-      <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.get_ptms_in_splicegraph_flank">get_ptms_in_splicegraph_flank() (in module ptm_pose.flanking_sequences)</a>
-</li>
-      <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.get_spliceseq_event_regions">get_spliceseq_event_regions() (in module ptm_pose.flanking_sequences)</a>
-</li>
-      <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.get_spliceseq_flank_loc">get_spliceseq_flank_loc() (in module ptm_pose.flanking_sequences)</a>
-</li>
-      <li><a href="PTM_POSE.html#id7">getSequenceIdentity() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.getSequenceIdentity">[1]</a>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.load_gmt_file">load_gmt_file() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -439,7 +497,17 @@ document.write(`
     module
 
       <ul>
-        <li><a href="PTM_POSE.html#module-0">ptm_pose.analyze</a>, <a href="PTM_POSE.html#module-ptm_pose.analyze">[1]</a>
+        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.annotations">ptm_pose.analyze.annotations</a>
+</li>
+        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.enzyme">ptm_pose.analyze.enzyme</a>
+</li>
+        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.filter">ptm_pose.analyze.filter</a>
+</li>
+        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.flanking_sequences">ptm_pose.analyze.flanking_sequences</a>
+</li>
+        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.interactions">ptm_pose.analyze.interactions</a>
+</li>
+        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.summarize">ptm_pose.analyze.summarize</a>
 </li>
         <li><a href="PTM_POSE.html#module-ptm_pose.annotate">ptm_pose.annotate</a>
 </li>
@@ -456,15 +524,88 @@ document.write(`
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.flanking_sequences.plot_alterations_matrix">plot_alterations_matrix() (in module ptm_pose.analyze.flanking_sequences)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.plot_annotation_counts">plot_annotation_counts() (in module ptm_pose.analyze.annotations)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.plot_available_annotations">plot_available_annotations() (in module ptm_pose.analyze.annotations)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.plot_EnrichR_pies">plot_EnrichR_pies() (in module ptm_pose.analyze.annotations)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.filter.plot_filter_impact">plot_filter_impact() (in module ptm_pose.analyze.filter)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.plot_interaction_network">plot_interaction_network() (in module ptm_pose.analyze.interactions)</a>
+
+      <ul>
+        <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_interaction_network">(ptm_pose.analyze.interactions.protein_interactions method)</a>
+</li>
+      </ul></li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.flanking_sequences.plot_location_of_altered_flanking_residues">plot_location_of_altered_flanking_residues() (in module ptm_pose.analyze.flanking_sequences)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.summarize.plot_modification_breakdown">plot_modification_breakdown() (in module ptm_pose.analyze.summarize)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_nease_comparison">plot_nease_comparison() (ptm_pose.analyze.interactions.protein_interactions method)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.plot_network_centrality">plot_network_centrality() (in module ptm_pose.analyze.interactions)</a>
+
+      <ul>
+        <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_network_centrality">(ptm_pose.analyze.interactions.protein_interactions method)</a>
+</li>
+      </ul></li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.flanking_sequences.plot_sequence_differences">plot_sequence_differences() (in module ptm_pose.analyze.flanking_sequences)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.process_database_annotations">process_database_annotations() (in module ptm_pose.annotate)</a>
+</li>
       <li><a href="PTM_POSE.html#ptm_pose.project.project_ptms_onto_MATS">project_ptms_onto_MATS() (in module ptm_pose.project)</a>
 </li>
       <li><a href="PTM_POSE.html#ptm_pose.project.project_ptms_onto_splice_events">project_ptms_onto_splice_events() (in module ptm_pose.project)</a>
 </li>
+      <li><a href="PTM_POSE.html#ptm_pose.project.project_ptms_onto_SpliceSeq">project_ptms_onto_SpliceSeq() (in module ptm_pose.project)</a>
+</li>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions">protein_interactions (class in ptm_pose.analyze.interactions)</a>
+</li>
       <li>
-    ptm_pose.analyze
+    ptm_pose.analyze.annotations
 
       <ul>
-        <li><a href="PTM_POSE.html#module-0">module</a>, <a href="PTM_POSE.html#module-ptm_pose.analyze">[1]</a>
+        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.annotations">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    ptm_pose.analyze.enzyme
+
+      <ul>
+        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.enzyme">module</a>
+</li>
+      </ul></li>
+      <li>
+    ptm_pose.analyze.filter
+
+      <ul>
+        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.filter">module</a>
+</li>
+      </ul></li>
+      <li>
+    ptm_pose.analyze.flanking_sequences
+
+      <ul>
+        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.flanking_sequences">module</a>
+</li>
+      </ul></li>
+      <li>
+    ptm_pose.analyze.interactions
+
+      <ul>
+        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.interactions">module</a>
+</li>
+      </ul></li>
+      <li>
+    ptm_pose.analyze.summarize
+
+      <ul>
+        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.summarize">module</a>
 </li>
       </ul></li>
       <li>
@@ -474,8 +615,6 @@ document.write(`
         <li><a href="PTM_POSE.html#module-ptm_pose.annotate">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ptm_pose.flanking_sequences
 
@@ -503,15 +642,11 @@ document.write(`
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#id13">simplify_annotation() (in module ptm_pose.analyze)</a>, <a href="PTM_POSE.html#ptm_pose.analyze.simplify_annotation">[1]</a>
+      <li><a href="PTM_POSE.html#ptm_pose.annotate.simplify_annotation">simplify_annotation() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
-</tr></table>
-
-<h2 id="T">T</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.translate_flanking_sequence">translate_flanking_sequence() (in module ptm_pose.flanking_sequences)</a>
+      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.summarize_protein_network">summarize_protein_network() (ptm_pose.analyze.interactions.protein_interactions method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -586,8 +721,8 @@ By Naegle Lab
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>

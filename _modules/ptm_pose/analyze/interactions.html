@@ -1,0 +1,953 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ptm_pose.analyze.interactions &#8212; PTM-POSE</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=d2a3a1a5"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ptm_pose/analyze/interactions';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.3.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PTM-POSE</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Dependencies.html">Dependencies</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../PTM_POSE.html">PTM-POSE Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../Examples/Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../Examples/ESRP1_knockdown.html">ESRP1 Knockdown (MATS output)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../Examples/ESRP1_in_Prostate.html">ESRP1 Expression in Prostate Cancer (TCGASpliceSeq output)</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Analysis Gallery</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../gallery_output/index.html">Gallery</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/A_Overview_of_Spliced_PTMs/index.html">General Overview of Spliced PTMs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/A_Overview_of_Spliced_PTMs/plot_NumberOfPTMs.html">Inspecting types of PTMs impacted by splicing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/A_Overview_of_Spliced_PTMs/plot_PTM_annotations.html">Inspecting number of PTMs with annotation information available</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/A_Overview_of_Spliced_PTMs/plot_filter_impact.html">Impact of filtering PTMs</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/FunctionEnrichment/index.html">Functional Impact of Spliced PTMs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/FunctionEnrichment/plot_num_annotations.html">Identifying available PTM-specific annotation information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/FunctionEnrichment/plot_geneset_enrichment.html">Identify enriched gene sets associated with differentially spliced PTMs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/FunctionEnrichment/plot_specific_annotation.html">Assessing enriched PTM functions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/Networks/index.html">Impact on protein interaction and regulatory networks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_protein_interactions.html">Protein interactions network</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/flanking_sequences/index.html">Analyzing altered flanking sequences</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_sequence_comparison.html">Inspect difference of flanking sequence due to splice event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_sh2_domain_motifs.html">Identify altered SH2 domain motifs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_location_altered_flanks.html">Probing where and how PTM flanking sequences are altered</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently Asked Questions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/NaegleLab/PTM-POSE" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for ptm_pose.analyze.interactions</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1">#plotting </span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.lines</span> <span class="k">as</span> <span class="nn">mlines</span>
+
+<span class="c1">#analysis packages</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+
+
+
+<span class="c1">#custom stat functions</span>
+<span class="kn">from</span> <span class="nn">ptm_pose</span> <span class="kn">import</span> <span class="n">annotate</span><span class="p">,</span> <span class="n">helpers</span>
+
+
+
+
+<div class="viewcode-block" id="protein_interactions">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions">[docs]</a>
+<span class="k">class</span> <span class="nc">protein_interactions</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to assess interactions facilitated by PTMs in splicing network</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spliced_ptms: pd.DataFrame</span>
+<span class="sd">        Dataframe with PTMs projected onto splicing events and with annotations appended from various databases</span>
+<span class="sd">    include_enzyme_interactions: bool</span>
+<span class="sd">        Whether to include interactions with enzymes in the network, such as kinase-substrate interactions. Default is True</span>
+<span class="sd">    interaction_databases: list</span>
+<span class="sd">        List of databases whose information to include in the network. Default is [&#39;PhosphoSitePlus&#39;, &#39;PTMcode&#39;, &#39;PTMInt&#39;, &#39;RegPhos&#39;, &#39;DEPOD&#39;, &#39;ELM&#39;]</span>
+<span class="sd">    **kwargs: additional keyword arguments</span>
+<span class="sd">        Additional keyword arguments, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add &#39;min_MS_observations = 2&#39; to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    interaction_graph: nx.Graph</span>
+<span class="sd">        NetworkX graph object representing the interaction network, created from analyze.get_interaction_network</span>
+<span class="sd">    network_data: pd.DataFrame</span>
+<span class="sd">        Dataframe containing details about specifici protein interactions (including which protein contains the spliced PTMs)</span>
+<span class="sd">    network_stats: pd.DataFrame</span>
+<span class="sd">        Dataframe containing network statistics for each protein in the interaction network, obtained from analyze.get_interaction_stats(). Default is None, which will not label any proteins in the network.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">include_enzyme_interactions</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">interaction_databases</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="s1">&#39;PTMcode&#39;</span><span class="p">,</span> <span class="s1">&#39;PTMInt&#39;</span><span class="p">,</span> <span class="s1">&#39;RegPhos&#39;</span><span class="p">,</span> <span class="s1">&#39;DEPOD&#39;</span><span class="p">,</span> <span class="s1">&#39;OmniPath&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">filter_arguments</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">extract_filter_kwargs</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">helpers</span><span class="o">.</span><span class="n">check_filter_kwargs</span><span class="p">(</span><span class="n">filter_arguments</span><span class="p">)</span>
+        <span class="n">spliced_ptms</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">filter_ptms</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">spliced_ptms</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No spliced PTMs found in provided data after filtering PTMs and events. Consider reducing filter stringency.&#39;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">include_enzyme_interactions</span> <span class="o">=</span> <span class="n">include_enzyme_interactions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interaction_databases</span> <span class="o">=</span> <span class="n">interaction_databases</span>
+
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">spliced_ptms</span> <span class="o">=</span> <span class="n">spliced_ptms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_interaction_network</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="protein_interactions.get_interaction_network">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_interaction_network">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_interaction_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_type</span> <span class="o">=</span> <span class="s1">&#39;Gene&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given the spliced PTM data, extract interaction information and construct a dataframe containing all possible interactions driven by PTMs, either centered around specific PTMs or specific genes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        node_type: str</span>
+<span class="sd">            What to define interactions by. Can either be by &#39;PTM&#39;, which will consider each PTM as a separate node, or by &#39;Gene&#39;, which will aggregate information across all PTMs of a single gene into a single node. Default is &#39;Gene&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Gene&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;node_type parameter (which dictates whether to consider interactions at PTM or gene level) can be either Gene or PTM&quot;</span><span class="p">)</span>
+        
+        <span class="c1">#extract interaction information in provided data</span>
+        <span class="n">interactions</span> <span class="o">=</span> <span class="n">annotate</span><span class="o">.</span><span class="n">combine_interaction_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">include_enzyme_interactions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">include_enzyme_interactions</span><span class="p">,</span> <span class="n">interaction_databases</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interaction_databases</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">interactions</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No interaction data found in spliced PTM data.&#39;</span><span class="p">)</span>
+        <span class="n">interactions</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interactions</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">interactions</span><span class="p">[</span><span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+        <span class="n">interactions</span> <span class="o">=</span> <span class="n">interactions</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">])</span>
+
+        <span class="c1">#add regulation change information</span>
+        <span class="k">if</span> <span class="s1">&#39;dPSI&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spliced_ptms</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">interactions</span><span class="p">[</span><span class="s1">&#39;Regulation Change&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interactions</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;+&#39;</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;Type&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;DISRUPTS&#39;</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;dPSI&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;+&#39;</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;Type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;DISRUPTS&#39;</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;dPSI&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">grouping_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;Type&#39;</span><span class="p">,</span> <span class="s1">&#39;Source&#39;</span><span class="p">,</span> <span class="s1">&#39;dPSI&#39;</span><span class="p">,</span> <span class="s1">&#39;Regulation Change&#39;</span><span class="p">]</span>
+            <span class="n">interactions</span><span class="p">[</span><span class="s1">&#39;dPSI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interactions</span><span class="p">[</span><span class="s1">&#39;dPSI&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">grouping_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;Type&#39;</span><span class="p">,</span> <span class="s1">&#39;Source&#39;</span><span class="p">]</span>
+
+        <span class="c1">#extract gene_specific network information</span>
+        <span class="k">if</span> <span class="n">node_type</span> <span class="o">==</span> <span class="s1">&#39;Gene&#39;</span><span class="p">:</span>
+            <span class="n">network_data</span> <span class="o">=</span> <span class="n">interactions</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Modified Gene&#39;</span><span class="p">,</span> <span class="s1">&#39;Interacting Gene&#39;</span><span class="p">],</span> <span class="n">as_index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)[</span><span class="n">grouping_cols</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">join_unique_entries</span><span class="p">)</span>
+            <span class="c1">#generate network with all possible PTM-associated interactions</span>
+            <span class="n">interaction_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_pandas_edgelist</span><span class="p">(</span><span class="n">network_data</span><span class="p">,</span> <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;Modified Gene&#39;</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;Interacting Gene&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">interactions</span><span class="p">[</span><span class="s1">&#39;Spliced PTM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">interactions</span><span class="p">[</span><span class="s1">&#39;Modified Gene&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">interactions</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span>
+            <span class="n">network_data</span> <span class="o">=</span> <span class="n">interactions</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Spliced PTM&#39;</span><span class="p">,</span> <span class="s1">&#39;Interacting Gene&#39;</span><span class="p">],</span> <span class="n">as_index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)[</span><span class="n">grouping_cols</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">join_unique_entries</span><span class="p">)</span>
+            <span class="n">network_data</span> <span class="o">=</span> <span class="n">network_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">])</span>
+            
+            <span class="c1">#generate network with all possible PTM-associated interactions</span>
+            <span class="n">interaction_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_pandas_edgelist</span><span class="p">(</span><span class="n">network_data</span><span class="p">,</span> <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;Spliced PTM&#39;</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;Interacting Gene&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">network_data</span> <span class="o">=</span> <span class="n">network_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interaction_graph</span> <span class="o">=</span> <span class="n">interaction_graph</span></div>
+
+
+
+<div class="viewcode-block" id="protein_interactions.get_interaction_stats">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_interaction_stats">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_interaction_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given the networkx interaction graph, calculate various network centrality measures to identify the most relevant PTMs or genes in the network</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#calculate network centrality measures</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network_stats</span> <span class="o">=</span> <span class="n">get_interaction_stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interaction_graph</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="protein_interactions.get_protein_interaction_network">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_protein_interaction_network">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_protein_interaction_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protein</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a specific protein, return the network data for that protein</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        protein: str</span>
+<span class="sd">            Gene name of the protein of interest</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        protein_network: pd.DataFrame</span>
+<span class="sd">            Dataframe containing network data for the protein of interest</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;network_data&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_interaction_network</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">protein</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;Modified Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">protein</span><span class="si">}</span><span class="s1"> is not found in the network data. Please provide a valid gene name.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        
+        <span class="n">protein_network</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;Modified Gene&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">protein</span><span class="p">]</span>
+        <span class="n">protein_network</span> <span class="o">=</span> <span class="n">protein_network</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Modified Gene&#39;</span><span class="p">])</span>
+        <span class="n">protein_network</span> <span class="o">=</span> <span class="n">protein_network</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Residue&#39;</span><span class="p">:</span> <span class="s1">&#39;Spliced PTMs facilitating Interacting&#39;</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">protein_network</span></div>
+
+
+<div class="viewcode-block" id="protein_interactions.summarize_protein_network">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.summarize_protein_network">[docs]</a>
+    <span class="k">def</span> <span class="nf">summarize_protein_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protein</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a protein of interest, summarize the network data for that protein</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        protein: str</span>
+<span class="sd">            Gene name of the protein of interest</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;network_data&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_interaction_network</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;network_stats&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_interaction_stats</span><span class="p">()</span>
+
+        <span class="n">protein_network</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;Modified Gene&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">protein</span><span class="p">]</span>
+        <span class="n">increased_interactions</span> <span class="o">=</span> <span class="n">protein_network</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">protein_network</span><span class="p">[</span><span class="s1">&#39;Regulation Change&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;Interacting Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">decreased_interactions</span> <span class="o">=</span> <span class="n">protein_network</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">protein_network</span><span class="p">[</span><span class="s1">&#39;Regulation Change&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;Interacting Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">ambiguous_interactions</span> <span class="o">=</span> <span class="n">protein_network</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">protein_network</span><span class="p">[</span><span class="s1">&#39;Regulation Change&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">),</span> <span class="s1">&#39;Interacting Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="c1">#print interactions</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">increased_interactions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Increased interaction likelihoods: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">increased_interactions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">decreased_interactions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Decreased interaction likelihoods: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">decreased_interactions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ambiguous_interactions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ambiguous interaction impact: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ambiguous_interactions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">network_ranks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network_stats</span><span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of interactions: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">network_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">protein</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Degree&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> (Rank: </span><span class="si">{</span><span class="n">network_ranks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">protein</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Degree&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Centrality measures - </span><span class="se">\t</span><span class="s1"> Degree = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">network_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">protein</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Degree Centrality&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> (Rank: </span><span class="si">{</span><span class="n">network_ranks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">protein</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Degree Centrality&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;                      </span><span class="se">\t</span><span class="s1"> Betweenness = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">network_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">protein</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Betweenness&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> (Rank: </span><span class="si">{</span><span class="n">network_ranks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">protein</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Betweenness&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;                      </span><span class="se">\t</span><span class="s1"> Closeness = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">network_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">protein</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Closeness&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> (Rank: </span><span class="si">{</span><span class="n">network_ranks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">protein</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Closeness&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="protein_interactions.compare_to_nease">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.compare_to_nease">[docs]</a>
+    <span class="k">def</span> <span class="nf">compare_to_nease</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nease_edges</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given the network edges generated by NEASE, compare the network edges generated by NEASE to the network edges generated by the PTM-driven interactions</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nease_edges : pd.DataFrame</span>
+<span class="sd">            Interactions found by NEASE, which is the output of nease.get_edges() function after running NEASE (see nease_runner module for example)</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        nease_comparison : pd.DataFrame</span>
+<span class="sd">            Dataframe containing the all edges found by NEASE and PTM-POSE. This will include edges that are unique to NEASE, unique to PTM-POSE, and common between the two.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;interaction_graph&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_interaction_network</span><span class="p">()</span>
+
+        <span class="n">nease_edges</span><span class="p">[</span><span class="s1">&#39;Affected binding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nease_edges</span><span class="p">[</span><span class="s1">&#39;Affected binding&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+        <span class="n">nease_edges</span> <span class="o">=</span> <span class="n">nease_edges</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;Affected binding&#39;</span><span class="p">)</span>
+
+        <span class="n">nease_nw</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_pandas_edgelist</span><span class="p">(</span><span class="n">nease_edges</span><span class="p">,</span> <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;Gene name&#39;</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;Affected binding&#39;</span><span class="p">)</span>
+
+        <span class="c1">#construct graphs with only overlapping edges or unique edges</span>
+        <span class="n">common_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">nease_nw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">interaction_graph</span><span class="p">)</span>
+
+        <span class="c1">#nease only graph</span>
+        <span class="n">nease_only_graph</span> <span class="o">=</span> <span class="n">nease_nw</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">nease_only_graph</span><span class="o">.</span><span class="n">remove_edges_from</span><span class="p">(</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">nease_nw</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span> <span class="k">if</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">interaction_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
+
+        <span class="c1">#ptm only graph</span>
+        <span class="n">ptm_only_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interaction_graph</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ptm_only_graph</span><span class="o">.</span><span class="n">remove_edges_from</span><span class="p">(</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">interaction_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span> <span class="k">if</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nease_nw</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
+
+        <span class="c1">#convert ptm_only_graph edges to pandas dataframe</span>
+        <span class="n">ptm_edges</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">to_pandas_edgelist</span><span class="p">(</span><span class="n">ptm_only_graph</span><span class="p">)</span>
+        <span class="n">ptm_edges</span><span class="p">[</span><span class="s1">&#39;PTM-POSE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">ptm_edges</span><span class="p">[</span><span class="s1">&#39;NEASE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1">#convert nease_only_graph edges to pandas dataframe</span>
+        <span class="n">nease_edges</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">to_pandas_edgelist</span><span class="p">(</span><span class="n">nease_only_graph</span><span class="p">)</span>
+        <span class="n">nease_edges</span><span class="p">[</span><span class="s1">&#39;NEASE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">nease_edges</span><span class="p">[</span><span class="s1">&#39;PTM-POSE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1">#convert common_graph edges to pandas dataframe</span>
+        <span class="n">common_edges</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">to_pandas_edgelist</span><span class="p">(</span><span class="n">common_graph</span><span class="p">)</span>
+        <span class="n">common_edges</span><span class="p">[</span><span class="s1">&#39;NEASE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">common_edges</span><span class="p">[</span><span class="s1">&#39;PTM-POSE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1">#combine all edges into one dataframe</span>
+        <span class="n">combined_edges</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ptm_edges</span><span class="p">,</span> <span class="n">nease_edges</span><span class="p">,</span> <span class="n">common_edges</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nease_comparison</span> <span class="o">=</span> <span class="n">combined_edges</span></div>
+
+
+<div class="viewcode-block" id="protein_interactions.plot_nease_comparison">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_nease_comparison">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_nease_comparison</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">nease_edges</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given the comparison data generated by compare_to_nease, plot the number of edges identified by NEASE and PTM-POSE</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ax : matplotlib.pyplot.Axes</span>
+<span class="sd">            axes to plot on</span>
+<span class="sd">        nease_edges : pd.DataFrame, optional</span>
+<span class="sd">                Interactions found by NEASE, which is the output of nease.get_edges() function after running NEASE (see nease_runner module for example). Only needed if you have not run comparison_to_nease() previously</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#check if nease_comparison exists already, if not generate if data is provided</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;nease_comparison&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">nease_edges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compare_to_nease</span><span class="p">(</span><span class="n">nease_edges</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;nease_comparison&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No NEASE comparison data found. Please provide nease_edges to compare to PTM-POSE network or run `compare_to_nease()` first.&#39;</span><span class="p">)</span>
+        
+        
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+        
+        <span class="c1">#extract counts</span>
+        <span class="n">common_edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nease_comparison</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nease_comparison</span><span class="p">[</span><span class="s1">&#39;NEASE&#39;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">nease_comparison</span><span class="p">[</span><span class="s1">&#39;PTM-POSE&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ptm_only_edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nease_comparison</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nease_comparison</span><span class="p">[</span><span class="s1">&#39;PTM-POSE&#39;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">nease_comparison</span><span class="p">[</span><span class="s1">&#39;NEASE&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">nease_only_edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nease_comparison</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nease_comparison</span><span class="p">[</span><span class="s1">&#39;NEASE&#39;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">nease_comparison</span><span class="p">[</span><span class="s1">&#39;PTM-POSE&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1">#plot barplot</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">barh</span><span class="p">([</span><span class="s1">&#39;Identified with NEASE</span><span class="se">\n</span><span class="s1">and PTM-POSE&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM-POSE</span><span class="se">\n</span><span class="s1">(PTM-Specific)&#39;</span><span class="p">,</span><span class="s1">&#39;NEASE</span><span class="se">\n</span><span class="s1">(Exon-Specific)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">common_edges</span><span class="p">,</span> <span class="n">ptm_only_edges</span><span class="p">,</span> <span class="n">nease_only_edges</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span> <span class="o">=</span> <span class="mi">9</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Number of Interactions</span><span class="se">\n</span><span class="s1">Impacted By Splicing&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span></div>
+
+
+
+
+<div class="viewcode-block" id="protein_interactions.plot_interaction_network">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_interaction_network">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_interaction_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modified_color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">modified_node_size</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">interacting_color</span> <span class="o">=</span> <span class="s1">&#39;lightblue&#39;</span><span class="p">,</span> <span class="n">interacting_node_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">defaultedgecolor</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">color_edges_by</span> <span class="o">=</span> <span class="s1">&#39;Same&#39;</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">proteins_to_label</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">labelcolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">include_nease_comparison</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given the interactiong graph and network data outputted from analyze.get_interaction_network, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs. by default, will only label proteins </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        modified_color: str</span>
+<span class="sd">            Color to use for nodes that are modified by splicing. Default is &#39;red&#39;</span>
+<span class="sd">        modified_node_size: int</span>
+<span class="sd">            Size of nodes that are modified by splicing. Default is 10</span>
+<span class="sd">        interacting_color: str</span>
+<span class="sd">            Color to use for nodes that interact with modified nodes. Default is &#39;lightblue&#39;</span>
+<span class="sd">        interacting_node_size: int</span>
+<span class="sd">            Size of nodes that interact with modified nodes. Default is 5</span>
+<span class="sd">        defaultedgecolor: str</span>
+<span class="sd">            Color to use for edges in the network. Default is &#39;gray&#39;. Can choose to color by database by providing a dictionary with database names as keys and colors as values or by specifying &#39;database&#39; as color</span>
+<span class="sd">        color_edges_by: str</span>
+<span class="sd">            </span>
+<span class="sd">            How to color edges in the network. Default is &#39;Same&#39;, which will color all edges the same color. Can also specify &#39;Database&#39; to color edges based on the database they are from. If using &#39;Database&#39;, please provide a dictionary with database names as keys and colors as values in defaultedgecolor parameter.</span>
+<span class="sd">        seed: int</span>
+<span class="sd">            Seed to use for random number generator. Default is 200</span>
+<span class="sd">        ax: matplotlib.pyplot.Axes</span>
+<span class="sd">            Axes object to plot the network. Default is None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;interaction_graph&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_interaction_network</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;network_stats&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_interaction_stats</span><span class="p">()</span>
+
+        <span class="c1"># if include nease comparison, combine graphs</span>
+        <span class="k">if</span> <span class="n">nease_edges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nease_edges</span><span class="p">[</span><span class="s1">&#39;Affected binding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nease_edges</span><span class="p">[</span><span class="s1">&#39;Affected binding&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+            <span class="n">nease_edges</span> <span class="o">=</span> <span class="n">nease_edges</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;Affected binding&#39;</span><span class="p">)</span>
+
+            <span class="n">nease_nw</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_pandas_edgelist</span><span class="p">(</span><span class="n">nease_edges</span><span class="p">,</span> <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;Gene name&#39;</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;Affected binding&#39;</span><span class="p">)</span>
+
+            <span class="c1">#combine graphs</span>
+            <span class="n">plt_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interaction_graph</span><span class="p">,</span> <span class="n">nease_nw</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interaction_graph</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+
+        <span class="n">plot_interaction_network</span><span class="p">(</span><span class="n">plt_graph</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">network_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">network_stats</span><span class="p">,</span> <span class="n">modified_color</span> <span class="o">=</span> <span class="n">modified_color</span><span class="p">,</span> <span class="n">modified_node_size</span> <span class="o">=</span> <span class="n">modified_node_size</span><span class="p">,</span> <span class="n">interacting_color</span> <span class="o">=</span> <span class="n">interacting_color</span><span class="p">,</span> <span class="n">interacting_node_size</span> <span class="o">=</span> <span class="n">interacting_node_size</span><span class="p">,</span> <span class="n">defaultedgecolor</span> <span class="o">=</span> <span class="n">defaultedgecolor</span><span class="p">,</span> <span class="n">color_edges_by</span><span class="o">=</span><span class="n">color_edges_by</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">,</span> <span class="n">proteins_to_label</span> <span class="o">=</span> <span class="n">proteins_to_label</span><span class="p">,</span> <span class="n">labelcolor</span> <span class="o">=</span> <span class="n">labelcolor</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="n">legend</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="protein_interactions.plot_network_centrality">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_network_centrality">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_network_centrality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>  <span class="n">centrality_measure</span> <span class="o">=</span> <span class="s1">&#39;Degree&#39;</span><span class="p">,</span> <span class="n">top_N</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">modified_color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">interacting_color</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the centrality measure for the top N proteins in the interaction network based on a specified centrality measure. This will help identify the most relevant PTMs/genes in the network.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        centrality_measure: str</span>
+<span class="sd">            How to calculate centrality. Options include &#39;Degree&#39;, &#39;Degree Centrality&#39;, &#39;Betweenness Centrality&#39;, &#39;Closeness Centrality&#39;, and &#39;Eigenvector Centrality&#39;. Default is &#39;Degree&#39;.</span>
+<span class="sd">        top_N: int</span>
+<span class="sd">            Number of top proteins to plot based on the centrality measure. Default is 10.</span>
+<span class="sd">        modified_color: str</span>
+<span class="sd">            Color to use for proteins that are spliced. Default is &#39;red&#39;.</span>
+<span class="sd">        interacting_color: str</span>
+<span class="sd">            Color to use for proteins that are not spliced. Default is &#39;black&#39;.</span>
+<span class="sd">        ax: matplotlib.pyplot.Axes</span>
+<span class="sd">            Axes object to plot the centrality bar plot. If None, a new figure will be created. Default is None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;interaction_graph&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_interaction_network</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;network_stats&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_interaction_stats</span><span class="p">()</span>
+
+        <span class="n">plot_network_centrality</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">network_stats</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">network_data</span><span class="p">,</span> <span class="n">centrality_measure</span><span class="o">=</span><span class="n">centrality_measure</span><span class="p">,</span><span class="n">top_N</span> <span class="o">=</span> <span class="n">top_N</span><span class="p">,</span> <span class="n">modified_color</span> <span class="o">=</span> <span class="n">modified_color</span><span class="p">,</span> <span class="n">interacting_color</span> <span class="o">=</span> <span class="n">interacting_color</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="get_edge_colors">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.get_edge_colors">[docs]</a>
+<span class="k">def</span> <span class="nf">get_edge_colors</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">,</span> <span class="n">network_data</span><span class="p">,</span> <span class="n">defaultedgecolor</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">color_edges_by</span> <span class="o">=</span> <span class="s1">&#39;Database&#39;</span><span class="p">,</span> <span class="n">database_color_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;PSP/RegPhos&#39;</span><span class="p">:</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">:</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;PTMcode&#39;</span><span class="p">:</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTMInt&#39;</span><span class="p">:</span><span class="s1">&#39;gold&#39;</span><span class="p">,</span> <span class="s1">&#39;Multiple&#39;</span><span class="p">:</span><span class="s1">&#39;purple&#39;</span><span class="p">}):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the edge colors to use for a provided networkx graph, either plotting all edges the same color or coloring them based on the database they are from.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    interaction_graph: nx.Graph</span>
+<span class="sd">        networkx graph containing the interaction network</span>
+<span class="sd">    network_data: pd.DataFrame</span>
+<span class="sd">        specific network edge data that contains information on which database the interaction is from and any other relevant information (such as regulation change)</span>
+<span class="sd">    defaultedgecolor : &#39;str&#39;</span>
+<span class="sd">        Default color to use for edges if no specific database color is found. Default is &#39;gray&#39;.</span>
+<span class="sd">    color_edges_by : str</span>
+<span class="sd">        How to color the edges. Options are &#39;Database&#39; to color by the database they are from, or &#39;Same&#39; to color all edges the same color. Default is &#39;Database&#39;.</span>
+<span class="sd">    database_color_dict : dict</span>
+<span class="sd">        Colors to use for specific databases</span>
+<span class="sd">    </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">edge_colors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">legend_handles</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">interaction_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
+        <span class="n">trim</span> <span class="o">=</span> <span class="n">network_data</span><span class="p">[(</span><span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;Modified Gene&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;Interacting Gene&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+        <span class="k">if</span> <span class="n">trim</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">trim</span> <span class="o">=</span> <span class="n">network_data</span><span class="p">[(</span><span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;Interacting Gene&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;Modified Gene&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+
+        <span class="k">if</span> <span class="n">color_edges_by</span> <span class="o">==</span> <span class="s1">&#39;Database&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">trim</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span> <span class="c1">#specific color to indicate multiple databases</span>
+                <span class="n">edge_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">database_color_dict</span><span class="p">[</span><span class="s1">&#39;Multiple&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="s1">&#39;Multiple Databases&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">legend_handles</span><span class="p">:</span>
+                    <span class="n">legend_handles</span><span class="p">[</span><span class="s1">&#39;Multiple Databases&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Multiple Databases&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s1">&#39;;&#39;</span> <span class="ow">in</span> <span class="n">trim</span><span class="p">[</span><span class="s1">&#39;Source&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">edge_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">database_color_dict</span><span class="p">[</span><span class="s1">&#39;Multiple&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="s1">&#39;Multiple Databases&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">legend_handles</span><span class="p">:</span>
+                    <span class="n">legend_handles</span><span class="p">[</span><span class="s1">&#39;Multiple Databases&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Multiple Databases&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">trim</span><span class="p">[</span><span class="s2">&quot;Source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">database_color_dict</span><span class="p">:</span>
+                <span class="n">edge_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">database_color_dict</span><span class="p">[</span><span class="n">trim</span><span class="p">[</span><span class="s2">&quot;Source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                <span class="k">if</span> <span class="n">trim</span><span class="p">[</span><span class="s2">&quot;Source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">legend_handles</span><span class="p">:</span>
+                    <span class="n">legend_handles</span><span class="p">[</span><span class="n">trim</span><span class="p">[</span><span class="s2">&quot;Source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="n">database_color_dict</span><span class="p">[</span><span class="n">trim</span><span class="p">[</span><span class="s2">&quot;Source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">label</span> <span class="o">=</span> <span class="n">trim</span><span class="p">[</span><span class="s2">&quot;Source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1">#gray means not specific to database in list</span>
+                <span class="n">edge_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">defaultedgecolor</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">edge_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">defaultedgecolor</span><span class="p">)</span>
+            <span class="n">legend_handles</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">legend_handles</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">legend_handles</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">legend_handles</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        
+    <span class="k">return</span> <span class="n">edge_colors</span><span class="p">,</span> <span class="n">legend_handles</span></div>
+
+
+
+<div class="viewcode-block" id="plot_interaction_network">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.plot_interaction_network">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_interaction_network</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">,</span> <span class="n">network_data</span><span class="p">,</span> <span class="n">network_stats</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">modified_color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">modified_node_size</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">interacting_color</span> <span class="o">=</span> <span class="s1">&#39;lightblue&#39;</span><span class="p">,</span> <span class="n">interacting_node_size</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">defaultedgecolor</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">color_edges_by</span> <span class="o">=</span> <span class="s1">&#39;Same&#39;</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">legend_fontsize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">proteins_to_label</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">labelcolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given the interaction graph and network data outputted from analyze.protein_interactions, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs. by default, will only label proteins </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    interaction_graph: nx.Graph</span>
+<span class="sd">        NetworkX graph object representing the interaction network, created from analyze.get_interaction_network</span>
+<span class="sd">    network_data: pd.DataFrame</span>
+<span class="sd">        Dataframe containing details about specifici protein interactions (including which protein contains the spliced PTMs)</span>
+<span class="sd">    network_stats: pd.DataFrame</span>
+<span class="sd">        Dataframe containing network statistics for each protein in the interaction network, obtained from analyze.get_interaction_stats(). Default is None, which will not label any proteins in the network.</span>
+<span class="sd">    modified_color: str</span>
+<span class="sd">        Color to use for proteins that are spliced. Default is &#39;red&#39;.</span>
+<span class="sd">    modified_node_size: int</span>
+<span class="sd">        Size of nodes that are spliced. Default is 10.</span>
+<span class="sd">    interacting_color: str</span>
+<span class="sd">        Color to use for proteins that are not spliced. Default is &#39;lightblue&#39;.</span>
+<span class="sd">    interacting_node_size: int</span>
+<span class="sd">        Size of nodes that are not spliced. Default is 1.</span>
+<span class="sd">    edgecolor: str</span>
+<span class="sd">        Color to use for edges in the network. Default is &#39;gray&#39;.</span>
+<span class="sd">    seed: int</span>
+<span class="sd">        Seed to use for spring layout of network. Default is 200.</span>
+<span class="sd">    ax: matplotlib.Axes</span>
+<span class="sd">        Axis to plot on. If None, will create new figure. Default is None.</span>
+<span class="sd">    proteins_to_label: list, int, or str</span>
+<span class="sd">        Specific proteins to label in the network. If list, will label all proteins in the list. If int, will label the top N proteins by degree centrality. If str, will label the specific protein. Default is None, which will not label any proteins in the network.</span>
+<span class="sd">    labelcolor: str</span>
+<span class="sd">        Color to use for labels. Default is &#39;black&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">node_colors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">node_sizes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">interaction_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;Modified Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+            <span class="n">node_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">modified_color</span><span class="p">)</span>
+            <span class="n">node_sizes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">modified_node_size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">node_colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interacting_color</span><span class="p">)</span>
+            <span class="n">node_sizes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interacting_node_size</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;Regulation Change&#39;</span> <span class="ow">in</span> <span class="n">network_data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="c1">#adjust line style of edge depending on sign of deltaPSI_MW</span>
+        <span class="n">edge_style</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">interaction_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
+            <span class="n">edge_data</span> <span class="o">=</span> <span class="n">network_data</span><span class="p">[((</span><span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;Modified Gene&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;Interacting Gene&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">|</span> <span class="p">((</span><span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;Modified Gene&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;Interacting Gene&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]))]</span>
+            <span class="k">if</span> <span class="s1">&#39;+&#39;</span> <span class="ow">in</span> <span class="n">edge_data</span><span class="p">[</span><span class="s1">&#39;Regulation Change&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="s1">&#39;-&#39;</span> <span class="ow">in</span> <span class="n">edge_data</span><span class="p">[</span><span class="s1">&#39;Regulation Change&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">edge_style</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;dashdot&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s1">&#39;+&#39;</span> <span class="ow">in</span> <span class="n">edge_data</span><span class="p">[</span><span class="s1">&#39;Regulation Change&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">edge_style</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;solid&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">edge_style</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;dotted&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">edge_style</span> <span class="o">=</span> <span class="s1">&#39;solid&#39;</span>
+
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">interaction_graph</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span><span class="p">)</span>
+
+    <span class="c1">#set up subplot if not provied</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;constrained&#39;</span><span class="p">)</span>
+
+    <span class="n">edge_colors</span><span class="p">,</span> <span class="n">edge_legend</span> <span class="o">=</span> <span class="n">get_edge_colors</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">,</span> <span class="n">network_data</span><span class="p">,</span> <span class="n">color_edges_by</span> <span class="o">=</span> <span class="n">color_edges_by</span><span class="p">,</span> <span class="n">defaultedgecolor</span> <span class="o">=</span> <span class="n">defaultedgecolor</span><span class="p">)</span>
+
+    <span class="n">nx</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">,</span> <span class="n">node_size</span> <span class="o">=</span> <span class="n">node_sizes</span><span class="p">,</span> <span class="n">node_color</span> <span class="o">=</span> <span class="n">node_colors</span><span class="p">,</span> <span class="n">edge_color</span> <span class="o">=</span> <span class="n">edge_colors</span><span class="p">,</span> <span class="n">style</span> <span class="o">=</span> <span class="n">edge_style</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">)</span>
+
+    <span class="c1">#add legend for colored nodes</span>
+    <span class="k">if</span> <span class="n">legend</span><span class="p">:</span>
+        <span class="n">modified_node</span> <span class="o">=</span> <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="n">modified_node_size</span><span class="p">,</span><span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">markerfacecolor</span> <span class="o">=</span> <span class="n">modified_color</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="n">modified_color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Spliced Protein&#39;</span><span class="p">)</span>
+        <span class="n">interacting_node</span> <span class="o">=</span> <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">markerfacecolor</span> <span class="o">=</span> <span class="n">interacting_color</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="n">interacting_color</span><span class="p">,</span> <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="n">interacting_node_size</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Interacting Protein&#39;</span><span class="p">)</span>
+        <span class="n">solid_line</span> <span class="o">=</span> <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="s1">&#39;solid&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Interaction increases&#39;</span><span class="p">)</span>
+        <span class="n">dashdot_line</span> <span class="o">=</span> <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="s1">&#39;dashdot&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Interaction impact unclear&#39;</span><span class="p">)</span>
+        <span class="n">dotted_line</span> <span class="o">=</span> <span class="n">mlines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Interaction decreases&#39;</span><span class="p">)</span>
+        <span class="n">handles</span> <span class="o">=</span> <span class="p">[</span><span class="n">solid_line</span><span class="p">,</span><span class="n">dashdot_line</span><span class="p">,</span> <span class="n">dotted_line</span><span class="p">,</span> <span class="n">modified_node</span><span class="p">,</span> <span class="n">interacting_node</span><span class="p">]</span>
+        <span class="n">net_legend</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span> <span class="o">=</span> <span class="n">handles</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;upper center&#39;</span><span class="p">,</span> <span class="n">ncol</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="n">legend_fontsize</span><span class="p">,</span> <span class="n">bbox_to_anchor</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">net_legend</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">color_edges_by</span> <span class="o">==</span> <span class="s1">&#39;Database&#39;</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span> <span class="o">=</span> <span class="n">edge_legend</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;lower center&#39;</span><span class="p">,</span> <span class="n">ncol</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="n">legend_fontsize</span><span class="p">,</span> <span class="n">bbox_to_anchor</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.15</span><span class="p">),</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Interaction Source&#39;</span><span class="p">)</span>
+
+
+    <span class="c1">#if requested, label specific proteins in the network</span>
+    <span class="k">if</span> <span class="n">proteins_to_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proteins_to_label</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">protein</span> <span class="ow">in</span> <span class="n">proteins_to_label</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">interaction_graph</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="n">protein</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">interaction_graph</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="n">protein</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">protein</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">fontweight</span> <span class="o">=</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">labelcolor</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">proteins_to_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proteins_to_label</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">network_stats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">network_stats</span> <span class="o">=</span> <span class="n">get_interaction_stats</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">)</span>
+        
+        <span class="n">network_stats</span> <span class="o">=</span> <span class="n">network_stats</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;Degree&#39;</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">proteins_to_label</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">network_stats</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">interaction_graph</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">interaction_graph</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">index</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">fontweight</span> <span class="o">=</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">labelcolor</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">proteins_to_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proteins_to_label</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">interaction_graph</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="n">proteins_to_label</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">interaction_graph</span><span class="o">.</span><span class="n">pos</span><span class="p">[</span><span class="n">proteins_to_label</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">proteins_to_label</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">fontweight</span> <span class="o">=</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">labelcolor</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">proteins_to_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Proteins to label must be a list of strings or a single string. Ignoring when plotting.&#39;</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="plot_network_centrality">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.plot_network_centrality">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_network_centrality</span><span class="p">(</span><span class="n">network_stats</span><span class="p">,</span> <span class="n">network_data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">centrality_measure</span> <span class="o">=</span> <span class="s1">&#39;Degree&#39;</span><span class="p">,</span> <span class="n">top_N</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">modified_color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">interacting_color</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given the network statistics data obtained from analyze.get_interaction_stats(), plot the top N proteins in the protein interaction network based on centrality measure (Degree, Betweenness, or Closeness)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    network_stats: pd.DataFrame</span>
+<span class="sd">        Dataframe containing network statistics for each protein in the interaction network, obtained from analyze.get_interaction_stats()</span>
+<span class="sd">    network_data: pd.DataFrame</span>
+<span class="sd">        Dataframe containing information on which proteins are spliced and how they are altered. Default is None, which will plot all proteins the same color (interacting_color)</span>
+<span class="sd">    centrality_measure: str</span>
+<span class="sd">        Centrality measure to use for plotting. Default is &#39;Degree&#39;. Options include &#39;Degree&#39;, &#39;Degree Centrality&#39;, &#39;Betweenness Centrality&#39;, &#39;Closeness Centrality&#39;.</span>
+<span class="sd">    top_N: int</span>
+<span class="sd">        Number of top proteins to plot. Default is 10.</span>
+<span class="sd">    modified_color: str</span>
+<span class="sd">        Color to use for proteins that are spliced. Default is &#39;red&#39;.</span>
+<span class="sd">    interacting_color: str</span>
+<span class="sd">        Color to use for proteins that are not spliced. Default is &#39;black&#39;.</span>
+<span class="sd">    ax: matplotlib.Axes</span>
+<span class="sd">        Axis to plot on. If None, will create new figure. Default is None.</span>
+<span class="sd">    </span>
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    bar plot showing the top N proteins in the interaction network based on centrality measure</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">centrality_measure</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">network_stats</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Centrality measure not found in network_stats dataframe. Please check the inputted centrality_measure. Available measures include Degree, Degree Centrality, Betweenness Centrality, Closeness Centrality, and Eigenvector Centrality.&#39;</span><span class="p">)</span>
+    
+    <span class="c1">#get specific centrality measure and grab top N terms</span>
+    <span class="n">plt_data</span> <span class="o">=</span> <span class="n">network_stats</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="n">centrality_measure</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">top_N</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="n">centrality_measure</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    
+    <span class="c1">#color bars based on whether protein is spliced or not</span>
+    <span class="k">if</span> <span class="n">network_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">plt_data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;Modified Gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+                <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">modified_color</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interacting_color</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">modified_color</span>
+    
+    <span class="c1">#establish figure</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+
+    <span class="c1">#plot bar plot</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">plt_data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">plt_data</span><span class="p">[</span><span class="n">centrality_measure</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">centrality_measure</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_interaction_stats">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.get_interaction_stats">[docs]</a>
+<span class="k">def</span> <span class="nf">get_interaction_stats</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given the networkx interaction graph, calculate various network centrality measures to identify the most relevant PTMs or genes in the network</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#calculate network centrality measures</span>
+    <span class="n">degree_centrality</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree_centrality</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">)</span>
+    <span class="n">closeness_centrality</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">closeness_centrality</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">)</span>
+    <span class="n">betweenness_centrality</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">)</span>
+    <span class="n">network_stats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Degree&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">interaction_graph</span><span class="o">.</span><span class="n">degree</span><span class="p">()),</span> <span class="s1">&#39;Degree Centrality&#39;</span><span class="p">:</span><span class="n">degree_centrality</span><span class="p">,</span> <span class="s1">&#39;Closeness&#39;</span><span class="p">:</span><span class="n">closeness_centrality</span><span class="p">,</span><span class="s1">&#39;Betweenness&#39;</span><span class="p">:</span><span class="n">betweenness_centrality</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">network_stats</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Naegle Lab
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Naegle Lab.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
