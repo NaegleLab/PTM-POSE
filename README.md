@@ -4,6 +4,8 @@
 
 PTM-POSE is an easily implementable tool to project PTM sites onto splice event data generated from RNA sequencing data and is compatible with any splice event quantification tool that outputs genomic coordinates of different splice events (MATS, SpliceSeq, etc.). PTM-POSE harnesses PTMs that have been mapped to their genomic location by a sister package, [ExonPTMapper](https://github.com/NaegleLab/ExonPTMapper). It also contains functions for annotating these PTMs with information from various databases, like PhosphoSitePlus and ELM.
 
+![PTM-POSE method for projecting PTMs onto splice events](./figures/method.png)
+
 ## Running PTM-POSE
 
 To run PTM-POSE, you first need to process your data such that each row corresponds to a unique splice event with the genomic location of that splice event (chromosome, strand, and the bounds of the spliced region). Strand can be indicated using either '+'/'-' or 1/-1. If desired, you can also provide a delta PSI and significance value which will be included in the final PTM dataframe. Any additional columns will be kept. At a minimum, the dataframe should look something like this (optional but recommended parameters indicated):
@@ -55,7 +57,7 @@ altered_flanks = project.get_flanking_changes_from_splice_data(my_splice_data, p
 
 ## Downstream Analysis
 
-PTM-POSE also provides functions in the `annotate` module for annotating the above outputs with functional information from various databases: PhosphoSitePlus, RegPhos, PTMcode, PTMInt, ELM, DEPOD. You can then identify PTMs with specific functions, interaction, etc. with the `analyze` module. For more information and examples of analysis, see the [full documentation](https://naeglelab.github.io/PTM-POSE/).
+PTM-POSE also provides functions in the `annotate` module for annotating the above outputs with functional information from various databases: PhosphoSitePlus, RegPhos, PTMcode, PTMInt, ELM, DEPOD, OmniPath, and PTMsigDB. You can then identify PTMs with specific functions, interaction, etc. with the `analyze` module. For more information and examples of analysis, see the [full documentation](https://naeglelab.github.io/PTM-POSE/).
 
 
 ## Have questions?
