@@ -651,6 +651,11 @@ class kstar_enrichment:
             else:
                 raise ValueError('impact_type must be at least one of either "All", "Included", or "Excluded"')
         
+        #construct background filter arguments (same as foreground but ignore significance criteria)
+        background_filter = helpers.extract_filter_kwargs(**kwargs)
+        background_filter['alpha'] = 1.1
+        background_filter['min_dpsi'] = 0
+
         self.significant_ptms = {}
         self.background_ptms = {}
         self.networks = {}
@@ -668,9 +673,9 @@ class kstar_enrichment:
             elif ptype == 'ST':
                 print('\nProcessing background phosphoserine/threonine data')
             if background_ptms is not None:
-                self.background_ptms[ptype] = self.process_ptms(background_ptms, phospho_type=ptype, min_dpsi = 0, alpha = 1.1, **kwargs)
+                self.background_ptms[ptype] = self.process_ptms(background_ptms, phospho_type=ptype, **background_filter)
             else:
-                self.background_ptms[ptype] = self.process_ptms(pose_config.ptm_coordinates.copy(), phospho_type = ptype, min_dpsi = 0, alpha = 1.1, **kwargs)
+                self.background_ptms[ptype] = self.process_ptms(pose_config.ptm_coordinates.copy(), phospho_type = ptype, **background_filter)
 
             #load kstar networks
             self.networks[ptype] = self.load_networks(network_dir, phospho_type = ptype)

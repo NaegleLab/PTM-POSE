@@ -3,6 +3,7 @@ import numpy as np
 import re
 import os
 import time
+import sys
 
 from ptm_pose import pose_config, helpers
 
@@ -284,6 +285,8 @@ def check_gmt_file(gmt_file, database, annot_type, automatic_download = False, o
             else:
                 raise FileNotFoundError(f"GMT file for {database} {annot_type} not found at {gmt_file}. Please check the resource directory or set automatic_download=True to automatically create gmt file in provided resource directory.")
 
+
+
 def process_database_annotations(database = 'PhosphoSitePlus', annot_type = 'Function', key_type = 'annotation', collapsed = False, resource_dir = None, automatic_download = False, **kwargs):
     """
     Given a database and annotation type, find and process the annotations into a dictionary mapping each PTM to its annotations, or vice versa
@@ -315,21 +318,36 @@ def process_database_annotations(database = 'PhosphoSitePlus', annot_type = 'Fun
         raise ValueError("PTMsigDB has multiple pathway annotations. Please specify which pathway you would like to use with the annot_type parameter. Options are: 'Pathway-WikiPathway', 'Pathway-NetPath', or 'Pathway-BI'")
     if database == 'OmniPath' and annot_type == 'Enzyme':
         raise ValueError("OmniPath has two enzyme annotations, one for writer enzymes and one for eraser enzymes. Please specify which enzyme you would like to use with the annot_type parameter. Options are: 'Writer_Enzyme' or 'Eraser_Enzyme'")
-    
+    if database == 'Combined' and annot_type not in ["Writer Enzyme", 'Eraser Enzyme', 'Interactions']:
+        raise ValueError("Combined has three annotation types. Please specify which annotation you would like to use with the annot_type parameter. Options are: 'Writer Enzyme', 'Eraser Enzyme', or 'Interactions'")
+
+
     #check existence of the gmt file, download if automatic_download is True and does not exist
-    if database == 'OmniPath':
+    if database == 'OmniPath' or database == 'Combined':
         if annot_type == 'Writer Enzyme' or annot_type == 'Writer_Enzyme':
             gmt_file = os.path.join(resource_dir, 'Resource_Files', 'Annotations', database, 'Writer_Enzyme.gmt.gz')
         elif annot_type == 'Eraser Enzyme' or annot_type == 'Eraser_Enzyme':
             gmt_file = os.path.join(resource_dir, 'Resource_Files', 'Annotations', database, 'Eraser_Enzyme.gmt.gz')
+        else:
+            gmt_file = os.path.join(resource_dir, 'Resource_Files', 'Annotations', database, f'{annot_type}.gmt.gz')
     else:
         gmt_file = os.path.join(resource_dir, 'Resource_Files', 'Annotations', database, f'{annot_type}.gmt.gz')
 
-    check_gmt_file(gmt_file, database = database, annot_type = annot_type, automatic_download = automatic_download, odir = resource_dir, **kwargs)        
+    if database == 'Combined':
+        if annot_type == 'Interactions':
+            gmt_df = construct_combined_interactions_gmt_df(**kwargs)
+        elif annot_type == 'Writer Enzyme' or annot_type == 'Writer_Enzyme':
+            gmt_df = construct_combined_enzyme_gmt_df(annot_type=annot_type, **kwargs)
+        elif annot_type == 'Eraser Enzyme' or annot_type == 'Eraser_Enzyme':
+            gmt_df = construct_combined_enzyme_gmt_df(annot_type=annot_type, **kwargs)
+        else:
+            raise ValueError("Combined has three annotation types. Please specify which annotation you would like to use with the annot_type parameter. Options are: 'Writer Enzyme', 'Eraser Enzyme', or 'Interactions'")
+    else:
+        check_gmt_file(gmt_file, database = database, annot_type = annot_type, automatic_download = automatic_download, odir = resource_dir, **kwargs)        
 
     
-    #load gmt df
-    gmt_df = load_gmt_file(gmt_file)
+        #load gmt df
+        gmt_df = load_gmt_file(gmt_file)
 
     #collapse annotations if specified
     if collapsed or database == 'iKiP':
@@ -1344,6 +1362,87 @@ def construct_omnipath_gmt_file(min_sources = 1, min_references = 1, convert_to_
     print(f"OmniPath Eraser Enzyme gmt file created at {odir + f'/Eraser_Enzyme.gmt.gz'}")
 
 
+def construct_combined_interactions_gmt_df(interaction_databases = ['PhosphoSitePlus', 'PTMcode', 'PTMInt', 'RegPhos', 'DEPOD'], include_enzyme_interactions = True, **kwargs):
+    """
+    Combine interaction information and format into gmt format for downstream analysis. To avoid confusion, we will not include ability to save these files, as they are dependent on the specific databases chosen.
+
+    Parameter
+    ---------
+
+    """
+    ptms = pose_config.ptm_coordinates.rename(columns={'Gene name': 'Gene'}).copy()
+
+    #filter out PTMs based any provided filter arguments
+    if kwargs:
+        filter_arguments = helpers.extract_filter_kwargs(**kwargs)
+        #check any excess unused keyword arguments, report them
+        helpers.check_filter_kwargs(filter_arguments)
+        #filter ptm coordinates file to include only ptms with desired evidence
+        ptms = helpers.filter_ptms(ptms, **filter_arguments)
+    
+    #combine interaction data from specified databases (suppress text output)
+    sys.stdout = open(os.devnull, 'w')
+    interact = combine_interaction_data(ptms)
+    sys.stdout = sys.__stdout__
+    #group interactions by PTM label
+    if not interact.empty:
+        interact['Combined:Interactions'] = interact['Interacting Gene']+'->'+interact['Type']
+        interact = interact.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform'], dropna = False, as_index = False)['Combined:Interactions'].apply(lambda x: ';'.join(np.unique(x)))
+        if 'Combined:Interactions' in ptms.columns:
+            ptms = ptms.drop(columns = ['Combined:Interactions'])
+
+        ptms = ptms.merge(interact, how = 'left', on = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform'])
+    else:
+        ptms['Combined:Interactions'] = np.nan
+
+    combined_gmt = construct_gmt_df(ptms, 'Combined:Interactions', description = 'Combined:Interactions', annotation_separator=';')
+    return combined_gmt
+
+def construct_combined_enzyme_gmt_df(annot_type = 'Writer Enzyme', enzyme_databases = ['PhosphoSitePlus', 'RegPhos', 'OmniPath', 'DEPOD'], **kwargs):
+    """
+    Combine enzyme-substrate interaction information and format into gmt format for downstream analysis. To avoid confusion, we will not include ability to save these files, as they are dependent on the specific databases chosen.
+
+    Parameters
+    ----------
+    annot_type : str
+        Type of enzyme annotation to include. Must be either 'Writer Enzyme' or 'Eraser Enzyme'. Default is 'Writer Enzyme'.
+    enzyme_databases : list of str
+        List of enzyme databases to include in the analysis. Default is ['PhosphoSitePlus', 'PTMcode', 'PTMInt', 'RegPhos', 'DEPOD'].
+    """
+    #get annotation column name based on annot_type
+    if annot_type == 'Writer Enzyme' or annot_type == 'Writer_Enzyme':
+        annotation_col = 'Combined:Writer_Enzyme'
+    elif annot_type == 'Eraser Enzyme' or annot_type == 'Eraser_Enzyme':
+        annotation_col = 'Combined:Eraser_Enzyme'
+    else:
+        raise ValueError("annot_type must be either 'Writer Enzyme' or 'Eraser Enzyme'")
+
+    ptms = pose_config.ptm_coordinates.rename(columns={'Gene name': 'Gene'}).copy()
+
+    #filter out PTMs based any provided filter arguments
+    if kwargs:
+        filter_arguments = helpers.extract_filter_kwargs(**kwargs)
+        #check any excess unused keyword arguments, report them
+        helpers.check_filter_kwargs(filter_arguments)
+        #filter ptm coordinates file to include only ptms with desired evidence
+        ptms = helpers.filter_ptms(ptms, **filter_arguments)
+
+    #combine enzyme data, suppress text output
+    sys.stdout = open(os.devnull, 'w')
+    ptms = combine_enzyme_data(ptms, enzyme_databases = enzyme_databases)
+    sys.stdout = sys.__stdout__
+
+    #construct gmt file
+    if annot_type == 'Writer Enzyme' or annot_type == 'Writer_Enzyme':
+        annotation_col = 'Combined:Writer_Enzyme'
+    elif annot_type == 'Eraser Enzyme' or annot_type == 'Eraser_Enzyme':
+        annotation_col = 'Combined:Eraser_Enzyme'
+    else:
+        raise ValueError("annot_type must be either 'Writer Enzyme' or 'Eraser Enzyme'")
+    
+    gmt_df = construct_gmt_df(ptms, annotation_col, description = f'Combined:{annot_type}', annotation_separator=';')
+    return gmt_df
+
 
 
 
@@ -1724,9 +1823,9 @@ def combine_enzyme_data(ptms, enzyme_databases = ['PhosphoSitePlus', 'RegPhos', 
     #get enzyme data for each database, if not appended
     for db in enzyme_databases:
         if db == 'OmniPath':
-            if 'OmniPath:Writer Enzyme' not in ptms.columns:
+            if 'OmniPath:Writer_Enzyme' not in ptms.columns:
                 ptms = append_from_gmt(ptms, database = db, annot_type = 'Writer Enzyme')
-            if 'OmniPath:Eraser Enzyme' not in ptms.columns:
+            if 'OmniPath:Eraser_Enzyme' not in ptms.columns:
                 ptms = append_from_gmt(ptms, database = db, annot_type = 'Eraser Enzyme')
         else:
             if f'{db}:Enzyme' not in ptms.columns:
@@ -1772,7 +1871,7 @@ def combine_enzyme_data(ptms, enzyme_databases = ['PhosphoSitePlus', 'RegPhos', 
                             regphos[i] = rp.upper()
                     combined_writer += regphos
                 elif db == 'OmniPath':
-                    omni = row['OmniPath:Writer Enzyme'].split(';') if row['OmniPath:Writer Enzyme'] == row['OmniPath:Writer Enzyme'] else []
+                    omni = row['OmniPath:Writer_Enzyme'].split(';') if row['OmniPath:Writer_Enzyme'] == row['OmniPath:Writer_Enzyme'] else []
                     combined_writer += omni
                 elif db == 'iKiP':
                     ikip = row['iKiP:Enzyme'].split(';') if row['iKiP:Enzyme'] == row['iKiP:Enzyme'] else []
@@ -1792,10 +1891,10 @@ def combine_enzyme_data(ptms, enzyme_databases = ['PhosphoSitePlus', 'RegPhos', 
             combined_eraser = []
             for db in eraser_databases:
                 if db == 'DEPOD':
-                    depod = row['DEPOD:Phosphatase'].split(';') if row['DEPOD:Phosphatase'] == row['DEPOD:Phosphatase'] else []
+                    depod = row['DEPOD:Enzyme'].split(';') if row['DEPOD:Enzyme'] == row['DEPOD:Enzyme'] else []
                     combined_eraser += depod
                 elif db == 'OmniPath':
-                    omni = row['OmniPath:Eraser Enzyme'].split(';') if row['OmniPath:Eraser Enzyme'] == row['OmniPath:Eraser Enzyme'] else []
+                    omni = row['OmniPath:Eraser_Enzyme'].split(';') if row['OmniPath:Eraser_Enzyme'] == row['OmniPath:Eraser_Enzyme'] else []
                     combined_eraser += omni
 
             if len(combined_eraser) > 0:
