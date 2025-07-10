@@ -16,45 +16,41 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=362ab14a" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../../_static/documentation_options.js?v=d2a3a1a5"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'gallery_output/Networks/plot_kstar_enrichment';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Protein interactions network" href="plot_protein_interactions.html" />
-    <link rel="prev" title="Impact on protein interaction and regulatory networks" href="index.html" />
+    <link rel="next" title="Analyzing altered flanking sequences" href="../flanking_sequences/index.html" />
+    <link rel="prev" title="Protein interactions network" href="plot_protein_interactions.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.3.0" />
   </head>
   
   
@@ -70,8 +66,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -79,6 +86,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -86,8 +94,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -103,8 +111,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -134,11 +141,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
@@ -157,7 +168,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../Examples/Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../Examples/Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../Examples/ESRP1_knockdown.html">ESRP1 Knockdown (MATS output)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../Examples/ESRP1_in_Prostate.html">ESRP1 Expression in Prostate Cancer (TCGASpliceSeq output)</a></li>
 </ul>
 </details></li>
 </ul>
@@ -177,15 +190,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">Impact on protein interaction and regulatory networks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plot_ksea.html">Kinase substrate enrichment analysis (KSEA)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="plot_protein_interactions.html">Protein interactions network</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../flanking_sequences/index.html">Analyzing altered flanking sequences</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../flanking_sequences/plot_sequence_comparison.html">Inspect difference of flanking sequence due to splice event</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../flanking_sequences/plot_sh2_domain_motifs.html">Identify altered SH2 domain motifs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../flanking_sequences/plot_location_altered_flanks.html">Probing where and how PTM flanking sequences are altered</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
 </ul>
 </details></li>
 </ul>
@@ -202,14 +216,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -321,16 +330,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 
 </div></div>
       
@@ -368,8 +385,8 @@ to download the full example code.</p>
 <p class="admonition-title">Note</p>
 <p>In order to perform KSTAR analysis, you will first need to download KSTAR networks from the following [figshare](<a class="reference external" href="https://figshare.com/articles/dataset/NETWORKS/14944305?file=28768155">https://figshare.com/articles/dataset/NETWORKS/14944305?file=28768155</a>). Once you have downloaded the networks, all you need is your PTM splicing data and the directory location of the networks to run the analysis.</p>
 </div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ptm_pose</span> <span class="kn">import</span> <span class="n">helpers</span>
-<span class="kn">from</span> <span class="nn">ptm_pose.analyze</span> <span class="kn">import</span> <span class="n">enzyme</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">helpers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose.analyze</span><span class="w"> </span><span class="kn">import</span> <span class="n">enzyme</span>
 
 
 <span class="c1">#load example differential inclusion data</span>
@@ -390,10 +407,10 @@ Processing background phosphotyrosine data
 Final number of PTMs to be assessed: 41,910
 
 Running enrichment for Y data:   0%|          | 0/3 [00:00&lt;?, ?it/s]
-Running enrichment for Y data:  33%|███▎      | 1/3 [00:14&lt;00:29, 14.82s/it]
-Running enrichment for Y data:  67%|██████▋   | 2/3 [00:29&lt;00:14, 14.73s/it]
-Running enrichment for Y data: 100%|██████████| 3/3 [00:37&lt;00:00, 11.84s/it]
-Running enrichment for Y data: 100%|██████████| 3/3 [00:37&lt;00:00, 12.63s/it]
+Running enrichment for Y data:  33%|███▎      | 1/3 [00:11&lt;00:22, 11.03s/it]
+Running enrichment for Y data:  67%|██████▋   | 2/3 [00:22&lt;00:11, 11.57s/it]
+Running enrichment for Y data: 100%|██████████| 3/3 [00:29&lt;00:00,  9.37s/it]
+Running enrichment for Y data: 100%|██████████| 3/3 [00:29&lt;00:00,  9.91s/it]
 
 {&#39;Y&#39;: array([&#39;FYN&#39;, &#39;TYK2&#39;], dtype=object)}
 </pre></div>
@@ -412,16 +429,23 @@ Processing background phosphoserine/threonine data
 Final number of PTMs to be assessed: 211,301
 
 Running enrichment for ST data:   0%|          | 0/3 [00:00&lt;?, ?it/s]
-Running enrichment for ST data:  33%|███▎      | 1/3 [04:08&lt;08:16, 248.39s/it]
-Running enrichment for ST data:  67%|██████▋   | 2/3 [07:25&lt;03:38, 218.19s/it]
-Running enrichment for ST data: 100%|██████████| 3/3 [10:15&lt;00:00, 196.39s/it]
-Running enrichment for ST data: 100%|██████████| 3/3 [10:15&lt;00:00, 205.30s/it]
+Running enrichment for ST data:  33%|███▎      | 1/3 [03:09&lt;06:18, 189.05s/it]
+Running enrichment for ST data:  67%|██████▋   | 2/3 [06:18&lt;03:09, 189.12s/it]
+Running enrichment for ST data: 100%|██████████| 3/3 [08:09&lt;00:00, 153.54s/it]
+Running enrichment for ST data: 100%|██████████| 3/3 [08:09&lt;00:00, 163.14s/it]
 
 {&#39;ST&#39;: array([&#39;CDK4&#39;, &#39;IKBKB&#39;, &#39;MAPK14&#39;, &#39;MAPK7&#39;, &#39;PRKCE&#39;, &#39;PRKCG&#39;, &#39;PRKD1&#39;,
        &#39;PRKG2&#39;, &#39;ROCK1&#39;], dtype=object)}
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (11 minutes 2.452 seconds)</p>
+<p>Finally, you can visualize the results using a KSTAR dotplot, which will show the statistical strength of the relationship based on the size of the dot, with significant kinases colored in orange.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">kstar_enrichment</span><span class="o">.</span><span class="n">dotplot</span><span class="p">(</span><span class="n">ptype</span> <span class="o">=</span> <span class="s1">&#39;ST&#39;</span><span class="p">,</span> <span class="n">kinase_axis</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">impact_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Excluded&#39;</span><span class="p">,</span> <span class="s1">&#39;Included&#39;</span><span class="p">],</span> <span class="n">size_legend</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">sig_kinases_only</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_plot_kstar_enrichment_001.png" srcset="../../_images/sphx_glr_plot_kstar_enrichment_001.png" alt="plot kstar enrichment" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;Axes: &gt;
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (9 minutes 2.667 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-gallery-output-networks-plot-kstar-enrichment-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/33c661296a390a4a833390c7fd59109c/plot_kstar_enrichment.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_kstar_enrichment.ipynb</span></code></a></p>
@@ -448,20 +472,20 @@ Running enrichment for ST data: 100%|██████████| 3/3 [10:15&
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="index.html"
+       href="plot_protein_interactions.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Impact on protein interaction and regulatory networks</p>
+        <p class="prev-next-title">Protein interactions network</p>
       </div>
     </a>
     <a class="right-next"
-       href="plot_protein_interactions.html"
+       href="../flanking_sequences/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Protein interactions network</p>
+        <p class="prev-next-title">Analyzing altered flanking sequences</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -515,8 +539,8 @@ By Naegle Lab
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

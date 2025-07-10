@@ -1,0 +1,882 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ptm_pose.analyze.flank_analysis &#8212; PTM-POSE</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=d2a3a1a5"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ptm_pose/analyze/flank_analysis';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PTM-POSE</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Dependencies.html">Dependencies</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../PTM_POSE.html">PTM-POSE Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../Examples/Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../Examples/ESRP1_knockdown.html">ESRP1 Knockdown (MATS output)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../Examples/ESRP1_in_Prostate.html">ESRP1 Expression in Prostate Cancer (TCGASpliceSeq output)</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Analysis Gallery</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../gallery_output/index.html">Gallery</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/A_Overview_of_Spliced_PTMs/index.html">General Overview of Spliced PTMs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/A_Overview_of_Spliced_PTMs/plot_NumberOfPTMs.html">Inspecting types of PTMs impacted by splicing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/A_Overview_of_Spliced_PTMs/plot_PTM_annotations.html">Inspecting number of PTMs with annotation information available</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/A_Overview_of_Spliced_PTMs/plot_filter_impact.html">Impact of filtering PTMs</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/FunctionEnrichment/index.html">Functional Impact of Spliced PTMs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/FunctionEnrichment/plot_num_annotations.html">Identifying available PTM-specific annotation information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/FunctionEnrichment/plot_geneset_enrichment.html">Identify enriched gene sets associated with differentially spliced PTMs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/FunctionEnrichment/plot_specific_annotation.html">Assessing enriched PTM functions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/Networks/index.html">Impact on protein interaction and regulatory networks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_ksea.html">Kinase substrate enrichment analysis (KSEA)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_protein_interactions.html">Protein interactions network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/flanking_sequences/index.html">Analyzing altered flanking sequences</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_sequence_comparison.html">Inspect difference of flanking sequence due to splice event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_sh2_domain_motifs.html">Identify altered SH2 domain motifs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_location_altered_flanks.html">Probing where and how PTM flanking sequences are altered</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently Asked Questions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/NaegleLab/PTM-POSE" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for ptm_pose.analyze.flank_analysis</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">helpers</span>
+
+<span class="c1">#plotting </span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="c1">#analysis packages</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">Bio.Align</span><span class="w"> </span><span class="kn">import</span> <span class="n">PairwiseAligner</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+
+
+<div class="viewcode-block" id="compare_flanking_sequences">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.flank_analysis.compare_flanking_sequences">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compare_flanking_sequences</span><span class="p">(</span><span class="n">altered_flanks</span><span class="p">,</span> <span class="n">flank_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given the altered_flanks dataframe, compare the flanking sequences in the inclusion and exclusion isoforms. This includes identifying sequence identity, altered positions, residue changes, and the side of the flanking sequence that is altered (N-term, C-term, or both).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    altered_flanks: pandas.DataFrame</span>
+<span class="sd">        DataFrame containing flanking sequences with changes, obtained from get_flanking_changes_from_splice_data(). It should contain the columns &#39;Inclusion Flanking Sequence&#39; and &#39;Exclusion Flanking Sequence&#39; for comparison.</span>
+<span class="sd">    flank_size : int, optional</span>
+<span class="sd">        Size of the flanking region to analyze. Default is 5. This should be less than half the length of the shortest sequence to ensure proper comparison.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sequence_identity_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">altered_positions_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">residue_change_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">flank_side_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">altered_flanks</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="c1">#if there is sequence info for both and does not introduce stop codons, compare sequence identity</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Stop Codon Introduced&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Inclusion Flanking Sequence&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Inclusion Flanking Sequence&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Exclusion Flanking Sequence&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Exclusion Flanking Sequence&#39;</span><span class="p">]:</span>
+            <span class="c1">#compare sequence identity</span>
+            <span class="n">sequence_identity</span> <span class="o">=</span> <span class="n">getSequenceIdentity</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;Inclusion Flanking Sequence&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Exclusion Flanking Sequence&#39;</span><span class="p">])</span>
+            <span class="c1">#identify where flanking sequence changes</span>
+            <span class="n">altered_positions</span><span class="p">,</span> <span class="n">residue_change</span><span class="p">,</span> <span class="n">flank_side</span> <span class="o">=</span> <span class="n">findAlteredPositions</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;Inclusion Flanking Sequence&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Exclusion Flanking Sequence&#39;</span><span class="p">],</span> <span class="n">flank_size</span> <span class="o">=</span> <span class="n">flank_size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sequence_identity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="n">altered_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="n">residue_change</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="n">flank_side</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+
+
+        <span class="c1">#add to lists</span>
+        <span class="n">sequence_identity_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sequence_identity</span><span class="p">)</span>
+        <span class="n">altered_positions_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">altered_positions</span><span class="p">)</span>
+        <span class="n">residue_change_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residue_change</span><span class="p">)</span>
+        <span class="n">flank_side_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flank_side</span><span class="p">)</span>
+
+    <span class="n">altered_flanks</span><span class="p">[</span><span class="s1">&#39;Sequence Identity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sequence_identity_list</span>
+    <span class="n">altered_flanks</span><span class="p">[</span><span class="s1">&#39;Altered Positions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">altered_positions_list</span>
+    <span class="n">altered_flanks</span><span class="p">[</span><span class="s1">&#39;Residue Change&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">residue_change_list</span>
+    <span class="n">altered_flanks</span><span class="p">[</span><span class="s1">&#39;Altered Flank Side&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flank_side_list</span>
+    <span class="k">return</span> <span class="n">altered_flanks</span></div>
+
+
+
+
+<div class="viewcode-block" id="compare_inclusion_motifs">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.flank_analysis.compare_inclusion_motifs">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compare_inclusion_motifs</span><span class="p">(</span><span class="n">flanking_sequences</span><span class="p">,</span> <span class="n">elm_classes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a DataFrame containing flanking sequences with changes and a DataFrame containing ELM class information, identify motifs that are found in the inclusion and exclusion events, identifying motifs unique to each case. This does not take into account the position of the motif in the sequence or additional information that might validate any potential interaction (i.e. structural information that would indicate whether the motif is accessible or not). ELM class information can be downloaded from the download page of elm (http://elm.eu.org/elms/elms_index.tsv).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    flanking_sequences: pandas.DataFrame</span>
+<span class="sd">        DataFrame containing flanking sequences with changes, obtained from get_flanking_changes_from_splice_data()</span>
+<span class="sd">    elm_classes: pandas.DataFrame</span>
+<span class="sd">        DataFrame containing ELM class information (ELMIdentifier, Regex, etc.), downloaded directly from ELM (http://elm.eu.org/elms/elms_index.tsv). Recommended to download this file and input it manually, but will download from ELM otherwise</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    flanking_sequences: pandas.DataFrame</span>
+<span class="sd">        DataFrame containing flanking sequences with changes and motifs found in the inclusion and exclusion events</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">elm_classes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">elm_classes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;http://elm.eu.org/elms/elms_index.tsv&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+
+        
+
+    <span class="n">only_in_inclusion</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">only_in_exclusion</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">flanking_sequences</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="c1">#check if there is a stop codon introduced and both flanking sequences are present</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Stop Codon Introduced&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Inclusion Flanking Sequence&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Inclusion Flanking Sequence&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Exclusion Flanking Sequence&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Exclusion Flanking Sequence&#39;</span><span class="p">]:</span>
+            <span class="c1">#get elm motifs that match inclusion or Exclusion Flanking Sequences</span>
+            <span class="n">inclusion_matches</span> <span class="o">=</span> <span class="n">find_motifs</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;Inclusion Flanking Sequence&#39;</span><span class="p">],</span> <span class="n">elm_classes</span><span class="p">)</span>
+            <span class="n">exclusion_matches</span> <span class="o">=</span> <span class="n">find_motifs</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;Exclusion Flanking Sequence&#39;</span><span class="p">],</span> <span class="n">elm_classes</span><span class="p">)</span>
+
+            <span class="c1">#get motifs that are unique to each case</span>
+            <span class="n">only_in_inclusion</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">inclusion_matches</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">exclusion_matches</span><span class="p">)))</span>
+            <span class="n">only_in_exclusion</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">exclusion_matches</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">inclusion_matches</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">only_in_inclusion</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+            <span class="n">only_in_exclusion</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+    <span class="c1">#save data</span>
+    <span class="n">flanking_sequences</span><span class="p">[</span><span class="s2">&quot;Motif only in Inclusion&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">only_in_inclusion</span>
+    <span class="n">flanking_sequences</span><span class="p">[</span><span class="s2">&quot;Motif only in Exclusion&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">only_in_exclusion</span>
+    <span class="k">return</span> <span class="n">flanking_sequences</span></div>
+
+
+<div class="viewcode-block" id="identify_change_to_specific_motif">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.flank_analysis.identify_change_to_specific_motif">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">identify_change_to_specific_motif</span><span class="p">(</span><span class="n">altered_flanks</span><span class="p">,</span> <span class="n">elm_motif_name</span><span class="p">,</span> <span class="n">elm_classes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">modification_class</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">residues</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given the altered_flanks dataframe, identify PTM flanking sequences that match different ELM motifs in the inclusion and exclusion isoform. This function allows for filtering based on specific ELM motifs, modification classes, and residues of interest. It also allows for additional filtering through kwargs.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    altered_flanks: pandas.DataFrame</span>
+<span class="sd">        DataFrame containing flanking sequences with changes, obtained from get_flanking_changes_from_splice_data() and analyzed with compare_flanking_sequences(). It should contain the columns &#39;Inclusion Flanking Sequence&#39; and &#39;Exclusion Flanking Sequence&#39; for comparison.</span>
+<span class="sd">    elm_motif_name: str</span>
+<span class="sd">        Name of ELM motif to look for in inclusion and exclusion isoforms</span>
+<span class="sd">    elm_classes: pandas.DataFrame, optional</span>
+<span class="sd">    </span>
+<span class="sd">        DataFrame containing ELM class information (ELMIdentifier, Regex, etc.), downloaded directly from ELM (http://elm.eu.org/elms/elms_index.tsv). If not provided, the function will download it automatically.</span>
+<span class="sd">    modification_class : str, optional</span>
+<span class="sd">        </span>
+<span class="sd">        Specific modification class to filter for. This is useful if you are looking for a specific type of PTM (e.g., phosphorylation, acetylation). Default is None, which will not filter based on modification class.</span>
+<span class="sd">    residues : str</span>
+<span class="sd">        Specific residue to focus on. If none will look at all residues</span>
+<span class="sd">    dPSI_col : str, optional</span>
+<span class="sd">        column containing deltaPSI information</span>
+<span class="sd">    kwargs : additional keyword arguments</span>
+<span class="sd">        additional keyword arguments to pass to the filter_ptms function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#filter ptms </span>
+    <span class="n">filter_arguments</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">extract_filter_kwargs</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">check_filter_kwargs</span><span class="p">(</span><span class="n">filter_arguments</span><span class="p">)</span>
+    <span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">filter_ptms</span><span class="p">(</span><span class="n">altered_flanks</span><span class="p">,</span> <span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
+
+    <span class="c1">#compare flanking sequences</span>
+    <span class="k">if</span> <span class="s1">&#39;Altered Positions&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">altered_flanks</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">compare_flanking_sequences</span><span class="p">(</span><span class="n">altered_flanks</span><span class="p">)</span>
+    
+    <span class="c1">#grab elm motifs that match inclusion or Exclusion Flanking Sequences</span>
+    <span class="k">if</span> <span class="s1">&#39;Motif only in Inclusion&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">altered_flanks</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">compare_inclusion_motifs</span><span class="p">(</span><span class="n">altered_flanks</span><span class="p">,</span> <span class="n">elm_classes</span> <span class="o">=</span> <span class="n">elm_classes</span><span class="p">)</span>
+
+    <span class="c1">#grab only needed info</span>
+    <span class="n">motif_data</span> <span class="o">=</span> <span class="n">altered_flanks</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Inclusion Flanking Sequence&#39;</span><span class="p">,</span> <span class="s1">&#39;Exclusion Flanking Sequence&#39;</span><span class="p">],</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">cols_to_keep</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Region ID&#39;</span><span class="p">,</span> <span class="s1">&#39;Gene&#39;</span><span class="p">,</span> <span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">,</span> <span class="s1">&#39;Modification Class&#39;</span><span class="p">,</span> <span class="s1">&#39;Inclusion Flanking Sequence&#39;</span><span class="p">,</span> <span class="s1">&#39;Exclusion Flanking Sequence&#39;</span><span class="p">,</span> <span class="s1">&#39;Motif only in Inclusion&#39;</span><span class="p">,</span> <span class="s1">&#39;Motif only in Exclusion&#39;</span><span class="p">,</span> <span class="s1">&#39;Altered Positions&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue Change&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">dPSI_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cols_to_keep</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dPSI_col</span><span class="p">)</span>
+
+    <span class="c1">#go through motif data and identify motifs matching elm motif of interest</span>
+    <span class="n">motif_data</span> <span class="o">=</span> <span class="n">motif_data</span><span class="p">[</span><span class="n">cols_to_keep</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">motif_data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Motif only in Inclusion&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Motif only in Inclusion&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">elm_motif_name</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Motif only in Inclusion&#39;</span><span class="p">]:</span>
+                <span class="n">motif_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;Motif only in Inclusion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">motif</span> <span class="k">for</span> <span class="n">motif</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Motif only in Inclusion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">elm_motif_name</span> <span class="ow">in</span> <span class="n">motif</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">motif_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;Motif only in Inclusion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Motif only in Exclusion&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Motif only in Exclusion&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">elm_motif_name</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Motif only in Exclusion&#39;</span><span class="p">]:</span>
+                <span class="n">motif_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;Motif only in Exclusion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">motif</span> <span class="k">for</span> <span class="n">motif</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Motif only in Exclusion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">elm_motif_name</span> <span class="ow">in</span> <span class="n">motif</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">motif_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;Motif only in Exclusion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="c1">#restrict to events that are specific modification types or residues (for example, SH2 domain motifs should be phosphotyrosine)</span>
+    <span class="n">motif_data</span> <span class="o">=</span> <span class="n">motif_data</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Motif only in Inclusion&#39;</span><span class="p">,</span> <span class="s1">&#39;Motif only in Exclusion&#39;</span><span class="p">],</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">modification_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">motif_data</span> <span class="o">=</span> <span class="n">motif_data</span><span class="p">[</span><span class="n">motif_data</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">modification_class</span><span class="p">)]</span>
+
+    <span class="k">if</span> <span class="n">residues</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">motif_data</span> <span class="o">=</span> <span class="n">motif_data</span><span class="p">[</span><span class="n">motif_data</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">residues</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">residues</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">motif_data</span> <span class="o">=</span> <span class="n">motif_data</span><span class="p">[</span><span class="n">motif_data</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">residues</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="n">residues</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;residues parameter must be a string or list of strings&#39;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">motif_data</span></div>
+
+
+    
+
+
+
+<div class="viewcode-block" id="findAlteredPositions">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.flank_analysis.findAlteredPositions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">findAlteredPositions</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">flank_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given two sequences, identify the location of positions that have changed</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    seq1, seq2: str</span>
+<span class="sd">        sequences to compare (order does not matter)</span>
+<span class="sd">    flank_size: int</span>
+<span class="sd">        size of the flanking sequences (default is 5). This is used to make sure the provided sequences are the correct length</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    altered_positions: list</span>
+<span class="sd">        list of positions that have changed</span>
+<span class="sd">    residue_change: list</span>
+<span class="sd">        list of residues that have changed associated with that position</span>
+<span class="sd">    flank_side: str</span>
+<span class="sd">        indicates which side of the flanking sequence the change has occurred (N-term, C-term, or Both)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">desired_seq_size</span> <span class="o">=</span> <span class="n">flank_size</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">altered_positions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">residue_change</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">flank_side</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">seq_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)</span>
+    <span class="n">flank_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">seq_size</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="k">if</span> <span class="n">seq_size</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)</span> <span class="ow">and</span> <span class="n">seq_size</span> <span class="o">==</span> <span class="n">desired_seq_size</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">seq_size</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">seq2</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">altered_positions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="p">(</span><span class="n">flank_size</span><span class="p">))</span>
+                <span class="n">residue_change</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1">-&gt;</span><span class="si">{</span><span class="n">seq2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="c1">#check to see which side flanking sequence</span>
+        <span class="n">altered_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">altered_positions</span><span class="p">)</span>
+        <span class="n">n_term</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">altered_positions</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">c_term</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">altered_positions</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n_term</span> <span class="ow">and</span> <span class="n">c_term</span><span class="p">:</span>
+            <span class="n">flank_side</span> <span class="o">=</span> <span class="s1">&#39;Both&#39;</span>
+        <span class="k">elif</span> <span class="n">n_term</span><span class="p">:</span>
+            <span class="n">flank_side</span> <span class="o">=</span> <span class="s1">&#39;N-term only&#39;</span>
+        <span class="k">elif</span> <span class="n">c_term</span><span class="p">:</span>
+            <span class="n">flank_side</span> <span class="o">=</span> <span class="s1">&#39;C-term only&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flank_side</span> <span class="o">=</span> <span class="s1">&#39;Unclear&#39;</span>
+        <span class="k">return</span> <span class="n">altered_positions</span><span class="p">,</span> <span class="n">residue_change</span><span class="p">,</span> <span class="n">flank_side</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span></div>
+
+        
+<div class="viewcode-block" id="getSequenceIdentity">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.flank_analysis.getSequenceIdentity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">getSequenceIdentity</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given two flanking sequences, calculate the sequence identity between them using Biopython and parameters definded by Pillman et al. BMC Bioinformatics 2011</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    seq1, seq2: str</span>
+<span class="sd">        flanking sequence </span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    normalized_score: float</span>
+<span class="sd">        normalized score of sequence similarity between flanking sequences (calculated similarity/max possible similarity)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#make pairwise aligner object</span>
+    <span class="n">aligner</span> <span class="o">=</span> <span class="n">PairwiseAligner</span><span class="p">()</span>
+    <span class="c1">#set parameters, with match score of 10 and mismatch score of -2</span>
+    <span class="n">aligner</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;global&#39;</span>
+    <span class="n">aligner</span><span class="o">.</span><span class="n">match_score</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">aligner</span><span class="o">.</span><span class="n">mismatch_score</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+    <span class="c1">#calculate sequence alignment score between two sequences</span>
+    <span class="n">actual_similarity</span> <span class="o">=</span> <span class="n">aligner</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">score</span>
+    <span class="c1">#calculate sequence alignment score between the same sequence</span>
+    <span class="n">control_similarity</span> <span class="o">=</span> <span class="n">aligner</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">score</span>
+    <span class="c1">#normalize score</span>
+    <span class="n">normalized_score</span> <span class="o">=</span> <span class="n">actual_similarity</span><span class="o">/</span><span class="n">control_similarity</span>
+    <span class="k">return</span> <span class="n">normalized_score</span></div>
+
+
+<div class="viewcode-block" id="find_motifs">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.flank_analysis.find_motifs">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_motifs</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">elm_classes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a sequence and a dataframe containinn ELM class information, identify motifs that can be found in the provided sequence using the RegEx expression provided by ELM (PTMs not considered). This does not take into account the position of the motif in the sequence or additional information that might validate any potential interaction (i.e. structural information that would indicate whether the motif is accessible or not). ELM class information can be downloaded from the download page of elm (http://elm.eu.org/elms/elms_index.tsv).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    seq: str</span>
+<span class="sd">        sequence to search for motifs</span>
+<span class="sd">    elm_classes: pandas.DataFrame</span>
+<span class="sd">        DataFrame containing ELM class information (ELMIdentifier, Regex, etc.), downloaded directly from ELM (http://elm.eu.org/elms/elms_index.tsv)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">elm_row</span> <span class="ow">in</span> <span class="n">elm_classes</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">reg_ex</span> <span class="o">=</span> <span class="n">elm_row</span><span class="p">[</span><span class="s1">&#39;Regex&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">reg_ex</span><span class="p">,</span> <span class="n">seq</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elm_row</span><span class="p">[</span><span class="s1">&#39;ELMIdentifier&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">matches</span></div>
+
+
+<div class="viewcode-block" id="plot_sequence_differences">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_sequence_differences">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_sequence_differences</span><span class="p">(</span><span class="n">inclusion_seq</span><span class="p">,</span> <span class="n">exclusion_seq</span><span class="p">,</span> <span class="n">dpsi</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">flank_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given the flanking sequences for a PTM resulting from a specific splice event, plot the differences between the two sequences, coloring the changing residues in red. If dPSI is also provided, will add an arrow to the plot indicating the direction of change</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    inclusion_seq: str</span>
+<span class="sd">        Sequence of the inclusion isoform (with spliced region included)</span>
+<span class="sd">    exclusion_seq: str</span>
+<span class="sd">        Sequence of the exclusion isoform (with spliced region excluded)</span>
+<span class="sd">    dpsi: float</span>
+<span class="sd">        Change in PSI for the specific splice event. Default is None, which will not add an arrow to the plot.</span>
+<span class="sd">    flank_size: int</span>
+<span class="sd">        Size of flanking region to plot. Default is 5. This must be less than half the length of the shortest sequence.</span>
+<span class="sd">    figsize: tuple</span>
+<span class="sd">        Size of the figure. Default is (3,1).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#convert sequence into list of residues</span>
+    <span class="n">inclusion_seq</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">inclusion_seq</span><span class="p">)</span>
+    <span class="n">exclusion_seq</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">exclusion_seq</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inclusion_seq</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">flank_size</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">exclusion_seq</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">flank_size</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">min_seq_length</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inclusion_seq</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">exclusion_seq</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Longest allowable flank size for provided sequences is </span><span class="si">{</span><span class="p">(</span><span class="n">min_seq_length</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="si">}</span><span class="s1">, or </span><span class="si">{</span><span class="n">min_seq_length</span><span class="si">}</span><span class="s1"> residues. Please use smaller flank size or rerun flanking sequence analysis to get longer flank sequences&#39;</span><span class="p">)</span>
+    
+    <span class="c1">#if either provided seq is longer than flank size, trim to flank size</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inclusion_seq</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">flank_size</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">lowercase_pos</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inclusion_seq</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">islower</span><span class="p">()]</span>
+        <span class="n">inclusion_seq</span> <span class="o">=</span> <span class="n">inclusion_seq</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">lowercase_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">-</span><span class="n">flank_size</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">lowercase_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="n">flank_size</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exclusion_seq</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">flank_size</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">lowercase_pos</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">exclusion_seq</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">islower</span><span class="p">()]</span>
+        <span class="n">exclusion_seq</span> <span class="o">=</span> <span class="n">exclusion_seq</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">lowercase_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">-</span><span class="n">flank_size</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">lowercase_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="n">flank_size</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1">#convert sequences to dataframe for plotting</span>
+    <span class="n">plt_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Inclusion&#39;</span><span class="p">:</span> <span class="n">inclusion_seq</span><span class="p">,</span> <span class="s1">&#39;Exclusion&#39;</span><span class="p">:</span> <span class="n">exclusion_seq</span><span class="p">},</span> <span class="n">index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">flank_size</span><span class="p">,</span> <span class="n">flank_size</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+
+    <span class="c1">#note where inclusion and exclusion rows differ</span>
+    <span class="n">binary_map</span> <span class="o">=</span> <span class="n">plt_data</span><span class="p">[</span><span class="s1">&#39;Inclusion&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">plt_data</span><span class="p">[</span><span class="s1">&#39;Exclusion&#39;</span><span class="p">]</span>
+    <span class="n">binary_map</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">binary_map</span><span class="p">,</span> <span class="n">binary_map</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">binary_map</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">plt_data</span> <span class="o">=</span> <span class="n">plt_data</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="n">figsize</span><span class="p">)</span>
+
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">binary_map</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span><span class="p">,</span> <span class="n">cbar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">,</span> <span class="n">annot</span> <span class="o">=</span> <span class="n">plt_data</span><span class="p">,</span> <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">annot_kws</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">linewidths</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">ec</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s1">&#39;Inclusion&#39;</span><span class="p">,</span> <span class="s1">&#39;Exclusion&#39;</span><span class="p">],</span> <span class="n">rotation</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1">#if dpsi is provided, add arrow to plot showing direction of change</span>
+    <span class="n">end_of_map</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">dpsi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">start_of_arrow</span> <span class="o">=</span> <span class="mf">1.8</span> <span class="k">if</span> <span class="n">dpsi</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.2</span>
+        <span class="n">end_of_arrow</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="k">if</span> <span class="n">dpsi</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">1.8</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">xy</span> <span class="o">=</span> <span class="p">(</span><span class="n">end_of_map</span><span class="p">,</span> <span class="n">start_of_arrow</span><span class="p">),</span> <span class="n">xytext</span> <span class="o">=</span> <span class="p">(</span><span class="n">end_of_map</span><span class="p">,</span> <span class="n">end_of_arrow</span><span class="p">),</span> <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">arrowstyle</span><span class="o">=</span><span class="s2">&quot;-&gt;&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">),</span> <span class="n">annotation_clip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="plot_location_of_altered_flanking_residues">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_location_of_altered_flanking_residues">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_location_of_altered_flanking_residues</span><span class="p">(</span><span class="n">altered_flanks</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">modification_class</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">residue</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot the number of PTMs with altered residues as specific positions relative to the PTM site. This includes the specific position of the residue (-5 to +5 from PTM site) and the specific side of the PTM site that is altered (N-term or C-term)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    altered_flanks: pd.DataFrame</span>
+<span class="sd">        Dataframe with altered flanking sequences, and annotated information added with analyze.compare_flanking_sequences</span>
+<span class="sd">    figsize: tuple</span>
+<span class="sd">        Size of the figure. Default is (4,3).</span>
+<span class="sd">    modification_class: str</span>
+<span class="sd">        Specific modification class to plot. Default is None, which will plot all modification classes.</span>
+<span class="sd">    residue: str</span>
+<span class="sd">        Specific residue to plot. Default is None, which will plot all residues.</span>
+<span class="sd">    kwargs: additional keyword arguments</span>
+<span class="sd">        Additional keyword arguments to pass to the filter_ptms function. This allows for filtering based on specific criteria (e.g., dPSI, evidence, etc.).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#filter ptms </span>
+    <span class="n">filter_arguments</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">extract_filter_kwargs</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">check_filter_kwargs</span><span class="p">(</span><span class="n">filter_arguments</span><span class="p">)</span>
+    <span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">filter_ptms</span><span class="p">(</span><span class="n">altered_flanks</span><span class="p">,</span> <span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
+
+    
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="n">figsize</span><span class="p">,</span> <span class="n">height_ratios</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">modification_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">altered_flanks</span><span class="p">[</span><span class="n">altered_flanks</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">modification_class</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="n">residue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">altered_flanks</span><span class="p">[</span><span class="n">altered_flanks</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">residue</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1">#### plot of side of modification that flank is altered</span>
+    <span class="n">terminus</span> <span class="o">=</span> <span class="n">altered_flanks</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Altered Flank Side&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+    <span class="n">terminus</span> <span class="o">=</span> <span class="n">terminus</span><span class="p">[[</span><span class="s1">&#39;N-term only&#39;</span><span class="p">,</span> <span class="s1">&#39;C-term only&#39;</span><span class="p">]]</span> <span class="c1">#focus on cases where only one side is altered for ease of plotting</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">terminus</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">terminus</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Location of Altered Region&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">9</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="s1">&#39;N-term</span><span class="se">\n</span><span class="s1">only&#39;</span><span class="p">,</span> <span class="s1">&#39;C-term</span><span class="se">\n</span><span class="s1">only&#39;</span><span class="p">])</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;# of PTMs&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">9</span><span class="p">)</span>
+
+    <span class="c1">#### plot specific positions of altered residues relative to PTM</span>
+    <span class="n">position_breakdown</span> <span class="o">=</span> <span class="n">altered_flanks</span><span class="o">.</span><span class="n">explode</span><span class="p">([</span><span class="s1">&#39;Altered Positions&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue Change&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()[[</span><span class="s1">&#39;Gene&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">,</span><span class="s1">&#39;Altered Positions&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue Change&#39;</span><span class="p">]]</span>
+    <span class="n">position_breakdown</span> <span class="o">=</span> <span class="n">position_breakdown</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Altered Positions&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">position_breakdown</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">position_breakdown</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">5.5</span><span class="p">,</span><span class="mf">5.5</span><span class="p">])</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Position Relative to PTM&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">9</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;# of Changed</span><span class="se">\n</span><span class="s1">Residues&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">9</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="plot_alterations_matrix">
+<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_alterations_matrix">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_alterations_matrix</span><span class="p">(</span><span class="n">altered_flanks</span><span class="p">,</span> <span class="n">modification_class</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">residue</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given the altered flanking sequences dataframe, plot a matrix showing the positions of altered residues for specific proteins, as well as the specific change</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    altered_flanks: pd.DataFrame</span>
+<span class="sd">        Dataframe with altered flanking sequences, and annotated information added with analyze.compare_flanking_sequences</span>
+
+<span class="sd">    modification_class: str</span>
+<span class="sd">        Specific modification class to plot. Default is None, which will plot all modification classes.</span>
+
+<span class="sd">    residue: str</span>
+<span class="sd">        Specific residue to plot. Default is None, which will plot all residues.</span>
+<span class="sd">    title: str</span>
+<span class="sd">        Title of the plot. Default is &#39;&#39; (no title).</span>
+<span class="sd">    ax: matplotlib.Axes</span>
+<span class="sd">        Axis to plot on. If None, will create new figure. Default is None.</span>
+<span class="sd">    kwargs: additional keyword arguments</span>
+<span class="sd">        Additional keyword arguments to pass to the filter_ptms function. This allows for filtering based on specific criteria (e.g., dPSI, evidence, etc.).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#filter ptms </span>
+    <span class="n">filter_arguments</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">extract_filter_kwargs</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">check_filter_kwargs</span><span class="p">(</span><span class="n">filter_arguments</span><span class="p">)</span>
+    <span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">filter_ptms</span><span class="p">(</span><span class="n">altered_flanks</span><span class="p">,</span> <span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
+
+    <span class="c1">#extract altered flanking sequences and make sure there is altered position data</span>
+    <span class="n">position_breakdown</span> <span class="o">=</span> <span class="n">altered_flanks</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;Altered Positions&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">position_breakdown</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">position_breakdown</span> <span class="o">=</span> <span class="n">compare_flanking_sequences</span><span class="p">(</span><span class="n">position_breakdown</span><span class="p">)</span>
+
+    <span class="n">position_breakdown</span> <span class="o">=</span> <span class="n">position_breakdown</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Altered Positions&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue Change&#39;</span><span class="p">])</span>
+
+    <span class="c1">#restrit to desired PTM types and residues</span>
+    <span class="k">if</span> <span class="n">modification_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">position_breakdown</span> <span class="o">=</span> <span class="n">position_breakdown</span><span class="p">[</span><span class="n">position_breakdown</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">modification_class</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">residue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">position_breakdown</span> <span class="o">=</span> <span class="n">position_breakdown</span><span class="p">[</span><span class="n">position_breakdown</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">residue</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1">#add ptm column to position breakdown</span>
+    <span class="n">position_breakdown</span><span class="p">[</span><span class="s1">&#39;PTM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">position_breakdown</span><span class="p">[</span><span class="s1">&#39;Gene&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">position_breakdown</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">position_breakdown</span><span class="p">[</span><span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+    <span class="c1">#separate altered residue into individual rows</span>
+    <span class="n">position_breakdown</span> <span class="o">=</span> <span class="n">position_breakdown</span><span class="o">.</span><span class="n">explode</span><span class="p">([</span><span class="s1">&#39;Altered Positions&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue Change&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()[[</span><span class="s1">&#39;Gene&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM&#39;</span><span class="p">,</span><span class="s1">&#39;Altered Positions&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue Change&#39;</span><span class="p">]]</span>
+
+    <span class="c1">#convert altered positions to integers and remove duplicates</span>
+    <span class="n">position_breakdown</span><span class="p">[</span><span class="s1">&#39;Altered Positions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">position_breakdown</span><span class="p">[</span><span class="s1">&#39;Altered Positions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">position_breakdown</span> <span class="o">=</span> <span class="n">position_breakdown</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+    <span class="c1">#position_breakdown = position_breakdown.drop_duplicates(subset = [&quot;PTM&quot;, &quot;Altered_Positions&quot;], keep = False)</span>
+    <span class="n">position_breakdown</span><span class="p">[</span><span class="s1">&#39;PTM&#39;</span><span class="p">]</span>
+    <span class="n">position_matrix</span> <span class="o">=</span> <span class="n">position_breakdown</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="s1">&#39;Altered Positions&#39;</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="s1">&#39;PTM&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span> <span class="s1">&#39;Residue Change&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">position_matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">position_matrix</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+
+    <span class="c1">#replace strings with 1 and nans with 0</span>
+    <span class="n">position_values</span> <span class="o">=</span> <span class="n">position_matrix</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">x</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">position_matrix</span> <span class="o">=</span> <span class="n">position_matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">position_values</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+    <span class="c1">#plot heatmap with black edges around cells and no colorbar, annotate with strings in position matrix</span>
+
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">position_values</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;Greens&#39;</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">,</span> <span class="n">cbar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">linewidths</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">linecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">yticklabels</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">&quot;lightgrey&quot;</span><span class="p">)</span>
+
+    <span class="c1">#annotate with strings in the position matrix</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">position_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">position_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">position_values</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">position_matrix</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">],</span> <span class="n">ha</span> <span class="o">=</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span> <span class="o">=</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span>
+
+    <span class="c1">#adjust figure parameters</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="s1">&#39;-5&#39;</span><span class="p">,</span><span class="s1">&#39;-4&#39;</span><span class="p">,</span><span class="s1">&#39;-3&#39;</span><span class="p">,</span><span class="s1">&#39;-2&#39;</span><span class="p">,</span><span class="s1">&#39;-1&#39;</span><span class="p">,</span><span class="s1">&#39;PTM&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">,</span><span class="s1">&#39;4&#39;</span><span class="p">,</span><span class="s1">&#39;5&#39;</span><span class="p">],</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span> <span class="o">=</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">labelsize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">9</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Naegle Lab
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Naegle Lab.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

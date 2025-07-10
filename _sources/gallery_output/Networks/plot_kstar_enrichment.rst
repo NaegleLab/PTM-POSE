@@ -59,7 +59,7 @@ Given that phosphorlaiton are one of the most commonly impacted modifications, t
 
     Processing background phosphotyrosine data
     Final number of PTMs to be assessed: 41,910
-    Running enrichment for Y data:   0%|          | 0/3 [00:00<?, ?it/s]    Running enrichment for Y data:  33%|███▎      | 1/3 [00:14<00:29, 14.82s/it]    Running enrichment for Y data:  67%|██████▋   | 2/3 [00:29<00:14, 14.73s/it]    Running enrichment for Y data: 100%|██████████| 3/3 [00:37<00:00, 11.84s/it]    Running enrichment for Y data: 100%|██████████| 3/3 [00:37<00:00, 12.63s/it]
+    Running enrichment for Y data:   0%|          | 0/3 [00:00<?, ?it/s]    Running enrichment for Y data:  33%|███▎      | 1/3 [00:11<00:22, 11.03s/it]    Running enrichment for Y data:  67%|██████▋   | 2/3 [00:22<00:11, 11.57s/it]    Running enrichment for Y data: 100%|██████████| 3/3 [00:29<00:00,  9.37s/it]    Running enrichment for Y data: 100%|██████████| 3/3 [00:29<00:00,  9.91s/it]
 
     {'Y': array(['FYN', 'TYK2'], dtype=object)}
 
@@ -69,13 +69,15 @@ Given that phosphorlaiton are one of the most commonly impacted modifications, t
 
 You can also run the same analysis for serine/threonine kinases:
 
-.. GENERATED FROM PYTHON SOURCE LINES 26-28
+.. GENERATED FROM PYTHON SOURCE LINES 26-30
 
 .. code-block:: Python
 
     kstar_enrichment = enzyme.kstar_enrichment(spliced_ptms, network_dir = network_dir, phospho_type = 'ST')
     kstar_enrichment.run_kstar_enrichment()
     kstar_enrichment.return_enriched_kinases()
+
+
 
 
 
@@ -90,17 +92,44 @@ You can also run the same analysis for serine/threonine kinases:
 
     Processing background phosphoserine/threonine data
     Final number of PTMs to be assessed: 211,301
-    Running enrichment for ST data:   0%|          | 0/3 [00:00<?, ?it/s]    Running enrichment for ST data:  33%|███▎      | 1/3 [04:08<08:16, 248.39s/it]    Running enrichment for ST data:  67%|██████▋   | 2/3 [07:25<03:38, 218.19s/it]    Running enrichment for ST data: 100%|██████████| 3/3 [10:15<00:00, 196.39s/it]    Running enrichment for ST data: 100%|██████████| 3/3 [10:15<00:00, 205.30s/it]
+    Running enrichment for ST data:   0%|          | 0/3 [00:00<?, ?it/s]    Running enrichment for ST data:  33%|███▎      | 1/3 [03:09<06:18, 189.05s/it]    Running enrichment for ST data:  67%|██████▋   | 2/3 [06:18<03:09, 189.12s/it]    Running enrichment for ST data: 100%|██████████| 3/3 [08:09<00:00, 153.54s/it]    Running enrichment for ST data: 100%|██████████| 3/3 [08:09<00:00, 163.14s/it]
 
     {'ST': array(['CDK4', 'IKBKB', 'MAPK14', 'MAPK7', 'PRKCE', 'PRKCG', 'PRKD1',
            'PRKG2', 'ROCK1'], dtype=object)}
 
 
 
+.. GENERATED FROM PYTHON SOURCE LINES 31-32
+
+Finally, you can visualize the results using a KSTAR dotplot, which will show the statistical strength of the relationship based on the size of the dot, with significant kinases colored in orange. 
+
+.. GENERATED FROM PYTHON SOURCE LINES 32-33
+
+.. code-block:: Python
+
+
+    kstar_enrichment.dotplot(ptype = 'ST', kinase_axis = 'x', impact_types = ['Excluded', 'Included'], size_legend = False, sig_kinases_only = True, figsize = (2,2))
+
+
+.. image-sg:: /gallery_output/Networks/images/sphx_glr_plot_kstar_enrichment_001.png
+   :alt: plot kstar enrichment
+   :srcset: /gallery_output/Networks/images/sphx_glr_plot_kstar_enrichment_001.png
+   :class: sphx-glr-single-img
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+
+    <Axes: >
+
+
+
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (11 minutes 2.452 seconds)
+   **Total running time of the script:** (9 minutes 2.667 seconds)
 
 
 .. _sphx_glr_download_gallery_output_Networks_plot_kstar_enrichment.py:

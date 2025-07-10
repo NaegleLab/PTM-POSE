@@ -15,35 +15,32 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=362ab14a" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../../../_static/documentation_options.js?v=d2a3a1a5"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ptm_pose/analyze/enzyme';</script>
@@ -51,7 +48,6 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.3.0" />
   </head>
   
   
@@ -67,8 +63,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../../../search.html"
       method="get">
@@ -76,6 +83,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -83,8 +91,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -102,8 +110,7 @@
       
         
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -133,11 +140,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
@@ -178,15 +189,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/Networks/index.html">Impact on protein interaction and regulatory networks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_ksea.html">Kinase substrate enrichment analysis (KSEA)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_protein_interactions.html">Protein interactions network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/flanking_sequences/index.html">Analyzing altered flanking sequences</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_sequence_comparison.html">Inspect difference of flanking sequence due to splice event</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_sh2_domain_motifs.html">Identify altered SH2 domain motifs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_location_altered_flanks.html">Probing where and how PTM flanking sequences are altered</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
 </ul>
 </details></li>
 </ul>
@@ -203,14 +215,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -274,16 +281,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 
 </div></div>
       
@@ -310,38 +325,37 @@
                 <article class="bd-article">
                   
   <h1>Source code for ptm_pose.analyze.enzyme</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="c1">#plotting functions</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">matplotlib.lines</span> <span class="kn">import</span> <span class="n">Line2D</span>
-<span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">Patch</span>
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">Line2D</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Patch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
 
 <span class="c1">#custom stat functions and other helper functions</span>
-<span class="kn">from</span> <span class="nn">ptm_pose</span> <span class="kn">import</span> <span class="n">stat_utils</span><span class="p">,</span> <span class="n">pose_config</span><span class="p">,</span> <span class="n">helpers</span><span class="p">,</span> <span class="n">annotate</span>
-<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">stat_utils</span><span class="p">,</span> <span class="n">pose_config</span><span class="p">,</span> <span class="n">helpers</span><span class="p">,</span> <span class="n">annotate</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">stats</span>
 
 
 
 <span class="c1">#optional analysis packages</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">kinase_library</span> <span class="k">as</span> <span class="nn">kl</span>
-    <span class="n">kinase_library</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">kinase_library</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">kl</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">kinase_library</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">kl</span> <span class="o">=</span> <span class="kc">None</span>
 
 <span class="n">package_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="compare_KL_for_sequence">
 <a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.enzyme.compare_KL_for_sequence">[docs]</a>
-<span class="k">def</span> <span class="nf">compare_KL_for_sequence</span><span class="p">(</span><span class="n">inclusion_seq</span><span class="p">,</span> <span class="n">exclusion_seq</span><span class="p">,</span> <span class="n">dpsi</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">comparison_type</span> <span class="o">=</span> <span class="s1">&#39;percentile&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compare_KL_for_sequence</span><span class="p">(</span><span class="n">inclusion_seq</span><span class="p">,</span> <span class="n">exclusion_seq</span><span class="p">,</span> <span class="n">dpsi</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">comparison_type</span> <span class="o">=</span> <span class="s1">&#39;percentile&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given two sequences, compare the kinase library scores, percentiles, or ranks for each sequence. Optionally, provide a dPSI value to calculate the relative change in preference for each kinase.</span>
 
@@ -356,7 +370,10 @@
 <span class="sd">    comparison_type : str</span>
 <span class="sd">        type of comparison to perform. Can be &#39;percentile&#39;, &#39;score&#39;, or &#39;rank&#39;. Default is &#39;percentile&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
+    <span class="k">if</span> <span class="n">kl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Kinase library package not installed. To use this functionality, please install the kinase library package by running `pip install kinase-library`&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    
     <span class="c1">#get percentiles for inclusion sequence</span>
     <span class="n">s_inc</span> <span class="o">=</span> <span class="n">kl</span><span class="o">.</span><span class="n">Substrate</span><span class="p">(</span><span class="n">inclusion_seq</span><span class="p">)</span>
     <span class="n">inn_perc</span> <span class="o">=</span> <span class="n">s_inc</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">sort_by</span> <span class="o">=</span> <span class="s1">&#39;name&#39;</span><span class="p">)</span>
@@ -389,7 +406,7 @@
 
 <div class="viewcode-block" id="get_all_KL_scores">
 <a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.enzyme.get_all_KL_scores">[docs]</a>
-<span class="k">def</span> <span class="nf">get_all_KL_scores</span><span class="p">(</span><span class="n">seq_data</span><span class="p">,</span> <span class="n">seq_col</span><span class="p">,</span> <span class="n">kin_type</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ser_thr&#39;</span><span class="p">,</span> <span class="s1">&#39;tyrosine&#39;</span><span class="p">],</span> <span class="n">score_type</span> <span class="o">=</span> <span class="s1">&#39;percentiles&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_all_KL_scores</span><span class="p">(</span><span class="n">seq_data</span><span class="p">,</span> <span class="n">seq_col</span><span class="p">,</span> <span class="n">kin_type</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ser_thr&#39;</span><span class="p">,</span> <span class="s1">&#39;tyrosine&#39;</span><span class="p">],</span> <span class="n">score_type</span> <span class="o">=</span> <span class="s1">&#39;percentiles&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a dataset with flanking sequences, score each flanking sequence</span>
 
@@ -411,6 +428,10 @@
 <span class="sd">    </span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">kl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Kinase library package not installed. To use this functionality, please install the kinase library package by running `pip install kinase-library`&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    
     <span class="n">phospho_predict</span> <span class="o">=</span> <span class="n">kl</span><span class="o">.</span><span class="n">PhosphoProteomics</span><span class="p">(</span><span class="n">seq_data</span><span class="p">,</span> <span class="n">seq_col</span> <span class="o">=</span> <span class="n">seq_col</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kin_type</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kin_type</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -437,8 +458,8 @@
 
 
 
-<span class="k">class</span> <span class="nc">KL_flank_analysis</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">altered_flanks</span><span class="p">,</span> <span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;percentile&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">KL_flank_analysis</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">altered_flanks</span><span class="p">,</span> <span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;percentile&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Class for comparing kinase preferences for inclusion and exclusion sequences from altered flanking sequences, using motif scoring from Kinase Library.</span>
 
@@ -457,7 +478,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1">#check to make sure kinase library is installed</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">kinase_library</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Kinase library package not installed. To use this functionality, please install the kinase library package by running `pip install kinase-library`&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="c1">#reduce to phosphorylation sites</span>
@@ -483,7 +504,7 @@
 
         
 
-    <span class="k">def</span> <span class="nf">analyze_single_ptm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene</span><span class="p">,</span> <span class="n">loc</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyze_single_ptm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene</span><span class="p">,</span> <span class="n">loc</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Score a single PTM for its flanking sequence in the inclusion and exclusion isoforms using Kinase-Library</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -506,7 +527,7 @@
                 <span class="n">results</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;Region ID&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">compare_KL_for_sequence</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;Inclusion Flanking Sequence&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Exclusion Flanking Sequence&#39;</span><span class="p">],</span> <span class="n">dpsi</span> <span class="o">=</span> <span class="n">dpsi</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">results</span>
     
-    <span class="k">def</span> <span class="nf">score_all_ptms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">score_all_ptms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Score the flanking sequences of PTMs for both the inclusion and exclusion isoforms using Kinase-Library</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -522,7 +543,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">inclusion_percentile</span> <span class="o">=</span> <span class="n">inclusion_percentile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exclusion_percentile</span> <span class="o">=</span> <span class="n">exclusion_percentile</span>
             
-    <span class="k">def</span> <span class="nf">melt_score_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kin_type</span> <span class="o">=</span> <span class="s1">&#39;ser_thr&#39;</span><span class="p">,</span> <span class="n">flank_type</span> <span class="o">=</span> <span class="s1">&#39;Inclusion&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">melt_score_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kin_type</span> <span class="o">=</span> <span class="s1">&#39;ser_thr&#39;</span><span class="p">,</span> <span class="n">flank_type</span> <span class="o">=</span> <span class="s1">&#39;Inclusion&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Melt the percentile dataframe to long format for easier plotting</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -550,7 +571,7 @@
         <span class="n">percentile_df</span> <span class="o">=</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Region ID&#39;</span><span class="p">,</span> <span class="s1">&#39;Gene&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">,</span> <span class="n">seq_col</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_cols</span><span class="p">,</span> <span class="n">var_name</span> <span class="o">=</span> <span class="s1">&#39;Kinase&#39;</span><span class="p">,</span> <span class="n">value_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">percentile_df</span>
 
-    <span class="k">def</span> <span class="nf">combine_score_dfs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">combine_score_dfs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Combine the inclusion and exclusion score dataframes into a single dataframe that calculates differences in predicted preference between inclusion and exclusion isoforms</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -558,20 +579,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">score_all_ptms</span><span class="p">()</span>
 
         <span class="n">melted_inclusion</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
-            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">melt_percentile_df</span><span class="p">(</span><span class="n">flank_type</span> <span class="o">=</span> <span class="s1">&#39;Inclusion&#39;</span><span class="p">,</span> <span class="n">kin_type</span> <span class="o">=</span> <span class="s1">&#39;ser_thr&#39;</span><span class="p">),</span> 
-            <span class="bp">self</span><span class="o">.</span><span class="n">melt_percentile_df</span><span class="p">(</span><span class="n">flank_type</span> <span class="o">=</span> <span class="s1">&#39;Inclusion&#39;</span><span class="p">,</span> <span class="n">kin_type</span> <span class="o">=</span> <span class="s1">&#39;tyrosine&#39;</span><span class="p">)]</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">melt_score_df</span><span class="p">(</span><span class="n">flank_type</span> <span class="o">=</span> <span class="s1">&#39;Inclusion&#39;</span><span class="p">,</span> <span class="n">kin_type</span> <span class="o">=</span> <span class="s1">&#39;ser_thr&#39;</span><span class="p">),</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">melt_score_df</span><span class="p">(</span><span class="n">flank_type</span> <span class="o">=</span> <span class="s1">&#39;Inclusion&#39;</span><span class="p">,</span> <span class="n">kin_type</span> <span class="o">=</span> <span class="s1">&#39;tyrosine&#39;</span><span class="p">)]</span>
         <span class="p">)</span>
-        <span class="n">melted_inclusion</span> <span class="o">=</span> <span class="n">melted_inclusion</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Percentile&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Inclusion </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">score_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">})</span>
+        <span class="n">melted_inclusion</span> <span class="o">=</span> <span class="n">melted_inclusion</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">capitalize</span><span class="p">():</span> <span class="sa">f</span><span class="s1">&#39;Inclusion </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">})</span>
 
         <span class="n">melted_exclusion</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
-            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">melt_percentile_df</span><span class="p">(</span><span class="n">flank_type</span> <span class="o">=</span> <span class="s1">&#39;Exclusion&#39;</span><span class="p">,</span> <span class="n">kin_type</span> <span class="o">=</span> <span class="s1">&#39;ser_thr&#39;</span><span class="p">),</span> 
-            <span class="bp">self</span><span class="o">.</span><span class="n">melt_percentile_df</span><span class="p">(</span><span class="n">flank_type</span> <span class="o">=</span> <span class="s1">&#39;Inclusion&#39;</span><span class="p">,</span> <span class="n">kin_type</span> <span class="o">=</span> <span class="s1">&#39;tyrosine&#39;</span><span class="p">)]</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">melt_score_df</span><span class="p">(</span><span class="n">flank_type</span> <span class="o">=</span> <span class="s1">&#39;Exclusion&#39;</span><span class="p">,</span> <span class="n">kin_type</span> <span class="o">=</span> <span class="s1">&#39;ser_thr&#39;</span><span class="p">),</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">melt_score_df</span><span class="p">(</span><span class="n">flank_type</span> <span class="o">=</span> <span class="s1">&#39;Inclusion&#39;</span><span class="p">,</span> <span class="n">kin_type</span> <span class="o">=</span> <span class="s1">&#39;tyrosine&#39;</span><span class="p">)]</span>
         <span class="p">)</span>
-        <span class="n">melted_exclusion</span> <span class="o">=</span> <span class="n">melted_exclusion</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Percentile&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Exclusion </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">score_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">})</span>
+        <span class="n">melted_exclusion</span> <span class="o">=</span> <span class="n">melted_exclusion</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">capitalize</span><span class="p">():</span> <span class="sa">f</span><span class="s1">&#39;Exclusion </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">})</span>
         <span class="n">combined</span> <span class="o">=</span> <span class="n">melted_inclusion</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">melted_exclusion</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Region ID&#39;</span><span class="p">,</span> <span class="s1">&#39;Gene&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">,</span> <span class="s1">&#39;Kinase&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">optional_cols</span><span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;inner&#39;</span><span class="p">)</span>
         
         <span class="c1">#calculate the difference</span>
-        <span class="n">combined</span><span class="p">[</span><span class="s1">&#39;Difference&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Inclusion </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">score_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">combined</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Exclusion </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">score_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+        <span class="n">combined</span><span class="p">[</span><span class="s1">&#39;Difference&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Inclusion </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">combined</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Exclusion </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
         <span class="n">combined</span><span class="p">[</span><span class="s1">&#39;Absolute Difference&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined</span><span class="p">[</span><span class="s1">&#39;Difference&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
         <span class="n">combined</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;Absolute Difference&#39;</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 
@@ -580,14 +601,14 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">summary_df</span> <span class="o">=</span> <span class="n">combined</span>
         
-    <span class="k">def</span> <span class="nf">analyze_all_ptms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyze_all_ptms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform the full analysis on all PTMs, including scoring and melting the dataframes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">score_all_ptms</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">combine_score_dfs</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">get_kinases_with_largest_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kinase_type</span> <span class="o">=</span> <span class="s1">&#39;ST&#39;</span><span class="p">,</span> <span class="n">top_n</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">difference_type</span> <span class="o">=</span> <span class="s1">&#39;relative&#39;</span><span class="p">,</span> <span class="n">agg</span> <span class="o">=</span> <span class="s1">&#39;median&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_kinases_with_largest_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kinase_type</span> <span class="o">=</span> <span class="s1">&#39;ST&#39;</span><span class="p">,</span> <span class="n">top_n</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">difference_type</span> <span class="o">=</span> <span class="s1">&#39;relative&#39;</span><span class="p">,</span> <span class="n">agg</span> <span class="o">=</span> <span class="s1">&#39;median&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the top n kinases with the largest changes in preference for inclusion or exclusion isoforms. Difference can be calculated as the normal difference in preference, the absolute difference in preference, or the relative change in preference (normalized by magnitude of splicing change, or dPSI).</span>
 
@@ -611,7 +632,7 @@
         <span class="k">if</span> <span class="n">difference_type</span> <span class="o">==</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span>
             <span class="n">comp_col</span> <span class="o">=</span> <span class="s1">&#39;Absolute Difference&#39;</span>
         <span class="k">elif</span> <span class="n">difference_type</span> <span class="o">==</span> <span class="s1">&#39;absolute&#39;</span><span class="p">:</span>
-            <span class="n">comp_col</span> <span class="o">==</span> <span class="s1">&#39;Absolute Difference&#39;</span>
+            <span class="n">comp_col</span> <span class="o">=</span> <span class="s1">&#39;Absolute Difference&#39;</span>
         <span class="k">elif</span> <span class="n">difference_type</span> <span class="o">==</span> <span class="s1">&#39;relative&#39;</span><span class="p">:</span>
             <span class="n">comp_col</span> <span class="o">=</span> <span class="s1">&#39;Relative Change in Preference&#39;</span>
             <span class="n">kinase_df</span><span class="p">[</span><span class="s1">&#39;Absolute Relative&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kinase_df</span><span class="p">[</span><span class="s1">&#39;Relative Change in Preference&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
@@ -630,7 +651,7 @@
         <span class="n">kinase_df</span> <span class="o">=</span> <span class="n">kinase_df</span><span class="p">[</span><span class="n">kinase_df</span><span class="p">[</span><span class="s1">&#39;Kinase&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">top_kinases</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">kinase_df</span>
     
-    <span class="k">def</span> <span class="nf">plot_top_kinases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_n</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">kinase_type</span> <span class="o">=</span> <span class="s1">&#39;ST&#39;</span><span class="p">,</span> <span class="n">difference_type</span> <span class="o">=</span> <span class="s1">&#39;relative&#39;</span><span class="p">,</span> <span class="n">agg</span> <span class="o">=</span> <span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="n">metric_type</span> <span class="o">=</span> <span class="s1">&#39;percentile&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_top_kinases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_n</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">kinase_type</span> <span class="o">=</span> <span class="s1">&#39;ST&#39;</span><span class="p">,</span> <span class="n">difference_type</span> <span class="o">=</span> <span class="s1">&#39;relative&#39;</span><span class="p">,</span> <span class="n">agg</span> <span class="o">=</span> <span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="n">metric_type</span> <span class="o">=</span> <span class="s1">&#39;percentile&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot a swarm plot showing the top n kinases with the largest changes in preference for inclusion or exclusion isoforms&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -650,7 +671,7 @@
         <span class="k">elif</span> <span class="n">difference_type</span> <span class="o">==</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Difference</span><span class="se">\n</span><span class="s1">in </span><span class="si">{</span><span class="n">metric_type</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">plot_top_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">top_n</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">difference_type</span> <span class="o">=</span> <span class="s1">&#39;relative&#39;</span><span class="p">,</span> <span class="n">metric_type</span> <span class="o">=</span> <span class="s1">&#39;percentile&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_top_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">top_n</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">difference_type</span> <span class="o">=</span> <span class="s1">&#39;relative&#39;</span><span class="p">,</span> <span class="n">metric_type</span> <span class="o">=</span> <span class="s1">&#39;percentile&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot the top n changes in preference after an altered flanking sequence event, either for a all events, a specific gene, or a specific PTM. Top changes can be calculated by percentile change, absolute percentile change, or relative change in preference (percentile change in affinity*dPSI)</span>
 
@@ -723,8 +744,8 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="p">(</span><span class="mf">1.05</span><span class="p">,</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">KSEA</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptms</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;OmniPath Writer&#39;</span><span class="p">,</span> <span class="n">modification</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">KSEA</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptms</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;OmniPath Writer&#39;</span><span class="p">,</span> <span class="n">modification</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adapted version of the Kinase Substrate Enrichment Algorithm (KSEA) from Casado et al. 2013. This version is designed to work with the PTM-POSE pipeline and uses the OmniPath database as default for enzyme-substrate information.</span>
 
@@ -758,8 +779,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">annot_col</span> <span class="o">=</span> <span class="s1">&#39;OmniPath:Writer Enzyme&#39;</span>  <span class="c1">#use writer enzyme annotations</span>
         <span class="k">elif</span> <span class="n">database</span> <span class="o">==</span> <span class="s1">&#39;OmniPath Eraser&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">annot_col</span> <span class="o">=</span> <span class="s1">&#39;OmniPath:Eraser Enzyme&#39;</span>
-        <span class="k">elif</span> <span class="n">database</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="s1">&#39;DEPOD&#39;</span><span class="p">,</span> <span class="s1">&#39;RegPhos&#39;</span><span class="p">,</span> <span class="s1">&#39;OmniPath Writer&#39;</span><span class="p">,</span> <span class="s1">&#39;OmniPath Eraser&#39;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;database must be either &quot;OmniPath Writer&quot;, &quot;OmniPath Eraser&quot;, &quot;PhosphoSitePlus&quot;, &quot;DEPOD&quot;, or &quot;RegPhos&quot;&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">database</span> <span class="o">==</span> <span class="s1">&#39;Combined Writer&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">annot_col</span> <span class="o">=</span> <span class="s1">&#39;Combined:Writer_Enzyme&#39;</span>
+        <span class="k">elif</span> <span class="n">database</span> <span class="o">==</span> <span class="s1">&#39;Combined Eraser&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">annot_col</span> <span class="o">=</span> <span class="s1">&#39;Combined:Eraser_Enzyme&#39;</span>
+        <span class="k">elif</span> <span class="n">database</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="s1">&#39;DEPOD&#39;</span><span class="p">,</span> <span class="s1">&#39;RegPhos&#39;</span><span class="p">,</span> <span class="s1">&#39;OmniPath Writer&#39;</span><span class="p">,</span> <span class="s1">&#39;OmniPath Eraser&#39;</span><span class="p">,</span> <span class="s1">&#39;Combined Writer&#39;</span><span class="p">,</span> <span class="s1">&#39;Combined Eraser&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;database must be either &quot;OmniPath Writer&quot;, &quot;OmniPath Eraser&quot;, &quot;PhosphoSitePlus&quot;, &quot;DEPOD&quot;, &quot;RegPhos&quot;, &quot;Combined Writer&quot;, or &quot;Combined Eraser&quot;&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">annot_col</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">database</span><span class="si">}</span><span class="s1">:Enzyme&#39;</span>  <span class="c1">#use enzyme annotations for other databases</span>
         
@@ -768,6 +793,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="n">annotate</span><span class="o">.</span><span class="n">process_database_annotations</span><span class="p">(</span><span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;OmniPath&#39;</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Writer Enzyme&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">database</span> <span class="o">==</span> <span class="s1">&#39;OmniPath Eraser&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="n">annotate</span><span class="o">.</span><span class="n">process_database_annotations</span><span class="p">(</span><span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;OmniPath&#39;</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Eraser Enzyme&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">database</span> <span class="o">==</span> <span class="s1">&#39;Combined Writer&#39;</span> <span class="ow">or</span> <span class="n">database</span> <span class="o">==</span> <span class="s1">&#39;Combined Eraser&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">annot_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ptms</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">ptms</span> <span class="o">=</span> <span class="n">annotate</span><span class="o">.</span><span class="n">combine_enzyme_data</span><span class="p">(</span><span class="n">ptms</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="n">annotate</span><span class="o">.</span><span class="n">construct_annotation_dict_from_df</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">annot_col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annot_col</span><span class="p">,</span> <span class="n">key_type</span> <span class="o">=</span> <span class="s1">&#39;annotation&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="n">annotate</span><span class="o">.</span><span class="n">process_database_annotations</span><span class="p">(</span><span class="n">database</span> <span class="o">=</span> <span class="n">database</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Enzyme&#39;</span><span class="p">)</span>
 
@@ -778,7 +808,7 @@
         <span class="n">ptms</span><span class="p">[</span><span class="s1">&#39;Label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ptms</span><span class="p">[</span><span class="s1">&#39;PTM&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">ptms</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ptms</span> <span class="o">=</span> <span class="n">ptms</span>
 
-    <span class="k">def</span> <span class="nf">runKSEA_singleenzyme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enzyme</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">runKSEA_singleenzyme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enzyme</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given a single enzyme, calculate the zscore for the enzyme based on the dPSI values of the PTMs in the dataframe.</span>
 
@@ -822,7 +852,7 @@
 
 
 
-    <span class="k">def</span> <span class="nf">runKSEA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">runKSEA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform KSEA-style analysis for each kinase with substrates identified in experiment using dPSI values as quantitative measure.</span>
 
@@ -855,7 +885,7 @@
         <span class="n">results</span><span class="p">[</span><span class="s1">&#39;FDR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stat_utils</span><span class="o">.</span><span class="n">adjustP</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;BH&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">results</span>
 
-    <span class="k">def</span> <span class="nf">plot_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_substrate_count</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_substrate_count</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a horizontal barplot of KSEA results, coloring based on significance and annotating with the number of substrates (if desired)</span>
 
@@ -898,15 +928,15 @@
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plt_data</span><span class="p">[</span><span class="s1">&#39;m&#39;</span><span class="p">]):</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xlim</span><span class="o">+</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)),</span> <span class="n">va</span> <span class="o">=</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">ha</span> <span class="o">=</span> <span class="s1">&#39;center&#39;</span><span class="p">)</span>
         
-    <span class="k">def</span> <span class="nf">save_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;ksea_results&#39;</span><span class="p">,</span> <span class="n">odir</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;ksea_results&#39;</span><span class="p">,</span> <span class="n">odir</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Saves zscores, FDR, and m for all data columns in seperate .tsv files</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">odir</span><span class="si">}{</span><span class="n">fname</span><span class="si">}</span><span class="s1">.tsv&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">kstar_enrichment</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">network_dir</span><span class="p">,</span> <span class="n">background_ptms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">impact_type</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="s1">&#39;Included&#39;</span><span class="p">,</span> <span class="s1">&#39;Excluded&#39;</span><span class="p">],</span> <span class="n">phospho_type</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">kstar_enrichment</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">network_dir</span><span class="p">,</span> <span class="n">background_ptms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">impact_type</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="s1">&#39;Included&#39;</span><span class="p">,</span> <span class="s1">&#39;Excluded&#39;</span><span class="p">],</span> <span class="n">phospho_type</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given spliced ptm or PTMs with altered flanks and a single kstar network, get enrichment for each kinase in the network using a hypergeometric. Assumes the  data has already been reduced to the modification of interest (phosphotyrosine or phoshoserine/threonine)</span>
 
@@ -954,6 +984,11 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;impact_type must be at least one of either &quot;All&quot;, &quot;Included&quot;, or &quot;Excluded&quot;&#39;</span><span class="p">)</span>
         
+        <span class="c1">#construct background filter arguments (same as foreground but ignore significance criteria)</span>
+        <span class="n">background_filter</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">extract_filter_kwargs</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">background_filter</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.1</span>
+        <span class="n">background_filter</span><span class="p">[</span><span class="s1">&#39;min_dpsi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">significant_ptms</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">background_ptms</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">networks</span> <span class="o">=</span> <span class="p">{}</span>
@@ -971,9 +1006,9 @@
             <span class="k">elif</span> <span class="n">ptype</span> <span class="o">==</span> <span class="s1">&#39;ST&#39;</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Processing background phosphoserine/threonine data&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">background_ptms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">background_ptms</span><span class="p">[</span><span class="n">ptype</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_ptms</span><span class="p">(</span><span class="n">background_ptms</span><span class="p">,</span> <span class="n">phospho_type</span><span class="o">=</span><span class="n">ptype</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">background_ptms</span><span class="p">[</span><span class="n">ptype</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_ptms</span><span class="p">(</span><span class="n">background_ptms</span><span class="p">,</span> <span class="n">phospho_type</span><span class="o">=</span><span class="n">ptype</span><span class="p">,</span> <span class="o">**</span><span class="n">background_filter</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">background_ptms</span><span class="p">[</span><span class="n">ptype</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_ptms</span><span class="p">(</span><span class="n">pose_config</span><span class="o">.</span><span class="n">ptm_coordinates</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">phospho_type</span> <span class="o">=</span> <span class="n">ptype</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">background_ptms</span><span class="p">[</span><span class="n">ptype</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_ptms</span><span class="p">(</span><span class="n">pose_config</span><span class="o">.</span><span class="n">ptm_coordinates</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">phospho_type</span> <span class="o">=</span> <span class="n">ptype</span><span class="p">,</span> <span class="o">**</span><span class="n">background_filter</span><span class="p">)</span>
 
             <span class="c1">#load kstar networks</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">networks</span><span class="p">[</span><span class="n">ptype</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_networks</span><span class="p">(</span><span class="n">network_dir</span><span class="p">,</span> <span class="n">phospho_type</span> <span class="o">=</span> <span class="n">ptype</span><span class="p">)</span>
@@ -983,7 +1018,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">phospho_type</span> <span class="o">=</span> <span class="n">phospho_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">median_enrichment</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">load_networks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network_dir</span><span class="p">,</span> <span class="n">phospho_type</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_networks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network_dir</span><span class="p">,</span> <span class="n">phospho_type</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given network directory, load all kstar networks for specific phosphorylation type</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1005,7 +1040,7 @@
         <span class="k">return</span> <span class="n">networks</span>
 
 
-    <span class="k">def</span> <span class="nf">process_ptms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptms</span><span class="p">,</span> <span class="n">phospho_type</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_ptms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptms</span><span class="p">,</span> <span class="n">phospho_type</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given ptm information, restrict data to include only the phosphorylation type of interest and add a PTM column for matching information from KSTAR</span>
 
@@ -1037,7 +1072,7 @@
         <span class="k">return</span> <span class="n">ptms</span>
 
     
-    <span class="k">def</span> <span class="nf">get_enrichment_single_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network_key</span><span class="p">,</span> <span class="n">impact_type</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">phospho_type</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_enrichment_single_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network_key</span><span class="p">,</span> <span class="n">impact_type</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">phospho_type</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        in progress</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1077,7 +1112,7 @@
 
         <span class="k">return</span> <span class="n">results</span>
     
-    <span class="k">def</span> <span class="nf">get_enrichment_all_networks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">impact_type</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">phospho_type</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_enrichment_all_networks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">impact_type</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">phospho_type</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given prostate data and a dictionary of kstar networks, get enrichment for each kinase in each network in the prostate data. Assumes the prostate data has already been reduced to the modification of interest (phosphotyrosine or phoshoserine/threonine)</span>
 
@@ -1095,7 +1130,7 @@
             <span class="n">results</span><span class="p">[</span><span class="n">network</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_enrichment_single_network</span><span class="p">(</span><span class="n">network_key</span><span class="o">=</span><span class="n">network</span><span class="p">,</span> <span class="n">impact_type</span><span class="o">=</span><span class="n">impact_type</span><span class="p">,</span> <span class="n">phospho_type</span><span class="o">=</span><span class="n">phospho_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">results</span>
 
-    <span class="k">def</span> <span class="nf">extract_enrichment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_enrichment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given a dictionary of results from get_enrichment_all_networks, extract the p-values for each network and kinase, and then calculate the median p-value across all networks for each kinase</span>
 
@@ -1110,7 +1145,7 @@
         <span class="n">enrichment</span><span class="p">[</span><span class="s1">&#39;median&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">enrichment</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">enrichment</span>
     
-    <span class="k">def</span> <span class="nf">run_kstar_enrichment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_kstar_enrichment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run full kstar analysis to generate substrate enrichment across each of the 50 KSTAR networks and calculate the median p-value for each kinase across all networks</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1129,7 +1164,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">enrichment_all</span> <span class="o">=</span> <span class="n">enrichment</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">median_enrichment</span> <span class="o">=</span> <span class="n">median</span>
 
-    <span class="k">def</span> <span class="nf">return_enriched_kinases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">impact_type</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">return_enriched_kinases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">impact_type</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return kinases with a median p-value less than the provided alpha value (substrates are enriched among the significant PTMs)</span>
 
@@ -1147,12 +1182,12 @@
             <span class="n">sig_enrichment</span><span class="p">[</span><span class="n">ptype</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_data</span><span class="p">[</span><span class="n">tmp_data</span> <span class="o">&lt;</span> <span class="n">alpha</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span>
         <span class="k">return</span> <span class="n">sig_enrichment</span>
     
-    <span class="k">def</span> <span class="nf">dotplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptype</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">impact_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="s1">&#39;Included&#39;</span><span class="p">,</span> <span class="s1">&#39;Excluded&#39;</span><span class="p">],</span> <span class="n">kinase_axis</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">facecolor</span> <span class="o">=</span> <span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">size_legend</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">color_legend</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_size</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_kinases_only</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">dotsize</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">dotplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptype</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">impact_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="s1">&#39;Included&#39;</span><span class="p">,</span> <span class="s1">&#39;Excluded&#39;</span><span class="p">],</span> <span class="n">kinase_axis</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">facecolor</span> <span class="o">=</span> <span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">size_legend</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">color_legend</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_size</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_kinases_only</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">dotsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> 
                  <span class="n">colormap</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;#6b838f&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">&#39;colorblind&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]},</span>
                  <span class="n">labelmap</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;FPR &gt; </span><span class="si">%0.2f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="mf">0.05</span><span class="p">),</span> <span class="mi">1</span><span class="p">:</span><span class="s1">&#39;FPR &lt;= </span><span class="si">%0.2f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)},</span>
                  <span class="n">legend_title</span> <span class="o">=</span> <span class="s1">&#39;p-value&#39;</span><span class="p">,</span> <span class="n">size_number</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">size_color</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">,</span> 
                  <span class="n">color_title</span> <span class="o">=</span> <span class="s1">&#39;Significant&#39;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> 
-                 <span class="n">legend_distance</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">)):</span>
+                 <span class="n">legend_distance</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generates the dotplot plot, where size is determined by values dataframe and color is determined by significant dataframe. This is a stripped down version of the code used in KSTAR to generate the dotplot for the kinase activities</span>
 <span class="sd">        </span>
@@ -1334,8 +1369,8 @@ By Naegle Lab
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

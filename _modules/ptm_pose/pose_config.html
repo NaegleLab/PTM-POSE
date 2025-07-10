@@ -15,35 +15,32 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=362ab14a" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../../_static/documentation_options.js?v=d2a3a1a5"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ptm_pose/pose_config';</script>
@@ -51,7 +48,6 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.3.0" />
   </head>
   
   
@@ -67,8 +63,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -76,6 +83,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -83,8 +91,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -102,8 +110,7 @@
       
         
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -133,11 +140,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
@@ -178,15 +189,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery_output/Networks/index.html">Impact on protein interaction and regulatory networks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../gallery_output/Networks/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery_output/Networks/plot_ksea.html">Kinase substrate enrichment analysis (KSEA)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery_output/Networks/plot_protein_interactions.html">Protein interactions network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery_output/Networks/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery_output/flanking_sequences/index.html">Analyzing altered flanking sequences</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../gallery_output/flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery_output/flanking_sequences/plot_sequence_comparison.html">Inspect difference of flanking sequence due to splice event</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery_output/flanking_sequences/plot_sh2_domain_motifs.html">Identify altered SH2 domain motifs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery_output/flanking_sequences/plot_location_altered_flanks.html">Probing where and how PTM flanking sequences are altered</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery_output/flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
 </ul>
 </details></li>
 </ul>
@@ -203,14 +215,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -274,16 +281,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 
 </div></div>
       
@@ -310,15 +325,14 @@
                 <article class="bd-article">
                   
   <h1>Source code for ptm_pose.pose_config</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1">#base python packages</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 
-<span class="kn">from</span> <span class="nn">ptm_pose</span> <span class="kn">import</span> <span class="n">database_interfacing</span> <span class="k">as</span> <span class="n">di</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">database_interfacing</span> <span class="k">as</span> <span class="n">di</span>
 
 <span class="c1">#identify package directory</span>
 <span class="n">package_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
@@ -328,7 +342,7 @@
 <span class="n">modification_conversion</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">resource_dir</span> <span class="o">+</span> <span class="s1">&#39;modification_conversion.csv&#39;</span><span class="p">)</span>
 
 <span class="c1">#load ptm_coordinates dataframe, if present</span>
-<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">resource_dir</span> <span class="o">+</span> <span class="s1">&#39;ptm_coordinates.csv&#39;</span><span class="p">):</span>
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">resource_dir</span> <span class="o">+</span> <span class="s1">&#39;ptm_coordinates.csv.gz&#39;</span><span class="p">):</span>
     <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">resource_dir</span> <span class="o">+</span> <span class="s1">&#39;ptm_coordinates.csv.gz&#39;</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Chromosome/scaffold name&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;experimental evidence&#39;</span><span class="p">:</span><span class="nb">str</span><span class="p">},</span> <span class="n">compression</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ptm coordinates file not found, please make sure you did not delete this file&#39;</span><span class="p">)</span>
@@ -336,7 +350,7 @@
 
 <div class="viewcode-block" id="download_translator">
 <a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.pose_config.download_translator">[docs]</a>
-<span class="k">def</span> <span class="nf">download_translator</span><span class="p">(</span><span class="n">save</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">download_translator</span><span class="p">(</span><span class="n">save</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Using rest API from UniProt, download mapping information between UniProt IDs, Gene names, and Ensembl Gene IDs. This information is used to convert between different gene identifiers and UniProt IDs</span>
 
@@ -380,22 +394,7 @@
 
 <span class="c1">#additional information</span>
 
-<span class="c1">#dictionary to associate annotation column names with different annotation types</span>
-<span class="n">annotation_col_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">:{</span><span class="s1">&#39;Function&#39;</span><span class="p">:</span><span class="s1">&#39;PSP:ON_FUNCTION&#39;</span><span class="p">,</span> <span class="s1">&#39;Process&#39;</span><span class="p">:</span><span class="s1">&#39;PSP:ON_PROCESS&#39;</span><span class="p">,</span> <span class="s1">&#39;Interactions&#39;</span><span class="p">:</span><span class="s1">&#39;PSP:ON_PROT_INTERACT&#39;</span><span class="p">,</span> <span class="s1">&#39;Disease&#39;</span><span class="p">:</span><span class="s1">&#39;PSP:Disease_Association&#39;</span><span class="p">,</span> <span class="s1">&#39;Kinase&#39;</span><span class="p">:</span><span class="s1">&#39;PSP:Kinase&#39;</span><span class="p">,</span><span class="s1">&#39;Perturbation&#39;</span><span class="p">:</span><span class="s1">&#39;PTMsigDB:PERT-PSP&#39;</span><span class="p">},</span>
-                        <span class="s1">&#39;ELM&#39;</span><span class="p">:{</span><span class="s1">&#39;Interactions&#39;</span><span class="p">:</span><span class="s1">&#39;ELM:Interactions&#39;</span><span class="p">,</span> <span class="s1">&#39;Motif Match&#39;</span><span class="p">:</span><span class="s1">&#39;ELM:Motif Matches&#39;</span><span class="p">},</span>
-                        <span class="s1">&#39;PTMcode&#39;</span><span class="p">:{</span><span class="s1">&#39;Intraprotein&#39;</span><span class="p">:</span><span class="s1">&#39;PTMcode:Intraprotein_Interactions&#39;</span><span class="p">,</span> <span class="s1">&#39;Interactions&#39;</span><span class="p">:</span><span class="s1">&#39;PTMcode:Interprotein_Interactions&#39;</span><span class="p">},</span>
-                        <span class="s1">&#39;PTMInt&#39;</span><span class="p">:{</span><span class="s1">&#39;Interactions&#39;</span><span class="p">:</span><span class="s1">&#39;PTMInt:Interaction&#39;</span><span class="p">},</span>
-                        <span class="s1">&#39;RegPhos&#39;</span><span class="p">:{</span><span class="s1">&#39;Kinase&#39;</span><span class="p">:</span><span class="s1">&#39;RegPhos:Kinase&#39;</span><span class="p">},</span>
-                        <span class="s1">&#39;DEPOD&#39;</span><span class="p">:{</span><span class="s1">&#39;Phosphatase&#39;</span><span class="p">:</span><span class="s1">&#39;DEPOD:Phosphatase&#39;</span><span class="p">},</span>
-                        <span class="s1">&#39;PTMsigDB&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;WikiPathway&#39;</span><span class="p">:</span><span class="s1">&#39;PTMsigDB:PATH-WP&#39;</span><span class="p">,</span> <span class="s1">&#39;NetPath&#39;</span><span class="p">:</span><span class="s1">&#39;PTMsigDB:PATH-NP&#39;</span><span class="p">,</span><span class="s1">&#39;mSigDB&#39;</span><span class="p">:</span><span class="s1">&#39;PTMsigDB:PATH-BI&#39;</span><span class="p">,</span> <span class="s1">&#39;Perturbation (DIA2)&#39;</span><span class="p">:</span><span class="s1">&#39;PTMsigDB:PERT-P100-DIA2&#39;</span><span class="p">,</span> <span class="s1">&#39;Perturbation (DIA)&#39;</span><span class="p">:</span> <span class="s1">&#39;PTMsigDB:PERT-P100-DIA&#39;</span><span class="p">,</span> <span class="s1">&#39;Perturbation (PRM)&#39;</span><span class="p">:</span><span class="s1">&#39;PTMsigDB:PERT-P100-PRM&#39;</span><span class="p">,</span><span class="s1">&#39;Kinase&#39;</span><span class="p">:</span><span class="s1">&#39;PTMsigDB:KINASE-iKiP&#39;</span><span class="p">}}</span>
-
-<span class="n">annotation_function_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Function&#39;</span><span class="p">:</span><span class="s1">&#39;add_PSP_regulatory_site_data&#39;</span><span class="p">,</span> <span class="s1">&#39;Process&#39;</span><span class="p">:</span><span class="s1">&#39;add_PSP_regulatory_site_data&#39;</span><span class="p">,</span> <span class="s1">&#39;Disease&#39;</span><span class="p">:</span><span class="s1">&#39;add_PSP_disease_association&#39;</span><span class="p">,</span> <span class="s1">&#39;Kinase&#39;</span><span class="p">:</span><span class="s1">&#39;add_PSP_kinase_substrate_data&#39;</span><span class="p">,</span> <span class="s1">&#39;Interactions&#39;</span><span class="p">:</span> <span class="s1">&#39;add_PSP_regulatory_site_data()&#39;</span><span class="p">,</span> <span class="s1">&#39;Perturbation&#39;</span><span class="p">:</span><span class="s1">&#39;add_PTMsigDB_data&#39;</span><span class="p">},</span>
-                       <span class="s1">&#39;ELM&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Interactions&#39;</span><span class="p">:</span><span class="s1">&#39;add_ELM_interactions()&#39;</span><span class="p">,</span> <span class="s1">&#39;Motif Match&#39;</span><span class="p">:</span><span class="s1">&#39;add_ELM_motif_matches&#39;</span><span class="p">},</span>
-                       <span class="s1">&#39;PTMcode&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Intraprotein&#39;</span><span class="p">:</span> <span class="s1">&#39;add_PTMcode_intraprotein&#39;</span><span class="p">,</span> <span class="s1">&#39;Interactions&#39;</span><span class="p">:</span><span class="s1">&#39;add_PTMcode_interprotein&#39;</span><span class="p">},</span>
-                       <span class="s1">&#39;PTMInt&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Interactions&#39;</span><span class="p">:</span><span class="s1">&#39;add_PTMInt_data&#39;</span><span class="p">},</span>
-                       <span class="s1">&#39;RegPhos&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Kinase&#39;</span><span class="p">:</span> <span class="s1">&#39;add_RegPhos_data&#39;</span><span class="p">},</span>
-                       <span class="s1">&#39;DEPOD&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;Phosphatase&#39;</span><span class="p">:</span><span class="s1">&#39;add_DEPOD_data&#39;</span><span class="p">},</span>
-                       <span class="s1">&#39;PTMsigDB&#39;</span><span class="p">:{</span><span class="s1">&#39;WikiPathway&#39;</span><span class="p">:</span><span class="s1">&#39;add_PTMsigDB_data&#39;</span><span class="p">,</span> <span class="s1">&#39;NetPath&#39;</span><span class="p">:</span><span class="s1">&#39;add_PTMsigDB_data&#39;</span><span class="p">,</span><span class="s1">&#39;mSigDB&#39;</span><span class="p">:</span><span class="s1">&#39;add_PTMsigDB_data&#39;</span><span class="p">,</span> <span class="s1">&#39;Perturbation (DIA2)&#39;</span><span class="p">:</span><span class="s1">&#39;add_PTMsigDB_data&#39;</span><span class="p">,</span> <span class="s1">&#39;Perturbation (DIA)&#39;</span><span class="p">:</span> <span class="s1">&#39;add_PTMsigDB_data&#39;</span><span class="p">,</span> <span class="s1">&#39;Perturbation (PRM)&#39;</span><span class="p">:</span><span class="s1">&#39;add_PTMsigDB_data&#39;</span><span class="p">,</span><span class="s1">&#39;Kinase&#39;</span><span class="p">:</span><span class="s1">&#39;add_PTMsigDB_data&#39;</span><span class="p">}}</span>
+<span class="c1">#annotation_function_dict = {&#39;PhosphoSitePlus&#39;: {&#39;Function&#39;:&#39;add_PSP_regulatory_site_data&#39;, &#39;Process&#39;:&#39;add_PSP_regulatory_site_data&#39;, &#39;Disease&#39;:&#39;add_PSP_disease_association&#39;, &#39;Kinase&#39;:&#39;add_PSP_kinase_substrate_data&#39;, &#39;Interactions&#39;: &#39;add_PSP_regulatory_site_data()&#39;, &#39;Perturbation&#39;:&#39;add_PTMsigDB_data&#39;},  &#39;ELM&#39;: {&#39;Interactions&#39;:&#39;add_ELM_interactions()&#39;, &#39;Motif Match&#39;:&#39;add_ELM_motif_matches&#39;},&#39;PTMcode&#39;: {&#39;Intraprotein&#39;: &#39;add_PTMcode_intraprotein&#39;, &#39;Interactions&#39;:&#39;add_PTMcode_interprotein&#39;},&#39;PTMInt&#39;: {&#39;Interactions&#39;:&#39;add_PTMInt_data&#39;},&#39;RegPhos&#39;: {&#39;Kinase&#39;: &#39;add_RegPhos_data&#39;},&#39;DEPOD&#39;: {&#39;Phosphatase&#39;:&#39;add_DEPOD_data&#39;},&#39;PTMsigDB&#39;:{&#39;WikiPathway&#39;:&#39;add_PTMsigDB_data&#39;, &#39;NetPath&#39;:&#39;add_PTMsigDB_data&#39;,&#39;mSigDB&#39;:&#39;add_PTMsigDB_data&#39;, &#39;Perturbation (DIA2)&#39;:&#39;add_PTMsigDB_data&#39;, &#39;Perturbation (DIA)&#39;: &#39;add_PTMsigDB_data&#39;, &#39;Perturbation (PRM)&#39;:&#39;add_PTMsigDB_data&#39;,&#39;Kinase&#39;:&#39;add_PTMsigDB_data&#39;}}</span>
 
 
 
@@ -403,7 +402,7 @@
 <span class="n">psp_name_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Actinfilin&#39;</span><span class="p">:</span><span class="s1">&#39;Q6TDP4&#39;</span><span class="p">,</span><span class="s1">&#39;14-3-3 zeta&#39;</span><span class="p">:</span><span class="s1">&#39;P63104&#39;</span><span class="p">,</span><span class="s1">&#39;14-3-3 epsilon&#39;</span><span class="p">:</span><span class="s1">&#39;P62258&#39;</span><span class="p">,</span><span class="s1">&#39;14-3-3 sigma&#39;</span><span class="p">:</span><span class="s1">&#39;P31947&#39;</span><span class="p">,</span><span class="s1">&#39;P130Cas&#39;</span><span class="p">:</span><span class="s1">&#39;P56945&#39;</span><span class="p">,</span><span class="s1">&#39;ENaC-beta&#39;</span><span class="p">:</span><span class="s1">&#39;P51168&#39;</span><span class="p">,</span><span class="s1">&#39;ENaC-alpha&#39;</span><span class="p">:</span><span class="s1">&#39;P37088&#39;</span><span class="p">,</span><span class="s1">&#39;14-3-3 eta&#39;</span><span class="p">:</span><span class="s1">&#39;Q04917&#39;</span><span class="p">,</span><span class="s1">&#39;14-3-3 beta&#39;</span><span class="p">:</span><span class="s1">&#39;P31946&#39;</span><span class="p">,</span> <span class="s1">&#39;14-3-3 gamma&#39;</span><span class="p">:</span><span class="s1">&#39;P61981&#39;</span><span class="p">,</span> <span class="s1">&#39;14-3-3 theta&#39;</span><span class="p">:</span><span class="s1">&#39;P27348&#39;</span><span class="p">,</span><span class="s1">&#39;Securin&#39;</span><span class="p">:</span><span class="s1">&#39;O95997&#39;</span><span class="p">,</span><span class="s1">&#39;GPIbA&#39;</span><span class="p">:</span><span class="s1">&#39;P07359&#39;</span><span class="p">,</span><span class="s1">&#39;occludin&#39;</span><span class="p">:</span><span class="s1">&#39;Q16625&#39;</span><span class="p">,</span><span class="s1">&#39;ER-beta&#39;</span><span class="p">:</span><span class="s1">&#39;Q92731&#39;</span><span class="p">,</span><span class="s1">&#39;53BP1&#39;</span><span class="p">:</span> <span class="s1">&#39;Q12888&#39;</span><span class="p">,</span><span class="s1">&#39;4E-T&#39;</span><span class="p">:</span><span class="s1">&#39;Q9NRA8&#39;</span><span class="p">,</span><span class="s1">&#39;53BP2&#39;</span><span class="p">:</span><span class="s1">&#39;Q13625&#39;</span><span class="p">,</span><span class="s1">&#39;AP-2 beta&#39;</span><span class="p">:</span><span class="s1">&#39;Q92481&#39;</span><span class="p">,</span><span class="s1">&#39;APAF&#39;</span><span class="p">:</span><span class="s1">&#39;O14727&#39;</span><span class="p">,</span><span class="s1">&#39;Bcl-xL&#39;</span><span class="p">:</span><span class="s1">&#39;Q07817&#39;</span><span class="p">,</span><span class="s1">&#39;C/EBP-epsilon&#39;</span><span class="p">:</span><span class="s1">&#39;Q15744&#39;</span><span class="p">,</span><span class="s1">&#39;CREB&#39;</span><span class="p">:</span><span class="s1">&#39;P16220&#39;</span><span class="p">,</span><span class="s1">&#39;Calmodulin&#39;</span><span class="p">:</span><span class="s1">&#39;P0DP23&#39;</span><span class="p">,</span><span class="s1">&#39;Cortactin&#39;</span><span class="p">:</span><span class="s1">&#39;Q14247&#39;</span><span class="p">,</span><span class="s1">&#39;DNAPK&#39;</span><span class="p">:</span><span class="s1">&#39;P78527&#39;</span><span class="p">,</span> <span class="s1">&#39;Diaphanous-1&#39;</span><span class="p">:</span><span class="s1">&#39;O60610&#39;</span><span class="p">,</span> <span class="s1">&#39;ER-alpha&#39;</span><span class="p">:</span><span class="s1">&#39;P03372&#39;</span><span class="p">,</span> <span class="s1">&#39;Exportin-1&#39;</span><span class="p">:</span><span class="s1">&#39;O14980&#39;</span><span class="p">,</span> <span class="s1">&#39;Ezrin&#39;</span><span class="p">:</span><span class="s1">&#39;P15311&#39;</span><span class="p">,</span> <span class="s1">&#39;H3&#39;</span><span class="p">:</span><span class="s1">&#39;Q6NXT2&#39;</span><span class="p">,</span><span class="s1">&#39;HSP70&#39;</span><span class="p">:</span><span class="s1">&#39;P0DMV8;P0DMV9&#39;</span><span class="p">,</span><span class="s1">&#39;IKKG&#39;</span><span class="p">:</span><span class="s1">&#39;Q9Y6K9&#39;</span><span class="p">,</span> <span class="s1">&#39;Ig-beta&#39;</span><span class="p">:</span><span class="s1">&#39;P40259&#39;</span><span class="p">,</span><span class="s1">&#39;Ku80&#39;</span><span class="p">:</span><span class="s1">&#39;P13010&#39;</span><span class="p">,</span><span class="s1">&#39;LC8&#39;</span><span class="p">:</span><span class="s1">&#39;Q96FJ2&#39;</span><span class="p">,</span> <span class="s1">&#39;MRLC2V&#39;</span><span class="p">:</span><span class="s1">&#39;P10916&#39;</span><span class="p">,</span> <span class="s1">&#39;Merlin&#39;</span><span class="p">:</span><span class="s1">&#39;P35240&#39;</span><span class="p">,</span><span class="s1">&#39;NFkB-p105&#39;</span><span class="p">:</span><span class="s1">&#39;P19838&#39;</span><span class="p">,</span> <span class="s1">&#39;Rb&#39;</span><span class="p">:</span><span class="s1">&#39;P06400&#39;</span><span class="p">,</span> <span class="s1">&#39;RhoGDI alpha&#39;</span><span class="p">:</span><span class="s1">&#39;P52565&#39;</span><span class="p">,</span> <span class="s1">&#39;Rhodopsin&#39;</span><span class="p">:</span><span class="s1">&#39;P08100&#39;</span><span class="p">,</span> <span class="s1">&#39;SHP-1&#39;</span><span class="p">:</span><span class="s1">&#39;P29350&#39;</span><span class="p">,</span> <span class="s1">&#39;SHP-2&#39;</span><span class="p">:</span><span class="s1">&#39;Q06124&#39;</span><span class="p">,</span><span class="s1">&#39;SLP76&#39;</span><span class="p">:</span><span class="s1">&#39;Q13094&#39;</span><span class="p">,</span><span class="s1">&#39;SMRT&#39;</span><span class="p">:</span><span class="s1">&#39;Q9Y618&#39;</span><span class="p">,</span><span class="s1">&#39;SRC-3&#39;</span><span class="p">:</span><span class="s1">&#39;Q9Y6Q9&#39;</span><span class="p">,</span><span class="s1">&#39;STI1&#39;</span><span class="p">:</span><span class="s1">&#39;Q9BPY8&#39;</span><span class="p">,</span><span class="s1">&#39;Vinculin&#39;</span><span class="p">:</span><span class="s1">&#39;P18206&#39;</span><span class="p">,</span><span class="s1">&#39;beclin 1&#39;</span><span class="p">:</span><span class="s1">&#39;Q14457&#39;</span><span class="p">,</span><span class="s1">&#39;claspin&#39;</span><span class="p">:</span><span class="s1">&#39;Q9HAW4&#39;</span><span class="p">,</span> <span class="s1">&#39;gp130&#39;</span><span class="p">:</span><span class="s1">&#39;P40189&#39;</span><span class="p">,</span><span class="s1">&#39;leupaxin&#39;</span><span class="p">:</span><span class="s1">&#39;O60711&#39;</span><span class="p">,</span><span class="s1">&#39;p14ARF&#39;</span><span class="p">:</span><span class="s1">&#39;Q8N726&#39;</span><span class="p">,</span><span class="s1">&#39;rubicon&#39;</span><span class="p">:</span><span class="s1">&#39;Q92622&#39;</span><span class="p">,</span><span class="s1">&#39;snRNP A&#39;</span><span class="p">:</span><span class="s1">&#39;P09661&#39;</span><span class="p">,</span><span class="s1">&#39;snRNP B1&#39;</span><span class="p">:</span><span class="s1">&#39;P08579&#39;</span><span class="p">,</span><span class="s1">&#39;snRNP C&#39;</span><span class="p">:</span><span class="s1">&#39;P09234&#39;</span><span class="p">,</span><span class="s1">&#39;syntenin&#39;</span><span class="p">:</span><span class="s1">&#39;O00560;Q9H190&#39;</span><span class="p">,</span><span class="s1">&#39;talin 1&#39;</span><span class="p">:</span><span class="s1">&#39;Q9Y490&#39;</span><span class="p">,</span> <span class="s1">&#39;ubiquitin&#39;</span><span class="p">:</span><span class="s1">&#39;P0CG47&#39;</span><span class="p">,</span> <span class="s1">&#39;4E-BP1&#39;</span><span class="p">:</span><span class="s1">&#39;Q13541&#39;</span><span class="p">,</span> <span class="s1">&#39;ALK2&#39;</span><span class="p">:</span><span class="s1">&#39;Q04771&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPKA1&#39;</span><span class="p">:</span><span class="s1">&#39;Q13131&#39;</span><span class="p">,</span><span class="s1">&#39;AurA&#39;</span><span class="p">:</span><span class="s1">&#39;O14965&#39;</span><span class="p">,</span><span class="s1">&#39;AurB&#39;</span><span class="p">:</span><span class="s1">&#39;Q96GD4&#39;</span><span class="p">,</span> <span class="s1">&#39;AurC&#39;</span><span class="p">:</span><span class="s1">&#39;Q9UQB9&#39;</span><span class="p">,</span> <span class="s1">&#39;C/EBP-beta&#39;</span><span class="p">:</span><span class="s1">&#39;P17676&#39;</span><span class="p">,</span> <span class="s1">&#39;CAMK1A&#39;</span><span class="p">:</span><span class="s1">&#39;Q14012&#39;</span><span class="p">,</span> <span class="s1">&#39;CHD-3 iso3&#39;</span><span class="p">:</span><span class="s1">&#39;Q12873&#39;</span><span class="p">,</span> <span class="s1">&#39;CK1A&#39;</span><span class="p">:</span><span class="s1">&#39;P48729&#39;</span><span class="p">,</span> <span class="s1">&#39;CK2B&#39;</span><span class="p">:</span><span class="s1">&#39;P67870&#39;</span><span class="p">,</span> <span class="s1">&#39;DAT&#39;</span><span class="p">:</span><span class="s1">&#39;Q01959&#39;</span><span class="p">,</span> <span class="s1">&#39;DJ-1&#39;</span><span class="p">:</span><span class="s1">&#39;Q99497&#39;</span><span class="p">,</span> <span class="s1">&#39;DOR-1&#39;</span><span class="p">:</span><span class="s1">&#39;P41143&#39;</span><span class="p">,</span> <span class="s1">&#39;DYN1&#39;</span><span class="p">:</span><span class="s1">&#39;Q05193&#39;</span><span class="p">,</span><span class="s1">&#39;Desmoplakin&#39;</span><span class="p">:</span><span class="s1">&#39;P15924&#39;</span><span class="p">,</span> <span class="s1">&#39;Exportin-4&#39;</span><span class="p">:</span><span class="s1">&#39;Q9C0E2&#39;</span><span class="p">,</span> <span class="s1">&#39;FBPase&#39;</span><span class="p">:</span><span class="s1">&#39;P09467&#39;</span><span class="p">,</span> <span class="s1">&#39;FBPase 2&#39;</span><span class="p">:</span><span class="s1">&#39;O60825&#39;</span><span class="p">,</span> <span class="s1">&#39;G-alpha&#39;</span><span class="p">:</span><span class="s1">&#39;P63096&#39;</span><span class="p">,</span> <span class="s1">&#39;G-alpha 13&#39;</span><span class="p">:</span><span class="s1">&#39;Q14344&#39;</span><span class="p">,</span> <span class="s1">&#39;G-alpha i1&#39;</span><span class="p">:</span><span class="s1">&#39;P63096&#39;</span><span class="p">,</span> <span class="s1">&#39;G-beta 1&#39;</span><span class="p">:</span><span class="s1">&#39;P62873&#39;</span><span class="p">,</span> <span class="s1">&#39;G-beta 2&#39;</span><span class="p">:</span><span class="s1">&#39;P62879&#39;</span><span class="p">,</span> <span class="s1">&#39;G6PI&#39;</span><span class="p">:</span><span class="s1">&#39;P06744&#39;</span><span class="p">,</span> <span class="s1">&#39;GM130&#39;</span><span class="p">:</span><span class="s1">&#39;Q08379&#39;</span><span class="p">,</span> <span class="s1">&#39;GR&#39;</span><span class="p">:</span><span class="s1">&#39;P04150&#39;</span><span class="p">,</span> <span class="s1">&#39;H4&#39;</span><span class="p">:</span><span class="s1">&#39;P62805&#39;</span><span class="p">,</span> <span class="s1">&#39;HP1 alpha&#39;</span><span class="p">:</span><span class="s1">&#39;P45973&#39;</span><span class="p">,</span> <span class="s1">&#39;IkB-alpha&#39;</span><span class="p">:</span><span class="s1">&#39;P25963&#39;</span><span class="p">,</span> <span class="s1">&#39;IkB-beta&#39;</span><span class="p">:</span><span class="s1">&#39;Q15653&#39;</span><span class="p">,</span> <span class="s1">&#39;PPAR-gamma&#39;</span><span class="p">:</span><span class="s1">&#39;P37231&#39;</span><span class="p">,</span> <span class="s1">&#39;Claudin-1&#39;</span><span class="p">:</span><span class="s1">&#39;O95832&#39;</span><span class="p">,</span> <span class="s1">&#39;Claudin-2&#39;</span><span class="p">:</span><span class="s1">&#39;P57739&#39;</span><span class="p">,</span> <span class="s1">&#39;Cofilin-1&#39;</span><span class="p">:</span><span class="s1">&#39;P23528&#39;</span><span class="p">,</span> <span class="s1">&#39;K14&#39;</span><span class="p">:</span><span class="s1">&#39;P02533&#39;</span><span class="p">,</span> <span class="s1">&#39;K18&#39;</span><span class="p">:</span><span class="s1">&#39;P05783&#39;</span><span class="p">,</span> <span class="s1">&#39;K5&#39;</span><span class="p">:</span><span class="s1">&#39;P13647&#39;</span><span class="p">,</span><span class="s1">&#39;K8&#39;</span><span class="p">:</span><span class="s1">&#39;P05787&#39;</span><span class="p">,</span><span class="s1">&#39;Ku70&#39;</span><span class="p">:</span><span class="s1">&#39;P12956&#39;</span><span class="p">,</span> <span class="s1">&#39;Moesin&#39;</span><span class="p">:</span><span class="s1">&#39;P26038&#39;</span><span class="p">,</span><span class="s1">&#39;N-WASP&#39;</span><span class="p">:</span><span class="s1">&#39;O00401&#39;</span><span class="p">,</span><span class="s1">&#39;Nur77&#39;</span><span class="p">:</span><span class="s1">&#39;P22736&#39;</span><span class="p">,</span><span class="s1">&#39;P38A&#39;</span><span class="p">:</span><span class="s1">&#39;Q16539&#39;</span><span class="p">,</span><span class="s1">&#39;P38B&#39;</span><span class="p">:</span><span class="s1">&#39;Q15759&#39;</span><span class="p">,</span> <span class="s1">&#39;P70S6KB&#39;</span><span class="p">:</span><span class="s1">&#39;P23443&#39;</span><span class="p">,</span><span class="s1">&#39;PGC-1 alpha&#39;</span><span class="p">:</span><span class="s1">&#39;Q9UBK2&#39;</span><span class="p">,</span><span class="s1">&#39;PKHF1&#39;</span><span class="p">:</span><span class="s1">&#39;Q96S99&#39;</span><span class="p">,</span><span class="s1">&#39;P38G&#39;</span><span class="p">:</span><span class="s1">&#39;P53778&#39;</span><span class="p">,</span><span class="s1">&#39;PKCI&#39;</span><span class="p">:</span><span class="s1">&#39;P41743&#39;</span><span class="p">,</span><span class="s1">&#39;PKCZ&#39;</span><span class="p">:</span><span class="s1">&#39;Q05513&#39;</span><span class="p">,</span> <span class="s1">&#39;PKG1&#39;</span><span class="p">:</span><span class="s1">&#39;Q13976&#39;</span><span class="p">,</span> <span class="s1">&#39;PTP-PEST&#39;</span><span class="p">:</span><span class="s1">&#39;Q05209&#39;</span><span class="p">,</span><span class="s1">&#39;Plectin-1&#39;</span><span class="p">:</span><span class="s1">&#39;Q15149&#39;</span><span class="p">,</span><span class="s1">&#39;RFA2&#39;</span><span class="p">:</span><span class="s1">&#39;P15927&#39;</span><span class="p">,</span><span class="s1">&#39;SERCA2&#39;</span><span class="p">:</span><span class="s1">&#39;P16615&#39;</span><span class="p">,</span><span class="s1">&#39;SH2-B-beta&#39;</span><span class="p">:</span><span class="s1">&#39;Q9NRF2&#39;</span><span class="p">,</span> <span class="s1">&#39;SNAP-alpha&#39;</span><span class="p">:</span><span class="s1">&#39;P54920&#39;</span><span class="p">,</span> <span class="s1">&#39;SPT16&#39;</span><span class="p">:</span><span class="s1">&#39;Q9BXB7&#39;</span><span class="p">,</span> <span class="s1">&#39;SPT6&#39;</span><span class="p">:</span><span class="s1">&#39;Q7KZ85&#39;</span><span class="p">,</span><span class="s1">&#39;STEP&#39;</span><span class="p">:</span><span class="s1">&#39;P54829&#39;</span><span class="p">,</span><span class="s1">&#39;STLK3&#39;</span><span class="p">:</span><span class="s1">&#39;Q9UEW8&#39;</span><span class="p">,</span> <span class="s1">&#39;Snail1&#39;</span><span class="p">:</span><span class="s1">&#39;O95863&#39;</span><span class="p">,</span> <span class="s1">&#39;Snail2&#39;</span><span class="p">:</span><span class="s1">&#39;O43623&#39;</span><span class="p">,</span> <span class="s1">&#39;Stargazin&#39;</span><span class="p">:</span><span class="s1">&#39;P62955&#39;</span><span class="p">,</span><span class="s1">&#39;Survivin&#39;</span><span class="p">:</span><span class="s1">&#39;O15392&#39;</span><span class="p">,</span><span class="s1">&#39;TARP&#39;</span><span class="p">:</span><span class="s1">&#39;P09693&#39;</span><span class="p">,</span><span class="s1">&#39;TK&#39;</span><span class="p">:</span><span class="s1">&#39;P04183&#39;</span><span class="p">,</span><span class="s1">&#39;TOM20&#39;</span><span class="p">:</span><span class="s1">&#39;Q15388&#39;</span><span class="p">,</span><span class="s1">&#39;TR-alpha&#39;</span><span class="p">:</span><span class="s1">&#39;P10827&#39;</span><span class="p">,</span><span class="s1">&#39;Titin&#39;</span><span class="p">:</span><span class="s1">&#39;Q8WZ42&#39;</span><span class="p">,</span><span class="s1">&#39;Vimentin&#39;</span><span class="p">:</span><span class="s1">&#39;P08670&#39;</span><span class="p">,</span><span class="s1">&#39;WASP&#39;</span><span class="p">:</span><span class="s1">&#39;P42768&#39;</span><span class="p">,</span><span class="s1">&#39;ZAP&#39;</span><span class="p">:</span><span class="s1">&#39;Q7Z2W4&#39;</span><span class="p">,</span>  <span class="s1">&#39;Zyxin&#39;</span><span class="p">:</span><span class="s1">&#39;Q15942&#39;</span><span class="p">,</span> <span class="s1">&#39;cIAP1&#39;</span><span class="p">:</span><span class="s1">&#39;Q13490&#39;</span><span class="p">,</span><span class="s1">&#39;caveolin-1&#39;</span><span class="p">:</span><span class="s1">&#39;Q03135&#39;</span><span class="p">,</span> <span class="s1">&#39;coronin 2A&#39;</span><span class="p">:</span><span class="s1">&#39;Q92828&#39;</span><span class="p">,</span> <span class="s1">&#39;desmin&#39;</span><span class="p">:</span><span class="s1">&#39;P17661&#39;</span><span class="p">,</span><span class="s1">&#39;eIF2-alpha&#39;</span><span class="p">:</span><span class="s1">&#39;Q9BY44&#39;</span><span class="p">,</span> <span class="s1">&#39;eIF2-beta&#39;</span><span class="p">:</span><span class="s1">&#39;P20042&#39;</span><span class="p">,</span> <span class="s1">&#39;eIF3-alpha&#39;</span><span class="p">:</span><span class="s1">&#39;O75822&#39;</span><span class="p">,</span> <span class="s1">&#39;eIF3-eta&#39;</span><span class="p">:</span><span class="s1">&#39;P55884&#39;</span><span class="p">,</span> <span class="s1">&#39;eIF3-zeta&#39;</span><span class="p">:</span><span class="s1">&#39;O15371&#39;</span><span class="p">,</span> <span class="s1">&#39;eNOS&#39;</span><span class="p">:</span><span class="s1">&#39;P29474&#39;</span><span class="p">,</span> <span class="s1">&#39;emerin&#39;</span><span class="p">:</span><span class="s1">&#39;P50402&#39;</span><span class="p">,</span> <span class="s1">&#39;epsin 1&#39;</span><span class="p">:</span><span class="s1">&#39;Q9Y6I3&#39;</span><span class="p">,</span> <span class="s1">&#39;glutaminase&#39;</span><span class="p">:</span><span class="s1">&#39;O94925&#39;</span><span class="p">,</span><span class="s1">&#39;hnRNP A1&#39;</span><span class="p">:</span><span class="s1">&#39;P09651&#39;</span><span class="p">,</span> <span class="s1">&#39;hnRNP A2/B1&#39;</span><span class="p">:</span><span class="s1">&#39;P22626&#39;</span><span class="p">,</span> <span class="s1">&#39;hnRNP A3&#39;</span><span class="p">:</span><span class="s1">&#39;P51991&#39;</span><span class="p">,</span><span class="s1">&#39;hnRNP D0&#39;</span><span class="p">:</span><span class="s1">&#39;Q14103&#39;</span><span class="p">,</span> <span class="s1">&#39;hnRNP E2&#39;</span><span class="p">:</span><span class="s1">&#39;Q15366&#39;</span><span class="p">,</span><span class="s1">&#39;hnRNP P2&#39;</span><span class="p">:</span><span class="s1">&#39;P35637&#39;</span><span class="p">,</span><span class="s1">&#39;hnRNP U&#39;</span><span class="p">:</span><span class="s1">&#39;Q00839&#39;</span><span class="p">,</span> <span class="s1">&#39;kindlin-2&#39;</span><span class="p">:</span><span class="s1">&#39;Q96AC1&#39;</span><span class="p">,</span> <span class="s1">&#39;kindlin-3&#39;</span><span class="p">:</span><span class="s1">&#39;Q86UX7&#39;</span><span class="p">,</span><span class="s1">&#39;lamin A/C&#39;</span><span class="p">:</span><span class="s1">&#39;P02545&#39;</span><span class="p">,</span> <span class="s1">&#39;mucolipin 1&#39;</span><span class="p">:</span><span class="s1">&#39;Q9GZU1&#39;</span><span class="p">,</span><span class="s1">&#39;nNOS&#39;</span><span class="p">:</span><span class="s1">&#39;Q8WY41&#39;</span><span class="p">,</span><span class="s1">&#39;p21Cip1&#39;</span><span class="p">:</span><span class="s1">&#39;P38936&#39;</span><span class="p">,</span> <span class="s1">&#39;p27Kip1&#39;</span><span class="p">:</span><span class="s1">&#39;P46527&#39;</span><span class="p">,</span><span class="s1">&#39;p47phox&#39;</span><span class="p">:</span><span class="s1">&#39;P14598&#39;</span><span class="p">,</span><span class="s1">&#39;p90RSK&#39;</span><span class="p">:</span><span class="s1">&#39;Q15418&#39;</span><span class="p">,</span><span class="s1">&#39;palladin&#39;</span><span class="p">:</span><span class="s1">&#39;Q8WX93&#39;</span><span class="p">,</span><span class="s1">&#39;polybromo 1&#39;</span><span class="p">:</span><span class="s1">&#39;Q86U86&#39;</span><span class="p">,</span> <span class="s1">&#39;syndecan-4&#39;</span><span class="p">:</span><span class="s1">&#39;P31431&#39;</span><span class="p">,</span> <span class="s1">&#39;tensin 1 iso1&#39;</span><span class="p">:</span><span class="s1">&#39;Q9HBL0&#39;</span><span class="p">,</span> <span class="s1">&#39;utrophin&#39;</span><span class="p">:</span><span class="s1">&#39;P46939&#39;</span><span class="p">,</span><span class="s1">&#39;DKFZp686L1814&#39;</span><span class="p">:</span><span class="s1">&#39;Q6MZP7&#39;</span><span class="p">,</span> <span class="s1">&#39;EB1&#39;</span><span class="p">:</span><span class="s1">&#39;Q15691&#39;</span><span class="p">,</span> <span class="s1">&#39;EB2&#39;</span><span class="p">:</span><span class="s1">&#39;Q15555&#39;</span><span class="p">,</span> <span class="s1">&#39;G-alpha i3&#39;</span><span class="p">:</span><span class="s1">&#39;P08754&#39;</span><span class="p">,</span><span class="s1">&#39;HSP20&#39;</span><span class="p">:</span><span class="s1">&#39;O14558&#39;</span><span class="p">,</span><span class="s1">&#39;HSP40&#39;</span><span class="p">:</span><span class="s1">&#39;P25685&#39;</span><span class="p">,</span> <span class="s1">&#39;Hic-5&#39;</span><span class="p">:</span><span class="s1">&#39;O43294&#39;</span><span class="p">,</span> <span class="s1">&#39;Ig-alpha&#39;</span><span class="p">:</span><span class="s1">&#39;P11912&#39;</span><span class="p">,</span> <span class="s1">&#39;LC3A&#39;</span><span class="p">:</span><span class="s1">&#39;Q9H492&#39;</span><span class="p">,</span> <span class="s1">&#39;LC3B&#39;</span><span class="p">:</span><span class="s1">&#39;Q9GZQ8&#39;</span><span class="p">,</span> <span class="s1">&#39;LC3C&#39;</span><span class="p">:</span><span class="s1">&#39;Q9BXW4&#39;</span><span class="p">,</span><span class="s1">&#39;NFkB-p100&#39;</span><span class="p">:</span><span class="s1">&#39;Q00653&#39;</span><span class="p">,</span><span class="s1">&#39;NFkB-p65&#39;</span><span class="p">:</span><span class="s1">&#39;Q04206&#39;</span><span class="p">,</span><span class="s1">&#39;Pnk1&#39;</span><span class="p">:</span><span class="s1">&#39;Q96T60&#39;</span><span class="p">,</span> <span class="s1">&#39;RPT2&#39;</span><span class="p">:</span><span class="s1">&#39;P62191&#39;</span><span class="p">,</span><span class="s1">&#39;EB3&#39;</span><span class="p">:</span><span class="s1">&#39;Q9UPY8&#39;</span><span class="p">}</span>
 
 
-<span class="k">def</span> <span class="nf">flip_uniprot_dict</span><span class="p">(</span><span class="n">uniprot_dict</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flip_uniprot_dict</span><span class="p">(</span><span class="n">uniprot_dict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given one of the uniprot id to gene name or gene id dictionaries, flip the dictionary so that the gene name or id is the key and the uniprot id is the value</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -474,8 +473,8 @@ By Naegle Lab
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

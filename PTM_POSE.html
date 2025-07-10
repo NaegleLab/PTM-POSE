@@ -16,35 +16,32 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=362ab14a" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="_static/documentation_options.js?v=d2a3a1a5"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'PTM_POSE';</script>
@@ -54,7 +51,6 @@
     <link rel="prev" title="Dependencies" href="Dependencies.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.3.0" />
   </head>
   
   
@@ -70,8 +66,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -79,6 +86,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -86,8 +94,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -103,8 +111,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -134,11 +141,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
@@ -179,15 +190,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="gallery_output/Networks/index.html">Impact on protein interaction and regulatory networks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="gallery_output/Networks/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/Networks/plot_ksea.html">Kinase substrate enrichment analysis (KSEA)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gallery_output/Networks/plot_protein_interactions.html">Protein interactions network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/Networks/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="gallery_output/flanking_sequences/index.html">Analyzing altered flanking sequences</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="gallery_output/flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gallery_output/flanking_sequences/plot_sequence_comparison.html">Inspect difference of flanking sequence due to splice event</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gallery_output/flanking_sequences/plot_sh2_domain_motifs.html">Identify altered SH2 domain motifs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gallery_output/flanking_sequences/plot_location_altered_flanks.html">Probing where and how PTM flanking sequences are altered</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery_output/flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
 </ul>
 </details></li>
 </ul>
@@ -204,14 +216,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -323,16 +330,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -391,7 +406,10 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_PTMsigDB_gmt_files"><code class="docutils literal notranslate"><span class="pre">construct_PTMsigDB_gmt_files()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_PhosphoSitePlus_gmt_files"><code class="docutils literal notranslate"><span class="pre">construct_PhosphoSitePlus_gmt_files()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_RegPhos_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_RegPhos_gmt_file()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_annotation_dict_from_df"><code class="docutils literal notranslate"><span class="pre">construct_annotation_dict_from_df()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_annotation_dict_from_gmt"><code class="docutils literal notranslate"><span class="pre">construct_annotation_dict_from_gmt()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_combined_enzyme_gmt_df"><code class="docutils literal notranslate"><span class="pre">construct_combined_enzyme_gmt_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_combined_interactions_gmt_df"><code class="docutils literal notranslate"><span class="pre">construct_combined_interactions_gmt_df()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_custom_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_custom_gmt_file()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_gmt_df"><code class="docutils literal notranslate"><span class="pre">construct_gmt_df()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_omnipath_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_omnipath_gmt_file()</span></code></a></li>
@@ -415,6 +433,7 @@
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ptm_pose.analyze.filter">Filtering PTMs and Events</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.filter.assess_filter_range"><code class="docutils literal notranslate"><span class="pre">assess_filter_range()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.filter.plot_filter_impact"><code class="docutils literal notranslate"><span class="pre">plot_filter_impact()</span></code></a></li>
 </ul>
 </li>
@@ -455,13 +474,15 @@
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Flanking Sequences</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.compare_inclusion_motifs"><code class="docutils literal notranslate"><span class="pre">compare_inclusion_motifs()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.findAlteredPositions"><code class="docutils literal notranslate"><span class="pre">findAlteredPositions()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.find_motifs"><code class="docutils literal notranslate"><span class="pre">find_motifs()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.getSequenceIdentity"><code class="docutils literal notranslate"><span class="pre">getSequenceIdentity()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.plot_alterations_matrix"><code class="docutils literal notranslate"><span class="pre">plot_alterations_matrix()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.plot_location_of_altered_flanking_residues"><code class="docutils literal notranslate"><span class="pre">plot_location_of_altered_flanking_residues()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.plot_sequence_differences"><code class="docutils literal notranslate"><span class="pre">plot_sequence_differences()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.compare_flanking_sequences"><code class="docutils literal notranslate"><span class="pre">compare_flanking_sequences()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.compare_inclusion_motifs"><code class="docutils literal notranslate"><span class="pre">compare_inclusion_motifs()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.findAlteredPositions"><code class="docutils literal notranslate"><span class="pre">findAlteredPositions()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.find_motifs"><code class="docutils literal notranslate"><span class="pre">find_motifs()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.getSequenceIdentity"><code class="docutils literal notranslate"><span class="pre">getSequenceIdentity()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.identify_change_to_specific_motif"><code class="docutils literal notranslate"><span class="pre">identify_change_to_specific_motif()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.plot_alterations_matrix"><code class="docutils literal notranslate"><span class="pre">plot_alterations_matrix()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.plot_location_of_altered_flanking_residues"><code class="docutils literal notranslate"><span class="pre">plot_location_of_altered_flanking_residues()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.plot_sequence_differences"><code class="docutils literal notranslate"><span class="pre">plot_sequence_differences()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -1188,9 +1209,49 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ptm_pose.annotate.construct_annotation_dict_from_df">
+<span class="sig-prename descclassname"><span class="pre">ptm_pose.annotate.</span></span><span class="sig-name descname"><span class="pre">construct_annotation_dict_from_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annot_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'annotation'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/annotate.html#construct_annotation_dict_from_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.annotate.construct_annotation_dict_from_df" title="Link to this definition">#</a></dt>
+<dd><p>Given an annotated PTM dataframe, construct a dictionary mapping each item to its annotations, with either the annotation as key or PTM as the key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ptms</strong><span class="classifier">pd.DataFrame</span></dt><dd><p>Dataframe containing PTM data with annotation data, could be either spliced_ptm or altered_flanks dataframe</p>
+</dd>
+<dt><strong>annot_col</strong><span class="classifier">str</span></dt><dd><p>Column name in the dataframe that contains the annotation data to construct the dictionary from.</p>
+</dd>
+<dt><strong>key_type</strong><span class="classifier">str</span></dt><dd><p>Whether the annotation or ptm should be the key of the output dictionary. Default is annotation</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ptm_pose.annotate.construct_annotation_dict_from_gmt">
 <span class="sig-prename descclassname"><span class="pre">ptm_pose.annotate.</span></span><span class="sig-name descname"><span class="pre">construct_annotation_dict_from_gmt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gmt_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'annotation'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/annotate.html#construct_annotation_dict_from_gmt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.annotate.construct_annotation_dict_from_gmt" title="Link to this definition">#</a></dt>
 <dd><p>Given a gmt annotation file format, construct a dictionary mapping each item to its annotations, with either the annotation as key or PTM as the key</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ptm_pose.annotate.construct_combined_enzyme_gmt_df">
+<span class="sig-prename descclassname"><span class="pre">ptm_pose.annotate.</span></span><span class="sig-name descname"><span class="pre">construct_combined_enzyme_gmt_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">annot_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Writer</span> <span class="pre">Enzyme'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enzyme_databases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['PhosphoSitePlus',</span> <span class="pre">'RegPhos',</span> <span class="pre">'OmniPath',</span> <span class="pre">'DEPOD']</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/annotate.html#construct_combined_enzyme_gmt_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.annotate.construct_combined_enzyme_gmt_df" title="Link to this definition">#</a></dt>
+<dd><p>Combine enzyme-substrate interaction information and format into gmt format for downstream analysis. To avoid confusion, we will not include ability to save these files, as they are dependent on the specific databases chosen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>annot_type</strong><span class="classifier">str</span></dt><dd><p>Type of enzyme annotation to include. Must be either ‘Writer Enzyme’ or ‘Eraser Enzyme’. Default is ‘Writer Enzyme’.</p>
+</dd>
+<dt><strong>enzyme_databases</strong><span class="classifier">list of str</span></dt><dd><p>List of enzyme databases to include in the analysis. Default is [‘PhosphoSitePlus’, ‘PTMcode’, ‘PTMInt’, ‘RegPhos’, ‘DEPOD’].</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ptm_pose.annotate.construct_combined_interactions_gmt_df">
+<span class="sig-prename descclassname"><span class="pre">ptm_pose.annotate.</span></span><span class="sig-name descname"><span class="pre">construct_combined_interactions_gmt_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction_databases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['PhosphoSitePlus',</span> <span class="pre">'PTMcode',</span> <span class="pre">'PTMInt',</span> <span class="pre">'RegPhos',</span> <span class="pre">'DEPOD']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_enzyme_interactions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/annotate.html#construct_combined_interactions_gmt_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.annotate.construct_combined_interactions_gmt_df" title="Link to this definition">#</a></dt>
+<dd><p>Combine interaction information and format into gmt format for downstream analysis. To avoid confusion, we will not include ability to save these files, as they are dependent on the specific databases chosen.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1481,6 +1542,34 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 </section>
 <section id="module-ptm_pose.analyze.filter">
 <span id="filtering-ptms-and-events"></span><h3>Filtering PTMs and Events<a class="headerlink" href="#module-ptm_pose.analyze.filter" title="Link to this heading">#</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="ptm_pose.analyze.filter.assess_filter_range">
+<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.filter.</span></span><span class="sig-name descname"><span class="pre">assess_filter_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min_studies'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phospho_only_evidence_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">11</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/filter.html#assess_filter_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.filter.assess_filter_range" title="Link to this definition">#</a></dt>
+<dd><p>Given a dataframe of PTMs and a PTM evidence filter type, assess how adjusting the filter value impacts the number of PTMs and the fraction of those PTMs that are phosphorylated. This is done by plotting the number of PTMs and the fraction of phosphorylated PTMs as a function of the filter value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ptms</strong><span class="classifier">pd.DataFrame</span></dt><dd><p>Dataframe containing PTM data, either the spliced_ptms or altered_flank data</p>
+</dd>
+<dt><strong>min_value</strong><span class="classifier">int, optional</span></dt><dd><p>The minimum value for the filter. The default is 0.</p>
+</dd>
+<dt><strong>max_value</strong><span class="classifier">int, optional</span></dt><dd><p>The maximum value for the filter. If None, the maximum value will be determined based on the filter type. The default is None.</p>
+</dd>
+<dt><strong>step</strong><span class="classifier">int, optional</span></dt><dd><p>The step size for the filter. If None, the step size will be determined based on the maximum value. The default is None.</p>
+</dd>
+<dt><strong>filter_type</strong><span class="classifier">str, optional</span></dt><dd><p>The type of filter to apply. Must be one of [‘min_studies’, ‘min_compendia’, ‘min_MS’, ‘min_LTP’]. The default is ‘min_studies’.</p>
+</dd>
+<dt><strong>phospho_only_evidence_filter</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to apply the phospho only evidence filter (only filter phosphorylatio sites). The default is False.</p>
+</dd>
+<dt><strong>ax</strong><span class="classifier">matplotlib.axes.Axes, optional</span></dt><dd><p>The axes to plot on. If None, a new figure and axes will be created. The default is None.</p>
+</dd>
+<dt><strong>fontsize</strong><span class="classifier">int, optional</span></dt><dd><p>The font size for the plot. The default is 11.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="ptm_pose.analyze.filter.plot_filter_impact">
 <span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.filter.</span></span><span class="sig-name descname"><span class="pre">plot_filter_impact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'count'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/filter.html#plot_filter_impact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.filter.plot_filter_impact" title="Link to this definition">#</a></dt>
@@ -1931,7 +2020,7 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ptm_pose.analyze.interactions.protein_interactions.plot_interaction_network" title="ptm_pose.analyze.interactions.protein_interactions.plot_interaction_network"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_interaction_network</span></code></a>([modified_color, ...])</p></td>
 <td><p>Given the interactiong graph and network data outputted from analyze.get_interaction_network, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ptm_pose.analyze.interactions.protein_interactions.plot_nease_comparison" title="ptm_pose.analyze.interactions.protein_interactions.plot_nease_comparison"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_nease_comparison</span></code></a>([ax, nease_edges])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ptm_pose.analyze.interactions.protein_interactions.plot_nease_comparison" title="ptm_pose.analyze.interactions.protein_interactions.plot_nease_comparison"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_nease_comparison</span></code></a>([nease_edges, ax])</p></td>
 <td><p>Given the comparison data generated by compare_to_nease, plot the number of edges identified by NEASE and PTM-POSE</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ptm_pose.analyze.interactions.protein_interactions.plot_network_centrality" title="ptm_pose.analyze.interactions.protein_interactions.plot_network_centrality"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_network_centrality</span></code></a>([...])</p></td>
@@ -2005,7 +2094,7 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ptm_pose.analyze.interactions.protein_interactions.plot_interaction_network">
-<span class="sig-name descname"><span class="pre">plot_interaction_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modified_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'red'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modified_node_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interacting_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lightblue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interacting_node_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultedgecolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gray'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_edges_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Same'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proteins_to_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_nease_comparison</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/interactions.html#protein_interactions.plot_interaction_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.interactions.protein_interactions.plot_interaction_network" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">plot_interaction_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modified_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'red'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modified_node_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interacting_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lightblue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interacting_node_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultedgecolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gray'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_edges_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Same'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proteins_to_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/interactions.html#protein_interactions.plot_interaction_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.interactions.protein_interactions.plot_interaction_network" title="Link to this definition">#</a></dt>
 <dd><p>Given the interactiong graph and network data outputted from analyze.get_interaction_network, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs. by default, will only label proteins</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2033,7 +2122,7 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ptm_pose.analyze.interactions.protein_interactions.plot_nease_comparison">
-<span class="sig-name descname"><span class="pre">plot_nease_comparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nease_edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/interactions.html#protein_interactions.plot_nease_comparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.interactions.protein_interactions.plot_nease_comparison" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">plot_nease_comparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nease_edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/interactions.html#protein_interactions.plot_nease_comparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.interactions.protein_interactions.plot_nease_comparison" title="Link to this definition">#</a></dt>
 <dd><p>Given the comparison data generated by compare_to_nease, plot the number of edges identified by NEASE and PTM-POSE</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2137,9 +2226,25 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 </section>
 <section id="id1">
 <h3>Flanking Sequences<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
-<span class="target" id="module-ptm_pose.analyze.flanking_sequences"></span><dl class="py function">
-<dt class="sig sig-object py" id="ptm_pose.analyze.flanking_sequences.compare_inclusion_motifs">
-<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flanking_sequences.</span></span><span class="sig-name descname"><span class="pre">compare_inclusion_motifs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flanking_sequences</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elm_classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flanking_sequences.html#compare_inclusion_motifs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flanking_sequences.compare_inclusion_motifs" title="Link to this definition">#</a></dt>
+<span class="target" id="module-ptm_pose.analyze.flank_analysis"></span><dl class="py function">
+<dt class="sig sig-object py" id="ptm_pose.analyze.flank_analysis.compare_flanking_sequences">
+<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flank_analysis.</span></span><span class="sig-name descname"><span class="pre">compare_flanking_sequences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">altered_flanks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flank_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flank_analysis.html#compare_flanking_sequences"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flank_analysis.compare_flanking_sequences" title="Link to this definition">#</a></dt>
+<dd><p>Given the altered_flanks dataframe, compare the flanking sequences in the inclusion and exclusion isoforms. This includes identifying sequence identity, altered positions, residue changes, and the side of the flanking sequence that is altered (N-term, C-term, or both).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>altered_flanks: pandas.DataFrame</strong></dt><dd><p>DataFrame containing flanking sequences with changes, obtained from get_flanking_changes_from_splice_data(). It should contain the columns ‘Inclusion Flanking Sequence’ and ‘Exclusion Flanking Sequence’ for comparison.</p>
+</dd>
+<dt><strong>flank_size</strong><span class="classifier">int, optional</span></dt><dd><p>Size of the flanking region to analyze. Default is 5. This should be less than half the length of the shortest sequence to ensure proper comparison.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ptm_pose.analyze.flank_analysis.compare_inclusion_motifs">
+<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flank_analysis.</span></span><span class="sig-name descname"><span class="pre">compare_inclusion_motifs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flanking_sequences</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elm_classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flank_analysis.html#compare_inclusion_motifs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flank_analysis.compare_inclusion_motifs" title="Link to this definition">#</a></dt>
 <dd><p>Given a DataFrame containing flanking sequences with changes and a DataFrame containing ELM class information, identify motifs that are found in the inclusion and exclusion events, identifying motifs unique to each case. This does not take into account the position of the motif in the sequence or additional information that might validate any potential interaction (i.e. structural information that would indicate whether the motif is accessible or not). ELM class information can be downloaded from the download page of elm (<a class="reference external" href="http://elm.eu.org/elms/elms_index.tsv">http://elm.eu.org/elms/elms_index.tsv</a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2160,8 +2265,8 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ptm_pose.analyze.flanking_sequences.findAlteredPositions">
-<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flanking_sequences.</span></span><span class="sig-name descname"><span class="pre">findAlteredPositions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flank_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flanking_sequences.html#findAlteredPositions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flanking_sequences.findAlteredPositions" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="ptm_pose.analyze.flank_analysis.findAlteredPositions">
+<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flank_analysis.</span></span><span class="sig-name descname"><span class="pre">findAlteredPositions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flank_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flank_analysis.html#findAlteredPositions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flank_analysis.findAlteredPositions" title="Link to this definition">#</a></dt>
 <dd><p>Given two sequences, identify the location of positions that have changed</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2186,8 +2291,8 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ptm_pose.analyze.flanking_sequences.find_motifs">
-<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flanking_sequences.</span></span><span class="sig-name descname"><span class="pre">find_motifs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elm_classes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flanking_sequences.html#find_motifs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flanking_sequences.find_motifs" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="ptm_pose.analyze.flank_analysis.find_motifs">
+<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flank_analysis.</span></span><span class="sig-name descname"><span class="pre">find_motifs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elm_classes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flank_analysis.html#find_motifs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flank_analysis.find_motifs" title="Link to this definition">#</a></dt>
 <dd><p>Given a sequence and a dataframe containinn ELM class information, identify motifs that can be found in the provided sequence using the RegEx expression provided by ELM (PTMs not considered). This does not take into account the position of the motif in the sequence or additional information that might validate any potential interaction (i.e. structural information that would indicate whether the motif is accessible or not). ELM class information can be downloaded from the download page of elm (<a class="reference external" href="http://elm.eu.org/elms/elms_index.tsv">http://elm.eu.org/elms/elms_index.tsv</a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2202,8 +2307,8 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ptm_pose.analyze.flanking_sequences.getSequenceIdentity">
-<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flanking_sequences.</span></span><span class="sig-name descname"><span class="pre">getSequenceIdentity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flanking_sequences.html#getSequenceIdentity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flanking_sequences.getSequenceIdentity" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="ptm_pose.analyze.flank_analysis.getSequenceIdentity">
+<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flank_analysis.</span></span><span class="sig-name descname"><span class="pre">getSequenceIdentity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flank_analysis.html#getSequenceIdentity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flank_analysis.getSequenceIdentity" title="Link to this definition">#</a></dt>
 <dd><p>Given two flanking sequences, calculate the sequence identity between them using Biopython and parameters definded by Pillman et al. BMC Bioinformatics 2011</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2222,8 +2327,34 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ptm_pose.analyze.flanking_sequences.plot_alterations_matrix">
-<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flanking_sequences.</span></span><span class="sig-name descname"><span class="pre">plot_alterations_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">altered_flanks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modification_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flanking_sequences.html#plot_alterations_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flanking_sequences.plot_alterations_matrix" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="ptm_pose.analyze.flank_analysis.identify_change_to_specific_motif">
+<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flank_analysis.</span></span><span class="sig-name descname"><span class="pre">identify_change_to_specific_motif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">altered_flanks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elm_motif_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elm_classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modification_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residues</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dPSI_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flank_analysis.html#identify_change_to_specific_motif"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flank_analysis.identify_change_to_specific_motif" title="Link to this definition">#</a></dt>
+<dd><p>Given the altered_flanks dataframe, identify PTM flanking sequences that match different ELM motifs in the inclusion and exclusion isoform. This function allows for filtering based on specific ELM motifs, modification classes, and residues of interest. It also allows for additional filtering through kwargs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>altered_flanks: pandas.DataFrame</strong></dt><dd><p>DataFrame containing flanking sequences with changes, obtained from get_flanking_changes_from_splice_data() and analyzed with compare_flanking_sequences(). It should contain the columns ‘Inclusion Flanking Sequence’ and ‘Exclusion Flanking Sequence’ for comparison.</p>
+</dd>
+<dt><strong>elm_motif_name: str</strong></dt><dd><p>Name of ELM motif to look for in inclusion and exclusion isoforms</p>
+</dd>
+<dt><strong>elm_classes: pandas.DataFrame, optional</strong></dt><dd><p>DataFrame containing ELM class information (ELMIdentifier, Regex, etc.), downloaded directly from ELM (<a class="reference external" href="http://elm.eu.org/elms/elms_index.tsv">http://elm.eu.org/elms/elms_index.tsv</a>). If not provided, the function will download it automatically.</p>
+</dd>
+<dt><strong>modification_class</strong><span class="classifier">str, optional</span></dt><dd><p>Specific modification class to filter for. This is useful if you are looking for a specific type of PTM (e.g., phosphorylation, acetylation). Default is None, which will not filter based on modification class.</p>
+</dd>
+<dt><strong>residues</strong><span class="classifier">str</span></dt><dd><p>Specific residue to focus on. If none will look at all residues</p>
+</dd>
+<dt><strong>dPSI_col</strong><span class="classifier">str, optional</span></dt><dd><p>column containing deltaPSI information</p>
+</dd>
+<dt><strong>kwargs</strong><span class="classifier">additional keyword arguments</span></dt><dd><p>additional keyword arguments to pass to the filter_ptms function</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ptm_pose.analyze.flank_analysis.plot_alterations_matrix">
+<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flank_analysis.</span></span><span class="sig-name descname"><span class="pre">plot_alterations_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">altered_flanks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modification_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flank_analysis.html#plot_alterations_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flank_analysis.plot_alterations_matrix" title="Link to this definition">#</a></dt>
 <dd><p>Given the altered flanking sequences dataframe, plot a matrix showing the positions of altered residues for specific proteins, as well as the specific change</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2238,14 +2369,16 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 </dd>
 <dt><strong>ax: matplotlib.Axes</strong></dt><dd><p>Axis to plot on. If None, will create new figure. Default is None.</p>
 </dd>
+<dt><strong>kwargs: additional keyword arguments</strong></dt><dd><p>Additional keyword arguments to pass to the filter_ptms function. This allows for filtering based on specific criteria (e.g., dPSI, evidence, etc.).</p>
+</dd>
 </dl>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ptm_pose.analyze.flanking_sequences.plot_location_of_altered_flanking_residues">
-<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flanking_sequences.</span></span><span class="sig-name descname"><span class="pre">plot_location_of_altered_flanking_residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">altered_flanks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4,</span> <span class="pre">3)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modification_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flanking_sequences.html#plot_location_of_altered_flanking_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flanking_sequences.plot_location_of_altered_flanking_residues" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="ptm_pose.analyze.flank_analysis.plot_location_of_altered_flanking_residues">
+<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flank_analysis.</span></span><span class="sig-name descname"><span class="pre">plot_location_of_altered_flanking_residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">altered_flanks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4,</span> <span class="pre">3)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modification_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flank_analysis.html#plot_location_of_altered_flanking_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flank_analysis.plot_location_of_altered_flanking_residues" title="Link to this definition">#</a></dt>
 <dd><p>Plot the number of PTMs with altered residues as specific positions relative to the PTM site. This includes the specific position of the residue (-5 to +5 from PTM site) and the specific side of the PTM site that is altered (N-term or C-term)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2258,14 +2391,16 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 </dd>
 <dt><strong>residue: str</strong></dt><dd><p>Specific residue to plot. Default is None, which will plot all residues.</p>
 </dd>
+<dt><strong>kwargs: additional keyword arguments</strong></dt><dd><p>Additional keyword arguments to pass to the filter_ptms function. This allows for filtering based on specific criteria (e.g., dPSI, evidence, etc.).</p>
+</dd>
 </dl>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ptm_pose.analyze.flanking_sequences.plot_sequence_differences">
-<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flanking_sequences.</span></span><span class="sig-name descname"><span class="pre">plot_sequence_differences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inclusion_seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclusion_seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpsi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flank_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(3,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flanking_sequences.html#plot_sequence_differences"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flanking_sequences.plot_sequence_differences" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="ptm_pose.analyze.flank_analysis.plot_sequence_differences">
+<span class="sig-prename descclassname"><span class="pre">ptm_pose.analyze.flank_analysis.</span></span><span class="sig-name descname"><span class="pre">plot_sequence_differences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inclusion_seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclusion_seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpsi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flank_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(3,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ptm_pose/analyze/flank_analysis.html#plot_sequence_differences"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ptm_pose.analyze.flank_analysis.plot_sequence_differences" title="Link to this definition">#</a></dt>
 <dd><p>Given the flanking sequences for a PTM resulting from a specific splice event, plot the differences between the two sequences, coloring the changing residues in red. If dPSI is also provided, will add an arrow to the plot indicating the direction of change</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2325,8 +2460,7 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -2370,7 +2504,10 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_PTMsigDB_gmt_files"><code class="docutils literal notranslate"><span class="pre">construct_PTMsigDB_gmt_files()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_PhosphoSitePlus_gmt_files"><code class="docutils literal notranslate"><span class="pre">construct_PhosphoSitePlus_gmt_files()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_RegPhos_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_RegPhos_gmt_file()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_annotation_dict_from_df"><code class="docutils literal notranslate"><span class="pre">construct_annotation_dict_from_df()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_annotation_dict_from_gmt"><code class="docutils literal notranslate"><span class="pre">construct_annotation_dict_from_gmt()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_combined_enzyme_gmt_df"><code class="docutils literal notranslate"><span class="pre">construct_combined_enzyme_gmt_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_combined_interactions_gmt_df"><code class="docutils literal notranslate"><span class="pre">construct_combined_interactions_gmt_df()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_custom_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_custom_gmt_file()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_gmt_df"><code class="docutils literal notranslate"><span class="pre">construct_gmt_df()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.annotate.construct_omnipath_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_omnipath_gmt_file()</span></code></a></li>
@@ -2394,6 +2531,7 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ptm_pose.analyze.filter">Filtering PTMs and Events</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.filter.assess_filter_range"><code class="docutils literal notranslate"><span class="pre">assess_filter_range()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.filter.plot_filter_impact"><code class="docutils literal notranslate"><span class="pre">plot_filter_impact()</span></code></a></li>
 </ul>
 </li>
@@ -2434,13 +2572,15 @@ RegPhos: kinase-substrate data (will be downloaded automatically)</p>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Flanking Sequences</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.compare_inclusion_motifs"><code class="docutils literal notranslate"><span class="pre">compare_inclusion_motifs()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.findAlteredPositions"><code class="docutils literal notranslate"><span class="pre">findAlteredPositions()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.find_motifs"><code class="docutils literal notranslate"><span class="pre">find_motifs()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.getSequenceIdentity"><code class="docutils literal notranslate"><span class="pre">getSequenceIdentity()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.plot_alterations_matrix"><code class="docutils literal notranslate"><span class="pre">plot_alterations_matrix()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.plot_location_of_altered_flanking_residues"><code class="docutils literal notranslate"><span class="pre">plot_location_of_altered_flanking_residues()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flanking_sequences.plot_sequence_differences"><code class="docutils literal notranslate"><span class="pre">plot_sequence_differences()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.compare_flanking_sequences"><code class="docutils literal notranslate"><span class="pre">compare_flanking_sequences()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.compare_inclusion_motifs"><code class="docutils literal notranslate"><span class="pre">compare_inclusion_motifs()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.findAlteredPositions"><code class="docutils literal notranslate"><span class="pre">findAlteredPositions()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.find_motifs"><code class="docutils literal notranslate"><span class="pre">find_motifs()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.getSequenceIdentity"><code class="docutils literal notranslate"><span class="pre">getSequenceIdentity()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.identify_change_to_specific_motif"><code class="docutils literal notranslate"><span class="pre">identify_change_to_specific_motif()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.plot_alterations_matrix"><code class="docutils literal notranslate"><span class="pre">plot_alterations_matrix()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.plot_location_of_altered_flanking_residues"><code class="docutils literal notranslate"><span class="pre">plot_location_of_altered_flanking_residues()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptm_pose.analyze.flank_analysis.plot_sequence_differences"><code class="docutils literal notranslate"><span class="pre">plot_sequence_differences()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -2493,8 +2633,8 @@ By Naegle Lab
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -16,23 +16,6 @@ Analyzing altered flanking sequences
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Kinases are known to recognize specific motifs surrounding Y, S, and T residues, and these motifs can be used to predict kinase interactions using a tool called Kinase Library. Here, we will use Kinase Library to identify kinases who may have a stronger preference for the flanking sequences of PTMs in one isoform vs. another.">
-
-.. only:: html
-
-  .. image:: /gallery_output/flanking_sequences/images/thumb/sphx_glr_plot_kinase_library_affinity_thumb.png
-    :alt:
-
-  :ref:`sphx_glr_gallery_output_flanking_sequences_plot_kinase_library_affinity.py`
-
-.. raw:: html
-
-      <div class="sphx-glr-thumbnail-title">Kinase affinity due to PTM flanking sequence alterations</div>
-    </div>
-
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="Given a PTM identified as having an altered flanking sequence in the alternative isoform and/or due to a splice event, it can be usefult o visualize how the sequences differ. We provide functions to compare the flanking sequences of PTMs based on whether an exonic region is included or excluded">
 
 .. only:: html
@@ -82,6 +65,23 @@ Analyzing altered flanking sequences
     </div>
 
 
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Kinases are known to recognize specific motifs surrounding Y, S, and T residues, and these motifs can be used to predict kinase interactions using a tool called Kinase Library. Here, we will use Kinase Library to identify kinases who may have a stronger preference for the flanking sequences of PTMs in one isoform vs. another. For this example, let&#x27;s focus on phosphorylation sites that have larger changes &gt;0.4 in the splicing data.">
+
+.. only:: html
+
+  .. image:: /gallery_output/flanking_sequences/images/thumb/sphx_glr_plot_kinase_library_affinity_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_gallery_output_flanking_sequences_plot_kinase_library_affinity.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Kinase affinity due to PTM flanking sequence alterations</div>
+    </div>
+
+
 .. thumbnail-parent-div-close
 
 .. raw:: html
@@ -92,8 +92,8 @@ Analyzing altered flanking sequences
 .. toctree::
    :hidden:
 
-   /gallery_output/flanking_sequences/plot_kinase_library_affinity
    /gallery_output/flanking_sequences/plot_sequence_comparison
    /gallery_output/flanking_sequences/plot_sh2_domain_motifs
    /gallery_output/flanking_sequences/plot_location_altered_flanks
+   /gallery_output/flanking_sequences/plot_kinase_library_affinity
 

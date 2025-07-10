@@ -76,6 +76,6 @@ Enzyme Regulation
 Flanking Sequences
 ------------------
 
-.. automodule:: ptm_pose.analyze.flanking_sequences
+.. automodule:: ptm_pose.analyze.flank_analysis
 	:members:
 	

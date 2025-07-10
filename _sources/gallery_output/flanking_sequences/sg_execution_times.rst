@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**00:04.823** total execution time for 4 files **from gallery_output/flanking_sequences**:
+**00:10.063** total execution time for 4 files **from gallery_output/flanking_sequences**:
 
 .. container::
 
@@ -32,15 +32,15 @@ Computation times
    * - Example
      - Time
      - Mem (MB)
-   * - :ref:`sphx_glr_gallery_output_flanking_sequences_plot_sh2_domain_motifs.py` (``plot_sh2_domain_motifs.py``)
-     - 00:04.535
+   * - :ref:`sphx_glr_gallery_output_flanking_sequences_plot_kinase_library_affinity.py` (``plot_kinase_library_affinity.py``)
+     - 00:10.063
      - 0.0
    * - :ref:`sphx_glr_gallery_output_flanking_sequences_plot_location_altered_flanks.py` (``plot_location_altered_flanks.py``)
-     - 00:00.287
-     - 0.0
-   * - :ref:`sphx_glr_gallery_output_flanking_sequences_plot_kinase_library_affinity.py` (``plot_kinase_library_affinity.py``)
      - 00:00.000
      - 0.0
    * - :ref:`sphx_glr_gallery_output_flanking_sequences_plot_sequence_comparison.py` (``plot_sequence_comparison.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_flanking_sequences_plot_sh2_domain_motifs.py` (``plot_sh2_domain_motifs.py``)
      - 00:00.000
      - 0.0

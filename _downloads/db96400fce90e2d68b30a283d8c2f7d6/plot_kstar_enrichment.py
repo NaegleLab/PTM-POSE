@@ -26,3 +26,8 @@ kstar_enrichment.return_enriched_kinases()
 kstar_enrichment = enzyme.kstar_enrichment(spliced_ptms, network_dir = network_dir, phospho_type = 'ST')
 kstar_enrichment.run_kstar_enrichment()
 kstar_enrichment.return_enriched_kinases()
+
+# %% 
+# Finally, you can visualize the results using a KSTAR dotplot, which will show the statistical strength of the relationship based on the size of the dot, with significant kinases colored in orange. 
+
+kstar_enrichment.dotplot(ptype = 'ST', kinase_axis = 'x', impact_types = ['Excluded', 'Included'], size_legend = False, sig_kinases_only = True, figsize = (2,2))

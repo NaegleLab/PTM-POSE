@@ -15,35 +15,32 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=362ab14a" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../../../_static/documentation_options.js?v=d2a3a1a5"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ptm_pose/analyze/annotations';</script>
@@ -51,7 +48,6 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.3.0" />
   </head>
   
   
@@ -67,8 +63,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../../../search.html"
       method="get">
@@ -76,6 +83,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -83,8 +91,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -102,8 +110,7 @@
       
         
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -133,11 +140,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
@@ -178,15 +189,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/Networks/index.html">Impact on protein interaction and regulatory networks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_ksea.html">Kinase substrate enrichment analysis (KSEA)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_protein_interactions.html">Protein interactions network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/flanking_sequences/index.html">Analyzing altered flanking sequences</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_sequence_comparison.html">Inspect difference of flanking sequence due to splice event</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_sh2_domain_motifs.html">Identify altered SH2 domain motifs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_location_altered_flanks.html">Probing where and how PTM flanking sequences are altered</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
 </ul>
 </details></li>
 </ul>
@@ -203,14 +215,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -274,16 +281,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 
 </div></div>
       
@@ -310,23 +325,23 @@
                 <article class="bd-article">
                   
   <h1>Source code for ptm_pose.analyze.annotations</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
 <span class="c1">#plotting </span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="k">as</span> <span class="nn">mpatches</span>
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpatches</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
 
 <span class="c1">#custom stat functions</span>
-<span class="kn">from</span> <span class="nn">ptm_pose</span> <span class="kn">import</span> <span class="n">stat_utils</span><span class="p">,</span> <span class="n">pose_config</span><span class="p">,</span> <span class="n">annotate</span><span class="p">,</span> <span class="n">helpers</span>
-<span class="kn">from</span> <span class="nn">ptm_pose.analyze</span> <span class="kn">import</span> <span class="n">summarize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">stat_utils</span><span class="p">,</span> <span class="n">pose_config</span><span class="p">,</span> <span class="n">annotate</span><span class="p">,</span> <span class="n">helpers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose.analyze</span><span class="w"> </span><span class="kn">import</span> <span class="n">summarize</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">gseapy</span> <span class="k">as</span> <span class="nn">gp</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">gseapy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gp</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">gp</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -339,7 +354,7 @@
 
 <div class="viewcode-block" id="get_available_annotations">
 <a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.get_available_annotations">[docs]</a>
-<span class="k">def</span> <span class="nf">get_available_annotations</span><span class="p">(</span><span class="n">ptms</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_available_annotations</span><span class="p">(</span><span class="n">ptms</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a PTM dataframe, indicate the annotations that are available for analysis and indicate whether they have already been appended to the PTM dataset</span>
 
@@ -376,7 +391,7 @@
 
 <div class="viewcode-block" id="get_ptm_annotations">
 <a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.get_ptm_annotations">[docs]</a>
-<span class="k">def</span> <span class="nf">get_ptm_annotations</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_ptm_annotations</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given spliced ptm information obtained from project and annotate modules, grab PTMs in spliced ptms associated with specific PTM modules</span>
 
@@ -404,19 +419,42 @@
 <span class="sd">    annotation_counts : pd.Series or pd.DataFrame</span>
 <span class="sd">        Number of PTMs associated with each annotation of the requested annotation type. If dPSI col is provided or impact col is present, will output annotation counts for each type of impact (&#39;Included&#39;, &#39;Excluded&#39;, &#39;Altered Flank&#39;) separately. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">database</span> <span class="o">==</span> <span class="s1">&#39;PTMsigDB&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">annot_type</span> <span class="o">==</span> <span class="s1">&#39;Perturbation&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PTMsigDB has multiple perturbation datasets. Please specify which dataset to use. Options are: &quot;Perturbation-DIA&quot;,&quot;Perturbation-DIA2&quot;, &quot;Perturbation-PRM&quot;.&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">annot_type</span> <span class="o">==</span> <span class="s1">&#39;Pathway&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PTMsigDB has multiple pathway datasets. Please specify which dataset to use. Options are: &quot;Pathway-WikiPathway&quot;, &quot;Pathway-NetPath&quot;, &quot;Pathway-BI&quot;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">database</span> <span class="o">==</span> <span class="s1">&#39;Combined&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">annot_type</span> <span class="o">==</span> <span class="s1">&#39;Interactions&#39;</span><span class="p">:</span>
+            <span class="n">annot_col</span> <span class="o">=</span> <span class="s1">&#39;Combined:Interactions&#39;</span>
+            <span class="k">if</span> <span class="n">annot_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ptms</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">ptms</span> <span class="o">=</span> <span class="n">annotate</span><span class="o">.</span><span class="n">combine_interaction_data</span><span class="p">(</span><span class="n">ptms</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">ptms</span> <span class="o">=</span> <span class="n">ptms</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span> <span class="o">=</span> <span class="n">annot_col</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">annot_type</span> <span class="o">==</span> <span class="s1">&#39;Writer Enzyme&#39;</span> <span class="ow">or</span> <span class="n">annot_type</span> <span class="o">==</span> <span class="s1">&#39;Writer_Enzyme&#39;</span><span class="p">:</span>
+            <span class="n">annot_col</span> <span class="o">=</span> <span class="s1">&#39;Combined:Writer_Enzyme&#39;</span>
+            <span class="k">if</span> <span class="n">annot_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ptms</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">ptms</span> <span class="o">=</span> <span class="n">annotate</span><span class="o">.</span><span class="n">combine_enzyme_data</span><span class="p">(</span><span class="n">ptms</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">ptms</span> <span class="o">=</span> <span class="n">ptms</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span> <span class="o">=</span> <span class="n">annot_col</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">annot_type</span> <span class="o">==</span> <span class="s1">&#39;Eraser Enzyme&#39;</span> <span class="ow">or</span> <span class="n">annot_type</span> <span class="o">==</span> <span class="s1">&#39;Eraser_Enzyme&#39;</span><span class="p">:</span>
+            <span class="n">annot_col</span> <span class="o">=</span> <span class="s1">&#39;Combined:Eraser_Enzyme&#39;</span>
+            <span class="k">if</span> <span class="n">annot_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ptms</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">ptms</span> <span class="o">=</span> <span class="n">annotate</span><span class="o">.</span><span class="n">combine_enzyme_data</span><span class="p">(</span><span class="n">ptms</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">ptms</span> <span class="o">=</span> <span class="n">ptms</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span> <span class="o">=</span> <span class="n">annot_col</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">annot_type</span> <span class="o">==</span> <span class="s1">&#39;Enzyme&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Enzyme is not a valid annotation type. Please use &quot;Writer Enzyme&quot; or &quot;Eraser Enzyme&quot; instead.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">annot_type</span><span class="si">}</span><span class="s1"> is not a valid annotation type for Combined database. Please use &quot;Interactions&quot;, &quot;Writer Enzyme&quot;, or &quot;Eraser Enzyme&quot; instead, or use a specific database.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">database</span> <span class="o">==</span> <span class="s1">&#39;PTMsigDB&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">annot_type</span> <span class="o">==</span> <span class="s1">&#39;Perturbation&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PTMsigDB has multiple perturbation datasets. Please specify which dataset to use. Options are: &quot;Perturbation-DIA&quot;,&quot;Perturbation-DIA2&quot;, &quot;Perturbation-PRM&quot;.&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">annot_type</span> <span class="o">==</span> <span class="s1">&#39;Pathway&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PTMsigDB has multiple pathway datasets. Please specify which dataset to use. Options are: &quot;Pathway-WikiPathway&quot;, &quot;Pathway-NetPath&quot;, &quot;Pathway-BI&quot;&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">annot_col</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">database</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">annot_type</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">elif</span> <span class="n">database</span> <span class="o">==</span> <span class="s1">&#39;OmniPath&#39;</span><span class="p">:</span>
+            <span class="n">annot_col</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">database</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">annot_type</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">annot_col</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">database</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">annot_type</span><span class="si">}</span><span class="s1">&#39;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">annot_col</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">database</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">annot_type</span><span class="si">}</span><span class="s1">&#39;</span>
-    
-    <span class="c1">#check to see if requested annotation information is annotated to the spliced_ptms dataframe, if not, append information</span>
-    <span class="k">if</span> <span class="n">annot_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ptms</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="n">ptms</span> <span class="o">=</span> <span class="n">annotate</span><span class="o">.</span><span class="n">append_from_gmt</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="n">database</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="n">annot_type</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="c1">#check to see if requested annotation information is annotated to the spliced_ptms dataframe, if not, append information</span>
+        <span class="k">if</span> <span class="n">annot_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ptms</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">ptms</span> <span class="o">=</span> <span class="n">annotate</span><span class="o">.</span><span class="n">append_from_gmt</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="n">database</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="n">annot_type</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">ptms</span> <span class="o">=</span> <span class="n">ptms</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span> <span class="o">=</span> <span class="n">annot_col</span><span class="p">)</span>
 
 
@@ -486,7 +524,7 @@
 
 <div class="viewcode-block" id="get_background_annotation_counts">
 <a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.get_background_annotation_counts">[docs]</a>
-<span class="k">def</span> <span class="nf">get_background_annotation_counts</span><span class="p">(</span><span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_background_annotation_counts</span><span class="p">(</span><span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a database and annotation type, retrieve the counts of PTMs associated with the requested annotation type across all PTMs in the ptm_coordinates dataframe used for projection</span>
 
@@ -516,7 +554,7 @@
 
 <div class="viewcode-block" id="get_enrichment_inputs">
 <a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.get_enrichment_inputs">[docs]</a>
-<span class="k">def</span> <span class="nf">get_enrichment_inputs</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span>  <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">background_type</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">mod_class</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_enrichment_inputs</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span>  <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">background_type</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">mod_class</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given the spliced ptms, altered_flanks, or combined PTMs dataframe, identify the number of PTMs corresponding to specific annotations in the foreground (PTMs impacted by splicing) and the background (all PTMs in the proteome or all PTMs in dataset not impacted by splicing). This information can be used to calculate the enrichment of specific annotations among PTMs impacted by splicing. Several options are provided for constructing the background data: all (based on entire proteome in the ptm_coordinates dataframe) or significance (foreground PTMs are extracted from provided spliced PTMs based on significance and minimum delta PSI)</span>
 
@@ -605,7 +643,7 @@
 
 <div class="viewcode-block" id="annotation_enrichment">
 <a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.annotation_enrichment">[docs]</a>
-<span class="k">def</span> <span class="nf">annotation_enrichment</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">background_type</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">mod_class</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span><span class="c1">#</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">annotation_enrichment</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">background_type</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">mod_class</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span><span class="c1">#</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given spliced ptm information (differential inclusion, altered flanking sequences, or both), calculate the enrichment of specific annotations in the dataset using a hypergeometric test. Background data can be provided/constructed in a few ways:</span>
 
@@ -665,7 +703,7 @@
 
 <div class="viewcode-block" id="plot_available_annotations">
 <a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.plot_available_annotations">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_available_annotations</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">only_annotations_in_data</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">show_all_ptm_count</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_available_annotations</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">only_annotations_in_data</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">show_all_ptm_count</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a dataframe with ptm annotations added, show the number of PTMs associated with each annotation type</span>
 
@@ -748,7 +786,7 @@
 
 <div class="viewcode-block" id="plot_annotation_counts">
 <a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.plot_annotation_counts">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_annotation_counts</span><span class="p">(</span><span class="n">spliced_ptms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">altered_flanks</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">colors</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">top_terms</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">legend_loc</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.05</span><span class="p">,</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">title_type</span> <span class="o">=</span> <span class="s1">&#39;database&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_annotation_counts</span><span class="p">(</span><span class="n">spliced_ptms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">altered_flanks</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">colors</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">top_terms</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">legend_loc</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.05</span><span class="p">,</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">title_type</span> <span class="o">=</span> <span class="s1">&#39;database&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a dataframe with PTM annotations added, plot the top annotations associated with the PTMs</span>
 
@@ -844,8 +882,12 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">database</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="n">fontsize</span><span class="p">,</span> <span class="n">weight</span> <span class="o">=</span> <span class="s1">&#39;bold&#39;</span><span class="p">)</span>
 
 
-    <span class="n">x_label_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Function&#39;</span><span class="p">:</span><span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">associated with Function&#39;</span><span class="p">,</span> <span class="s1">&#39;Process&#39;</span><span class="p">:</span><span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">associated with Process&#39;</span><span class="p">,</span> <span class="s1">&#39;Disease&#39;</span><span class="p">:</span><span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">associated with Disease&#39;</span><span class="p">,</span> <span class="s1">&#39;Kinase&#39;</span><span class="p">:</span><span class="s1">&#39;Number of Phosphosites</span><span class="se">\n</span><span class="s1">targeted by Kinase&#39;</span><span class="p">,</span> <span class="s1">&#39;Interactions&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">that regulate interaction</span><span class="se">\n</span><span class="s1"> with protein&#39;</span><span class="p">,</span><span class="s1">&#39;Motif Match&#39;</span><span class="p">:</span><span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">found within a</span><span class="se">\n</span><span class="s1">motif instance&#39;</span><span class="p">,</span> <span class="s1">&#39;Intraprotein&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">that are important</span><span class="se">\f</span><span class="s1">or intraprotein</span><span class="se">\n</span><span class="s1"> interactions&#39;</span><span class="p">,</span><span class="s1">&#39;Phosphatase&#39;</span><span class="p">:</span><span class="s1">&#39;Number of Phosphosites</span><span class="se">\n</span><span class="s1">targeted by Phosphatase&#39;</span><span class="p">,</span> <span class="s1">&#39;Perturbation (DIA2)&#39;</span><span class="p">:</span> <span class="s2">&quot;Number of PTMs</span><span class="se">\n</span><span class="s2">Affected by Perturbation</span><span class="se">\n</span><span class="s2">(Measured by DIA)&quot;</span><span class="p">,</span> <span class="s1">&#39;Perturbation (PRM)&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">Affected by Perturbation</span><span class="se">\n</span><span class="s1">(Measured by PRM)&#39;</span><span class="p">,</span> <span class="s1">&#39;NetPath&#39;</span><span class="p">:</span><span class="s1">&#39;Number of PTMs/Genes</span><span class="se">\n</span><span class="s1">associated with NetPath&#39;</span><span class="p">,</span> <span class="s1">&#39;Perturbation&#39;</span><span class="p">:</span><span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">Affected by Perturbation&#39;</span><span class="p">}</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">x_label_dict</span><span class="p">[</span><span class="n">annot_type</span><span class="p">],</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="n">fontsize</span><span class="p">)</span>
+    <span class="n">x_label_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Function&#39;</span><span class="p">:</span><span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">associated with Function&#39;</span><span class="p">,</span> <span class="s1">&#39;Process&#39;</span><span class="p">:</span><span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">associated with Process&#39;</span><span class="p">,</span> <span class="s1">&#39;Disease&#39;</span><span class="p">:</span><span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">associated with Disease&#39;</span><span class="p">,</span> <span class="s1">&#39;Kinase&#39;</span><span class="p">:</span><span class="s1">&#39;Number of Phosphosites</span><span class="se">\n</span><span class="s1">targeted by Kinase&#39;</span><span class="p">,</span> <span class="s1">&#39;Enzyme&#39;</span><span class="p">:</span><span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">targeted by Enzyme&#39;</span><span class="p">,</span> <span class="s1">&#39;Interactions&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">that regulate interaction</span><span class="se">\n</span><span class="s1"> with protein&#39;</span><span class="p">,</span><span class="s1">&#39;Motif Match&#39;</span><span class="p">:</span><span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">found within a</span><span class="se">\n</span><span class="s1">motif instance&#39;</span><span class="p">,</span> <span class="s1">&#39;Intraprotein&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">that are important</span><span class="se">\f</span><span class="s1">or intraprotein</span><span class="se">\n</span><span class="s1"> interactions&#39;</span><span class="p">,</span><span class="s1">&#39;Phosphatase&#39;</span><span class="p">:</span><span class="s1">&#39;Number of Phosphosites</span><span class="se">\n</span><span class="s1">targeted by Phosphatase&#39;</span><span class="p">,</span> <span class="s1">&#39;Perturbation (DIA2)&#39;</span><span class="p">:</span> <span class="s2">&quot;Number of PTMs</span><span class="se">\n</span><span class="s2">Affected by Perturbation</span><span class="se">\n</span><span class="s2">(Measured by DIA)&quot;</span><span class="p">,</span> <span class="s1">&#39;Perturbation (PRM)&#39;</span><span class="p">:</span> <span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">Affected by Perturbation</span><span class="se">\n</span><span class="s1">(Measured by PRM)&#39;</span><span class="p">,</span> <span class="s1">&#39;NetPath&#39;</span><span class="p">:</span><span class="s1">&#39;Number of PTMs/Genes</span><span class="se">\n</span><span class="s1">associated with NetPath&#39;</span><span class="p">,</span> <span class="s1">&#39;Perturbation&#39;</span><span class="p">:</span><span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">Affected by Perturbation&#39;</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">annot_type</span> <span class="ow">in</span> <span class="n">x_label_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">x_label_dict</span><span class="p">[</span><span class="n">annot_type</span><span class="p">],</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="n">fontsize</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of PTMs</span><span class="se">\n</span><span class="s1">associated with </span><span class="si">{</span><span class="n">annot_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="n">fontsize</span><span class="p">)</span>
+
     
     <span class="c1">#make a custom legend</span>
     <span class="k">if</span> <span class="n">legend</span><span class="p">:</span>
@@ -863,7 +905,7 @@
 
 <div class="viewcode-block" id="gene_set_enrichment">
 <a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.gene_set_enrichment">[docs]</a>
-<span class="k">def</span> <span class="nf">gene_set_enrichment</span><span class="p">(</span><span class="n">spliced_ptms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">altered_flanks</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;Significance&#39;</span><span class="p">,</span> <span class="n">dpsi_col</span> <span class="o">=</span> <span class="s1">&#39;dPSI&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gene_sets</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GO_Biological_Process_2023&#39;</span><span class="p">,</span> <span class="s1">&#39;Reactome_2022&#39;</span><span class="p">],</span> <span class="n">background</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">return_sig_only</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_retries</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">delay</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gene_set_enrichment</span><span class="p">(</span><span class="n">spliced_ptms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">altered_flanks</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;Significance&#39;</span><span class="p">,</span> <span class="n">dpsi_col</span> <span class="o">=</span> <span class="s1">&#39;dPSI&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gene_sets</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GO_Biological_Process_2023&#39;</span><span class="p">,</span> <span class="s1">&#39;Reactome_2022&#39;</span><span class="p">],</span> <span class="n">background</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">return_sig_only</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_retries</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">delay</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given spliced_ptms and/or altered_flanks dataframes (or the dataframes combined from combine_outputs()), perform gene set enrichment analysis using the enrichr API</span>
 
@@ -903,7 +945,7 @@
     <span class="c1">#grab the genes associated with impacted PTMs</span>
     <span class="k">if</span> <span class="n">spliced_ptms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">altered_flanks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1">#gene information (total and spliced genes)</span>
-        <span class="n">combined</span> <span class="o">=</span> <span class="n">summarize</span><span class="o">.</span><span class="n">combine_outputs</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">altered_flanks</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">combined</span> <span class="o">=</span> <span class="n">summarize</span><span class="o">.</span><span class="n">combine_outputs</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">altered_flanks</span><span class="p">,</span> <span class="n">report_removed_annotations</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">foreground</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;Differentially Included + Altered Flanking Sequences&#39;</span>
 
@@ -992,7 +1034,7 @@
 
 <div class="viewcode-block" id="draw_pie">
 <a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.draw_pie">[docs]</a>
-<span class="k">def</span> <span class="nf">draw_pie</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span><span class="n">colors</span><span class="p">,</span><span class="n">edgecolor</span> <span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;donut&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">draw_pie</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span><span class="n">colors</span><span class="p">,</span><span class="n">edgecolor</span> <span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;donut&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Draws pies individually, as if points on a scatter plot. This function was taken from this stack overflow post: https://stackoverflow.com/questions/56337732/how-to-plot-scatter-pie-chart-using-matplotlib</span>
 <span class="sd">    </span>
@@ -1041,7 +1083,7 @@
 
 <div class="viewcode-block" id="plot_EnrichR_pies">
 <a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.plot_EnrichR_pies">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_EnrichR_pies</span><span class="p">(</span><span class="n">enrichr_results</span><span class="p">,</span> <span class="n">top_terms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">terms_to_plot</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">colors</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">row_height</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;circle&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_EnrichR_pies</span><span class="p">(</span><span class="n">enrichr_results</span><span class="p">,</span> <span class="n">top_terms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">terms_to_plot</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">colors</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">row_height</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;circle&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given PTM-specific EnrichR results, plot EnrichR score for the provided terms, with each self point represented as a pie chart indicating the fraction of genes in the group with PTMs</span>
 <span class="sd">    </span>
@@ -1186,8 +1228,8 @@ By Naegle Lab
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

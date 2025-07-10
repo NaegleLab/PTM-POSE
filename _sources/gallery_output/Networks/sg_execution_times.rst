@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**00:00.379** total execution time for 2 files **from gallery_output/Networks**:
+**09:02.667** total execution time for 3 files **from gallery_output/Networks**:
 
 .. container::
 
@@ -32,9 +32,12 @@ Computation times
    * - Example
      - Time
      - Mem (MB)
-   * - :ref:`sphx_glr_gallery_output_Networks_plot_protein_interactions.py` (``plot_protein_interactions.py``)
-     - 00:00.379
-     - 0.0
    * - :ref:`sphx_glr_gallery_output_Networks_plot_kstar_enrichment.py` (``plot_kstar_enrichment.py``)
+     - 09:02.667
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_Networks_plot_ksea.py` (``plot_ksea.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_Networks_plot_protein_interactions.py` (``plot_protein_interactions.py``)
      - 00:00.000
      - 0.0
