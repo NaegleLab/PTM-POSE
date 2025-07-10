@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**00:00.159** total execution time for 4 files **from all galleries**:
+**09:12.730** total execution time for 13 files **from all galleries**:
 
 .. container::
 
@@ -32,15 +32,42 @@ Computation times
    * - Example
      - Time
      - Mem (MB)
-   * - :ref:`sphx_glr_gallery_output_plot_num_annotations.py` (``gallery/plot_num_annotations.py``)
-     - 00:00.159
+   * - :ref:`sphx_glr_gallery_output_Networks_plot_kstar_enrichment.py` (``Gallery/Networks/plot_kstar_enrichment.py``)
+     - 09:02.667
      - 0.0
-   * - :ref:`sphx_glr_gallery_output_plot_kstar_enrichment.py` (``gallery/plot_kstar_enrichment.py``)
+   * - :ref:`sphx_glr_gallery_output_flanking_sequences_plot_kinase_library_affinity.py` (``Gallery/flanking_sequences/plot_kinase_library_affinity.py``)
+     - 00:10.063
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_A_Overview_of_Spliced_PTMs_plot_NumberOfPTMs.py` (``Gallery/A_Overview_of_Spliced_PTMs/plot_NumberOfPTMs.py``)
      - 00:00.000
      - 0.0
-   * - :ref:`sphx_glr_gallery_output_plot_location_altered_flanks.py` (``gallery/plot_location_altered_flanks.py``)
+   * - :ref:`sphx_glr_gallery_output_A_Overview_of_Spliced_PTMs_plot_PTM_annotations.py` (``Gallery/A_Overview_of_Spliced_PTMs/plot_PTM_annotations.py``)
      - 00:00.000
      - 0.0
-   * - :ref:`sphx_glr_gallery_output_plot_protein_interactions.py` (``gallery/plot_protein_interactions.py``)
+   * - :ref:`sphx_glr_gallery_output_A_Overview_of_Spliced_PTMs_plot_filter_impact.py` (``Gallery/A_Overview_of_Spliced_PTMs/plot_filter_impact.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_FunctionEnrichment_plot_geneset_enrichment.py` (``Gallery/FunctionEnrichment/plot_geneset_enrichment.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_FunctionEnrichment_plot_num_annotations.py` (``Gallery/FunctionEnrichment/plot_num_annotations.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_FunctionEnrichment_plot_specific_annotation.py` (``Gallery/FunctionEnrichment/plot_specific_annotation.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_Networks_plot_ksea.py` (``Gallery/Networks/plot_ksea.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_Networks_plot_protein_interactions.py` (``Gallery/Networks/plot_protein_interactions.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_flanking_sequences_plot_location_altered_flanks.py` (``Gallery/flanking_sequences/plot_location_altered_flanks.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_flanking_sequences_plot_sequence_comparison.py` (``Gallery/flanking_sequences/plot_sequence_comparison.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_gallery_output_flanking_sequences_plot_sh2_domain_motifs.py` (``Gallery/flanking_sequences/plot_sh2_domain_motifs.py``)
      - 00:00.000
      - 0.0

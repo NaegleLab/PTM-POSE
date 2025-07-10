@@ -6,23 +6,32 @@ PTM-POSE
 
 .. toctree::
 	:maxdepth: 4
-	:caption: Instructions:
+	:caption: Overview:
 
 	Overview
 	Dependencies
-	quickstart
 	PTM_POSE
-	General_Instructions
 
 .. toctree::
-	:maxdepth: 2
-	:caption: Examples
+	:maxdepth: 4
+	:caption: Instructions:
 
-	gallery_output/index
+	Running_PTM-POSE/index
+
+.. toctree::
+	:maxdepth: 4
+	:caption: Example Vignettes
+
 	Examples/Examples
 
 .. toctree::
-	:maxdepth: 2
+	:maxdepth: 4
+	:caption: Analysis Gallery
+
+	gallery_output/index
+
+.. toctree::
+	:maxdepth: 4
 	:caption: Troubleshooting
 
 	faq

@@ -14,12 +14,16 @@ Install Method                       Code
 ==================================== ================================================================================
 pip                                  .. code-block:: bash
 
+                                        # with just the core package
                                         pip install ptm-pose
+                                        # with optional dependencies for downstream analyses
+                                        pip install ptm-pose[full_analysis]
+
+                                    
 
 conda                                .. code-block:: bash
 
-                                        conda install -c naeglelab ptm-pose
-                                        conda install -c bioconda gseapy   
+                                        conda install conda-forge::ptm-pose
 
 Github Release                       .. code-block:: bash
 

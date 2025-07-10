@@ -13,18 +13,17 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages', 
     'numpydoc',  
-    'nbsphinx', 'IPython.sphinxext.ipython_console_highlighting',
     'myst_parser',
     'sphinx_gallery.gen_gallery']
 
-
+html_allow_raw = True
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
-source_suffix = ['.rst', '.md']
+source_suffix = ['.rst', '.md', '.html']
 #source_suffix = '.rst'
 
 # The master toctree document.
@@ -40,7 +39,7 @@ author = 'Naegle Lab'
 # built documents.
 #
 # The short X.Y version.
-version = '0'
+version = '0.3.0'
 # The full version, including alpha/beta/rc tags.
 release = '1'
 
@@ -82,7 +81,7 @@ html_title = 'PTM-POSE'
 
 
 sphinx_gallery_conf = {
-     'examples_dirs': './gallery',   # path to your example scripts
-     'gallery_dirs': 'gallery_output',  # path to where to save gallery generated output
+     'examples_dirs': './Gallery',   # path to your example scripts
+     'gallery_dirs': './gallery_output',  # path to where to save gallery generated output
 }
 
