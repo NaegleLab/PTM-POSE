@@ -6,6 +6,26 @@ PTM-POSE is an easily implementable tool to project PTM sites onto splice event 
 
 ![PTM-POSE method for projecting PTMs onto splice events](./figures/method.png)
 
+## Install PTM-POSE
+
+You can install PTM-POSE either through pip or conda. The base version will install all packages needed to project PTMs onto your data and annotate them with functional information, but if you would like to use the analysis modules for downstream analysis, you can also install additional dependencies needed by adding the optional dependendencies `full_analysis`. This includes packages like gseapy, kinase-library, networkx, and nease. 
+
+pip install:
+```bash
+#base packages for projection and annotation
+pip install ptm-pose
+
+#include all packages that are needed for additional analysis
+pip install ptm-pose[full_analysis]
+```
+
+conda:
+```bash
+#only option is to install base package installs and install other dependencies separately
+conda install -c conda-forge ptm-pose
+```
+
+
 ## Running PTM-POSE
 
 To run PTM-POSE, you first need to process your data such that each row corresponds to a unique splice event with the genomic location of that splice event (chromosome, strand, and the bounds of the spliced region). Strand can be indicated using either '+'/'-' or 1/-1. If desired, you can also provide a delta PSI and significance value which will be included in the final PTM dataframe. Any additional columns will be kept. At a minimum, the dataframe should look something like this (optional but recommended parameters indicated):
@@ -17,7 +37,7 @@ To run PTM-POSE, you first need to process your data such that each row correspo
 ```python
 from ptm-pose import project
 
-my_splice_data_annotated, spliced_ptms = project.project_ptms_onto_splice_events(my_splice_data, ptm_coordinates,
+my_splice_data_annotated, spliced_ptms = project.project_ptms_onto_splice_events(my_splice_data, 
                                                                                   chromosome_col = 'chromosome',
                                                                                   strand_col = 'strand',
                                                                                   region_start_col = 'region_start',
@@ -40,7 +60,7 @@ Then, as with differentially included PTMs, you only need to run `get_flanking_c
 ```python
 from ptm-pose import project
 
-altered_flanks = project.get_flanking_changes_from_splice_data(my_splice_data, ptm_coordinates,
+altered_flanks = project.get_flanking_changes_from_splice_data(my_splice_data,
                                                                                   chromosome_col = 'chromosome',
                                                                                   strand_col = 'strand',
                                                                                   region_start_col = 'region_start',

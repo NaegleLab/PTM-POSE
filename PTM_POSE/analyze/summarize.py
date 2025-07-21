@@ -90,10 +90,11 @@ def get_modification_counts(ptms, **kwargs):
     modification_counts: pd.Series
         Series with the counts of each modification class
     """
+    ptms = ptms.copy()
     #filter ptms based on kwargs if provided
     if kwargs:
         filter_arguments = helpers.extract_filter_kwargs(**kwargs)
-        helpers.check_filter_kwargs(**filter_arguments)
+        helpers.check_filter_kwargs(filter_arguments)
         ptms = helpers.filter_ptms(ptms, **filter_arguments)
 
     ptms['Modification Class'] = ptms['Modification Class'].apply(lambda x: x.split(';'))
@@ -145,7 +146,7 @@ def plot_modification_breakdown(spliced_ptms = None, altered_flanks = None, colo
     
     if kwargs:
         filter_arguments = helpers.extract_filter_kwargs(**kwargs)
-        helpers.check_filter_kwargs(**filter_arguments)
+        helpers.check_filter_kwargs(filter_arguments)
         if spliced_ptms is not None:
             spliced_ptms = helpers.filter_ptms(spliced_ptms, **filter_arguments)
         if altered_flanks is not None:

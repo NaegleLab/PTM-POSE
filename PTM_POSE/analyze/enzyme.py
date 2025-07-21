@@ -13,8 +13,8 @@ import seaborn as sns
 
 #custom stat functions and other helper functions
 from ptm_pose import stat_utils, pose_config, helpers, annotate
-import scipy.stats as stats
 
+import scipy.stats as stats
 
 
 #optional analysis packages

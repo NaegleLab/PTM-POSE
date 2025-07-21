@@ -318,7 +318,7 @@ def process_database_annotations(database = 'PhosphoSitePlus', annot_type = 'Fun
         raise ValueError("PTMsigDB has multiple pathway annotations. Please specify which pathway you would like to use with the annot_type parameter. Options are: 'Pathway-WikiPathway', 'Pathway-NetPath', or 'Pathway-BI'")
     if database == 'OmniPath' and annot_type == 'Enzyme':
         raise ValueError("OmniPath has two enzyme annotations, one for writer enzymes and one for eraser enzymes. Please specify which enzyme you would like to use with the annot_type parameter. Options are: 'Writer_Enzyme' or 'Eraser_Enzyme'")
-    if database == 'Combined' and annot_type not in ["Writer Enzyme", 'Eraser Enzyme', 'Interactions']:
+    if database == 'Combined' and annot_type not in ["Writer Enzyme","Writer_Enzyme","Eraser_Enzyme", 'Eraser Enzyme', 'Interactions']:
         raise ValueError("Combined has three annotation types. Please specify which annotation you would like to use with the annot_type parameter. Options are: 'Writer Enzyme', 'Eraser Enzyme', or 'Interactions'")
 
 
@@ -387,7 +387,7 @@ def append_from_gmt(ptms, database = None, annot_type = None, gmt_df = None, col
             column_name = 'Annotation'
     elif database is not None and annot_type is not None:
         annotation_dict = process_database_annotations(database = database, annot_type = annot_type, key_type = 'ptm', **kwargs)
-        column_name = f'{database}:{annot_type.replace(' ', '_')}' if column_name is None else column_name #from database and annot_type
+        column_name = f"{database}:{annot_type.replace(' ', '_')}" if column_name is None else column_name #from database and annot_type
     else:
         raise ValueError("You must either provide the gmt-formatted dataframe or both the database and annot_type you would like to use.")
 
@@ -830,9 +830,9 @@ def construct_PTMInt_gmt_file(file = None, odir = None, overwrite = False, max_r
     """
     #find output directory for gmt files
     if odir is None:
-        odir = os.path.join(pose_config.package_dir, 'Resource_Files','Annotations', 'PTMint')
+        odir = os.path.join(pose_config.package_dir, 'Resource_Files','Annotations', 'PTMInt')
     else:
-        odir = os.path.join(odir, 'Resource_Files', 'Annotations', 'PTMint')
+        odir = os.path.join(odir, 'Resource_Files', 'Annotations', 'PTMInt')
 
     #check if gmt files already exist, skip if overwrite is False
     if os.path.exists(os.path.join(odir, 'Interactions.gmt.gz')) and not overwrite:
@@ -876,7 +876,7 @@ def construct_PTMInt_gmt_file(file = None, odir = None, overwrite = False, max_r
         os.makedirs(odir)
     
     #for each available type of annotation, create a gmt file
-    PTMint_gmt = construct_gmt_df(PTMint, 'Interaction', description = 'PTMint:Interactions', odir = odir, fname = 'Interactions', compressed=True)
+    PTMint_gmt = construct_gmt_df(PTMint, 'Interaction', description = 'PTMInt:Interactions', odir = odir, fname = 'Interactions', compressed=True)
 
 
 def extract_ids_PTMcode(df, col = '## Protein1'):
@@ -1734,7 +1734,7 @@ def combine_interaction_data(ptms, interaction_databases = ['PhosphoSitePlus', '
                 if db in enzyme_annotations['Database'].values:
                     ptms = append_from_gmt(ptms, database = db, annot_type = 'Enzyme')
 
-    print(f'\nCombining interaction information from {', '.join(interaction_databases)}')
+    print(f"\nCombining interaction information from {', '.join(interaction_databases)}")
     interact_data = []
     for database in interaction_databases:
         if f'{database}:Interactions' not in ptms.columns and (f'{database}:Enzyme' not in ptms.columns and f'{database}:Writer_Enzyme' not in ptms.columns and f'{database}:Eraser_Enzyme' not in ptms.columns):
@@ -2027,7 +2027,7 @@ def annotate_ptms(ptms, annot_type = 'All', phosphositeplus = True, ptmsigdb = T
                 raise RuntimeError(f'Error adding PTMsigDB {atype} data. Error message: {e}')
         if ptmint and atype in available_annotation_dict['PTMInt']:
             try:
-                ptms = append_from_gmt(ptms, database = 'PTMint', annot_type = atype, report_success=report_success)
+                ptms = append_from_gmt(ptms, database = 'PTMInt', annot_type = atype, report_success=report_success)
             except Exception as e:
                 raise RuntimeError(f'Error adding PTMint {atype} data. Error message: {e}')
         if ptmcode and atype in available_annotation_dict['PTMcode']:
@@ -2062,6 +2062,9 @@ def annotate_ptms(ptms, annot_type = 'All', phosphositeplus = True, ptmsigdb = T
         if interactions_to_combine == 'All':
             interaction_annotations = available_annotations[available_annotations['Annotation Type'] == 'Interactions']
             interactions_to_combine = interaction_annotations['Database'].unique().tolist()
+
+            #remove combined 
+            interactions_to_combine = [db for db in interactions_to_combine if not db.startswith('Combined')]
         elif not isinstance(interactions_to_combine, list):
             raise TypeError('`interactions_to_combine` must either be "All" or a list of database names')
 

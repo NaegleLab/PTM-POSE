@@ -7,4 +7,6 @@ include ptm_pose/Resource_Files/Annotations/PhosphoSitePlus/*
 include ptm_pose/Resource_Files/Annotations/iKiP/*
 include ptm_pose/Resource_Files/Annotations/PTMsigDB/*
 include ptm_pose/Resource_Files/Annotations/RegPhos/*
+include ptm_pose/Resource_Files/Annotations/OmniPath/*
+include ptm_pose/Resource_Files/Annotations/PTMInt/*
 

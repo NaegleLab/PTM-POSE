@@ -116,7 +116,7 @@ def get_ptm_annotations(ptms, annot_type = 'Function', database = 'PhosphoSitePl
             else:
                 annot_col = f'{database}:{annot_type}'
         elif database == 'OmniPath':
-            annot_col = f'{database}:{annot_type.replace(' ', '_')}'
+            annot_col = f"{database}:{annot_type.replace(' ', '_')}"
         else:
             annot_col = f'{database}:{annot_type}'
         
@@ -292,10 +292,13 @@ def get_enrichment_inputs(ptms,  annot_type = 'Function', database = 'PhosphoSit
         print('No PTMs with requested annotation type, so could not perform enrichment analysis')
         return np.repeat(None, 5)
     else:
-        annot_col = f'{database}:{annot_type}'
+        #get annotation details
+        annot_col = f'{database}:{annot_type}'.replace(' ', '_')
+        #separate distinct modification annotations in unique rows
         annotation_details[annot_col] = annotation_details[annot_col].str.split(';')
         annotation_details = annotation_details.explode(annot_col)
         annotation_details[annot_col] = annotation_details[annot_col].str.strip()
+        #add PTM column for easier identification and groupby PTM
         annotation_details['PTM'] = annotation_details['Gene'] + '_' + annotation_details['Residue'] + annotation_details['PTM Position in Isoform'].astype(int).astype(str)
         annotation_details = annotation_details.groupby(annot_col)['PTM'].agg(';'.join)
     
