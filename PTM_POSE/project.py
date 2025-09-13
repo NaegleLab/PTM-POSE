@@ -157,6 +157,7 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
 
     spliced_ptm_info = []
     spliced_ptms_list = []
+    nonconst_ptms_list = []
     num_ptms_affected = []
     num_unique_ptm_sites = []
 
@@ -215,13 +216,20 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
                     ptms_in_region['Modification Class'] = ptms_in_region['Modification Class'].str.split(';')
                     ptms_in_region = ptms_in_region.explode('Modification Class')
 
+                #get number of ptms
                 ptms_info = ptms_in_region.apply(lambda x: x['UniProtKB Accession'] + '_' + x['Residue'] + str(x['PTM Position in Isoform']) + ' (' + x['Modification Class'] + ')', axis = 1)
                 ptms_str = '/'.join(ptms_info.values)
                 spliced_ptms_list.append(ptms_str)
                 num_ptms_affected.append(ptms_in_region.shape[0])
                 num_unique_ptm_sites.append(ptms_in_region.groupby(['UniProtKB Accession', 'Residue', 'PTM Position in Isoform']).size().shape[0])
+                #get number of ptms, only considering non-constitutive ptms
+                noncons_ptms = ptms_in_region[~ptms_in_region['Constitutive']]
+                nonconst_ptms_str = noncons_ptms.apply(lambda x: x['UniProtKB Accession'] + '_' + x['Residue'] + str(x['PTM Position in Isoform']) + ' (' + x['Modification Class'] + ')', axis = 1)
+                nonconst_ptms_str = '/'.join(nonconst_ptms_str.values)
+                nonconst_ptms_list.append(nonconst_ptms_str)
             else:
                 spliced_ptms_list.append(np.nan)
+                nonconst_ptms_list.append(np.nan)
                 num_ptms_affected.append(0)
                 num_unique_ptm_sites.append(0)
 
@@ -237,6 +245,7 @@ def find_ptms_in_many_regions(region_data, ptm_coordinates, chromosome_col = 'ch
     #add ptm info to original splice event dataframe
     if annotate_original_df:
         region_data['PTMs'] = spliced_ptms_list
+        region_data['Non-constitutive PTMs'] = nonconst_ptms_list
         region_data['Number of PTMs Affected'] = num_ptms_affected
         region_data['Number of Unique PTM Sites by Position'] = num_unique_ptm_sites
         region_data['Event Length'] = (region_data[region_end_col] - region_data[region_start_col]).abs()
@@ -353,7 +362,7 @@ def project_ptms_onto_splice_events(splice_data,annotate_original_df = True, chr
 
 
 
-def project_ptms_onto_MATS(SE_events = None, A5SS_events = None, A3SS_events = None, RI_events = None, MXE_events = None, coordinate_type = 'hg38', identify_flanking_sequences = False, dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None, separate_modification_types = False, PROCESSES = 1,ptm_coordinates = None, **kwargs):
+def project_ptms_onto_MATS(SE_events = None, A5SS_events = None, A3SS_events = None, RI_events = None, MXE_events = None, coordinate_type = 'hg38', identify_flanking_sequences = False, dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None, separate_modification_types = False, PROCESSES = 1,ptm_coordinates = None, min_junction_counts = None, **kwargs):
     """
     Given splice quantification from the MATS algorithm, annotate with PTMs that are found in the differentially included regions.
 
@@ -383,6 +392,8 @@ def project_ptms_onto_MATS(SE_events = None, A5SS_events = None, A3SS_events = N
         Indicate whether residues with multiple modifications (i.e. phosphorylation and acetylation) should be treated as separate PTMs and be placed in unique rows of the output dataframe. Default is False.
     PROCESSES: int
         Number of processes to use for multiprocessing. Default is 1.
+    min_junction_counts: int
+        Minimum number of junction counts in each sample required to keep a splice event. Default is None (no filtering).
     **kwargs: additional keyword arguments
         Additional keyword arguments to pass to the find_ptms_in_many_regions function, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.
     """
@@ -414,6 +425,11 @@ def project_ptms_onto_MATS(SE_events = None, A5SS_events = None, A3SS_events = N
                 SE_events = SE_events[SE_events[sig_col] <= kwargs['alpha']].copy()
             if 'min_dpsi' in kwargs:
                 SE_events = SE_events[SE_events[dPSI_col].abs() >= kwargs['min_dpsi']].copy()
+
+        if min_junction_counts is not None:
+            print('Filtering skipped exon events based on minimum junction counts.')
+            SE_events = helpers.get_junction_counts(SE_events, quant_type = 'MATS')
+            SE_events = SE_events[(SE_events['TJC_SAMPLE_1'] >= min_junction_counts) & (SE_events['TJC_SAMPLE_2'] >= min_junction_counts)]
 
         if SE_events['chr'].str.contains('chr').any():
             SE_events['chr'] = SE_events['chr'].apply(lambda x: x[3:]) 
@@ -460,6 +476,11 @@ def project_ptms_onto_MATS(SE_events = None, A5SS_events = None, A3SS_events = N
             if 'min_dpsi' in kwargs:
                 A5SS_events = A5SS_events[A5SS_events[dPSI_col].abs() >= kwargs['min_dpsi']].copy()
 
+
+        if min_junction_counts is not None:
+            print('Filtering 5\' alternative splice site events based on minimum junction counts.')
+            A5SS_events = helpers.get_junction_counts(A5SS_events, quant_type = 'MATS')
+            A5SS_events = A5SS_events[(A5SS_events['TJC_SAMPLE_1'] >= min_junction_counts) & (A5SS_events['TJC_SAMPLE_2'] >= min_junction_counts)]
 
         if A5SS_events['chr'].str.contains('chr').any():
             A5SS_events['chr'] = A5SS_events['chr'].apply(lambda x: x[3:])
@@ -530,8 +551,11 @@ def project_ptms_onto_MATS(SE_events = None, A5SS_events = None, A3SS_events = N
                 A3SS_events = A3SS_events[A3SS_events[sig_col] <= kwargs['alpha']].copy()
             if 'min_dpsi' in kwargs:
                 A3SS_events = A3SS_events[A3SS_events[dPSI_col].abs() >= kwargs['min_dpsi']].copy()
-        if RI_events['chr'].str.contains('chr').any():
-            RI_events['chr'] = RI_events['chr'].apply(lambda x: x[3:])
+
+        if min_junction_counts is not None:
+            print('Filtering 3\' alternative splice site events based on minimum junction counts.')
+            A3SS_events = helpers.get_junction_counts(A3SS_events, quant_type = 'MATS')
+            A3SS_events = A3SS_events[(A3SS_events['TJC_SAMPLE_1'] >= min_junction_counts) & (A3SS_events['TJC_SAMPLE_2'] >= min_junction_counts)]
 
         if A3SS_events['chr'].str.contains('chr').any():
             A3SS_events['chr'] = A3SS_events['chr'].apply(lambda x: x[3:])
@@ -604,6 +628,13 @@ def project_ptms_onto_MATS(SE_events = None, A5SS_events = None, A3SS_events = N
             if 'min_dpsi' in kwargs:
                 RI_events = RI_events[RI_events[dPSI_col].abs() >= kwargs['min_dpsi']].copy()
 
+
+        if min_junction_counts is not None:
+            print('Filtering retained intron events based on minimum junction counts.')
+            RI_events = helpers.get_junction_counts(RI_events, quant_type = 'MATS')
+            RI_events = RI_events[(RI_events['TJC_SAMPLE_1'] >= min_junction_counts) & (RI_events['TJC_SAMPLE_2'] >= min_junction_counts)]
+
+
         if RI_events['chr'].str.contains('chr').any():
             RI_events['chr'] = RI_events['chr'].apply(lambda x: x[3:])
 
@@ -634,6 +665,11 @@ def project_ptms_onto_MATS(SE_events = None, A5SS_events = None, A3SS_events = N
                 MXE_events = MXE_events[MXE_events[sig_col] <= kwargs['alpha']].copy()
             if 'min_dpsi' in kwargs:
                 MXE_events = MXE_events[MXE_events[dPSI_col].abs() >= kwargs['min_dpsi']].copy()
+
+        if min_junction_counts is not None:
+            print('Filtering mutually exclusive exon events based on minimum junction counts.')
+            MXE_events = helpers.get_junction_counts(MXE_events, quant_type = 'MATS')
+            MXE_events = MXE_events[(MXE_events['TJC_SAMPLE_1'] >= min_junction_counts) & (MXE_events['TJC_SAMPLE_2'] >= min_junction_counts)]
 
         if MXE_events['chr'].str.contains('chr').any():
             MXE_events['chr'] = MXE_events['chr'].apply(lambda x: x[3:])
