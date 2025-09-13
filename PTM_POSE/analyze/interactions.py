@@ -11,7 +11,7 @@ import networkx as nx
 
 
 #custom stat functions
-from ptm_pose import annotate, helpers
+from ptm_pose import annotate, helpers, pose_config
 
 
 
@@ -532,3 +532,316 @@ def get_interaction_stats(interaction_graph):
     betweenness_centrality = nx.betweenness_centrality(interaction_graph)
     network_stats = pd.DataFrame({'Degree': dict(interaction_graph.degree()), 'Degree Centrality':degree_centrality, 'Closeness':closeness_centrality,'Betweenness':betweenness_centrality})
     return network_stats
+
+def reformat_pssm(pssm_longform, protein):
+    """
+    Reformat a long-form PSSM dataframe containing multiple PSSMs into a wide-form PSSM dataframe including only a single domain, with amino acids as rows and positions as columns. 
+    
+    Long-form PSSM: index is the protein name associated with PSSM data, columns indicate position and amino acid in the PSSM (e.g. '1A', '-1G', '2P', '-4K', etc.), and values are the scores for each amino acid at each position.
+    
+    Wide-form PSSM: index is the position, columns are the amino acid (for a single protein/domain)
+
+    Parameters
+    ----------
+    pssm_longform: pd.DataFrame
+        Dataframe containing the long-form PSSM data, with index as protein names and columns as positions and amino acids. This is the same format as published in KinaseLibrary publications for kinase and SH2 domain PSSMs
+    protein: str
+        Protein name to extract the PSSM for. This should match the index of the pssm_longform dataframe.
+
+    Returns
+    -------
+    pssm_wideform: pd.DataFrame
+        Dataframe containing the wide-form PSSM data, with index as positions and columns as amino acids. The values are the scores for each amino acid at each position.
+    """
+    #extract amino acids and positions from the columns of the PSSM
+    amino_acid = []
+    position = []
+    for i in pssm_longform.columns:
+        amino_acid.append(i[-1])
+        position.append(int(i[:-1]))
+    amino_acid = np.unique(amino_acid)
+    position = np.unique(position)
+
+    #go through and extract score for each position and amino acid, placing it in the correct place in the matrix
+    pssm_matrix = pd.DataFrame(np.nan, index=position, columns=amino_acid)
+    pssm_series = pssm_longform.loc[protein]
+    for i in pssm_longform.columns:
+        pos = int(i[:-1])
+        aa = i[-1]
+        pssm_matrix.loc[pos, aa] = pssm_series[i]
+    return pssm_matrix
+
+def get_percentile(score, background):
+    """
+    Given a score and a background distribution, calculate the percentile of the score in the background distribution.
+
+    Parameters
+    ----------
+    score: float
+        Score to calculate the percentile for.
+    background: list or np.array
+        Background distribution to calculate the percentile from.
+
+    Returns
+    -------
+    percentile: float
+        Percentile of the score in the background distribution.
+    """
+    if isinstance(background, list):
+        background = np.array(background)
+    
+    if len(background) == 0:
+        return np.nan
+
+    return np.sum(background <= score) / len(background) * 100
+
+### PSSMs
+class PSSM:
+    """
+    Class to take a position-specific scoring matrix (PSSM) and score a peptide containing a PTM against the PSSM. 
+
+    Code adapted from work by Gabriela Salazar Lopez
+    
+    Parameters
+    ----------
+    pssm: pd.DataFrame
+        Dataframe containing the PSSM, with amino acids as rows and positions as columns. The values should be the scores for each amino acid at each position.
+        
+    """
+    def __init__(self, pssm, modification = 'Phosphorylation', residue = 'Y', plus_residues = 4, minus_residues = 2):
+        self.pssm = pssm
+        self.residue = residue
+        self.modification = modification
+        self.plus_residues = plus_residues
+        self.minus_residues = minus_residues
+
+
+    def trim_pep (self, pep):
+        #find where psite is in pep
+        psite_loc = pep.find(self.residue.lower())
+        #get start and end locations of peptide to trim to match pssm positions
+        beg = psite_loc - self.minus_residues
+        end = psite_loc + self.plus_residues + 1
+        if beg < 0 or end > len(pep):
+            return np.nan
+        else:
+            return pep[beg:end]
+            
+    def make_mask(self, pep):
+        """
+        Create a peptide mask matching PSSM positions
+        """
+        #strip 'y' from pep
+        pep = pep.replace(self.residue.lower(), '')
+        mask = np.zeros(self.pssm.shape)
+        for i in range(self.pssm.shape[0]):
+            for j in range(self.pssm.shape[1]):
+                AA = self.pssm.columns[j]
+                if pep[i] == AA:
+                    mask[i, j] = 1
+        return mask
+
+    
+    def score_SS(self, pep):
+        """
+        Use the scansite scoring method to score a peptide against the PSSM. This will first trim the peptide to match the PSSM positions (if not possible will return NaN), then calculate the raw score for the peptide, the optimal score for the PSSM given the peptide length, and finally calculate the final score as (optimal - raw)/optimal.
+        """
+        pep_trimmed = self.trim_pep(pep)
+        if pep_trimmed == pep_trimmed:
+            #get raw score for trimmed peptide
+            mask = self.make_mask(pep_trimmed)
+            masked_PSSM = self.pssm * mask
+            bit_scores = np.log(masked_PSSM.sum(axis=1)+ 0.0000000001)/np.log(2) #score peptide and add small amount to all sums to avoid taking log of 0
+            raw_score = bit_scores.sum()/(len(pep_trimmed)-1)
+
+            ### Get optimal score for the PSSM given the peptide length
+            opts = self.pssm.max(axis=1) + 0.0000000001 #take max of each row and add small amount to avoid taking log of 0
+            opts = np.log(opts)/np.log(2) 
+            opt_score = opts.sum()/(len(pep_trimmed)-1)
+
+            ### Calculate final score
+            score = (opt_score-raw_score)/opt_score
+            return score
+        else:
+            return np.nan
+    
+    def score_peptides(self, peptides, method = 'scansite'):
+        scores = []
+        for pep in peptides:
+            if method == 'scansite':
+                scores.append(self.score_SS(pep))
+            else:
+                raise ValueError(f"Unknown scoring method: {method}. Available methods are: 'scansite'.")
+        return scores
+    
+class ScorePSSMs:
+    """
+    Class to score a list of peptides against a PSSM. This will take a list of peptides and score each peptide against the PSSM, returning a dataframe with the scores.
+
+    Parameters
+    ----------
+    pssm: dict of pd.DataFrame
+        Dictionary with dataframes containing the PSSM, with amino acids as rows and positions as columns. The values should be the scores for each amino acid at each position.
+    modification: str
+        Type of modification to score against the PSSM. Default is 'Phosphorylation'.
+    residue: str
+        Residue to score against the PSSM. Default is 'Y'.
+    plus_residues: int
+        Number of residues to consider after the modified residue. Default is 4.
+    minus_residues: int
+        Number of residues to consider before the modified residue. Default is 2.
+    """
+    def __init__(self, pssms, spliced_ptms, background_scores = None, modification = 'Phosphorylation', residue = 'Y', plus_residues = 4, minus_residues = 2):
+        #reduce spliced_ptms dataframe to only those with the specified modification and residue
+        spliced_ptms = spliced_ptms[spliced_ptms['Modification Class'] == modification]
+        spliced_ptms = spliced_ptms[spliced_ptms['Residue'] == residue]
+        if spliced_ptms.empty:
+            raise ValueError(f"No PTMs for associated modification and residue ({modification}, {residue}) found in spliced PTM data, so cannot perform requested analysis.")
+        
+        self.spliced_ptm = spliced_ptms
+        self.modification = modification
+        self.residue = residue
+        self.plus_residues = plus_residues
+        self.minus_residues = minus_residues
+        self.background_scores = background_scores
+
+        print(isinstance(pssms, pd.DataFrame))
+        #instantiate PSSM objects for each PSSM in the dictionary
+        if isinstance(pssms, pd.DataFrame):
+            #check if in long form (e.g. KinaseLibrary PSSM format
+            if '1A' in pssms.columns:
+                self.pssms = {}
+                for protein in pssms.index:
+                    pssm = reformat_pssm(pssms, protein)
+                    self.pssms[protein] = PSSM(pssm, modification = modification, residue = residue, plus_residues = plus_residues, minus_residues = minus_residues)
+            elif 'A' in pssms.columns and 1 in pssms.index:
+                #if in wide form, just create a single PSSM object
+                self.pssms = {'PSSM': PSSM(pssms, modification = modification, residue = residue, plus_residues = plus_residues, minus_residues = minus_residues)}
+            else:
+                raise ValueError("Dataframe format not recognized. Please provide a dataframe with either long-form PSSM data for multiple proteins (protein in index and positions/amino acids as columns like '1A', '-1G', etc.) or wide-form PSSM data for a single domain/protein (positions as index and amino acids as columns like 'A', 'G', 'P', etc.).")
+        elif isinstance(pssms, dict):
+            self.pssms = {k: PSSM(v, modification = modification, residue = residue, plus_residues = plus_residues, minus_residues = minus_residues) for k, v in pssms.items()}
+        else:
+            raise ValueError('PSSMs must be a properly formatted dataframe or dictionary of dataframes')
+        
+    def print_available_pssms(self):
+        """
+        Print the available PSSMs in the ScorePSSMs object.
+        """
+        print("Available PSSMs:")
+        for protein in self.pssms:
+            print(f"- {protein}")
+    
+
+    def score_ptm(self, ptm):
+        pep = ptm['Canonical Flanking Sequence']
+        ptm_label = ptm['Isoform ID'] + '_' + ptm['Residue'] + str(int(ptm['PTM Position in Isoform']))
+        scores = pd.Series(index = self.pssms.keys(), name = ptm_label, dtype = float)
+        for protein in self.pssms:
+            scores[protein] = self.pssms[protein].score_SS(pep)
+        return scores
+    
+    def score_background(self, background_peptides = None):
+        """
+        Score a background set of peptides against the PSSMs and return a dataframe with the scores.
+        
+        Parameters
+        ----------
+        background: pd.DataFrame
+            Dataframe containing the background peptides to score against the PSSMs. The index should be the peptide sequence and the columns should be the PSSM names.
+
+        Returns
+        -------
+        pd.DataFrame
+            Dataframe containing the scores for each peptide against each PSSM, with columns for the PSSM name and the score.
+        """
+        if background_peptides is None:
+            background_peptides = pose_config.ptm_coordinates['Canonical Flanking Sequence'].unique()
+
+        background_scores = []
+        for pep in background_peptides:
+            scores = self.score_ptm(pep)
+            scores.name = pep
+            background_scores.append(scores)
+
+        self.background_scores = pd.concat(background_scores, axis=1)
+
+
+    def score_all_ptms(self):
+        """
+        Score all PTMs in the spliced PTM dataframe against the PSSMs and return a dataframe with the scores.
+        
+        Returns
+        -------
+        pd.DataFrame
+            Dataframe containing the scores for each PTM against each PSSM, with columns for the PSSM name and the score.
+        """
+        ptm_scores = []
+        for index, ptm in self.spliced_ptm.iterrows():
+            scores = self.score_ptm(ptm)
+            ptm_scores.append(scores)
+
+        ptm_scores = pd.concat(ptm_scores, axis = 1)
+        self.ptm_scores = ptm_scores
+
+    def get_percentiles(self, background_scores = None):
+        """
+        Given the background matrix
+        """
+        if not hasattr(self, 'background_scores') and background_scores is None:
+            print('generating scores on entire background set. If you want a specific background set or have already generated this, please provide it in the background_scores parameter.')
+            self.score_background()
+            background_scores = self.background_scores
+        elif background_scores is not None:
+            self.background_scores = background_scores
+
+
+        if not hasattr(self, 'ptm_scores'):
+            self.score_all_ptms()
+
+        percentiles = self.ptm_scores.copy()
+        for domain in percentiles.columns:
+            percentiles[domain] = percentiles[domain].apply(lambda x: get_percentile(x, background_scores[domain].dropna().values))
+        self.ptm_percentiles = percentiles
+
+
+    
+    def get_top_domains(self, threshold = 2, threshold_type = 'scores', n = 8):
+        """
+        Get the top domains based on the specified threshold and number of top domains. Threshold can either based on scores or percentile
+        """
+        if not hasattr(self, 'ptm_scores'):
+            self.score_all_ptms()
+        
+        if threshold_type == 'scores':
+            top_domains = self.ptm_scores[self.ptm_scores > threshold].sort_values(ascending=False).head(n)
+        top_domains = ';'.join(top_domains.index)
+        return top_domains
+    
+    def append_top_domains(self, threshold = 2, threshold_type = 'scores', n = 8):
+        """
+        Append the top domains to the spliced PTM dataframe based on the specified threshold and number of top domains.
+        
+        Parameters
+        ----------
+        threshold: int
+            Threshold for the scores to consider a domain as top. Default is 2.
+        threshold_type: str
+            Type of threshold to use. Default is 'scores', which will use the scores from the PSSMs.
+        n: int
+            Number of top domains to return. Default is 8.
+        """
+        if not hasattr(self, 'ptm_scores'):
+            self.score_all_ptms()
+        
+        self.spliced_ptm['Top Domains'] = self.spliced_ptm.apply(lambda x: self.get_top_domains(threshold=threshold, threshold_type=threshold_type, n=n), axis=1)
+
+    def construct_score_gmt_file(self):
+        pass
+
+    def construct_percentile_gmt_file(self):
+        pass
+
+
+
+
