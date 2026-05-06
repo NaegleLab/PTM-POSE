@@ -216,7 +216,7 @@ def get_background_annotation_counts(database = 'PhosphoSitePlus', annot_type = 
     return background_annotation_count, background_size
 
 
-def get_enrichment_inputs(ptms,  annot_type = 'Function', database = 'PhosphoSitePlus', background_type = 'all', collapse_on_similar = False, mod_class = None, alpha = 0.05, min_dpsi = 0.1, **kwargs):
+def get_enrichment_inputs(ptms,  annot_type = 'Function', database = 'PhosphoSitePlus', background = None, background_type = 'all', collapse_on_similar = False, mod_class = None, alpha = 0.05, min_dpsi = 0.1, **kwargs):
     """
     Given the spliced ptms, altered_flanks, or combined PTMs dataframe, identify the number of PTMs corresponding to specific annotations in the foreground (PTMs impacted by splicing) and the background (all PTMs in the proteome or all PTMs in dataset not impacted by splicing). This information can be used to calculate the enrichment of specific annotations among PTMs impacted by splicing. Several options are provided for constructing the background data: all (based on entire proteome in the ptm_coordinates dataframe) or significance (foreground PTMs are extracted from provided spliced PTMs based on significance and minimum delta PSI)
 
@@ -241,8 +241,8 @@ def get_enrichment_inputs(ptms,  annot_type = 'Function', database = 'PhosphoSit
     kwargs: additional keyword arguments
         Additional keyword arguments to pass to the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.
     """
-    if background_type == 'all':
-        background_annotation_count, background_size = get_background_annotation_counts(database = database, annot_type = annot_type, **kwargs)
+    if background is None and background_type == 'all':
+        background_annotation_count, background_size = get_background_annotation_counts(database = database, annot_type = annot_type, collapse_on_similar = collapse_on_similar, **kwargs)
 
         background_size = pose_config.ptm_coordinates.drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).shape[0]
 
@@ -250,7 +250,7 @@ def get_enrichment_inputs(ptms,  annot_type = 'Function', database = 'PhosphoSit
         filter_arguments = helpers.extract_filter_kwargs(min_dpsi = min_dpsi, alpha = alpha, modification_class = mod_class, report_removed = False, **kwargs)
         helpers.check_filter_kwargs(filter_arguments)
         ptms = helpers.filter_ptms(ptms, **filter_arguments)
-    elif background_type == 'significance':
+    elif background is None and background_type == 'significance':
         if 'Significance' not in ptms.columns or 'dPSI' not in ptms.columns:
             raise ValueError('Significance and dPSI columns must be present in spliced_ptms dataframe to construct a background based on significance (these columns must be provided during projection).')
         #filter ptms if any kwargs are provided
@@ -279,6 +279,18 @@ def get_enrichment_inputs(ptms,  annot_type = 'Function', database = 'PhosphoSit
             background_size = background.drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).shape[0]
         #get background counts
         _, background_annotation_count = get_ptm_annotations(background, annot_type = annot_type, database = database, collapse_on_similar = collapse_on_similar)
+    elif background is not None:
+        #make sure background is a dataframe and has the correct columns
+        if not isinstance(background, pd.DataFrame):
+            raise ValueError('Provided background must be a pandas DataFrame')
+        
+        #check to make sure background has the correct columns
+        required_cols = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']
+        if not all(col in background.columns for col in required_cols):
+            raise ValueError(f'Background dataframe must contain the following columns: {required_cols}. Please check the provided background dataframe.')
+
+        background_size = background.drop_duplicates(subset = ['UniProtKB Accession', 'Residue', 'PTM Position in Isoform', 'Modification Class']).shape[0]
+        _, background_annotation_count= get_ptm_annotations(background, annot_type = annot_type, database = database, collapse_on_similar = collapse_on_similar, report_removed = False, **kwargs)
     else:
         raise ValueError('Invalid background type. Must be all (default) or significance')
 
@@ -333,7 +345,7 @@ def annotation_enrichment(ptms, database = 'PhosphoSitePlus', annot_type = 'Func
     kwargs: additional keyword arguments
         Additional keyword arguments to pass to the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.
     """
-    foreground_annotation_count, foreground_size, background_annotations, background_size, annotation_details = get_enrichment_inputs(ptms, background_type = background_type, annot_type = annot_type, database = database, collapse_on_similar = collapse_on_similar, mod_class = mod_class, alpha = alpha, min_dpsi = min_dpsi)
+    foreground_annotation_count, foreground_size, background_annotations, background_size, annotation_details = get_enrichment_inputs(ptms, background_type = background_type, annot_type = annot_type, database = database, collapse_on_similar = collapse_on_similar, mod_class = mod_class, alpha = alpha, min_dpsi = min_dpsi, **kwargs)
     
 
     if foreground_annotation_count is not None:
