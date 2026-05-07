@@ -8,13 +8,14 @@ PTM-POSE
 	:maxdepth: 4
 	:caption: Overview:
 
-	Overview
-	Dependencies
-	PTM_POSE
+	Overview/Overview
+	Overview/Dependencies
+	Overview/quickstart
+	Overview/PTM_POSE
 
 .. toctree::
 	:maxdepth: 4
-	:caption: Instructions:
+	:caption: Running PTM-POSE
 
 	Running_PTM-POSE/index
 
@@ -32,9 +33,10 @@ PTM-POSE
 
 .. toctree::
 	:maxdepth: 4
-	:caption: Troubleshooting
+	:caption: Additional Topics
 
-	faq
+	Advanced/Filtering_PTMs.rst
+	Advanced/faq
 
 
 

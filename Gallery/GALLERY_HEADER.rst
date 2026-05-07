@@ -1,3 +1,5 @@
+.. _Analysis_Gallery:
+
 Gallery
 =======
 

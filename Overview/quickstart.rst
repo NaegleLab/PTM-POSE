@@ -7,7 +7,7 @@ Here, we have provided a quick start guide that will allow you to get up and run
 Installation
 ------------
 
-KSTAR can be installed via `pip`, tarball, and directly from the Git repository. We recommend using pip to install the most well-tested version of the package, but check our development branch on the GitHub repository to see some of the additional analyses/data we are adding to the package!
+PTM-POSE can be installed via `pip`, tarball, and directly from the Git repository. We recommend using pip to install the most well-tested version of the package, but check our development branch on the GitHub repository to see some of the additional analyses/data we are adding to the package!
 
 ==================================== ================================================================================
 Install Method                       Code

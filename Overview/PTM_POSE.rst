@@ -15,14 +15,30 @@ PTM Projection
 ##############
 
 .. automodule:: ptm_pose.project
-	:members: find_ptms_in_region, project_ptms_onto_splice_events, project_ptms_onto_MATS, project_ptms_onto_SpliceSeq
+	:members: find_ptms_in_region, project_ptms_onto_splice_events
 
 ##################
 Flanking Sequences
 ##################
 
 .. automodule:: ptm_pose.flanking_sequences
-	:members: get_flanking_changes, get_flanking_changes_from_splice_data, get_flanking_changes_from_splicegraph, get_flanking_changes_from_rMATS
+	:members: get_flanking_changes, get_flanking_changes_from_splice_data
+
+#####################
+Tool-Specific Modules
+#####################
+
+.. autoclass:: ptm_pose.splicing_tools.base.GenericDataset
+	:members:
+
+.. autoclass:: ptm_pose.splicing_tools.MATS.MATS_Dataset
+	:members:
+
+.. autoclass:: ptm_pose.splicing_tools.MAJIQ.MAJIQ_Dataset
+	:members:
+
+.. autoclass:: ptm_pose.splicing_tools.SpliceSeq.SpliceSeq_Dataset
+	:members:
 	 
 ###############
 Annotating PTMs

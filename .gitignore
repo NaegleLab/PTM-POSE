@@ -11,6 +11,8 @@ gallery_output/
 .json
 .py.md5
 
+#vs code specific
+.vscode
 
 #sql lite(pybiomart generates)
 *.sqllite
