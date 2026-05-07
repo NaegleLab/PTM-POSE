@@ -327,7 +327,7 @@ def project_ptms_onto_splice_events(splice_data,annotate_original_df = True, chr
             splice_data = splice_data[splice_data[sig_col] <= kwargs['alpha']].copy()
         elif 'alpha' in kwargs and sig_col is None:
             print('Warning: alpha value provided but sig_col is None. No filtering based on significance will be applied.')
-            
+
         if 'min_dpsi' in kwargs and dPSI_col is not None:
             splice_data = splice_data[splice_data[dPSI_col].abs() >= kwargs['min_dpsi']].copy()
         elif 'min_dpsi' in kwargs and dPSI_col is None:
@@ -367,7 +367,7 @@ def project_ptms_onto_splice_events(splice_data,annotate_original_df = True, chr
     return splice_data, spliced_ptm_info
 
 
-
+@helpers.deprecated('Tools/functions for performing analysis on MATS data have been moved to the splicing_tools.MATS module.')
 def project_ptms_onto_MATS(SE_events = None, A5SS_events = None, A3SS_events = None, RI_events = None, MXE_events = None, coordinate_type = 'hg38', identify_flanking_sequences = False, dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None, separate_modification_types = False, PROCESSES = 1,ptm_coordinates = None, min_junction_counts = None, **kwargs):
     """
     Given splice quantification from the MATS algorithm, annotate with PTMs that are found in the differentially included regions.
@@ -748,6 +748,7 @@ def add_splicegraph_info(psi_data, splicegraph, purpose = 'inclusion'):
     else:
         raise ValueError('Purpose must be either inclusion or flanking. Please provide the correct purpose for the splicegraph information.')
 
+@helpers.deprecated('Tools/functions for performing analysis on SpliceSeq data have been moved to the splicing_tools.SpliceSeq module.')
 def project_ptms_onto_SpliceSeq(psi_data, splicegraph, gene_col ='symbol', dPSI_col = None, sig_col = None, extra_cols = None, coordinate_type = 'hg19', separate_modification_types = False, identify_flanking_sequences = False, flank_size = 5, ptm_coordinates = None, PROCESSES = 1, **kwargs):
     """
     Given splice event quantification from SpliceSeq (such as what can be downloaded from TCGASpliceSeq), annotate with PTMs that are found in the differentially included regions.
@@ -824,7 +825,7 @@ def project_ptms_onto_SpliceSeq(psi_data, splicegraph, gene_col ='symbol', dPSI_
     else:
         return spliced_data, spliced_ptms
 
-
+@helpers.deprecated('Tools/functions for performing analysis on MAJIQ data have been moved to the splicing_tools.MAJIQ module.')
 def project_ptms_onto_MAJIQ(voila_tsv, samp1_name, samp2_name, alpha = 0.05, dpsi_cutoff = 0.1, coordinate_type = 'hg38', ptm_coordinates = None, **kwargs):
     """
     Given splice quantification from the MAJIQ algorithm, annotate with PTMs that are found in the differentially included regions. 

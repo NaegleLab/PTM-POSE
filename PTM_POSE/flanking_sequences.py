@@ -10,6 +10,10 @@ import tqdm
 from ptm_pose import database_interfacing as di
 from ptm_pose import project, pose_config, helpers
 
+#import warnings to add deprecation warnings for older/moved functions
+import warnings
+
+
 
 
 # Get the standard codon table
@@ -174,6 +178,7 @@ def get_flanking_sequence(ptm_loc, seq, ptm_residue, flank_size = 5, lowercase_m
     
     return flanking_seq_aa
 
+@helpers.deprecated('This function has been moved to the splicing_tools.SpliceSeq module.')
 def extract_region_from_splicegraph(splicegraph, region_id):
     """
     Given a region id and the splicegraph from SpliceSeq, extract the chromosome, strand, and start and stop locations of that exon. Start and stop are forced to be in ascending order, which is not necessarily true from the splice graph (i.e. start > stop for negative strand exons). This is done to make the region extraction consistent with the rest of the codebase.
@@ -203,7 +208,7 @@ def extract_region_from_splicegraph(splicegraph, region_id):
     else:
         return [region_info['Chromosome'], strand,region_info['Chr_Stop'], region_info['Chr_Start']]
 
-    
+@helpers.deprecated('This function has been moved to the splicing_tools.SpliceSeq module.')
 def get_spliceseq_event_regions(gene_name, from_exon, spliced_exons, to_exon, splicegraph):
     """
     Given all exons associated with a splicegraph event, obtain the coordinates associated with the flanking exons and the spliced region. The spliced region is defined as the exons that are associated with psi values, while flanking regions include the "from" and "to" exons that indicate the adjacent, unspliced exons.
@@ -509,7 +514,7 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
         print('No PTMs found with potential for altered flanking sequences.')
     return results
 
-
+@helpers.deprecated('This function has been moved to the splicing_tools.SpliceSeq module.')
 def get_spliceseq_flank_loc(ptm, strand, from_region_coords, to_region_coords, coordinate_type = 'hg19'):
     """
     Given ptm information for identifying flanking sequences from splicegraph information, extract the relative location of the ptm in the flanking region (where it is located in translation of the flanking region).
@@ -539,6 +544,7 @@ def get_spliceseq_flank_loc(ptm, strand, from_region_coords, to_region_coords, c
     else:
         return to_region_coords[-1] - ptm[f'Gene Location ({coordinate_type})']
 
+@helpers.deprecated('This function has been moved to the splicing_tools.SpliceSeq module.')
 def get_ptms_in_splicegraph_flank(gene_name, chromosome, strand, flank_region_start, flank_region_end, coordinate_type = 'hg19', which_flank = 'First', flank_size = 5):
     """
 
@@ -554,6 +560,8 @@ def get_ptms_in_splicegraph_flank(gene_name, chromosome, strand, flank_region_st
     
     return flank_ptms
 
+
+@helpers.deprecated('This function has been moved to the splicing_tools.SpliceSeq module.')
 def get_flank_changes_from_splicegraph_single_event(event_row, splicegraph, event_id_col = None, dPSI_col = None, sig_col = None, extra_cols = None, flank_size = 5, coordinate_type = 'hg19'):
     region_id = event_row[event_id_col] if event_id_col is not None else None
     dPSI = event_row[dPSI_col] if dPSI_col is not None else None
@@ -622,6 +630,7 @@ def get_flank_changes_from_splicegraph_single_event(event_row, splicegraph, even
     
     return ptms_of_interest
 
+@helpers.deprecated('This function has been moved to the splicing_tools.SpliceSeq module and we recommend using the new implementation.')
 def get_flanking_changes_from_splicegraph(psi_data, splicegraph, ptm_coordinates = None, dPSI_col = None, sig_col = None, event_id_col = None, extra_cols = None, gene_col = 'symbol', flank_size = 5, coordinate_type = 'hg19', **kwargs):
     """
     Given a DataFrame containing information about splice events  obtained from SpliceSeq and the corresponding splicegraph, extract the flanking sequences of PTMs that are nearby the splice boundary (potential for flanking sequence to be altered). Coordinate information of individual exons should be found in splicegraph. You can also provide columns with specific psi or significance information. Extra cols not in these categories can be provided with extra_cols parameter.
@@ -703,6 +712,7 @@ def get_flanking_changes_from_splicegraph(psi_data, splicegraph, ptm_coordinates
     return altered_flanks
 
 
+@helpers.deprecated('Tools/functions for performing analysis on MATS data have been moved to the splicing_tools.MATS module.')
 def get_flanking_changes_from_rMATS(ptm_coordinates = None, SE_events = None, A5SS_events = None, A3SS_events = None, RI_events = None, coordinate_type = 'hg38', dPSI_col = 'meanDeltaPSI', sig_col = 'FDR', extra_cols = None, **kwargs):
     """
     Given splice events identified rMATS extract quantified PTMs that are nearby the splice boundary (potential for flanking sequence to be altered). Coordinate information of individual exons should be found in splicegraph. You can also provide columns with specific psi or significance information. Extra cols not in these categories can be provided with extra_cols parameter. 

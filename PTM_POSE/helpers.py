@@ -1,12 +1,36 @@
 import pandas as pd
 import numpy as np
 from ptm_pose import pose_config
+import functools
+import warnings
 
 #try importing pyliftover (optional dependency) for genomic coordinate conversion
 try:
     import pyliftover
 except ImportError:
     pyliftover = None
+
+def deprecated(reason):
+    """
+    A decorator to mark functions as deprecated. Emits a warning when the function is invoked. Obtained
+    """
+    def decorator(func):
+        fmt = "{reason}. It will likely be removed in a future version."
+
+        @functools.wraps(func)
+        def new_func(*args, **kwargs):
+            warnings.simplefilter('always', DeprecationWarning)
+            warnings.warn(
+                fmt.format(reason=reason),
+                category=DeprecationWarning,
+                stacklevel=2
+            )
+            warnings.simplefilter('default', DeprecationWarning)
+            return func(*args, **kwargs)
+
+        return new_func
+
+    return decorator
 
 def extract_filter_kwargs(**kwargs):
     """

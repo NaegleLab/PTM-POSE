@@ -9,6 +9,8 @@ ptm_pose/Resource_Files/Example/ptm_coordinates.csv.gz
 Test_datasets/
 *.ipynb
 .pybiomart.sqlite
+*.gmt.gz
+*.xlsx
 
 #sql lite(pybiomart generates)
 *.sqllite
