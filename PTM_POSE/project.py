@@ -323,10 +323,16 @@ def project_ptms_onto_splice_events(splice_data,annotate_original_df = True, chr
         ptm_coordinates = helpers.filter_ptms(ptm_coordinates, **filter_arguments)
 
         #restrict to significant events if indicated
-        if 'alpha' in kwargs:
+        if 'alpha' in kwargs and sig_col is not None:
             splice_data = splice_data[splice_data[sig_col] <= kwargs['alpha']].copy()
-        if 'min_dpsi' in kwargs:
+        elif 'alpha' in kwargs and sig_col is None:
+            print('Warning: alpha value provided but sig_col is None. No filtering based on significance will be applied.')
+            
+        if 'min_dpsi' in kwargs and dPSI_col is not None:
             splice_data = splice_data[splice_data[dPSI_col].abs() >= kwargs['min_dpsi']].copy()
+        elif 'min_dpsi' in kwargs and dPSI_col is None:
+            print('Warning: min_dpsi value provided but dPSI_col is None. No filtering based on delta PSI will be applied.')
+
 
     if taskbar_label is None:
         taskbar_label = 'Projecting PTMs onto splice events using ' + coordinate_type + ' coordinates.'

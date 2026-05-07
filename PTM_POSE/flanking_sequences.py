@@ -440,11 +440,11 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
 
     #check for any keyword arguments to use for filtering
     if kwargs:
-        filter_arguments = helpers.extract_filter_arguments(**kwargs)
+        filter_arguments = helpers.extract_filter_kwargs(**kwargs)
         #check any excess unused keyword arguments, report them
-        helpers.check_filter_kwargs(**filter_arguments)
+        helpers.check_filter_kwargs(filter_arguments)
         #filter ptm coordinates file to include only ptms with desired evidence
-        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
+        ptm_coordinates = helpers.filter_ptms(pose_config.ptm_coordinates.copy(), **filter_arguments)
 
     #check to make sure all required columns are provided
     if chromosome_col is None and strand_col is None and first_flank_start_col is None and first_flank_end_col is None and spliced_region_start_col is None and spliced_region_end_col is None and second_flank_start_col is None and second_flank_end_col is None:
@@ -456,10 +456,6 @@ def get_flanking_changes_from_splice_data(splice_data, ptm_coordinates = None, c
         splice_data['chr'] = splice_data['chr'].str.strip('chr')
 
     
-    #check for any keyword arguments to use for filtering
-    if kwargs:
-        filter_arguments = helpers.extract_filter_arguments(**kwargs)
-        ptm_coordinates = helpers.filter_ptms_by_evidence(ptm_coordinates, **filter_arguments)
     
 
     results = []
