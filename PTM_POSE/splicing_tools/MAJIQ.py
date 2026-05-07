@@ -53,8 +53,23 @@ class MAJIQ_Dataset(GenericDataset):
         self.samp2_name = samp2_name
 
     def run_pose(self, extra_cols = None, PROCESSES = 1, **kwargs):
+        """
+        Project PTMs onto the splice events in the dataset. This will identify PTMs that are found in the differentially included regions of the splice events. Currently cannot identify altered flanking sequences from data. Independent of NEASE analysis, which can be run separately with the run_nease function.
+
+        Parameters
+        ----------
+        extra_cols: list of str
+            List of additional columns from the splice_data dataframe to include in the output spliced_ptms dataframe. These columns will be included in the spliced_ptms dataframe and can be used for filtering or analysis. Default is None, which means no additional columns will be included.
+        PROCESSES: int
+            Number of processes to use for parallel processing. Default is 1, which means no parallel processing will be used.
+        **kwargs: additional keyword arguments
+            Additional keyword arguments to use for filtering the splice events/PTMs. These will be passed to the project_ptms_generic function, which will use them to filter the splice events before projecting PTMs onto them. For example, if you want to filter for only exon skipping events, you can pass event_type = 'exon_skipping' as a keyword argument. The available keyword arguments will depend on the implementation of the project_ptms_generic function, but some examples include event_type, gene_name, and dpsi_cutoff.
+        """
         #check for any keyword arguments to use for filtering
         self.project_ptms_generic(extra_cols = extra_cols, PROCESSES = PROCESSES, **kwargs)
 
     def run_nease(self):
+        """
+        Run NEASE analysis for the splice events in the dataset. Independent of POSE analysis.
+        """
         self.run_nease_generic()

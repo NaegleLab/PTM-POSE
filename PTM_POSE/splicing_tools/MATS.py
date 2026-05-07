@@ -291,14 +291,29 @@ class MATS_Dataset(GenericDataset):
         super().__init__(splice_data=splice_data, min_dpsi=min_dpsi, alpha=alpha, dpsi_col=dpsi_col, sig_col=sig_col, coordinate_type=coordinate_type, chromosome_col = 'chr', strand_col = 'strand', first_flank_start_col = 'first_flank_start', first_flank_end_col = 'first_flank_end', second_flank_start_col = 'second_flank_start', second_flank_end_col = 'second_flank_end', event_id_col = 'AS ID', gene_col = 'geneSymbol', start_coordinate_system = '0-based')
 
     def run_pose(self, identify_altered_flanks = True, extra_cols = None, PROCESSES = 1, **kwargs):
+        """
+        Project PTMs onto the spliced regions of the MATS events for each event type, saving an annotated version of the MATS data and dataframe of PTMs impacted by the splice events. Optionally, identify changes to flanking sequences around PTMs resulting from splicing events, saving a dataframe of the altered flanking sequences and their associated PTMs. 
+
+        Parameters
+        ----------
+        identify_altered_flanks : bool, optional
+            Whether to identify changes to flanking sequences around PTMs resulting from splicing events (default is True)
+        extra_cols : list, optional
+            List of additional column names from the MATS data to include in the output ptms dataframe (default is None)
+        PROCESSES : int, optional
+            Number of processes to use for multiprocessing (default is 1). If the number of events is small, multiprocessing will be automatically disabled to avoid overhead.
+        kwargs:
+            Additional keyword arguments to pass to the project_ptms_onto_splice_events function, such as filtering parameters to filter PTMs with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the project_ptms_onto_splice_events function for more options.
+
+
+        """
         
         #check for any keyword arguments to use for filtering
         self.project_ptms_generic(extra_cols = extra_cols, PROCESSES = PROCESSES, **kwargs)
         if identify_altered_flanks:
             self.get_altered_flanks_generic(extra_cols = extra_cols, **kwargs)
 
-    def get_altered_flanks(self, extra_cols = None, **kwargs):
-        self.get_altered_flanks_generic(extra_cols = extra_cols, **kwargs)
+
 
     def run_nease(self):
         """

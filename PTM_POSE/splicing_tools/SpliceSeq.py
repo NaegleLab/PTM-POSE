@@ -112,6 +112,36 @@ def get_ptms_in_splicegraph_flank(gene_name, chromosome, strand, flank_region_st
 
 
 class SpliceSeq_Dataset(GenericDataset):
+    """
+    Class for processing splice event quantification from SpliceSeq (such as what can be downloaded from TCGASpliceSeq) and the corresponding splicegraph information to annotated splice events with PTM information.
+
+    Parameters
+    ----------
+    data: pandas.DataFrame
+        DataFrame containing splice event quantification from SpliceSeq, with columns indicating gene name, exon numbers associated with the splice event, and delta PSI and significance information if available.
+    splicegraph: pandas.DataFrame
+        DataFrame containing the splicegraph information from SpliceSeq, which includes the coordinates of each exon. This is necessary for identifying the PTMs that are associated with the splice events and their flanking regions.
+    min_dpsi: float, optional
+        Minimum delta PSI value to consider an event as changing, by default 0
+    alpha: float, optional
+        Significance threshold to consider an event as significant, by default 0.05
+    dpsi_col: str, optional
+        Column name in the data DataFrame that contains the delta PSI values, by default None
+    sig_col: str, optional
+        Column name in the data DataFrame that contains the significance values, by default None
+    coordinate_type: str, optional
+        Coordinate system used for the regions, by default 'hg38'. Other option is 'hg19'.
+    
+
+    Attributes
+    ----------
+    splice_data: pandas.DataFrame
+        Processed DataFrame containing the splice event information with split such that each row is different exon in the splicegraph
+    original_data: pandas.DataFrame
+        Original input data containing splice event quantification from SpliceSeq, before processing and splitting. This will still be used for flanking sequence analysis, since it contains the full exon information for each event.
+
+
+    """
     def __init__(self, data, splicegraph, min_dpsi = 0, alpha = 0.05, dpsi_col = None, sig_col = None, coordinate_type = 'hg38'):
         print('Removing ME events from analysis')
         data = data.copy()
@@ -141,6 +171,25 @@ class SpliceSeq_Dataset(GenericDataset):
         self.original_data = data
 
     def get_flank_changes_from_splicegraph_single_event(self, event_row, extra_cols = None, flank_size = 5, coordinate_type = 'hg19'):
+        """
+        For a single splice event/row of SpliceSeq data, extract the flanking sequences of PTMs that are nearby the splice boundary (potential for flanking sequence to be altered). Regions are constructed from the splicegraph information. You can also provide columns with specific PSI or significance information (does not impact the flanking sequence extraction, just adds additional context to the output). Extra cols not in these categories can be provided with extra_cols parameter.
+
+        Parameters
+        ----------
+        event_row : pandas.Series
+            Series containing information about a single splice event/row of SpliceSeq data
+        extra_cols : list, optional
+            List of column names for additional information to add to the results, by default None
+        flank_size : int, optional
+            Number of amino acids to include flanking the PTM, by default 5
+        coordinate_type : str, optional
+            Coordinate system used for the regions, by default 'hg19'. Other options is hg38.
+        
+        Returns
+        -------
+        ptms_of_interest : pandas.DataFrame
+            Dataframe containing the PTMs at the splice junctions with altered flanking sequences, the flanking sequences that arise depending on whether the spliced region is included or not, and any additional context provided by the user (such as PSI or significance values)
+        """
         region_id = event_row[self.event_id_col] if self.event_id_col is not None else None
         dPSI = event_row[self.dpsi_col] if self.dpsi_col is not None else None
         sig = event_row[self.sig_col] if self.sig_col is not None else None
@@ -285,12 +334,32 @@ class SpliceSeq_Dataset(GenericDataset):
         self.altered_flanks = altered_flanks
 
     def run_pose(self, identify_altered_flanks = True, extra_cols = None, flank_size = 5, PROCESSES = 1, **kwargs):
+        """
+        Run the full PTM-POSE pipeline for SpliceSeq data, which includes projecting PTMs onto the splice events and identifying altered flanking sequences from the splicegraph information.
+
+        Parameters
+        ----------
+        identify_altered_flanks : bool, optional
+            Whether to identify altered flanking sequences from the splicegraph information, by default True
+
+        extra_cols : list, optional
+            List of column names for additional information to add to the results, by default None
+        flank_size : int, optional
+            Number of amino acids to include flanking the PTM, by default 5
+        PROCESSES : int, optional
+            Number of processes to use for parallel processing, by default 1
+        **kwargs: additional keyword arguments
+            Additional keyword arguments, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.
+        """
         #check for any keyword arguments to use for filtering
         self.project_ptms_generic(extra_cols = extra_cols, PROCESSES = PROCESSES, **kwargs)
         if identify_altered_flanks:
             self.get_flanking_changes_from_splicegraph(extra_cols = extra_cols, flank_size = flank_size,**kwargs)
 
     def run_nease(self):
+        """
+        Run NEASE analysis for the splice events in the dataset. Independent of POSE analysis.
+        """
         self.run_nease_generic()
 
 

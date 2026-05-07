@@ -5,6 +5,47 @@ import json
 
 
 class GenericDataset:
+    """
+    A generic class for handling splice quantification data and projecting PTMs onto the spliced regions. This class is designed to be flexible and adaptable to different types of splice quantification data, such as data from MATS, SpliceSeq, or MAJIQ. The class provides methods for projecting PTMs onto the spliced regions, identifying altered flanking sequences, and running NEASE analysis on the spliced regions.
+
+    Parameters
+    ----------
+    splice_data: pandas.DataFrame or dict of pandas.DataFrames
+        A DataFrame containing the splice quantification data, or a dictionary of DataFrames if there are multiple event types. The DataFrame(s) should contain columns for chromosome, strand, region start and end, and any other relevant information for the splice events.
+    chromosome_col: str
+        Name of the column in splice_data that contains chromosome information. Default is 'chr'.
+    strand_col: str
+        Name of the column in splice_data that contains strand information. Default is 'strand'.
+    region_start_col: str
+        Name of the column in splice_data that contains the start position of the spliced region. Default is 'event_start'.
+    region_end_col: str
+        Name of the column in splice_data that contains the end position of the spliced region. Default is 'event_end'.
+    first_flank_start_col: str
+        Name of the column in splice_data that contains the start position of the first flanking region (if applicable). Default is None.
+    first_flank_end_col: str
+        Name of the column in splice_data that contains the end position of the first flanking region (if applicable). Default is None.
+    second_flank_start_col: str
+        Name of the column in splice_data that contains the start position of the second flanking region (if applicable). Default is None.
+    second_flank_end_col: str
+        Name of the column in splice_data that contains the end position of the second flanking region (if applicable). Default is None.
+    min_dpsi: float
+        Minimum delta PSI cutoff for filtering splice events. Default is 0.
+    alpha: float
+        Significance threshold for filtering splice events. Default is 0.05.
+    dpsi_col: str
+        Name of the column in splice_data that contains the delta PSI values for the splice events. Default is 'IncLevelDifference'.
+    sig_col: str
+        Name of the column in splice_data that contains the significance values for the splice events. Default is 'FDR'.
+    coordinate_type: str
+        Indicates the coordinate system used for the start and end positions. Either 'hg38' or 'hg19'. Default is 'hg38'.
+    event_id_col: str
+        Name of the column in splice_data that contains unique identifiers for each splice event. Default is None.
+    start_coordinate_system: str
+        Indicates whether the start positions in the splice_data are 0-based or 1-based. Default is '1-based'.
+    gene_col: str
+        Name of the column in splice_data that contains gene identifiers for each splice event. Default is None.
+    
+    """
     def __init__(self, splice_data, chromosome_col = 'chr', strand_col = 'strand', region_start_col = 'event_start', region_end_col = 'event_end', first_flank_start_col = None, first_flank_end_col = None, second_flank_start_col = None, second_flank_end_col = None, min_dpsi = 0, alpha = 0.05, dpsi_col = 'IncLevelDifference', sig_col = 'FDR', coordinate_type = 'hg38', event_id_col = None, start_coordinate_system = '1-based', gene_col = None):
 
         #initialize variables
@@ -142,6 +183,29 @@ class GenericDataset:
         else:
             event_flanks = flanking_sequences.get_flanking_changes_from_splice_data(data, ptm_coordinates = ptm_coordinates, chromosome_col = self.strand_col, strand_col = self.strand_col, spliced_region_start_col = self.region_start_col, spliced_region_end_col = self.region_end_col, first_flank_start_col = self.first_flank_start_col, first_flank_end_col = self.first_flank_end_col, second_flank_start_col = self.second_flank_start_col, second_flank_end_col = self.second_flank_end_col, dPSI_col=self.dpsi_col, sig_col = self.sig_col, min_dpsi = self.min_dpsi, alpha = self.alpha, gene_col = self.gene_col, event_id_col = self.event_id_col, extra_cols = extra_cols, coordinate_type=self.coordinate_type, start_coordinate_system=self.start_coordinate_system)
             self.altered_flanks = event_flanks
+
+    def run_pose_generic(self, identify_altered_flanks = True, extra_cols = None, PROCESSES = 1, **kwargs):
+        """
+        Run the full PTM-POSE analysis pipeline, including projecting PTMs onto the spliced regions and identifying altered flanking sequences around PTMs resulting from splicing events. This function will run the generic projection and flanking sequence identification functions, which can be applied to any splice quantification data as long as the necessary columns are included in the input splice_data.
+
+        Parameters
+        ----------
+        identify_altered_flanks : bool, optional
+            Whether to run the identification of altered flanking sequences. This will only be run if the necessary flanking sequence information is included in the input splice_data. Default is True.
+        extra_cols : list, optional
+            List of additional column names from the MATS data to include in the output dataframe (default is None)
+        PROCESSES : int, optional
+            Number of processes to use for multiprocessing (default is 1). If the number of events is small, multiprocessing will be automatically disabled to avoid overhead.
+        kwargs:
+            Additional keyword arguments to pass to the project_ptms_onto_splice_events and get_flanking_changes_from_splice_data functions, such as filtering parameters to filter PTMs with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add 'min_MS_observations = 2' to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the project_ptms_onto_splice_events and get_flanking_changes_from_splice_data functions for more options.
+
+        """
+        #check for any keyword arguments to use for filtering
+        self.project_ptms_generic(extra_cols = extra_cols, PROCESSES = PROCESSES, **kwargs)
+        if identify_altered_flanks and all(col is not None for col in [self.first_flank_start_col, self.first_flank_end_col, self.second_flank_start_col, self.second_flank_end_col]):
+            self.get_altered_flanks_generic(extra_cols = extra_cols, **kwargs)
+        elif identify_altered_flanks:
+            print("Flanking sequence information not provided in the original data. Skipping identification of altered flanking sequences.")
 
     def run_nease_generic(self, events_to_skip = []):
         """
