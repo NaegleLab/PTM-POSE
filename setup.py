@@ -8,7 +8,7 @@ long_description = (this_directory / "README.md").read_text()
 # Run setup
 setup(
     name="ptm_pose",
-    version="0.3.1",
+    version="0.4.0",
     author="Naegle Lab",
     author_email="kmn4mj@virginia.edu",
     url="https://github.com/NaegleLab/PTM-POSE/tree/main",
