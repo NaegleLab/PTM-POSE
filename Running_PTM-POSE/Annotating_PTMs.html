@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -43,12 +43,13 @@
     <script src="../_static/documentation_options.js?v=d2a3a1a5"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'Running_PTM-POSE/Annotating_PTMs';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Examples" href="../Examples/Examples.html" />
-    <link rel="prev" title="Filtering PTMs and Events" href="Filtering_PTMs.html" />
+    <link rel="next" title="Analyzing PTM Impacts" href="Analyzing_PTMs.html" />
+    <link rel="prev" title="Projecting PTMs onto Splice Events" href="Projection_Instructions.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -154,17 +155,17 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Overview/Dependencies.html">Dependencies</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Projection_Instructions.html">Running PTM-POSE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Projection_Instructions.html">Projecting PTMs onto Splice Events</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Annotating PTMs with Functional Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Analyzing_PTMs.html">Analyzing PTM Impacts</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
 <ul class="nav bd-sidenav">
@@ -205,9 +206,10 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Advanced/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
     </div>
@@ -371,7 +373,8 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#annotating-ptms-with-pre-installed-annotation-files">Annotating PTMs with pre-installed annotation files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-annotations">Available Annotations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#appending-annotations-to-ptm-dataframes">Appending Annotations to PTM Dataframes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#updating-annotation-files">Updating annotation files</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-custom-annotation-files">Creating Custom Annotation files</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#future-directions">Future Directions</a></li>
@@ -389,8 +392,8 @@ document.write(`
   <section id="annotating-ptms-with-functional-information">
 <h1>Annotating PTMs with Functional Information<a class="headerlink" href="#annotating-ptms-with-functional-information" title="Link to this heading">#</a></h1>
 <p>In order to facilitate downstream functional analysis, PTM-POSE provides functions to create annotation files in a .gmt file format (similar to the ones used by PTMsigDB) and append annotation information to PTMs impacted by splice events. With this information, you can identify individual PTMs of interest and assess global enrichment of certain types of functions, such as protein interactions or enzyme regulation (see analysis gallery for examples of the types of analysis that can be done with PTM-POSE).</p>
-<section id="annotating-ptms-with-pre-installed-annotation-files">
-<h2>Annotating PTMs with pre-installed annotation files<a class="headerlink" href="#annotating-ptms-with-pre-installed-annotation-files" title="Link to this heading">#</a></h2>
+<section id="available-annotations">
+<h2>Available Annotations<a class="headerlink" href="#available-annotations" title="Link to this heading">#</a></h2>
 <p>For easy analysis, PTM-POSE comes pre-installed with annotation files from various databases. Should you use data from these sources, please make sure to abide by the terms of use of the respective databases and cite them appropriately. The following databases are included in PTM-POSE:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -409,7 +412,7 @@ document.write(`
 <li><p>Perturbations</p></li>
 </ul>
 </td>
-<td></td>
+<td><p>4/3/2024</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference external" href="http://ptmsigdb.uchicago.edu/">PTMsigDB</a></p></td>
 <td><ul class="simple">
@@ -419,59 +422,68 @@ document.write(`
 </td>
 <td><p>v2.0.0</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>PTMInt</cite></p></td>
+<tr class="row-even"><td><p><cite>PTMInt</cite> &lt;<a class="reference external" href="https://ptmint.sjtu.edu.cn/">https://ptmint.sjtu.edu.cn/</a>&gt;</p></td>
 <td><ul class="simple">
 <li><p>Interactions</p></li>
 </ul>
 </td>
-<td></td>
+<td><p>4/17/2024</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference external" href="https://ptmcode.embl.de/">PTMcode</a></p></td>
 <td><ul class="simple">
 <li><p>Interactions</p></li>
 </ul>
 </td>
-<td></td>
+<td><p>8/15/2024</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference external" href="https://omnipathdb.org/">OmniPath</a></p></td>
 <td><ul class="simple">
 <li><p>Enzyme Substrates</p></li>
 </ul>
 </td>
-<td></td>
+<td><p>3/23/2025</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference external" href="https://depod.bioss.uni-freiburg.de/">DEPOD</a></p></td>
 <td><ul class="simple">
 <li><p>Phosphatase substrates</p></li>
 </ul>
 </td>
-<td></td>
+<td><p>3/18/2025</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference external" href="http://140.138.144.141/~RegPhos/index.php">RegPhos</a></p></td>
 <td><ul class="simple">
 <li><p>Kinase substrates</p></li>
 </ul>
 </td>
-<td></td>
+<td><p>6/21/2024</p></td>
 </tr>
 <tr class="row-odd"><td><p>iKiP (Downloaded via PTMsigDB)</p></td>
 <td><ul class="simple">
 <li><p>Kinase substrates</p></li>
 </ul>
 </td>
-<td></td>
+<td><p>PTMsigDB v2.0.0</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>While appending these annotations directly to the PTM dataframes generated by the <cite>project</cite> module is not necessary for the analyis modules described in the analysis gallery, you may wish to append this information directly. To append this information to either the <cite>spliced_ptms</cite> or <cite>altered_flanks</cite> dataframe, you can use the <cite>annotate.append_from_gmt()</cite> function, indicating the desired database and annotation type. For example, to append PhosphoSitePlus kinase substrate information to the <cite>spliced_ptms</cite> dataframe, you would use the following code:</p>
+</section>
+<section id="appending-annotations-to-ptm-dataframes">
+<h2>Appending Annotations to PTM Dataframes<a class="headerlink" href="#appending-annotations-to-ptm-dataframes" title="Link to this heading">#</a></h2>
+<p>While appending these annotations directly to the PTM dataframes generated by the <cite>project</cite> module is not necessary for the analyis modules described in the analysis gallery, you may wish to append this information directly. To append this information to either the <cite>spliced_ptms</cite> or <cite>altered_flanks</cite> dataframe, use the <a class="reference internal" href="../Overview/PTM_POSE.html#ptm_pose.annotate.annotate_ptms" title="ptm_pose.annotate.annotate_ptms"><code class="xref py py-func docutils literal notranslate"><span class="pre">annotate_ptms()</span></code></a> function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotate</span>
+
+<span class="n">spliced_ptms</span> <span class="o">=</span> <span class="n">annotate</span><span class="o">.</span><span class="n">annotate_ptms</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">combine_similar</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">report_success</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can restrict this function to only append information of certain types with <cite>annot_type</cite> parameter, or change which databases are used by setting the boolean parameters for each database (e.g. <cite>phosphositeplus = False</cite> to exclude PhosphoSitePlus annotations). If you ever need to check what annotations are available, you can use the <a class="reference internal" href="../Overview/PTM_POSE.html#ptm_pose.annotate.get_available_gmt_annotations" title="ptm_pose.annotate.get_available_gmt_annotations"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_available_gmt_annotations</span></code></a> function to see what annotations are available.</p>
+<p>You can also append information individually using the <a class="reference internal" href="../Overview/PTM_POSE.html#ptm_pose.annotate.append_from_gmt" title="ptm_pose.annotate.append_from_gmt"><code class="xref py py-func docutils literal notranslate"><span class="pre">append_from_gmt</span></code></a> function, indicating the desired database and annotation type. For example, to append PhosphoSitePlus kinase substrate information to the <cite>spliced_ptms</cite> dataframe, you would use the following code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotate</span>
 
 <span class="n">spliced_ptms</span> <span class="o">=</span> <span class="n">annotate</span><span class="o">.</span><span class="n">append_from_gmt</span><span class="p">(</span><span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Enzyme&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This will add a new column to the <cite>spliced_ptms</cite> dataframe called ‘PhosphoSitePlus:Enzyme’. Any rows where the PTM was associated with an annotation will contain a semicolon-separated list of the annotations, and all other rows will contain ‘NaN’.</p>
-<p>If you ever need to check what annotations are available, you can use the <cite>annotate.get_available_gmt_annotations(format = ‘dataframe’)</cite> function to see what annotations are available.</p>
 </section>
 <section id="updating-annotation-files">
 <h2>Updating annotation files<a class="headerlink" href="#updating-annotation-files" title="Link to this heading">#</a></h2>
@@ -482,11 +494,11 @@ document.write(`
 <div><p>from ptm_pose import annotate</p>
 <p>annotate.construct_PhosphoSitePlus_gmt_files(kinase_substrate_file = “/path/to/file/Kinase_Substrate_Dataset.gz”, overwrite = True)</p>
 </div></blockquote>
-<p>This will generate a new gmt file in the PTM-POSE resource file directory that can be used with the <cite>annotate.append_from_gmt()</cite> function to update your PTM annotations with the latest data.</p>
+<p>This will generate a new gmt file in the PTM-POSE resource file directory that can be used with the <a class="reference internal" href="../Overview/PTM_POSE.html#ptm_pose.annotate.append_from_gmt" title="ptm_pose.annotate.append_from_gmt"><code class="xref py py-func docutils literal notranslate"><span class="pre">append_from_gmt()</span></code></a> function to update your PTM annotations with the latest data.</p>
 </section>
 <section id="creating-custom-annotation-files">
 <h2>Creating Custom Annotation files<a class="headerlink" href="#creating-custom-annotation-files" title="Link to this heading">#</a></h2>
-<p>In some cases, you may want to use PTM-POSE analysis functions with database information that is not yet provided. For this, use the <cite>annotate.construct_custom_gmt_file()</cite> function to create a custom annotation file. This function requires a dataframe that contains columns with the annotations data (<cite>annot_col</cite>) and UniProt ID (<cite>acc_col</cite>), residue (<cite>residue_col</cite>), and position in the protein (<cite>position_col</cite>) of each PTM. For best results, the UniProt ID should only include the isoform label if it is an alternative isoform. If you have this information, you can use the following code to create a custom annotation file:</p>
+<p>In some cases, you may want to use PTM-POSE analysis functions with database information that is not yet provided. For this, use the <a class="reference internal" href="../Overview/PTM_POSE.html#ptm_pose.annotate.construct_custom_gmt_file" title="ptm_pose.annotate.construct_custom_gmt_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">construct_custom_gmt_file()</span></code></a> function to create a custom annotation file. This function requires a dataframe that contains columns with the annotations data (<cite>annot_col</cite>) and UniProt ID (<cite>acc_col</cite>), residue (<cite>residue_col</cite>), and position in the protein (<cite>position_col</cite>) of each PTM. For best results, the UniProt ID should only include the isoform label if it is an alternative isoform. If you have this information, you can use the following code to create a custom annotation file:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotate</span>
 
 <span class="c1">#indicate where to find the data</span>
@@ -521,20 +533,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="Filtering_PTMs.html"
+       href="Projection_Instructions.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Filtering PTMs and Events</p>
+        <p class="prev-next-title">Projecting PTMs onto Splice Events</p>
       </div>
     </a>
     <a class="right-next"
-       href="../Examples/Examples.html"
+       href="Analyzing_PTMs.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Examples</p>
+        <p class="prev-next-title">Analyzing PTM Impacts</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -554,7 +566,8 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#annotating-ptms-with-pre-installed-annotation-files">Annotating PTMs with pre-installed annotation files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-annotations">Available Annotations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#appending-annotations-to-ptm-dataframes">Appending Annotations to PTM Dataframes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#updating-annotation-files">Updating annotation files</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-custom-annotation-files">Creating Custom Annotation files</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#future-directions">Future Directions</a></li>

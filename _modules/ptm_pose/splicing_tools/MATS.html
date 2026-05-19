@@ -1,0 +1,981 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ptm_pose.splicing_tools.MATS &#8212; PTM-POSE</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=d2a3a1a5"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ptm_pose/splicing_tools/MATS';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PTM-POSE</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/Dependencies.html">Dependencies</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Projection_Instructions.html">Projecting PTMs onto Splice Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Analyzing_PTMs.html">Analyzing PTM Impacts</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../Examples/Examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../Examples/ESRP1_knockdown.html">ESRP1 Knockdown (MATS output)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../Examples/ESRP1_in_Prostate.html">ESRP1 Expression in Prostate Cancer (TCGASpliceSeq output)</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Analysis Gallery</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../gallery_output/index.html">Gallery</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/A_Overview_of_Spliced_PTMs/index.html">General Overview of Spliced PTMs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/A_Overview_of_Spliced_PTMs/plot_NumberOfPTMs.html">Inspecting types of PTMs impacted by splicing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/A_Overview_of_Spliced_PTMs/plot_PTM_annotations.html">Inspecting number of PTMs with annotation information available</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/A_Overview_of_Spliced_PTMs/plot_filter_impact.html">Impact of filtering PTMs</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/FunctionEnrichment/index.html">Functional Impact of Spliced PTMs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/FunctionEnrichment/plot_num_annotations.html">Identifying available PTM-specific annotation information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/FunctionEnrichment/plot_geneset_enrichment.html">Identify enriched gene sets associated with differentially spliced PTMs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/FunctionEnrichment/plot_specific_annotation.html">Assessing enriched PTM functions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/Networks/index.html">Impact on protein interaction and regulatory networks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_ksea.html">Kinase substrate enrichment analysis (KSEA)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_protein_interactions.html">Protein interactions network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/Networks/plot_kstar_enrichment.html">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery_output/flanking_sequences/index.html">Analyzing altered flanking sequences</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_sequence_comparison.html">Inspect difference of flanking sequence due to splice event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_sh2_domain_motifs.html">Identify altered SH2 domain motifs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_location_altered_flanks.html">Probing where and how PTM flanking sequences are altered</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery_output/flanking_sequences/plot_kinase_library_affinity.html">Kinase affinity due to PTM flanking sequence alterations</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Advanced/faq.html">Frequently Asked Questions</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/NaegleLab/PTM-POSE" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for ptm_pose.splicing_tools.MATS</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">helpers</span><span class="p">,</span> <span class="n">pose_config</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">flanking_sequences</span><span class="p">,</span> <span class="n">nease_runner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose.splicing_tools.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenericDataset</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_skipped_region</span><span class="p">(</span><span class="n">MATS_SE</span><span class="p">,</span> <span class="n">include_flanking</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given skipped exon data from MATS, identify the differentially spliced region and flanking sequences if desired</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    MATS_SE : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing skipped exon data from MATS</span>
+<span class="sd">    include_flanking : bool, optional</span>
+<span class="sd">        Whether to include flanking sequence columns (default is False)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Updated DataFrame with event and flanking region information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;event_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;exonStart_0base&#39;</span><span class="p">]</span>
+    <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;event_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;exonEnd&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">include_flanking</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;upstreamES&#39;</span> <span class="ow">in</span> <span class="n">MATS_SE</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;first_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;upstreamES&#39;</span><span class="p">]</span>
+            <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;first_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;upstreamEE&#39;</span><span class="p">]</span>
+            <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;second_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;downstreamES&#39;</span><span class="p">]</span>
+            <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;second_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;downstreamEE&#39;</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="s1">&#39;firstFlankingES&#39;</span> <span class="ow">in</span> <span class="n">MATS_SE</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;first_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;firstFlankingES&#39;</span><span class="p">]</span>
+            <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;first_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;firstFlankingEE&#39;</span><span class="p">]</span>
+            <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;second_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;secondFlankingES&#39;</span><span class="p">]</span>
+            <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;second_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_SE</span><span class="p">[</span><span class="s1">&#39;secondFlankingEE&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">MATS_SE</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_A3SS_region</span><span class="p">(</span><span class="n">MATS_A3SS</span><span class="p">,</span> <span class="n">include_flanking</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given alternative 3&#39; splice site data from MATS, identify the differentially spliced region and flanking sequences if desired</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    MATS_A3SS : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing alternative 3&#39; splice site data from MATS</span>
+<span class="sd">    include_flanking : bool, optional</span>
+<span class="sd">        Whether to include flanking sequence columns (default is False)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Updated DataFrame with event and flanking region information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#set the relevent start and end regions of the spliced out region, which are different depending on the strand</span>
+    <span class="n">region_start</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">region_end</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">first_flank_start</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">first_flank_end</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">second_flank_start</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">second_flank_end</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1">#iterate through events and identify spliced region, which depends on DNA strand</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">MATS_A3SS</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">strand</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;strand&#39;</span><span class="p">]</span> <span class="c1">#check strand</span>
+        <span class="k">if</span> <span class="n">strand</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
+            <span class="n">region_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;longExonStart_0base&#39;</span><span class="p">])</span>
+            <span class="n">region_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortES&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">include_flanking</span><span class="p">:</span>
+                <span class="n">second_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingES&#39;</span><span class="p">])</span>
+                <span class="n">second_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingEE&#39;</span><span class="p">])</span>
+                <span class="n">first_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortES&#39;</span><span class="p">])</span>
+                <span class="n">first_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortEE&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">region_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortEE&#39;</span><span class="p">])</span>
+            <span class="n">region_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;longExonEnd&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">include_flanking</span><span class="p">:</span>
+                <span class="n">second_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingES&#39;</span><span class="p">])</span>
+                <span class="n">second_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingEE&#39;</span><span class="p">])</span>
+                <span class="n">first_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortES&#39;</span><span class="p">])</span>
+                <span class="n">first_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortEE&#39;</span><span class="p">])</span>
+
+    <span class="c1">#save region info</span>
+    <span class="n">MATS_A3SS</span><span class="p">[</span><span class="s1">&#39;event_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">region_start</span>
+    <span class="n">MATS_A3SS</span><span class="p">[</span><span class="s1">&#39;event_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">region_end</span>
+    <span class="k">if</span> <span class="n">include_flanking</span><span class="p">:</span>
+        <span class="n">MATS_A3SS</span><span class="p">[</span><span class="s1">&#39;first_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_flank_start</span>
+        <span class="n">MATS_A3SS</span><span class="p">[</span><span class="s1">&#39;first_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_flank_end</span>
+        <span class="n">MATS_A3SS</span><span class="p">[</span><span class="s1">&#39;second_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">second_flank_start</span>
+        <span class="n">MATS_A3SS</span><span class="p">[</span><span class="s1">&#39;second_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">second_flank_end</span>
+    <span class="k">return</span> <span class="n">MATS_A3SS</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_A5SS_region</span><span class="p">(</span><span class="n">MATS_A5SS</span><span class="p">,</span> <span class="n">include_flanking</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given alternative 5&#39; splice site data from MATS, identify the differentially spliced region and flanking sequences if desired</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    MATS_A5SS : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing alternative 5&#39; splice site data from MATS</span>
+<span class="sd">    include_flanking : bool, optional</span>
+<span class="sd">        Whether to include flanking sequence columns (default is False)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Updated DataFrame with event and flanking region information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#set the relevent start and end regions of the spliced out region, which are different depending on the strand</span>
+    <span class="n">region_start</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">region_end</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">first_flank_start</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">first_flank_end</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">second_flank_start</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">second_flank_end</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">MATS_A5SS</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">strand</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;strand&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">strand</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
+            <span class="n">region_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortEE&#39;</span><span class="p">])</span>
+            <span class="n">region_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;longExonEnd&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">include_flanking</span><span class="p">:</span>
+                <span class="n">first_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortES&#39;</span><span class="p">])</span>
+                <span class="n">first_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortEE&#39;</span><span class="p">])</span>
+                <span class="n">second_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingES&#39;</span><span class="p">])</span>
+                <span class="n">second_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingEE&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">region_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;longExonStart_0base&#39;</span><span class="p">])</span>
+            <span class="n">region_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortES&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">include_flanking</span><span class="p">:</span>
+                <span class="n">second_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortES&#39;</span><span class="p">])</span>
+                <span class="n">second_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;shortEE&#39;</span><span class="p">])</span>
+                <span class="n">first_flank_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingES&#39;</span><span class="p">])</span>
+                <span class="n">first_flank_end</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;flankingEE&#39;</span><span class="p">])</span>
+
+    <span class="n">MATS_A5SS</span><span class="p">[</span><span class="s1">&#39;event_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">region_start</span>
+    <span class="n">MATS_A5SS</span><span class="p">[</span><span class="s1">&#39;event_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">region_end</span>
+    <span class="k">if</span> <span class="n">include_flanking</span><span class="p">:</span>
+        <span class="n">MATS_A5SS</span><span class="p">[</span><span class="s1">&#39;first_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_flank_start</span>
+        <span class="n">MATS_A5SS</span><span class="p">[</span><span class="s1">&#39;first_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first_flank_end</span>
+        <span class="n">MATS_A5SS</span><span class="p">[</span><span class="s1">&#39;second_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">second_flank_start</span>
+        <span class="n">MATS_A5SS</span><span class="p">[</span><span class="s1">&#39;second_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">second_flank_end</span>
+
+    <span class="k">return</span> <span class="n">MATS_A5SS</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_RI_region</span><span class="p">(</span><span class="n">MATS_RI</span><span class="p">,</span> <span class="n">include_flanking</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given retained intron data from MATS, identify the differentially spliced region and flanking sequences if desired</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    MATS_RI : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing retained intron splice site data from MATS</span>
+<span class="sd">    include_flanking : bool, optional</span>
+<span class="sd">        Whether to include flanking sequence columns (default is False)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Updated DataFrame with event and flanking region information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">MATS_RI</span><span class="p">[</span><span class="s1">&#39;event_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_RI</span><span class="p">[</span><span class="s1">&#39;upstreamES&#39;</span><span class="p">]</span>
+    <span class="n">MATS_RI</span><span class="p">[</span><span class="s1">&#39;event_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_RI</span><span class="p">[</span><span class="s1">&#39;downstreamEE&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">include_flanking</span><span class="p">:</span>
+        <span class="n">MATS_RI</span><span class="p">[</span><span class="s1">&#39;first_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_RI</span><span class="p">[</span><span class="s1">&#39;upstreamES&#39;</span><span class="p">]</span>
+        <span class="n">MATS_RI</span><span class="p">[</span><span class="s1">&#39;first_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_RI</span><span class="p">[</span><span class="s1">&#39;upstreamEE&#39;</span><span class="p">]</span>
+        <span class="n">MATS_RI</span><span class="p">[</span><span class="s1">&#39;second_flank_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_RI</span><span class="p">[</span><span class="s1">&#39;downstreamES&#39;</span><span class="p">]</span>
+        <span class="n">MATS_RI</span><span class="p">[</span><span class="s1">&#39;second_flank_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS_RI</span><span class="p">[</span><span class="s1">&#39;downstreamEE&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">MATS_RI</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_spliced_region</span><span class="p">(</span><span class="n">MATS</span><span class="p">,</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">include_flanking</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s1">&#39;SE&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">get_skipped_region</span><span class="p">(</span><span class="n">MATS</span><span class="p">,</span> <span class="n">include_flanking</span> <span class="o">=</span> <span class="n">include_flanking</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s1">&#39;A3SS&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">get_A3SS_region</span><span class="p">(</span><span class="n">MATS</span><span class="p">,</span> <span class="n">include_flanking</span> <span class="o">=</span> <span class="n">include_flanking</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s1">&#39;A5SS&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">get_A5SS_region</span><span class="p">(</span><span class="n">MATS</span><span class="p">,</span> <span class="n">include_flanking</span> <span class="o">=</span> <span class="n">include_flanking</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s1">&#39;RI&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">get_RI_region</span><span class="p">(</span><span class="n">MATS</span><span class="p">,</span> <span class="n">include_flanking</span> <span class="o">=</span> <span class="n">include_flanking</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s1">&#39;MXE&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MXE does not currently work&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">MATS</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid event type&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">process_MATS_data</span><span class="p">(</span><span class="n">MATS</span><span class="p">,</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">min_junction_counts</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;FDR&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="s1">&#39;IncLevelDifference&#39;</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">include_flanking</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+
+    <span class="c1">#restrict to significant events if indicated</span>
+    <span class="k">if</span> <span class="n">alpha</span><span class="p">:</span>
+        <span class="n">MATS</span> <span class="o">=</span> <span class="n">MATS</span><span class="p">[</span><span class="n">MATS</span><span class="p">[</span><span class="n">sig_col</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">alpha</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">min_dpsi</span><span class="p">:</span>
+        <span class="n">MATS</span> <span class="o">=</span> <span class="n">MATS</span><span class="p">[</span><span class="n">MATS</span><span class="p">[</span><span class="n">dPSI_col</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">min_dpsi</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1">#filter by junction counts in experiment if provided</span>
+    <span class="k">if</span> <span class="n">min_junction_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Filtering </span><span class="si">{</span><span class="n">event_type</span><span class="si">}</span><span class="s1"> events based on minimum junction counts.&#39;</span><span class="p">)</span>
+        <span class="n">MATS</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_junction_counts</span><span class="p">(</span><span class="n">MATS</span><span class="p">,</span> <span class="n">quant_type</span> <span class="o">=</span> <span class="s1">&#39;MATS&#39;</span><span class="p">)</span>
+        <span class="n">MATS</span> <span class="o">=</span> <span class="n">MATS</span><span class="p">[(</span><span class="n">MATS</span><span class="p">[</span><span class="s1">&#39;TJC_SAMPLE_1&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_junction_counts</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">MATS</span><span class="p">[</span><span class="s1">&#39;TJC_SAMPLE_2&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_junction_counts</span><span class="p">)]</span>
+
+
+    <span class="k">if</span> <span class="n">MATS</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="n">MATS</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MATS</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+
+    <span class="c1">#add ID column</span>
+    <span class="n">MATS</span><span class="p">[</span><span class="s1">&#39;AS ID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">event_type</span><span class="si">}</span><span class="s2">_&quot;</span> <span class="o">+</span> <span class="n">MATS</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+    <span class="c1">#extract information about where splice region is</span>
+    <span class="n">MATS</span> <span class="o">=</span> <span class="n">get_spliced_region</span><span class="p">(</span><span class="n">MATS</span><span class="p">,</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">include_flanking</span> <span class="o">=</span> <span class="n">include_flanking</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">MATS</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">project_on_MATS_data</span><span class="p">(</span><span class="n">processed_MATS</span><span class="p">,</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;FDR&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="s1">&#39;IncLevelDifference&#39;</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">separate_modification_types</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c1">#check to make sure there is enough information to do multiprocessing if that is desired</span>
+    <span class="k">if</span> <span class="n">PROCESSES</span><span class="o">*</span><span class="mi">4</span> <span class="o">&gt;</span> <span class="n">processed_MATS</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">processes</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">processes</span> <span class="o">=</span> <span class="n">PROCESSES</span>
+
+
+    <span class="c1"># Project the spliced region onto the original MATS data</span>
+    <span class="n">processed_MATS</span><span class="p">,</span> <span class="n">ptms</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">project_ptms_onto_splice_events</span><span class="p">(</span><span class="n">processed_MATS</span><span class="p">,</span>  <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;event_start&#39;</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="s1">&#39;event_end&#39;</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;AS ID&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span><span class="o">=</span><span class="n">dPSI_col</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;geneSymbol&#39;</span><span class="p">,</span> <span class="n">coordinate_type</span><span class="o">=</span><span class="n">coordinate_type</span><span class="p">,</span> <span class="n">start_coordinate_system</span><span class="o">=</span><span class="s1">&#39;0-based&#39;</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="n">extra_cols</span><span class="p">,</span> <span class="n">taskbar_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">event_type</span><span class="si">}</span><span class="s1"> Events&#39;</span><span class="p">,</span> <span class="n">separate_modification_types</span><span class="o">=</span><span class="n">separate_modification_types</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="n">processes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="c1">#record event type</span>
+    <span class="n">ptms</span><span class="p">[</span><span class="s1">&#39;Event Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_type</span>
+
+    <span class="k">return</span> <span class="n">processed_MATS</span><span class="p">,</span> <span class="n">ptms</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">run_nease_on_mats</span><span class="p">(</span><span class="n">processed_MATS</span><span class="p">,</span> <span class="n">dpsi_col</span> <span class="o">=</span> <span class="s1">&#39;IncLevelDifference&#39;</span><span class="p">,</span> <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given MATS event data and type, run NEASE analysis, return NEASE object</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    MATS : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing MATS event data</span>
+<span class="sd">    event_type : str</span>
+<span class="sd">        Type of the event (e.g., &#39;SE&#39;, &#39;A3SS&#39;, &#39;A5SS&#39;, &#39;RI&#39;)</span>
+<span class="sd">    dpsi_col : str, optional</span>
+<span class="sd">        Column name for delta PSI values (default is &#39;IncLevelDifference&#39;)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    nease_output : NEASE object</span>
+<span class="sd">        The output of the NEASE analysis</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Run NEASE on the tmp DataFrame</span>
+    <span class="n">nease_output</span> <span class="o">=</span> <span class="n">nease_runner</span><span class="o">.</span><span class="n">run_nease</span><span class="p">(</span><span class="n">processed_MATS</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;event_start&#39;</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="s1">&#39;event_end&#39;</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;geneSymbol&#39;</span><span class="p">,</span> <span class="n">dpsi_col</span> <span class="o">=</span> <span class="n">dpsi_col</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">nease_output</span>
+
+<div class="viewcode-block" id="MATS_Dataset">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.splicing_tools.MATS.MATS_Dataset">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MATS_Dataset</span><span class="p">(</span><span class="n">GenericDataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for handling MATS splicing event data, projecting PTMs onto spliced regions, and running NEASE analysis on the events. This includes filtering events based on significance, dPSI, and junction counts, as well as identifying flanking sequence changes and their associated PTMs. The class can handle multiple types of splicing events (SE, A3SS, A5SS, RI, MXE) and store the results for each type separately.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    SE : pandas.DataFrame, optional</span>
+<span class="sd">        DataFrame containing skipped exon (SE) event data from MATS (default is None)</span>
+<span class="sd">    A3SS : pandas.DataFrame, optional</span>
+<span class="sd">        DataFrame containing alternative 3&#39; splice site (A3SS) event data from MATS (default is None)</span>
+<span class="sd">    A5SS : pandas.DataFrame, optional</span>
+<span class="sd">        DataFrame containing alternative 5&#39; splice site (A5SS) event data from MATS (default is None)</span>
+<span class="sd">    RI : pandas.DataFrame, optional</span>
+<span class="sd">        DataFrame containing retained intron (RI) event data from MATS (default is None)</span>
+<span class="sd">    MXE : pandas.DataFrame, optional</span>
+<span class="sd">        DataFrame containing mutually exclusive exon (MXE) event data from MATS (default is None)</span>
+<span class="sd">    min_dpsi : float, optional</span>
+<span class="sd">        Minimum absolute delta PSI value for filtering events (default is 0)</span>
+<span class="sd">    alpha : float, optional</span>
+<span class="sd">        Significance threshold for filtering events based on FDR (default is 0.05)</span>
+<span class="sd">    min_junction_counts : int, optional</span>
+<span class="sd">        Minimum junction counts in both conditions for filtering events (default is None, which means no filtering based on junction counts)</span>
+<span class="sd">    dpsi_col : str, optional</span>
+<span class="sd">        Column name for delta PSI values (default is &#39;IncLevelDifference&#39;)</span>
+<span class="sd">    sig_col : str, optional</span>
+<span class="sd">        Column name for significance values (default is &#39;FDR&#39;)</span>
+<span class="sd">    coordinate_type : str, optional</span>
+<span class="sd">        Coordinate system (default is &#39;hg38&#39;)</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    splice_data : dict</span>
+<span class="sd">        Dictionary containing processed MATS data for each event type</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SE</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">A3SS</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">A5SS</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RI</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">MXE</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">min_junction_counts</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="n">dpsi_col</span> <span class="o">=</span> <span class="s1">&#39;IncLevelDifference&#39;</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;FDR&#39;</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">):</span>
+        <span class="n">splice_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;SE&#39;</span><span class="p">,</span> <span class="s1">&#39;A3SS&#39;</span><span class="p">,</span> <span class="s1">&#39;A5SS&#39;</span><span class="p">,</span> <span class="s1">&#39;RI&#39;</span><span class="p">,</span> <span class="s1">&#39;MXE&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">SE</span><span class="p">,</span> <span class="n">A3SS</span><span class="p">,</span> <span class="n">A5SS</span><span class="p">,</span> <span class="n">RI</span><span class="p">,</span> <span class="n">MXE</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1">#filter by significance</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">process_MATS_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">event_type</span> <span class="o">=</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">min_junction_counts</span><span class="o">=</span><span class="n">min_junction_counts</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="n">min_dpsi</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="n">sig_col</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="n">dpsi_col</span><span class="p">)</span>
+                <span class="n">splice_data</span><span class="p">[</span><span class="n">event_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">splice_data</span><span class="o">=</span><span class="n">splice_data</span><span class="p">,</span> <span class="n">min_dpsi</span><span class="o">=</span><span class="n">min_dpsi</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">dpsi_col</span><span class="o">=</span><span class="n">dpsi_col</span><span class="p">,</span> <span class="n">sig_col</span><span class="o">=</span><span class="n">sig_col</span><span class="p">,</span> <span class="n">coordinate_type</span><span class="o">=</span><span class="n">coordinate_type</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">first_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;first_flank_start&#39;</span><span class="p">,</span> <span class="n">first_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;first_flank_end&#39;</span><span class="p">,</span> <span class="n">second_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;second_flank_start&#39;</span><span class="p">,</span> <span class="n">second_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;second_flank_end&#39;</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;AS ID&#39;</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;geneSymbol&#39;</span><span class="p">,</span> <span class="n">start_coordinate_system</span> <span class="o">=</span> <span class="s1">&#39;0-based&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identify_altered_flanks</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        
+        <span class="c1">#check for any keyword arguments to use for filtering</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_ptms_generic</span><span class="p">(</span><span class="n">extra_cols</span> <span class="o">=</span> <span class="n">extra_cols</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="n">PROCESSES</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">identify_altered_flanks</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_altered_flanks_generic</span><span class="p">(</span><span class="n">extra_cols</span> <span class="o">=</span> <span class="n">extra_cols</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_altered_flanks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_altered_flanks_generic</span><span class="p">(</span><span class="n">extra_cols</span> <span class="o">=</span> <span class="n">extra_cols</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MATS_Dataset.run_nease">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.splicing_tools.MATS.MATS_Dataset.run_nease">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_nease</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run NEASE analysis on the spliced regions of the MATS events for each event type, saving the results in the class for later retrieval</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_nease_generic</span><span class="p">(</span><span class="n">events_to_skip</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;MXE&#39;</span><span class="p">])</span></div>
+</div>
+
+
+
+
+<span class="c1">#class MATS:</span>
+<span class="c1">#    &quot;&quot;&quot;</span>
+<span class="c1">#    Class for handling MATS splicing event data, projecting PTMs onto spliced regions, and running NEASE analysis on the events. This includes filtering events based on significance, dPSI, and junction counts, as well as identifying flanking sequence changes and their associated PTMs. The class can handle multiple types of splicing events (SE, A3SS, A5SS, RI, MXE) and store the results for each type separately.</span>
+
+<span class="c1">#    Parameters</span>
+<span class="c1">#    ----------</span>
+<span class="c1">#    SE : pandas.DataFrame, optional</span>
+<span class="c1">#        DataFrame containing skipped exon (SE) event data from MATS (default is None)</span>
+<span class="c1">#    A3SS : pandas.DataFrame, optional</span>
+<span class="c1">#        DataFrame containing alternative 3&#39; splice site (A3SS) event data from MATS (default is None)</span>
+<span class="c1">#    A5SS : pandas.DataFrame, optional</span>
+<span class="c1">#        DataFrame containing alternative 5&#39; splice site (A5SS) event data from MATS (default is None)</span>
+<span class="c1">#    RI : pandas.DataFrame, optional</span>
+<span class="c1">#        DataFrame containing retained intron (RI) event data from MATS (default is None)</span>
+<span class="c1">#    MXE : pandas.DataFrame, optional</span>
+<span class="c1">#        DataFrame containing mutually exclusive exon (MXE) event data from MATS (default is None)</span>
+<span class="c1">#    min_dpsi : float, optional</span>
+<span class="c1">#        Minimum absolute delta PSI value for filtering events (default is 0)</span>
+<span class="c1">#    alpha : float, optional</span>
+<span class="c1">#        Significance threshold for filtering events based on FDR (default is 0.05)</span>
+<span class="c1">#    min_junction_counts : int, optional</span>
+<span class="c1">#        Minimum junction counts in both conditions for filtering events (default is None, which means no filtering based on junction counts)</span>
+<span class="c1">#    dpsi_col : str, optional</span>
+<span class="c1">#        Column name for delta PSI values (default is &#39;IncLevelDifference&#39;)</span>
+<span class="c1">#    sig_col : str, optional</span>
+<span class="c1">#        Column name for significance values (default is &#39;FDR&#39;)</span>
+<span class="c1">#    coordinate_type : str, optional</span>
+<span class="c1">#        Coordinate system (default is &#39;hg38&#39;)</span>
+<span class="c1">#    </span>
+<span class="c1">#    Attributes</span>
+<span class="c1">#    ----------</span>
+<span class="c1">#    splice_data : dict</span>
+<span class="c1">#        Dictionary containing processed MATS data for each event type</span>
+<span class="c1">#    &quot;&quot;&quot;</span>
+<span class="c1">#    def __init__(self, SE = None, A3SS = None, A5SS = None, RI = None, MXE = None, min_dpsi = 0, alpha = 0.05, min_junction_counts = None,  dpsi_col = &#39;IncLevelDifference&#39;, sig_col = &#39;FDR&#39;, coordinate_type = &#39;hg38&#39;):</span>
+<span class="c1">#        self.splice_data = {}</span>
+<span class="c1">#        for event_type, data in zip([&#39;SE&#39;, &#39;A3SS&#39;, &#39;A5SS&#39;, &#39;RI&#39;, &#39;MXE&#39;], [SE, A3SS, A5SS, RI, MXE]):</span>
+<span class="c1">#            if data is not None:</span>
+<span class="c1">#                #filter by significance</span>
+<span class="c1">#                data = process_MATS_data(data, event_type = event_type, min_junction_counts=min_junction_counts, min_dpsi = min_dpsi, alpha = alpha, sig_col = sig_col, dPSI_col = dpsi_col)</span>
+<span class="c1">#                self.splice_data[event_type] = data.copy()</span>
+
+        <span class="c1">#save different parameters</span>
+<span class="c1">#        self.min_dpsi = min_dpsi</span>
+<span class="c1">#        self.alpha = alpha</span>
+<span class="c1">#        self.min_junction_counts = min_junction_counts</span>
+<span class="c1">#        self.dpsi_col = dpsi_col</span>
+<span class="c1">#        self.sig_col = sig_col</span>
+<span class="c1">#        self.coordinate_type = coordinate_type</span>
+
+<span class="c1">#    def project_ptms(self, extra_cols = None, separate_modification_types = False, PROCESSES = 1, **kwargs):</span>
+<span class="c1">#        &quot;&quot;&quot;</span>
+<span class="c1">#        Project PTMs onto the spliced regions of the MATS events for each event type, saving an annotated version of the MATS data and dataframe of PTMs impacted by the splice events</span>
+<span class="c1">#</span>
+<span class="c1">#        Parameters</span>
+<span class="c1">#        ----------</span>
+<span class="c1">#        extra_cols : list, optional</span>
+<span class="c1">#            List of additional column names from the MATS data to include in the output ptms dataframe (default is None)</span>
+<span class="c1">#        separate_modification_types : bool, optional</span>
+<span class="c1">#            Whether to separate different types of PTMs into different rows in the output dataframe (default is False)</span>
+<span class="c1">#        PROCESSES : int, optional</span>
+<span class="c1">#            Number of processes to use for multiprocessing (default is 1). If the number of events is small, multiprocessing will be automatically disabled to avoid overhead.</span>
+<span class="c1">#        kwargs:</span>
+<span class="c1">#            Additional keyword arguments to pass to the project_ptms_onto_splice_events function, such as filtering parameters to filter PTMs with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add &#39;min_MS_observations = 2&#39; to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the project_ptms_onto_splice_events function for more options.</span>
+
+    <span class="c1">#     Postconditions</span>
+    <span class="c1">#     --------------</span>
+    <span class="c1">#     self.ptms : pandas.DataFrame</span>
+    <span class="c1">#         DataFrame containing information about PTMs projected onto the spliced regions of the MATS events, including the type of event, the associated PTMs, and any additional columns specified in extra_cols</span>
+    <span class="c1">#     self.annotated_MATS : dict</span>
+    <span class="c1">#         Dictionary containing the original MATS data for each event type with additional columns indicating the PTMs that are associated with each event</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     #check for any keyword arguments to use for filtering PTMs prior to projection</span>
+    <span class="c1">#     if kwargs:</span>
+    <span class="c1">#         filter_arguments = helpers.extract_filter_kwargs(**kwargs)</span>
+    <span class="c1">#         #check any excess unused keyword arguments, report them</span>
+    <span class="c1">#         helpers.check_filter_kwargs(filter_arguments)</span>
+    <span class="c1">#         #filter ptm coordinates file to include only ptms with desired evidence</span>
+    <span class="c1">#         ptm_coordinates = helpers.filter_ptms(pose_config.ptm_coordinates.copy(), **filter_arguments)</span>
+
+    <span class="c1">#         #save filter arguments to class</span>
+    <span class="c1">#         for farg in filter_arguments.keys():</span>
+    <span class="c1">#             setattr(self, farg, filter_arguments[farg])</span>
+    <span class="c1">#     else:</span>
+    <span class="c1">#         ptm_coordinates = pose_config.ptm_coordinates.copy()</span>
+
+    <span class="c1">#     self.ptms = []</span>
+    <span class="c1">#     self.annotated_MATS = {}</span>
+    <span class="c1">#     for event_type, data in self.splice_data.items():</span>
+    <span class="c1">#         #check to make sure there is enough information to do multiprocessing if that is desired</span>
+    <span class="c1">#         if PROCESSES*4 &gt; data.shape[0]:</span>
+    <span class="c1">#             processes = 1</span>
+    <span class="c1">#         else:</span>
+    <span class="c1">#             processes = PROCESSES</span>
+
+    <span class="c1">#         # Project the spliced region onto the original MATS data</span>
+    <span class="c1">#         processed_MATS, ptms = project.project_ptms_onto_splice_events(data, ptm_coordinates=ptm_coordinates, chromosome_col = &#39;chr&#39;, strand_col = &#39;strand&#39;, region_start_col = &#39;event_start&#39;, region_end_col = &#39;event_end&#39;, event_id_col = &#39;AS ID&#39;, dPSI_col=self.dpsi_col, sig_col = self.sig_col, gene_col = &#39;geneSymbol&#39;, coordinate_type=self.coordinate_type, start_coordinate_system=&#39;0-based&#39;, extra_cols = extra_cols, taskbar_label = f&#39;{event_type} Events&#39;, separate_modification_types=separate_modification_types, PROCESSES = processes, **kwargs)</span>
+    <span class="c1">#         self.splice_data[event_type] = processed_MATS</span>
+    <span class="c1">#         # Save PTMs for later use</span>
+    <span class="c1">#         self.annotated_MATS[event_type] = processed_MATS</span>
+    <span class="c1">#         self.ptms.append(ptms)</span>
+    <span class="c1">#     self.ptms = pd.concat(self.ptms, axis=0)</span>
+    
+    <span class="c1"># def get_altered_flanks(self, extra_cols = None, separate_modification_types = False, PROCESSES = 1, **kwargs):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     Identify changes to flanking sequences around PTMs resulting from splicing events, saving a dataframe of the altered flanking sequences and their associated PTMs. This function requires that the flanking sequence information be included in the original MATS data (either as upstream/downstream or first/second flanking regions)</span>
+
+    <span class="c1">#     Parameters</span>
+    <span class="c1">#     ----------</span>
+    <span class="c1">#     extra_cols : list, optional</span>
+    <span class="c1">#         List of additional column names from the MATS data to include in the output dataframe (default is None)</span>
+    <span class="c1">#     separate_modification_types : bool, optional</span>
+    <span class="c1">#         Whether to separate different types of PTMs into different rows in the output dataframe (default is False)</span>
+    <span class="c1">#     PROCESSES : int, optional</span>
+    <span class="c1">#         Number of processes to use for multiprocessing (default is 1). If the number of events</span>
+    <span class="c1">#         is small, multiprocessing will be automatically disabled to avoid overhead.</span>
+    <span class="c1">#     kwargs:</span>
+    <span class="c1">#         Additional keyword arguments to pass to the get_flanking_changes_from_splice_data function</span>
+        
+    <span class="c1">#     Postconditions</span>
+    <span class="c1">#     --------------</span>
+    <span class="c1">#     self.altered_flanks : pandas.DataFrame</span>
+    <span class="c1">#         DataFrame containing information about changes to flanking sequences around PTMs resulting from splicing events, including the type of event, the associated PTMs, and any additional columns specified in extra_cols</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     #check for any keyword arguments to use for filtering PTMs prior to projection</span>
+    <span class="c1">#     if kwargs:</span>
+    <span class="c1">#         filter_arguments = helpers.extract_filter_kwargs(**kwargs)</span>
+    <span class="c1">#         #check any excess unused keyword arguments, report them</span>
+    <span class="c1">#         helpers.check_filter_kwargs(filter_arguments)</span>
+    <span class="c1">#         #filter ptm coordinates file to include only ptms with desired evidence</span>
+    <span class="c1">#         ptm_coordinates = helpers.filter_ptms(pose_config.ptm_coordinates.copy(), **filter_arguments)</span>
+
+    <span class="c1">#         #save filter arguments to class</span>
+    <span class="c1">#         for farg in filter_arguments.keys():</span>
+    <span class="c1">#             setattr(self, farg, filter_arguments[farg])</span>
+    <span class="c1">#     else:</span>
+    <span class="c1">#         ptm_coordinates = pose_config.ptm_coordinates.copy()</span>
+
+    <span class="c1">#     spliced_flanks = []</span>
+    <span class="c1">#     for event_type, data in self.splice_data.items():</span>
+    <span class="c1">#         #check to make sure there is enough information to do multiprocessing if that is desired</span>
+    <span class="c1">#         if PROCESSES*4 &gt; data.shape[0]:</span>
+    <span class="c1">#             processes = 1</span>
+    <span class="c1">#         else:</span>
+    <span class="c1">#             processes = PROCESSES</span>
+
+    <span class="c1">#         event_flanks = flanking_sequences.get_flanking_changes_from_splice_data(data, ptm_coordinates = ptm_coordinates, chromosome_col = &#39;chr&#39;, strand_col = &#39;strand&#39;, spliced_region_start_col = &#39;event_start&#39;, spliced_region_end_col = &#39;event_end&#39;, first_flank_start_col = &#39;first_flank_start&#39;, first_flank_end_col = &#39;first_flank_end&#39;, second_flank_start_col = &#39;second_flank_start&#39;, second_flank_end_col = &#39;second_flank_end&#39;, dPSI_col=self.dpsi_col, sig_col = self.sig_col, gene_col = &#39;geneSymbol&#39;, event_id_col = &#39;AS ID&#39;, extra_cols = extra_cols, coordinate_type=self.coordinate_type, start_coordinate_system=&#39;0-based&#39;, **kwargs)</span>
+    <span class="c1">#         event_flanks[&#39;Event Type&#39;] = event_type</span>
+    <span class="c1">#         spliced_flanks.append(event_flanks)</span>
+    <span class="c1">#     self.altered_flanks = pd.concat(spliced_flanks, axis=0)</span>
+
+
+    <span class="c1"># def run_nease(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     Run NEASE analysis on the spliced regions of the MATS events for each event type, saving the results in the class for later retrieval</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+
+    <span class="c1">#     nease = {}</span>
+    <span class="c1">#     for event_type, data in self.splice_data.items():</span>
+    <span class="c1">#         if event_type != &#39;MXE&#39;:</span>
+
+    <span class="c1">#             # Run NEASE on the tmp DataFrame</span>
+    <span class="c1">#             nease_output = nease_runner.run_nease(data, region_start_col = &#39;event_start&#39;, region_end_col = &#39;event_end&#39;, gene_col = &#39;geneSymbol&#39;, dpsi_col = self.dpsi_col)</span>
+    <span class="c1">#             # Process the NEASE output as needed</span>
+    <span class="c1">#             nease[event_type] = nease_output</span>
+
+    <span class="c1">#     #save in class</span>
+    <span class="c1">#     self.nease = nease</span>
+
+    <span class="c1"># def get_nease_edges(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     Get the impacted protein-protein interactions from the NEASE analysis, combining results across event types into a single dataframe.</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     if not hasattr(self, &#39;nease&#39;):</span>
+    <span class="c1">#         self.run_nease()</span>
+
+    <span class="c1">#     edge_list = []</span>
+    <span class="c1">#     for event_type in self.nease.keys():</span>
+    <span class="c1">#         # Process the NEASE output as needed</span>
+    <span class="c1">#         if isinstance(self.nease[event_type].get_edges(), pd.DataFrame):</span>
+
+    <span class="c1">#             edges = self.nease[event_type].get_edges()</span>
+    <span class="c1">#             edges[&#39;Event Type&#39;] = event_type</span>
+    <span class="c1">#             edge_list.append(edges)</span>
+    <span class="c1">#     if len(edge_list) &gt; 0:</span>
+    <span class="c1">#         edge_df = pd.concat(edge_list, axis=0)</span>
+    <span class="c1">#     else:</span>
+    <span class="c1">#         edge_df = pd.DataFrame()</span>
+    <span class="c1">#     return edge_df</span>
+    
+    <span class="c1"># def get_nease_domains(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     Get the impacted protein domains from the NEASE analysis, combining results across event types into a single dataframe.</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     if not hasattr(self, &#39;nease&#39;):</span>
+    <span class="c1">#         self.run_nease()</span>
+
+    <span class="c1">#     domain_list = []</span>
+    <span class="c1">#     for event_type in self.nease.keys():</span>
+    <span class="c1">#         # Process the NEASE output as needed</span>
+    <span class="c1">#         if isinstance(self.nease[event_type].get_domains(), pd.DataFrame):</span>
+
+    <span class="c1">#             domains = self.nease[event_type].get_domains()</span>
+    <span class="c1">#             domains[&#39;Event Type&#39;] = event_type</span>
+    <span class="c1">#             domain_list.append(domains)</span>
+
+    <span class="c1">#     if len(domain_list) == 0:</span>
+    <span class="c1">#         return pd.DataFrame()</span>
+    <span class="c1">#     domain_df = pd.concat(domain_list, axis=0)</span>
+    <span class="c1">#     return domain_df</span>
+    
+    <span class="c1"># def get_nease_motifs(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     Get the impacted linear motifs from ELM from the NEASE analysis, combining results across event types into a single dataframe.</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     if not hasattr(self, &#39;nease&#39;):</span>
+    <span class="c1">#         self.run_nease()</span>
+
+    <span class="c1">#     motif_list = []</span>
+    <span class="c1">#     for event_type in self.nease.keys():</span>
+    <span class="c1">#         # Process the NEASE output as needed</span>
+    <span class="c1">#         if isinstance(self.nease[event_type].get_elm(), pd.DataFrame):</span>
+
+    <span class="c1">#             motifs = self.nease[event_type].get_elm()</span>
+    <span class="c1">#             motifs[&#39;Event Type&#39;] = event_type</span>
+    <span class="c1">#             motif_list.append(motifs)</span>
+    <span class="c1">#     if len(motif_list) == 0:</span>
+    <span class="c1">#         return pd.DataFrame()</span>
+    <span class="c1">#     motif_df = pd.concat(motif_list, axis=0)</span>
+    <span class="c1">#     return motif_df</span>
+    
+    <span class="c1"># def save(self, odir):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     Save the results of the MATS analysis to the specified output directory. This includes the projected PTMs, annotated MATS data for each event type, altered flanking sequences, and NEASE results (impacted domains, PPIs, and motifs).</span>
+
+    <span class="c1">#     Parameters</span>
+    <span class="c1">#     ----------</span>
+    <span class="c1">#     odir : str</span>
+    <span class="c1">#         Output directory where the results will be saved. The function will create CSV files for each type of result in this directory.</span>
+
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     if hasattr(self, &#39;ptms&#39;):</span>
+    <span class="c1">#         self.ptms.to_csv(f&#39;{odir}/spliced_ptms.csv&#39;, index=False)</span>
+
+    <span class="c1">#     if hasattr(self, &#39;annotated_MATS&#39;):</span>
+    <span class="c1">#         for event_type, data in self.annotated_MATS.items():</span>
+    <span class="c1">#             data.to_csv(f&#39;{odir}/{event_type}_annotated.csv&#39;, index=False)</span>
+
+    <span class="c1">#     if hasattr(self, &#39;altered_flanks&#39;):</span>
+    <span class="c1">#         self.altered_flanks.to_csv(f&#39;{odir}/altered_flanking_sequences.csv&#39;, index=False)</span>
+
+    <span class="c1">#     if hasattr(self, &#39;nease&#39;):</span>
+
+    <span class="c1">#         domains = self.get_nease_domains()</span>
+    <span class="c1">#         domains.to_csv(f&#39;{odir}/nease_impacted_domains.csv&#39;, index=False)</span>
+
+    <span class="c1">#         ppi = self.get_nease_edges()</span>
+    <span class="c1">#         ppi.to_csv(f&#39;{odir}/nease_impacted_ppi.csv&#39;, index=False)</span>
+
+    <span class="c1">#         motifs = self.get_nease_motifs()</span>
+    <span class="c1">#         motifs.to_csv(f&#39;{odir}/nease_impacted_motifs.csv&#39;, index=False)</span>
+
+    <span class="c1">#     #save the attributes (non dataframe/list) of the class as a json file for later retrieval</span>
+    <span class="c1">#     attributes = {attr: getattr(self, attr) for attr in self.__dict__.keys() if isinstance(getattr(self, attr), (str, int, float, bool))}</span>
+    <span class="c1">#     with open(f&#39;{odir}/run_attributes.json&#39;, &#39;w&#39;) as f:</span>
+    <span class="c1">#         json.dump(attributes, f)</span>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Naegle Lab
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Naegle Lab.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

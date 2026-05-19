@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -43,12 +43,13 @@
     <script src="../_static/documentation_options.js?v=d2a3a1a5"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'Running_PTM-POSE/index';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Installation" href="quickstart.html" />
-    <link rel="prev" title="PTM-POSE Reference" href="../PTM_POSE.html" />
+    <link rel="next" title="Projecting PTMs onto Splice Events" href="Projection_Instructions.html" />
+    <link rel="prev" title="PTM-POSE Reference" href="../Overview/PTM_POSE.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -154,17 +155,17 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Overview/Dependencies.html">Dependencies</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Projection_Instructions.html">Running PTM-POSE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Projection_Instructions.html">Projecting PTMs onto Splice Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Analyzing_PTMs.html">Analyzing PTM Impacts</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
 <ul class="nav bd-sidenav">
@@ -205,9 +206,10 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Advanced/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
     </div>
@@ -377,39 +379,31 @@ document.write(`
                   
   <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="quickstart.html#id1">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Projection_Instructions.html">Projecting PTMs onto Splice Events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Projection_Instructions.html#formatting-data">Formatting Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Projection_Instructions.html#tools-with-built-in-compatibility">Tools with Built-in Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Projection_Instructions.html#other-quantification-tools">Other Quantification Tools</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Projection_Instructions.html">Running PTM-POSE</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Projection_Instructions.html#formatting-data">Formatting Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Projection_Instructions.html#identifying-differentially-included-ptms">Identifying differentially included PTMs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Projection_Instructions.html#altered-flanking-sequences">Altered Flanking Sequences</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Projection_Instructions.html#using-ptm-pose-with-mats-or-spliceseq-datasets">Using PTM-POSE with MATS or SpliceSeq datasets</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Projection_Instructions.html#mats-datasets">MATS datasets</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Projection_Instructions.html#spliceseq-datasets">SpliceSeq datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Projection_Instructions.html#running-ptm-pose">Running PTM-POSE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Projection_Instructions.html#mats-datasets">MATS Datasets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Projection_Instructions.html#spliceseq-datasets">SpliceSeq Datasets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Projection_Instructions.html#majiq-datasets-voila-tsv-files">MAJIQ Datasets (voila tsv files)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Projection_Instructions.html#other-datasets">Other Datasets</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="Filtering_PTMs.html">Filtering PTMs and Events</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Filtering_PTMs.html#types-of-available-filters">Types of Available Filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Filtering_PTMs.html#how-to-filter-ptms-and-events">How to Filter PTMs and Events</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Filtering_PTMs.html#filtering-ptms-during-projection">Filtering PTMs during Projection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Filtering_PTMs.html#filtering-ptms-during-analysis">Filtering PTMs during analysis</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="Filtering_PTMs.html#why-filter">Why Filter?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Filtering_PTMs.html#impact-of-filtering-ptms-by-evidence">Impact of Filtering PTMs by evidence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Projection_Instructions.html#downstream-analysis">Downstream Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Annotating_PTMs.html">Annotating PTMs with Functional Information</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Annotating_PTMs.html#annotating-ptms-with-pre-installed-annotation-files">Annotating PTMs with pre-installed annotation files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Annotating_PTMs.html#available-annotations">Available Annotations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Annotating_PTMs.html#appending-annotations-to-ptm-dataframes">Appending Annotations to PTM Dataframes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Annotating_PTMs.html#updating-annotation-files">Updating annotation files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Annotating_PTMs.html#creating-custom-annotation-files">Creating Custom Annotation files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Annotating_PTMs.html#future-directions">Future Directions</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="Analyzing_PTMs.html">Analyzing PTM Impacts</a></li>
 </ul>
 </div>
 
@@ -425,7 +419,7 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../PTM_POSE.html"
+       href="../Overview/PTM_POSE.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
@@ -434,11 +428,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="quickstart.html"
+       href="Projection_Instructions.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Installation</p>
+        <p class="prev-next-title">Projecting PTMs onto Splice Events</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

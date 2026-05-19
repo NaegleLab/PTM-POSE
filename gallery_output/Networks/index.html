@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -43,6 +43,7 @@
     <script src="../../_static/documentation_options.js?v=d2a3a1a5"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'gallery_output/Networks/index';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -154,16 +155,15 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/Dependencies.html">Dependencies</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Projection_Instructions.html">Projecting PTMs onto Splice Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
@@ -205,9 +205,10 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Advanced/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
     </div>
@@ -375,14 +376,14 @@ document.write(`
                   
   <section id="impact-on-protein-interaction-and-regulatory-networks">
 <span id="sphx-glr-gallery-output-networks"></span><h1>Impact on protein interaction and regulatory networks<a class="headerlink" href="#impact-on-protein-interaction-and-regulatory-networks" title="Link to this heading">#</a></h1>
-<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="In the realm of kinase activity analysis, Kinase Substrate Enrichment Analysis (KSEA) is a commonly used tool to identify kinases with substrates that are significantly changing between two conditions (based on phosphoproteomic data). See the publication here  for what the original algorithm looks like. We have adapted KSEA for use with splicing data, which uses the dPSI values to calculate a z-score to identify kinases with substrates that are either excluded or included from isoforms. This is a useful tool, but you should treat these results with caution as they will often be on only a couple kinase-substrates due to the limited kinase-substrate information available. First, let&#x27;s load the example data and run KSEA on the differentially included PTMs dataframe"><img alt="" src="../../_images/sphx_glr_plot_ksea_thumb.png" />
-<p><a class="reference internal" href="plot_ksea.html#sphx-glr-gallery-output-networks-plot-ksea-py"><span class="std std-ref">Kinase substrate enrichment analysis (KSEA)</span></a></p>
+<div id='sg-tag-list' class='sphx-glr-tag-list'></div><div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="In the realm of kinase activity analysis, Kinase Substrate Enrichment Analysis (KSEA) is a commonly used tool to identify kinases with substrates that are significantly changing between two conditions (based on phosphoproteomic data). See the publication here  for what the original algorithm looks like. We have adapted KSEA for use with splicing data, which uses the dPSI values to calculate a z-score to identify kinases with substrates that are either excluded or included from isoforms. This is a useful tool, but you should treat these results with caution as they will often be on only a couple kinase-substrates due to the limited kinase-substrate information available. First, let&#x27;s load the example data and run KSEA on the differentially included PTMs dataframe"><img alt="" src="../../_images/sphx_glr_plot_ksea_thumb.png" />
+<p><a class="reference internal" href="plot_ksea.html"><span class="doc">Kinase substrate enrichment analysis (KSEA)</span></a></p>
   <div class="sphx-glr-thumbnail-title">Kinase substrate enrichment analysis (KSEA)</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="Post translational modifications (PTMs) often facilitate protein interactions, either through direct binding of domains specific to that particular modification (e.g. SH2 domains binding to phosphorylated tyrosines) or through allosteric effects that change the conformation of the protein to either enhance or disrupt interactions. We provide functions to annotate spliced PTMs with relevant protein interactions and to identify key PTMs that may disrupt protein interaction networks."><img alt="" src="../../_images/sphx_glr_plot_protein_interactions_thumb.png" />
-<p><a class="reference internal" href="plot_protein_interactions.html#sphx-glr-gallery-output-networks-plot-protein-interactions-py"><span class="std std-ref">Protein interactions network</span></a></p>
+<p><a class="reference internal" href="plot_protein_interactions.html"><span class="doc">Protein interactions network</span></a></p>
   <div class="sphx-glr-thumbnail-title">Protein interactions network</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="Given that phosphorlaiton are one of the most commonly impacted modifications, there is potential for kinases targeting these sites to be indirectly impacted by alternative splicing through changes in the availability of their substrates. While we provide functions for performing enrichment of known kinase substrates from databases like PhosphoSitePlus, RegPhos, and PTMsigDB, these resources are limited by the overall number of validated substrates (&lt;5%). For this purpose, we have adapted a previously developed algorithm called KSTAR (Kinase Substrate to Activity Relationships) for use with spliced PTM data, which harnesses kinase-substrate predictions to expand the overall number of phosphorylation sites that can be used as evidence. This particularly important as you may find many of the spliced PTMs in your dataset are less well studied and may not have any annotated kinases."><img alt="" src="../../_images/sphx_glr_plot_kstar_enrichment_thumb.png" />
-<p><a class="reference internal" href="plot_kstar_enrichment.html#sphx-glr-gallery-output-networks-plot-kstar-enrichment-py"><span class="std std-ref">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</span></a></p>
+<p><a class="reference internal" href="plot_kstar_enrichment.html"><span class="doc">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</span></a></p>
   <div class="sphx-glr-thumbnail-title">Identify kinases with enriched substrates in differentially included exons, using an adapted version of KSTAR</div>
 </div></div><div class="toctree-wrapper compound">
 </div>

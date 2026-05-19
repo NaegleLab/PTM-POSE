@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Running PTM-POSE &#8212; PTM-POSE</title>
+    <title>Projecting PTMs onto Splice Events &#8212; PTM-POSE</title>
   
   
   
@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -43,12 +43,13 @@
     <script src="../_static/documentation_options.js?v=d2a3a1a5"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'Running_PTM-POSE/Projection_Instructions';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Filtering PTMs and Events" href="Filtering_PTMs.html" />
-    <link rel="prev" title="Installation" href="quickstart.html" />
+    <link rel="next" title="Annotating PTMs with Functional Information" href="Annotating_PTMs.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -154,17 +155,17 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Overview/Dependencies.html">Dependencies</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Installation</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Running PTM-POSE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Projecting PTMs onto Splice Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Analyzing_PTMs.html">Analyzing PTM Impacts</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
 <ul class="nav bd-sidenav">
@@ -205,9 +206,10 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Advanced/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
     </div>
@@ -361,7 +363,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Running PTM-POSE</h1>
+    <h1>Projecting PTMs onto Splice Events</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -371,14 +373,19 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#formatting-data">Formatting Data</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#identifying-differentially-included-ptms">Identifying differentially included PTMs</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#altered-flanking-sequences">Altered Flanking Sequences</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-ptm-pose-with-mats-or-spliceseq-datasets">Using PTM-POSE with MATS or SpliceSeq datasets</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mats-datasets">MATS datasets</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spliceseq-datasets">SpliceSeq datasets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#formatting-data">Formatting Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tools-with-built-in-compatibility">Tools with Built-in Compatibility</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#other-quantification-tools">Other Quantification Tools</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-ptm-pose">Running PTM-POSE</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mats-datasets">MATS Datasets</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spliceseq-datasets">SpliceSeq Datasets</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#majiq-datasets-voila-tsv-files">MAJIQ Datasets (voila tsv files)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#other-datasets">Other Datasets</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#downstream-analysis">Downstream Analysis</a></li>
 </ul>
             </nav>
         </div>
@@ -390,12 +397,43 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="running-ptm-pose">
-<h1>Running PTM-POSE<a class="headerlink" href="#running-ptm-pose" title="Link to this heading">#</a></h1>
-<p>PTM-POSE is an easily implementable tool to project PTM sites onto splice event data generated from RNA sequencing data and is compatible with any splice event quantification tool that outputs genomic coordinates of different splice events (MATS, SpliceSeq, etc.). PTM-POSE harnesses PTMs that have been mapped to their genomic location by a sister package, [ExonPTMapper](<a class="github reference external" href="https://github.com/NaegleLab/ExonPTMapper">NaegleLab/ExonPTMapper</a>). It also contains functions for annotating these PTMs with information from various databases, like PhosphoSitePlus and ELM.</p>
+  <section id="projecting-ptms-onto-splice-events">
+<h1>Projecting PTMs onto Splice Events<a class="headerlink" href="#projecting-ptms-onto-splice-events" title="Link to this heading">#</a></h1>
+<p>Once you have PTM-POSE installed, you simply need to make sure your splice event data is in a compatible format, indicate which columns contain the necessary information, and then let PTM-POSE do the rest of the work. PTM-POSE allows you to assess two main potential impacts of splicing to PTMs:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Differential inclusion</dt><dd><p>lost or gained from the isoform as a result of a splice event</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Altered flanking sequences</dt><dd><p>the PTM site is present in both isoforms, but the adjacent residues around a PTM are changed in one isoform such that its linear motif that drives many protein interactions is unique</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Follow this tutorial to learn how to run PTM-POSE on your data, depending on the tool you used to quantify your splicing events.</p>
 <section id="formatting-data">
 <h2>Formatting Data<a class="headerlink" href="#formatting-data" title="Link to this heading">#</a></h2>
-<p>To run PTM-POSE, you first need to process your data such that each row corresponds to a unique splice event with the genomic location of that splice event (chromosome, strand, and the bounds of the spliced region). Strand can be indicated using either ‘+’/’-’ or 1/-1. If desired, you can also provide a delta PSI and significance value which will be included in the final PTM dataframe. Any additional columns will be kept. At a minimum, the dataframe should look something like this (optional but recommended parameters indicated):</p>
+<section id="tools-with-built-in-compatibility">
+<h3>Tools with Built-in Compatibility<a class="headerlink" href="#tools-with-built-in-compatibility" title="Link to this heading">#</a></h3>
+<p>Depending on the tool you used to quantify your splicing events, you may be able to use one of PTM-POSE’s built-in modules for processing and projecting PTMs onto your data. The following tools currently have built-in compatibility with PTM-POSE:
+* MATS
+* SpliceSeq
+* MAJIQ (differential inclusion only)</p>
+<p>If you have data from one of these tools, you can skip the formatting step and go straight to running the built-in functions for these tools, which will format your data for you. See the sections below for instructions on how to run PTM-POSE with these tools.</p>
+</section>
+<section id="other-quantification-tools">
+<h3>Other Quantification Tools<a class="headerlink" href="#other-quantification-tools" title="Link to this heading">#</a></h3>
+<p>If you have data from a tool other than those listed above, you can still use PTM-POSE, but you will need to make sure your data contains the information expected by PTM-POSE. To run PTM-POSE, your data should have the following information:</p>
+<ul class="simple">
+<li><p>Separate rows for each splice event</p></li>
+<li><p>Columns with the genomic coordinates of the splice event (chromosome, strand, and the bounds of the spliced region)</p></li>
+<li><p>A unique identifier for each splice event, which allows for tracking the splice event across different analyses and outputs</p></li>
+<li><p>(Optional but recommended) Columns with the gene name, delta PSI, and significance value for each splice event</p></li>
+<li><p>(For flanking sequence analysis) Columns with the coordinates of the flanking exonic regions next to the spliced region</p></li>
+</ul>
+<p>At a minimum, the dataframe should look something like this (optional but recommended parameters indicated):</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>event id
@@ -425,34 +463,11 @@ document.write(`
 </tbody>
 </table>
 </div>
-<p>PTM-POSE allows you to assess two potential impacts of splicing on PTMs:</p>
-<dl class="simple">
-<dt>Differential inclusion</dt><dd><p>lost or gained from the isoform as a result of a splice event</p>
-</dd>
-<dt>Altered flanking sequences</dt><dd><p>the PTM site is present in both isoforms, but the adjacent residues around a PTM are changed in one isoform such that its linear motif that drives many protein interactions is unique</p>
-</dd>
-</dl>
-</section>
-<section id="identifying-differentially-included-ptms">
-<h2>Identifying differentially included PTMs<a class="headerlink" href="#identifying-differentially-included-ptms" title="Link to this heading">#</a></h2>
-<p>Once the data is in the correct format, simply run the <cite>project_ptms_onto_splice_events()</cite> function, indicating the column names corresponding each data element. By default, PTM-POSE assumes the provided coordinates are in hg38 coordinates, but you can use older coordinate systems with the <cite>coordinate_type</cite> parameter. If you have saved ptm_coordinates locally, you can set this parameter to None.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ptm</span><span class="o">-</span><span class="n">pose</span> <span class="kn">import</span><span class="w"> </span><span class="nn">project</span>
-
-<span class="n">my_splice_data_annotated</span><span class="p">,</span> <span class="n">spliced_ptms</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">project_ptms_onto_splice_events</span><span class="p">(</span><span class="n">my_splice_data</span><span class="p">,</span>
-        <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chromosome&#39;</span><span class="p">,</span>
-        <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span>
-        <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;region start&#39;</span><span class="p">,</span>
-        <span class="n">region_end_col</span> <span class="o">=</span>  <span class="s1">&#39;region end&#39;</span><span class="p">,</span>
-        <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;event id&#39;</span><span class="p">,</span>
-        <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;Gene name&#39;</span><span class="p">,</span>
-        <span class="n">dPSI_col</span><span class="o">=</span><span class="s1">&#39;dPSI&#39;</span><span class="p">,</span>
-        <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">)</span>
-</pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The strand information can be denoted either using integers (1 for positive strand, -1 for negative strand) or using characters (‘+’ for positive strand, ‘-’ for negative strand).</p>
 </div>
-</section>
-<section id="altered-flanking-sequences">
-<h2>Altered Flanking Sequences<a class="headerlink" href="#altered-flanking-sequences" title="Link to this heading">#</a></h2>
-<p>In addition to the previously mentioned columns, we will need to know the location of the flanking exonic regions next to the spliced region. Make sure your dataframe contains the following information prior to running flanking sequence analysis:</p>
+<p>Should you wish to identify PTMs with altered flanking sequences, the dataframe should also contain the following columns with the coordinates of the flanking exonic regions next to the spliced region:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>event id
@@ -490,67 +505,150 @@ document.write(`
 </tbody>
 </table>
 </div>
-<p>Then, as with differentially included PTMs, you only need to run <cite>get_flanking_changes_from_splice_data()</cite> function:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ptm</span><span class="o">-</span><span class="n">pose</span> <span class="kn">import</span><span class="w"> </span><span class="nn">project</span>
-
-<span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">get_flanking_changes_from_splice_data</span><span class="p">(</span><span class="n">my_splice_data</span><span class="p">,</span>
-        <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chromosome&#39;</span><span class="p">,</span>
-        <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span>
-        <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;region_start&#39;</span><span class="p">,</span>
-        <span class="n">region_end_col</span> <span class="o">=</span>  <span class="s1">&#39;region_end&#39;</span><span class="p">,</span>
-        <span class="n">first_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;first_flank_start&#39;</span><span class="p">,</span>
-        <span class="n">first_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;first_flank_end&#39;</span><span class="p">,</span>
-        <span class="n">second_flank_start_col</span> <span class="o">=</span> <span class="s1">&#39;second_flank_start&#39;</span><span class="p">,</span>
-        <span class="n">second_flank_end_col</span> <span class="o">=</span> <span class="s1">&#39;second_flank_start&#39;</span><span class="p">,</span>
-        <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;event_id&#39;</span><span class="p">,</span>
-        <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;Gene name&#39;</span><span class="p">,</span>
-        <span class="n">dPSI_col</span><span class="o">=</span><span class="s1">&#39;dPSI&#39;</span><span class="p">,</span>
-        <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
 </section>
-<section id="using-ptm-pose-with-mats-or-spliceseq-datasets">
-<h2>Using PTM-POSE with MATS or SpliceSeq datasets<a class="headerlink" href="#using-ptm-pose-with-mats-or-spliceseq-datasets" title="Link to this heading">#</a></h2>
-<p>If you have quantified your splicing events using MATS or SpliceSeq, we have provided custom functions for processing and projecting PTMs onto these datasets.</p>
+</section>
+<section id="running-ptm-pose">
+<h2>Running PTM-POSE<a class="headerlink" href="#running-ptm-pose" title="Link to this heading">#</a></h2>
+<p>Regardless of the tool you used to quantify your splice events, the PTM-POSE workflow will be the same:</p>
+<ol class="arabic simple">
+<li><p>Load your data into pandas dataframe(s)</p></li>
+<li><p>Initialize the appropriate class for your dataset, indicating any filters for dPSI/significance</p></li>
+<li><p>Run PTM-POSE with the <cite>run_pose()</cite> function. You can choose whether or not to identify altered flanking sequences as well by setting the <cite>identify_flanking_sequences</cite> parameter to True or False.</p></li>
+<li><p>(optional) Run NEASE analysis on the same splice event data with the <cite>run_nease()</cite> function, which provides complementary but non-overlapping information about the impact of splicing on protein interactions and pathways (domains, linear motifs, etc.)</p></li>
+<li><p>Save the outputs to csv files for downstream analysis</p></li>
+</ol>
+<p>See the following sections for instructions on how to run PTM-POSE with different types of datasets, including those from tools with built-in compatibility and those from other tools.</p>
 <section id="mats-datasets">
-<h3>MATS datasets<a class="headerlink" href="#mats-datasets" title="Link to this heading">#</a></h3>
-<p>MATS outputs several different tab-separated files for five different splice events (SE, MXE, A5SS, A3SS, RI). Each of these contain different columns so must be processed separately and then combined into the final dataframes. We have provided a function <cite>project_ptms_onto_MATS()</cite> that will process each of the different dataframes and combine them into a single dataframe. You can choose whether or not you would like to identify flanking sequences as well by setting the <cite>identify_flanking_sequences</cite> parameter to True or False. To run this function, first load each event-specific dataset and then run the function:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ptm</span><span class="o">-</span><span class="n">pose</span> <span class="kn">import</span><span class="w"> </span><span class="nn">project</span>
+<h3>MATS Datasets<a class="headerlink" href="#mats-datasets" title="Link to this heading">#</a></h3>
+<p>MATS outputs several different tab-separated files for five different splice events (SE, MXE, A5SS, A3SS, RI). Each of these contain different columns so must be processed separately and then combined into the final dataframes. The <a class="reference internal" href="../Overview/PTM_POSE.html#ptm_pose.splicing_tools.MATS.MATS_Dataset" title="ptm_pose.splicing_tools.MATS.MATS_Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">MATS_Dataset</span></code></a> class can be used to load and process these datasets. You can choose to process as many of the event files as you want.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ptm</span><span class="o">-</span><span class="n">pose</span><span class="o">.</span><span class="n">splicing_tools</span><span class="o">.</span><span class="n">MATS</span> <span class="kn">import</span><span class="w"> </span><span class="nn">MATS_Dataset</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-<span class="n">SE_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;SE.MATS.JunctionCountOnly.txt&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="n">MXE_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;MXE.MATS.JunctionCountOnly.txt&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="n">A5SS_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;A5SS.MATS.JunctionCountOnly.txt&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="n">A3SS_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;A3SS.MATS.JunctionCountOnly.txt&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="n">RI_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;RI.MATS.JunctionCountOnly.txt&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="c1">#load MATS files</span>
+<span class="n">SE</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;SE.MATS.JCEC.txt&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">A3SS</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;A3SS.MATS.JCEC.txt&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">A5SS</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;A5SS.MATS.JCEC.txt&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">MXE</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;MXE.MATS.JCEC.txt&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">RI</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;RI.MATS.JCEC.txt&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
 
-<span class="n">splice_data</span><span class="p">,</span> <span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">project_ptms_onto_MATS</span><span class="p">(</span><span class="n">SE_events</span> <span class="o">=</span> <span class="n">SE_data</span><span class="p">,</span> <span class="n">MXE_events</span> <span class="o">=</span> <span class="n">MXE_data</span><span class="p">,</span> <span class="n">A5SS_events</span> <span class="o">=</span> <span class="n">A5SS_data</span><span class="p">,</span> <span class="n">A3SS_events</span> <span class="o">=</span> <span class="n">A3SS_data</span><span class="p">,</span> <span class="n">RI_events</span> <span class="o">=</span> <span class="n">RI_data</span><span class="p">,</span>
-        <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">,</span>
-        <span class="n">identify_flanking_sequences</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="c1">#initialize the MATS_Dataset object with the dataframes for each event type, specifying the coordinate type and column names for dPSI and significance</span>
+<span class="n">mats_dataset</span> <span class="o">=</span> <span class="n">MATS_Dataset</span><span class="p">(</span><span class="n">SE</span> <span class="o">=</span> <span class="n">SE</span><span class="p">,</span> <span class="n">A3SS</span> <span class="o">=</span> <span class="n">A3SS</span><span class="p">,</span> <span class="n">A5SS</span> <span class="o">=</span> <span class="n">A5SS</span><span class="p">,</span> <span class="n">MXE</span> <span class="o">=</span> <span class="n">MXE</span><span class="p">,</span> <span class="n">RI</span> <span class="o">=</span> <span class="n">RI</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">,</span> <span class="n">dpsi_col</span> <span class="o">=</span> <span class="s1">&#39;meanDeltaPSI&#39;</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;FDR&#39;</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">)</span>
+
+<span class="c1">#run PTM-POSE, including flanking sequence analysis</span>
+<span class="n">mats_dataset</span><span class="o">.</span><span class="n">run_pose</span><span class="p">(</span><span class="n">identify_flanking_sequences</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1">#run NEASE analysis on the same dataset</span>
+<span class="n">mats_dataset</span><span class="o">.</span><span class="n">run_nease</span><span class="p">()</span>
+
+<span class="n">mats_dataset</span><span class="o">.</span><span class="n">save_outputs</span><span class="p">(</span><span class="n">odir</span> <span class="o">=</span> <span class="s1">&#39;./output_dir/&#39;</span><span class="p">)</span>
 </pre></div>
-</div>
-<p>If <cite>identify_flanking_sequences = True</cite>, the function will return three outputs, the original annotated splice data, the differentially included PTMs, and the altered flanking sequences. If <cite>identify_flanking_sequences = False</cite>, the function will only return the original annotated splice data and the differentially included PTMs.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <cite>project_ptms_onto_MATS()</cite> function assumes that the columns in the MATS files are the same described in the MATS documentation, but if using older versions of MATS or customized outputs, you may need to adjust the column names, such as those for dPSI and significance.</p>
 </div>
 </section>
 <section id="spliceseq-datasets">
-<h3>SpliceSeq datasets<a class="headerlink" href="#spliceseq-datasets" title="Link to this heading">#</a></h3>
-<p>SpliceSeq outputs a single tab-separated file with quantification for all events that are associated with the SpliceSeq splicegraph. The output of SpliceSeq only outputs event information relative to SpliceSeq exons, so you will also need to provide the SpliceSeq splicegraph file. We have provided a function <cite>project_ptms_onto_SpliceSeq()</cite> that will process the SpliceSeq data and the splicegraph and return the differentially included PTMs and altered flanking sequences. To run this function, first load the SpliceSeq data and the splicegraph file.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ptm</span><span class="o">-</span><span class="n">pose</span> <span class="kn">import</span><span class="w"> </span><span class="nn">project</span>
+<h3>SpliceSeq Datasets<a class="headerlink" href="#spliceseq-datasets" title="Link to this heading">#</a></h3>
+<p>SpliceSeq outputs a single tab-separated file with quantification for all events that are associated with the SpliceSeq splicegraph. The output of SpliceSeq only outputs event information relative to SpliceSeq exons, so you will also need to provide the SpliceSeq splicegraph file. The <a class="reference internal" href="../Overview/PTM_POSE.html#ptm_pose.splicing_tools.SpliceSeq.SpliceSeq_Dataset" title="ptm_pose.splicing_tools.SpliceSeq.SpliceSeq_Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpliceSeq_Dataset</span></code></a> class can be used to load and process these datasets.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ptm</span><span class="o">-</span><span class="n">pose</span><span class="o">.</span><span class="n">splicing_tools</span><span class="o">.</span><span class="n">SpliceSeq</span> <span class="kn">import</span><span class="w"> </span><span class="nn">SpliceSeq_Dataset</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
+<span class="c1">#load SpliceSeq data and splicegraph files</span>
 <span class="n">SpliceSeq_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;SpliceSeq_output.txt&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="n">splicegraph</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;SpliceSeq_splicegraph.txt&#39;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
 
-<span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">project_ptms_onto_SpliceSeq</span><span class="p">(</span><span class="n">psi_data</span> <span class="o">=</span> <span class="n">SpliceSeq_data</span><span class="p">,</span> <span class="n">splicegraph</span> <span class="o">=</span> <span class="n">splicegraph</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="s1">&#39;dPSI&#39;</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;Significance&#39;</span><span class="p">,</span>
-        <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">)</span>
+<span class="c1">#initialize the SpliceSeq_Dataset object with the dataframes for the SpliceSeq output and splicegraph, specifying the coordinate type and column names for dPSI and significance</span>
+<span class="n">spliceseq_dataset</span> <span class="o">=</span> <span class="n">SpliceSeq_Dataset</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">SpliceSeq_data</span><span class="p">,</span> <span class="n">splicegraph</span> <span class="o">=</span> <span class="n">splicegraph</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">)</span>
+
+<span class="c1">#run PTM-POSE, including flanking sequence analysis</span>
+<span class="n">spliceseq_dataset</span><span class="o">.</span><span class="n">run_pose</span><span class="p">(</span><span class="n">identify_flanking_sequences</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1">#run NEASE analysis on the same dataset</span>
+<span class="n">spliceseq_dataset</span><span class="o">.</span><span class="n">run_nease</span><span class="p">()</span>
+
+<span class="n">spliceseq_dataset</span><span class="o">.</span><span class="n">save_outputs</span><span class="p">(</span><span class="n">odir</span> <span class="o">=</span> <span class="s1">&#39;./output_dir/&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To have dPSI or significance columns in the final output, you must provide the column names in the <cite>dPSI_col</cite> and <cite>sig_col</cite> parameters. If you do not have these columns, you can omit them and the final output will not include them.</p>
+</section>
+<section id="majiq-datasets-voila-tsv-files">
+<h3>MAJIQ Datasets (voila tsv files)<a class="headerlink" href="#majiq-datasets-voila-tsv-files" title="Link to this heading">#</a></h3>
+<p>When using MAJIQ for splice event quantification and differential comparison, it outputs a tab-separated file with delta PSI and significance values for different LSVs (also called voila files). The <a class="reference internal" href="../Overview/PTM_POSE.html#ptm_pose.splicing_tools.MAJIQ.MAJIQ_Dataset" title="ptm_pose.splicing_tools.MAJIQ.MAJIQ_Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">MAJIQ_Dataset</span></code></a> class can be used to load and process these datasets.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ptm</span><span class="o">-</span><span class="n">pose</span><span class="o">.</span><span class="n">splicing_tools</span><span class="o">.</span><span class="n">MAJIQ</span> <span class="kn">import</span><span class="w"> </span><span class="nn">MAJIQ_Dataset</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1">#load MAJIQ voila file and indicate the sample names used</span>
+<span class="n">voila_tsv_file</span> <span class="o">=</span> <span class="s1">&#39;voila_output.tsv&#39;</span>
+<span class="n">samp1_name</span> <span class="o">=</span> <span class="s1">&#39;sample1&#39;</span>
+<span class="n">samp2_name</span> <span class="o">=</span> <span class="s1">&#39;sample2&#39;</span>
+
+<span class="c1">#initialize the MAJIQ_Dataset object with the voila dataframe, specifying the coordinate type and column names for dPSI and significance</span>
+<span class="n">majiq_dataset</span> <span class="o">=</span> <span class="n">MAJIQ_Dataset</span><span class="p">(</span><span class="n">voila_tsv_file</span> <span class="o">=</span> <span class="n">voila_tsv_file</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">,</span> <span class="n">dpsi_col</span> <span class="o">=</span> <span class="s1">&#39;delta_PSI&#39;</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;pval&#39;</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">)</span>
+
+<span class="c1">#run PTM-POSE, including flanking sequence analysis</span>
+<span class="n">majiq_dataset</span><span class="o">.</span><span class="n">run_pose</span><span class="p">(</span><span class="n">identify_flanking_sequences</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1">#run NEASE analysis on the same dataset</span>
+<span class="n">majiq_dataset</span><span class="o">.</span><span class="n">run_nease</span><span class="p">()</span>
+
+<span class="n">majiq_dataset</span><span class="o">.</span><span class="n">save_outputs</span><span class="p">(</span><span class="n">odir</span> <span class="o">=</span> <span class="s1">&#39;./output_dir/&#39;</span><span class="p">)</span>
+</pre></div>
 </div>
 </section>
+<section id="other-datasets">
+<h3>Other Datasets<a class="headerlink" href="#other-datasets" title="Link to this heading">#</a></h3>
+<p>For any splice event data other those described above, you can use the ‘base.GenericDataset’ class.</p>
+<p>When using MAJIQ for splice event quantification and differential comparison, it outputs a tab-separated file with delta PSI and significance values for different LSVs (also called voila files). The <a class="reference internal" href="../Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset" title="ptm_pose.splicing_tools.base.GenericDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericDataset</span></code></a> class can be used to load and process these datasets.</p>
+<p>To run PTM-POSE with this class, first load your data into a pandas dataframe (or dictionary of dataframes for multiple event types) and then create a GenericDataset object with the appropriate column names. Then, you can run the <a class="reference internal" href="../Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.run_pose_generic" title="ptm_pose.splicing_tools.base.GenericDataset.run_pose_generic"><code class="xref py py-func docutils literal notranslate"><span class="pre">run_pose_generic()</span></code></a> function within the GenericDataset object to project PTMs onto your splice events. If you wish to identify altered flanking sequences as well, add the <cite>identify_flanking_sequences = True</cite> parameter to the function. See below for an example of how to run PTM-POSE with a generic dataset:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptm</span><span class="o">-</span><span class="n">pose</span><span class="o">.</span><span class="n">splicing_tools</span><span class="o">.</span><span class="n">base</span> <span class="kn">import</span><span class="w"> </span><span class="nn">GenericDataset</span>
+
+<span class="n">my_splice_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;my_splice_data.csv&#39;</span><span class="p">)</span>
+
+<span class="c1">#initialize the object specifying the column names containing splice event information</span>
+<span class="n">my_dataset</span> <span class="o">=</span> <span class="n">GenericDataset</span><span class="p">(</span><span class="n">my_splice_data</span><span class="p">,</span>
+        <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chromosome&#39;</span><span class="p">,</span>
+        <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span>
+        <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;region start&#39;</span><span class="p">,</span>
+        <span class="n">region_end_col</span> <span class="o">=</span>  <span class="s1">&#39;region end&#39;</span><span class="p">,</span>
+        <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;event id&#39;</span><span class="p">,</span>
+        <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;Gene name&#39;</span><span class="p">,</span>
+        <span class="n">dpsi_col</span><span class="o">=</span><span class="s1">&#39;dPSI&#39;</span><span class="p">,</span>
+        <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;significance&#39;</span><span class="p">,</span>
+        <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">)</span>
+
+<span class="n">my_dataset</span><span class="o">.</span><span class="n">run_pose_generic</span><span class="p">(</span><span class="n">identify_flanking_sequences</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="n">my_dataset</span><span class="o">.</span><span class="n">run_nease_generic</span><span class="p">()</span>
+
+<span class="n">my_dataset</span><span class="o">.</span><span class="n">save_outputs</span><span class="p">(</span><span class="n">odir</span> <span class="o">=</span> <span class="s1">&#39;./output_dir/&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You may need to provide additional information depending on your specific use case. See below for additional options you may wish to adjust when running PTM-POSE with a generic dataset.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>min_dpsi</p></td>
+<td><p>Minimum delta PSI required to be considered for analysis (ignored if dpsi_col is None)</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>alpha</p></td>
+<td><p>Significance threshold for analysis (ignored if sig_col is None)</p></td>
+<td><p>0.05</p></td>
+</tr>
+<tr class="row-even"><td><p>start_coordinate_system</p></td>
+<td><p>Whether start coordinate is 0- or 1-based (MATS is 0-based, for example)</p></td>
+<td><p>‘1-based’</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="downstream-analysis">
+<h2>Downstream Analysis<a class="headerlink" href="#downstream-analysis" title="Link to this heading">#</a></h2>
+<p>Once you have run PTM-POSE and generated the output dataframes, you can use the various analysis modules described in the analysis gallery to explore the impacts of splicing on PTMs in your dataset. You can also use the <cite>annotate</cite> module to append additional information about your PTMs from various databases, which may be useful for some of the analysis modules. See the following section for instructions on how to use the <cite>annotate</cite> module to append additional information about your PTMs.</p>
 </section>
 </section>
 
@@ -566,20 +664,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="quickstart.html"
+       href="index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Installation</p>
+        <p class="prev-next-title">&lt;no title&gt;</p>
       </div>
     </a>
     <a class="right-next"
-       href="Filtering_PTMs.html"
+       href="Annotating_PTMs.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Filtering PTMs and Events</p>
+        <p class="prev-next-title">Annotating PTMs with Functional Information</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -599,14 +697,19 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#formatting-data">Formatting Data</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#identifying-differentially-included-ptms">Identifying differentially included PTMs</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#altered-flanking-sequences">Altered Flanking Sequences</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-ptm-pose-with-mats-or-spliceseq-datasets">Using PTM-POSE with MATS or SpliceSeq datasets</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mats-datasets">MATS datasets</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spliceseq-datasets">SpliceSeq datasets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#formatting-data">Formatting Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tools-with-built-in-compatibility">Tools with Built-in Compatibility</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#other-quantification-tools">Other Quantification Tools</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-ptm-pose">Running PTM-POSE</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mats-datasets">MATS Datasets</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spliceseq-datasets">SpliceSeq Datasets</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#majiq-datasets-voila-tsv-files">MAJIQ Datasets (voila tsv files)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#other-datasets">Other Datasets</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#downstream-analysis">Downstream Analysis</a></li>
 </ul>
   </nav></div>
 

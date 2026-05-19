@@ -1,9 +1,15 @@
 :orphan:
 
+.. Analysis Gallery
+
 Gallery
 =======
 
 Below you will find different ways you might choose to analyze the PTMs identified by PTM-POSE:
+
+.. raw:: html
+
+  <div id='sg-tag-list' class='sphx-glr-tag-list'></div>
 
 
 .. raw:: html
@@ -22,6 +28,10 @@ General Overview of Spliced PTMs
 ---------------------------------
 
 
+.. raw:: html
+
+  <div id='sg-tag-list' class='sphx-glr-tag-list'></div>
+
 
 .. raw:: html
 
@@ -38,7 +48,7 @@ General Overview of Spliced PTMs
   .. image:: /gallery_output/A_Overview_of_Spliced_PTMs/images/thumb/sphx_glr_plot_NumberOfPTMs_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_A_Overview_of_Spliced_PTMs_plot_NumberOfPTMs.py`
+  :doc:`/gallery_output/A_Overview_of_Spliced_PTMs/plot_NumberOfPTMs`
 
 .. raw:: html
 
@@ -55,7 +65,7 @@ General Overview of Spliced PTMs
   .. image:: /gallery_output/A_Overview_of_Spliced_PTMs/images/thumb/sphx_glr_plot_PTM_annotations_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_A_Overview_of_Spliced_PTMs_plot_PTM_annotations.py`
+  :doc:`/gallery_output/A_Overview_of_Spliced_PTMs/plot_PTM_annotations`
 
 .. raw:: html
 
@@ -72,7 +82,7 @@ General Overview of Spliced PTMs
   .. image:: /gallery_output/A_Overview_of_Spliced_PTMs/images/thumb/sphx_glr_plot_filter_impact_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_A_Overview_of_Spliced_PTMs_plot_filter_impact.py`
+  :doc:`/gallery_output/A_Overview_of_Spliced_PTMs/plot_filter_impact`
 
 .. raw:: html
 
@@ -90,6 +100,10 @@ Functional Impact of Spliced PTMs
 ---------------------------------
 
 
+.. raw:: html
+
+  <div id='sg-tag-list' class='sphx-glr-tag-list'></div>
+
 
 .. raw:: html
 
@@ -106,7 +120,7 @@ Functional Impact of Spliced PTMs
   .. image:: /gallery_output/FunctionEnrichment/images/thumb/sphx_glr_plot_num_annotations_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_FunctionEnrichment_plot_num_annotations.py`
+  :doc:`/gallery_output/FunctionEnrichment/plot_num_annotations`
 
 .. raw:: html
 
@@ -123,7 +137,7 @@ Functional Impact of Spliced PTMs
   .. image:: /gallery_output/FunctionEnrichment/images/thumb/sphx_glr_plot_geneset_enrichment_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_FunctionEnrichment_plot_geneset_enrichment.py`
+  :doc:`/gallery_output/FunctionEnrichment/plot_geneset_enrichment`
 
 .. raw:: html
 
@@ -140,7 +154,7 @@ Functional Impact of Spliced PTMs
   .. image:: /gallery_output/FunctionEnrichment/images/thumb/sphx_glr_plot_specific_annotation_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_FunctionEnrichment_plot_specific_annotation.py`
+  :doc:`/gallery_output/FunctionEnrichment/plot_specific_annotation`
 
 .. raw:: html
 
@@ -159,6 +173,10 @@ Impact on protein interaction and regulatory networks
 
 
 
+.. raw:: html
+
+  <div id='sg-tag-list' class='sphx-glr-tag-list'></div>
+
 
 .. raw:: html
 
@@ -175,7 +193,7 @@ Impact on protein interaction and regulatory networks
   .. image:: /gallery_output/Networks/images/thumb/sphx_glr_plot_ksea_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_Networks_plot_ksea.py`
+  :doc:`/gallery_output/Networks/plot_ksea`
 
 .. raw:: html
 
@@ -192,7 +210,7 @@ Impact on protein interaction and regulatory networks
   .. image:: /gallery_output/Networks/images/thumb/sphx_glr_plot_protein_interactions_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_Networks_plot_protein_interactions.py`
+  :doc:`/gallery_output/Networks/plot_protein_interactions`
 
 .. raw:: html
 
@@ -209,7 +227,7 @@ Impact on protein interaction and regulatory networks
   .. image:: /gallery_output/Networks/images/thumb/sphx_glr_plot_kstar_enrichment_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_Networks_plot_kstar_enrichment.py`
+  :doc:`/gallery_output/Networks/plot_kstar_enrichment`
 
 .. raw:: html
 
@@ -228,6 +246,10 @@ Analyzing altered flanking sequences
 
 
 
+.. raw:: html
+
+  <div id='sg-tag-list' class='sphx-glr-tag-list'></div>
+
 
 .. raw:: html
 
@@ -244,7 +266,7 @@ Analyzing altered flanking sequences
   .. image:: /gallery_output/flanking_sequences/images/thumb/sphx_glr_plot_sequence_comparison_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_flanking_sequences_plot_sequence_comparison.py`
+  :doc:`/gallery_output/flanking_sequences/plot_sequence_comparison`
 
 .. raw:: html
 
@@ -261,7 +283,7 @@ Analyzing altered flanking sequences
   .. image:: /gallery_output/flanking_sequences/images/thumb/sphx_glr_plot_sh2_domain_motifs_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_flanking_sequences_plot_sh2_domain_motifs.py`
+  :doc:`/gallery_output/flanking_sequences/plot_sh2_domain_motifs`
 
 .. raw:: html
 
@@ -278,7 +300,7 @@ Analyzing altered flanking sequences
   .. image:: /gallery_output/flanking_sequences/images/thumb/sphx_glr_plot_location_altered_flanks_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_flanking_sequences_plot_location_altered_flanks.py`
+  :doc:`/gallery_output/flanking_sequences/plot_location_altered_flanks`
 
 .. raw:: html
 
@@ -295,7 +317,7 @@ Analyzing altered flanking sequences
   .. image:: /gallery_output/flanking_sequences/images/thumb/sphx_glr_plot_kinase_library_affinity_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_flanking_sequences_plot_kinase_library_affinity.py`
+  :doc:`/gallery_output/flanking_sequences/plot_kinase_library_affinity`
 
 .. raw:: html
 

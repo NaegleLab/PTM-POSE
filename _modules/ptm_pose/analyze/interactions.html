@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -42,6 +42,7 @@
     <script src="../../../_static/documentation_options.js?v=d2a3a1a5"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ptm_pose/analyze/interactions';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -153,17 +154,17 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/Dependencies.html">Dependencies</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../../PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Projection_Instructions.html">Projecting PTMs onto Splice Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Analyzing_PTMs.html">Analyzing PTM Impacts</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
 <ul class="nav bd-sidenav">
@@ -204,9 +205,10 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Advanced/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
     </div>
@@ -338,13 +340,13 @@ document.write(`
 
 
 <span class="c1">#custom stat functions</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotate</span><span class="p">,</span> <span class="n">helpers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotate</span><span class="p">,</span> <span class="n">helpers</span><span class="p">,</span> <span class="n">pose_config</span>
 
 
 
 
 <div class="viewcode-block" id="protein_interactions">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">protein_interactions</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to assess interactions facilitated by PTMs in splicing network</span>
@@ -386,7 +388,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="protein_interactions.get_interaction_network">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_interaction_network">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_interaction_network">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_interaction_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_type</span> <span class="o">=</span> <span class="s1">&#39;Gene&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given the spliced PTM data, extract interaction information and construct a dataframe containing all possible interactions driven by PTMs, either centered around specific PTMs or specific genes.</span>
@@ -433,7 +435,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="protein_interactions.get_interaction_stats">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_interaction_stats">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_interaction_stats">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_interaction_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given the networkx interaction graph, calculate various network centrality measures to identify the most relevant PTMs or genes in the network</span>
@@ -443,7 +445,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="protein_interactions.get_protein_interaction_network">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_protein_interaction_network">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_protein_interaction_network">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_protein_interaction_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protein</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given a specific protein, return the network data for that protein</span>
@@ -472,7 +474,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="protein_interactions.summarize_protein_network">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.summarize_protein_network">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.summarize_protein_network">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">summarize_protein_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protein</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given a protein of interest, summarize the network data for that protein</span>
@@ -509,7 +511,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="protein_interactions.compare_to_nease">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.compare_to_nease">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.compare_to_nease">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compare_to_nease</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nease_edges</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given the network edges generated by NEASE, compare the network edges generated by NEASE to the network edges generated by the PTM-driven interactions</span>
@@ -564,7 +566,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="protein_interactions.plot_nease_comparison">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_nease_comparison">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_nease_comparison">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">plot_nease_comparison</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nease_edges</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given the comparison data generated by compare_to_nease, plot the number of edges identified by NEASE and PTM-POSE</span>
@@ -600,7 +602,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="protein_interactions.plot_interaction_network">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_interaction_network">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_interaction_network">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">plot_interaction_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modified_color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">modified_node_size</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">interacting_color</span> <span class="o">=</span> <span class="s1">&#39;lightblue&#39;</span><span class="p">,</span> <span class="n">interacting_node_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">defaultedgecolor</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">color_edges_by</span> <span class="o">=</span> <span class="s1">&#39;Same&#39;</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">proteins_to_label</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">labelcolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given the interactiong graph and network data outputted from analyze.get_interaction_network, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs. by default, will only label proteins </span>
@@ -649,7 +651,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="protein_interactions.plot_network_centrality">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_network_centrality">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_network_centrality">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">plot_network_centrality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>  <span class="n">centrality_measure</span> <span class="o">=</span> <span class="s1">&#39;Degree&#39;</span><span class="p">,</span> <span class="n">top_N</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">modified_color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">interacting_color</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot the centrality measure for the top N proteins in the interaction network based on a specified centrality measure. This will help identify the most relevant PTMs/genes in the network.</span>
@@ -678,7 +680,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="get_edge_colors">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.get_edge_colors">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.get_edge_colors">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_edge_colors</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">,</span> <span class="n">network_data</span><span class="p">,</span> <span class="n">defaultedgecolor</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">color_edges_by</span> <span class="o">=</span> <span class="s1">&#39;Database&#39;</span><span class="p">,</span> <span class="n">database_color_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;PSP/RegPhos&#39;</span><span class="p">:</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">:</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;PTMcode&#39;</span><span class="p">:</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTMInt&#39;</span><span class="p">:</span><span class="s1">&#39;gold&#39;</span><span class="p">,</span> <span class="s1">&#39;Multiple&#39;</span><span class="p">:</span><span class="s1">&#39;purple&#39;</span><span class="p">}):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the edge colors to use for a provided networkx graph, either plotting all edges the same color or coloring them based on the database they are from.</span>
@@ -732,7 +734,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="plot_interaction_network">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.plot_interaction_network">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.plot_interaction_network">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_interaction_network</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">,</span> <span class="n">network_data</span><span class="p">,</span> <span class="n">network_stats</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">modified_color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">modified_node_size</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">interacting_color</span> <span class="o">=</span> <span class="s1">&#39;lightblue&#39;</span><span class="p">,</span> <span class="n">interacting_node_size</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">defaultedgecolor</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">color_edges_by</span> <span class="o">=</span> <span class="s1">&#39;Same&#39;</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">legend_fontsize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">proteins_to_label</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">labelcolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given the interaction graph and network data outputted from analyze.protein_interactions, plot the interaction network, signifying which proteins or ptms are altered by splicing and the specific regulation change that occurs. by default, will only label proteins </span>
@@ -832,7 +834,7 @@ document.write(`
 
     
 <div class="viewcode-block" id="plot_network_centrality">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.plot_network_centrality">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.plot_network_centrality">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_network_centrality</span><span class="p">(</span><span class="n">network_stats</span><span class="p">,</span> <span class="n">network_data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">centrality_measure</span> <span class="o">=</span> <span class="s1">&#39;Degree&#39;</span><span class="p">,</span> <span class="n">top_N</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">modified_color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">interacting_color</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given the network statistics data obtained from analyze.get_interaction_stats(), plot the top N proteins in the protein interaction network based on centrality measure (Degree, Betweenness, or Closeness)</span>
@@ -886,7 +888,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="get_interaction_stats">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.interactions.get_interaction_stats">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.get_interaction_stats">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_interaction_stats</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given the networkx interaction graph, calculate various network centrality measures to identify the most relevant PTMs or genes in the network</span>
@@ -897,6 +899,355 @@ document.write(`
     <span class="n">betweenness_centrality</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">interaction_graph</span><span class="p">)</span>
     <span class="n">network_stats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Degree&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">interaction_graph</span><span class="o">.</span><span class="n">degree</span><span class="p">()),</span> <span class="s1">&#39;Degree Centrality&#39;</span><span class="p">:</span><span class="n">degree_centrality</span><span class="p">,</span> <span class="s1">&#39;Closeness&#39;</span><span class="p">:</span><span class="n">closeness_centrality</span><span class="p">,</span><span class="s1">&#39;Betweenness&#39;</span><span class="p">:</span><span class="n">betweenness_centrality</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">network_stats</span></div>
+
+
+<div class="viewcode-block" id="reformat_pssm">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.reformat_pssm">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">reformat_pssm</span><span class="p">(</span><span class="n">pssm_longform</span><span class="p">,</span> <span class="n">protein</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reformat a long-form PSSM dataframe containing multiple PSSMs into a wide-form PSSM dataframe including only a single domain, with amino acids as rows and positions as columns. </span>
+<span class="sd">    </span>
+<span class="sd">    Long-form PSSM: index is the protein name associated with PSSM data, columns indicate position and amino acid in the PSSM (e.g. &#39;1A&#39;, &#39;-1G&#39;, &#39;2P&#39;, &#39;-4K&#39;, etc.), and values are the scores for each amino acid at each position.</span>
+<span class="sd">    </span>
+<span class="sd">    Wide-form PSSM: index is the position, columns are the amino acid (for a single protein/domain)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pssm_longform: pd.DataFrame</span>
+<span class="sd">        Dataframe containing the long-form PSSM data, with index as protein names and columns as positions and amino acids. This is the same format as published in KinaseLibrary publications for kinase and SH2 domain PSSMs</span>
+<span class="sd">    protein: str</span>
+<span class="sd">        Protein name to extract the PSSM for. This should match the index of the pssm_longform dataframe.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pssm_wideform: pd.DataFrame</span>
+<span class="sd">        Dataframe containing the wide-form PSSM data, with index as positions and columns as amino acids. The values are the scores for each amino acid at each position.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#extract amino acids and positions from the columns of the PSSM</span>
+    <span class="n">amino_acid</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pssm_longform</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">amino_acid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">position</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">amino_acid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">amino_acid</span><span class="p">)</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+
+    <span class="c1">#go through and extract score for each position and amino acid, placing it in the correct place in the matrix</span>
+    <span class="n">pssm_matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">amino_acid</span><span class="p">)</span>
+    <span class="n">pssm_series</span> <span class="o">=</span> <span class="n">pssm_longform</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">protein</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pssm_longform</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">aa</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">pssm_matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">pos</span><span class="p">,</span> <span class="n">aa</span><span class="p">]</span> <span class="o">=</span> <span class="n">pssm_series</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">pssm_matrix</span></div>
+
+
+<div class="viewcode-block" id="get_percentile">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.get_percentile">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_percentile</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">background</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a score and a background distribution, calculate the percentile of the score in the background distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    score: float</span>
+<span class="sd">        Score to calculate the percentile for.</span>
+<span class="sd">    background: list or np.array</span>
+<span class="sd">        Background distribution to calculate the percentile from.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    percentile: float</span>
+<span class="sd">        Percentile of the score in the background distribution.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">background</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">background</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">background</span> <span class="o">&lt;=</span> <span class="n">score</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span></div>
+
+
+<span class="c1">### PSSMs</span>
+<div class="viewcode-block" id="PSSM">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.PSSM">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PSSM</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to take a position-specific scoring matrix (PSSM) and score a peptide containing a PTM against the PSSM. </span>
+
+<span class="sd">    Code adapted from work by Gabriela Salazar Lopez</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pssm: pd.DataFrame</span>
+<span class="sd">        Dataframe containing the PSSM, with amino acids as rows and positions as columns. The values should be the scores for each amino acid at each position.</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pssm</span><span class="p">,</span> <span class="n">modification</span> <span class="o">=</span> <span class="s1">&#39;Phosphorylation&#39;</span><span class="p">,</span> <span class="n">residue</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">plus_residues</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">minus_residues</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pssm</span> <span class="o">=</span> <span class="n">pssm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residue</span> <span class="o">=</span> <span class="n">residue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">modification</span> <span class="o">=</span> <span class="n">modification</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plus_residues</span> <span class="o">=</span> <span class="n">plus_residues</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minus_residues</span> <span class="o">=</span> <span class="n">minus_residues</span>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">trim_pep</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pep</span><span class="p">):</span>
+        <span class="c1">#find where psite is in pep</span>
+        <span class="n">psite_loc</span> <span class="o">=</span> <span class="n">pep</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+        <span class="c1">#get start and end locations of peptide to trim to match pssm positions</span>
+        <span class="n">beg</span> <span class="o">=</span> <span class="n">psite_loc</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">minus_residues</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">psite_loc</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">plus_residues</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">beg</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">end</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">pep</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pep</span><span class="p">[</span><span class="n">beg</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+            
+<div class="viewcode-block" id="PSSM.make_mask">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.PSSM.make_mask">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pep</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a peptide mask matching PSSM positions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#strip &#39;y&#39; from pep</span>
+        <span class="n">pep</span> <span class="o">=</span> <span class="n">pep</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pssm</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pssm</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pssm</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">AA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pssm</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">pep</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">AA</span><span class="p">:</span>
+                    <span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">mask</span></div>
+
+
+    
+<div class="viewcode-block" id="PSSM.score_SS">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.PSSM.score_SS">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">score_SS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pep</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Use the scansite scoring method to score a peptide against the PSSM. This will first trim the peptide to match the PSSM positions (if not possible will return NaN), then calculate the raw score for the peptide, the optimal score for the PSSM given the peptide length, and finally calculate the final score as (optimal - raw)/optimal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pep_trimmed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trim_pep</span><span class="p">(</span><span class="n">pep</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pep_trimmed</span> <span class="o">==</span> <span class="n">pep_trimmed</span><span class="p">:</span>
+            <span class="c1">#get raw score for trimmed peptide</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_mask</span><span class="p">(</span><span class="n">pep_trimmed</span><span class="p">)</span>
+            <span class="n">masked_PSSM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pssm</span> <span class="o">*</span> <span class="n">mask</span>
+            <span class="n">bit_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">masked_PSSM</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span> <span class="mf">0.0000000001</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1">#score peptide and add small amount to all sums to avoid taking log of 0</span>
+            <span class="n">raw_score</span> <span class="o">=</span> <span class="n">bit_scores</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pep_trimmed</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1">### Get optimal score for the PSSM given the peptide length</span>
+            <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pssm</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.0000000001</span> <span class="c1">#take max of each row and add small amount to avoid taking log of 0</span>
+            <span class="n">opts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> 
+            <span class="n">opt_score</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pep_trimmed</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1">### Calculate final score</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="p">(</span><span class="n">opt_score</span><span class="o">-</span><span class="n">raw_score</span><span class="p">)</span><span class="o">/</span><span class="n">opt_score</span>
+            <span class="k">return</span> <span class="n">score</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">score_peptides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">peptides</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;scansite&#39;</span><span class="p">):</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">pep</span> <span class="ow">in</span> <span class="n">peptides</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;scansite&#39;</span><span class="p">:</span>
+                <span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score_SS</span><span class="p">(</span><span class="n">pep</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown scoring method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">. Available methods are: &#39;scansite&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scores</span></div>
+
+    
+<div class="viewcode-block" id="ScorePSSMs">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ScorePSSMs</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to score a list of peptides against a PSSM. This will take a list of peptides and score each peptide against the PSSM, returning a dataframe with the scores.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pssm: dict of pd.DataFrame</span>
+<span class="sd">        Dictionary with dataframes containing the PSSM, with amino acids as rows and positions as columns. The values should be the scores for each amino acid at each position.</span>
+<span class="sd">    modification: str</span>
+<span class="sd">        Type of modification to score against the PSSM. Default is &#39;Phosphorylation&#39;.</span>
+<span class="sd">    residue: str</span>
+<span class="sd">        Residue to score against the PSSM. Default is &#39;Y&#39;.</span>
+<span class="sd">    plus_residues: int</span>
+<span class="sd">        Number of residues to consider after the modified residue. Default is 4.</span>
+<span class="sd">    minus_residues: int</span>
+<span class="sd">        Number of residues to consider before the modified residue. Default is 2.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pssms</span><span class="p">,</span> <span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">background_scores</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">modification</span> <span class="o">=</span> <span class="s1">&#39;Phosphorylation&#39;</span><span class="p">,</span> <span class="n">residue</span> <span class="o">=</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">plus_residues</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">minus_residues</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="c1">#reduce spliced_ptms dataframe to only those with the specified modification and residue</span>
+        <span class="n">spliced_ptms</span> <span class="o">=</span> <span class="n">spliced_ptms</span><span class="p">[</span><span class="n">spliced_ptms</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">modification</span><span class="p">]</span>
+        <span class="n">spliced_ptms</span> <span class="o">=</span> <span class="n">spliced_ptms</span><span class="p">[</span><span class="n">spliced_ptms</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">residue</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">spliced_ptms</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No PTMs for associated modification and residue (</span><span class="si">{</span><span class="n">modification</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">residue</span><span class="si">}</span><span class="s2">) found in spliced PTM data, so cannot perform requested analysis.&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">spliced_ptm</span> <span class="o">=</span> <span class="n">spliced_ptms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">modification</span> <span class="o">=</span> <span class="n">modification</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residue</span> <span class="o">=</span> <span class="n">residue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plus_residues</span> <span class="o">=</span> <span class="n">plus_residues</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minus_residues</span> <span class="o">=</span> <span class="n">minus_residues</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">background_scores</span> <span class="o">=</span> <span class="n">background_scores</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">pssms</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">))</span>
+        <span class="c1">#instantiate PSSM objects for each PSSM in the dictionary</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pssms</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="c1">#check if in long form (e.g. KinaseLibrary PSSM format</span>
+            <span class="k">if</span> <span class="s1">&#39;1A&#39;</span> <span class="ow">in</span> <span class="n">pssms</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pssms</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">protein</span> <span class="ow">in</span> <span class="n">pssms</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                    <span class="n">pssm</span> <span class="o">=</span> <span class="n">reformat_pssm</span><span class="p">(</span><span class="n">pssms</span><span class="p">,</span> <span class="n">protein</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pssms</span><span class="p">[</span><span class="n">protein</span><span class="p">]</span> <span class="o">=</span> <span class="n">PSSM</span><span class="p">(</span><span class="n">pssm</span><span class="p">,</span> <span class="n">modification</span> <span class="o">=</span> <span class="n">modification</span><span class="p">,</span> <span class="n">residue</span> <span class="o">=</span> <span class="n">residue</span><span class="p">,</span> <span class="n">plus_residues</span> <span class="o">=</span> <span class="n">plus_residues</span><span class="p">,</span> <span class="n">minus_residues</span> <span class="o">=</span> <span class="n">minus_residues</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s1">&#39;A&#39;</span> <span class="ow">in</span> <span class="n">pssms</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">pssms</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                <span class="c1">#if in wide form, just create a single PSSM object</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pssms</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;PSSM&#39;</span><span class="p">:</span> <span class="n">PSSM</span><span class="p">(</span><span class="n">pssms</span><span class="p">,</span> <span class="n">modification</span> <span class="o">=</span> <span class="n">modification</span><span class="p">,</span> <span class="n">residue</span> <span class="o">=</span> <span class="n">residue</span><span class="p">,</span> <span class="n">plus_residues</span> <span class="o">=</span> <span class="n">plus_residues</span><span class="p">,</span> <span class="n">minus_residues</span> <span class="o">=</span> <span class="n">minus_residues</span><span class="p">)}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dataframe format not recognized. Please provide a dataframe with either long-form PSSM data for multiple proteins (protein in index and positions/amino acids as columns like &#39;1A&#39;, &#39;-1G&#39;, etc.) or wide-form PSSM data for a single domain/protein (positions as index and amino acids as columns like &#39;A&#39;, &#39;G&#39;, &#39;P&#39;, etc.).&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pssms</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pssms</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">PSSM</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">modification</span> <span class="o">=</span> <span class="n">modification</span><span class="p">,</span> <span class="n">residue</span> <span class="o">=</span> <span class="n">residue</span><span class="p">,</span> <span class="n">plus_residues</span> <span class="o">=</span> <span class="n">plus_residues</span><span class="p">,</span> <span class="n">minus_residues</span> <span class="o">=</span> <span class="n">minus_residues</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pssms</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PSSMs must be a properly formatted dataframe or dictionary of dataframes&#39;</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="ScorePSSMs.print_available_pssms">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs.print_available_pssms">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_available_pssms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print the available PSSMs in the ScorePSSMs object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available PSSMs:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">protein</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pssms</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">protein</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">score_ptm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptm</span><span class="p">):</span>
+        <span class="n">pep</span> <span class="o">=</span> <span class="n">ptm</span><span class="p">[</span><span class="s1">&#39;Canonical Flanking Sequence&#39;</span><span class="p">]</span>
+        <span class="n">ptm_label</span> <span class="o">=</span> <span class="n">ptm</span><span class="p">[</span><span class="s1">&#39;Isoform ID&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">ptm</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ptm</span><span class="p">[</span><span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">]))</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pssms</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">name</span> <span class="o">=</span> <span class="n">ptm_label</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">protein</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pssms</span><span class="p">:</span>
+            <span class="n">scores</span><span class="p">[</span><span class="n">protein</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pssms</span><span class="p">[</span><span class="n">protein</span><span class="p">]</span><span class="o">.</span><span class="n">score_SS</span><span class="p">(</span><span class="n">pep</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scores</span>
+    
+<div class="viewcode-block" id="ScorePSSMs.score_background">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs.score_background">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">score_background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background_peptides</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Score a background set of peptides against the PSSMs and return a dataframe with the scores.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        background: pd.DataFrame</span>
+<span class="sd">            Dataframe containing the background peptides to score against the PSSMs. The index should be the peptide sequence and the columns should be the PSSM names.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            Dataframe containing the scores for each peptide against each PSSM, with columns for the PSSM name and the score.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">background_peptides</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">background_peptides</span> <span class="o">=</span> <span class="n">pose_config</span><span class="o">.</span><span class="n">ptm_coordinates</span><span class="p">[</span><span class="s1">&#39;Canonical Flanking Sequence&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+        <span class="n">background_scores</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">pep</span> <span class="ow">in</span> <span class="n">background_peptides</span><span class="p">:</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_ptm</span><span class="p">(</span><span class="n">pep</span><span class="p">)</span>
+            <span class="n">scores</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">pep</span>
+            <span class="n">background_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">background_scores</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">background_scores</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ScorePSSMs.score_all_ptms">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs.score_all_ptms">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">score_all_ptms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Score all PTMs in the spliced PTM dataframe against the PSSMs and return a dataframe with the scores.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            Dataframe containing the scores for each PTM against each PSSM, with columns for the PSSM name and the score.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ptm_scores</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">ptm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spliced_ptm</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_ptm</span><span class="p">(</span><span class="n">ptm</span><span class="p">)</span>
+            <span class="n">ptm_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+
+        <span class="n">ptm_scores</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">ptm_scores</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ptm_scores</span> <span class="o">=</span> <span class="n">ptm_scores</span></div>
+
+
+<div class="viewcode-block" id="ScorePSSMs.get_percentiles">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs.get_percentiles">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_percentiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background_scores</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given the background matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;background_scores&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">background_scores</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;generating scores on entire background set. If you want a specific background set or have already generated this, please provide it in the background_scores parameter.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">score_background</span><span class="p">()</span>
+            <span class="n">background_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_scores</span>
+        <span class="k">elif</span> <span class="n">background_scores</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">background_scores</span> <span class="o">=</span> <span class="n">background_scores</span>
+
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ptm_scores&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">score_all_ptms</span><span class="p">()</span>
+
+        <span class="n">percentiles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptm_scores</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">domain</span> <span class="ow">in</span> <span class="n">percentiles</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">percentiles</span><span class="p">[</span><span class="n">domain</span><span class="p">]</span> <span class="o">=</span> <span class="n">percentiles</span><span class="p">[</span><span class="n">domain</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">get_percentile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">background_scores</span><span class="p">[</span><span class="n">domain</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ptm_percentiles</span> <span class="o">=</span> <span class="n">percentiles</span></div>
+
+
+
+    
+<div class="viewcode-block" id="ScorePSSMs.get_top_domains">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs.get_top_domains">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_top_domains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">threshold_type</span> <span class="o">=</span> <span class="s1">&#39;scores&#39;</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">8</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the top domains based on the specified threshold and number of top domains. Threshold can either based on scores or percentile</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ptm_scores&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">score_all_ptms</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">threshold_type</span> <span class="o">==</span> <span class="s1">&#39;scores&#39;</span><span class="p">:</span>
+            <span class="n">top_domains</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptm_scores</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ptm_scores</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">top_domains</span> <span class="o">=</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">top_domains</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">top_domains</span></div>
+
+    
+<div class="viewcode-block" id="ScorePSSMs.append_top_domains">
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs.append_top_domains">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">append_top_domains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">threshold_type</span> <span class="o">=</span> <span class="s1">&#39;scores&#39;</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">8</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Append the top domains to the spliced PTM dataframe based on the specified threshold and number of top domains.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        threshold: int</span>
+<span class="sd">            Threshold for the scores to consider a domain as top. Default is 2.</span>
+<span class="sd">        threshold_type: str</span>
+<span class="sd">            Type of threshold to use. Default is &#39;scores&#39;, which will use the scores from the PSSMs.</span>
+<span class="sd">        n: int</span>
+<span class="sd">            Number of top domains to return. Default is 8.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ptm_scores&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">score_all_ptms</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">spliced_ptm</span><span class="p">[</span><span class="s1">&#39;Top Domains&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spliced_ptm</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_top_domains</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">threshold_type</span><span class="o">=</span><span class="n">threshold_type</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">construct_score_gmt_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">construct_percentile_gmt_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+
+
 
 </pre></div>
 

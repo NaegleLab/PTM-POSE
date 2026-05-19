@@ -6,6 +6,10 @@ Functional Impact of Spliced PTMs
 ---------------------------------
 
 
+.. raw:: html
+
+  <div id='sg-tag-list' class='sphx-glr-tag-list'></div>
+
 
 .. raw:: html
 
@@ -22,7 +26,7 @@ Functional Impact of Spliced PTMs
   .. image:: /gallery_output/FunctionEnrichment/images/thumb/sphx_glr_plot_num_annotations_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_FunctionEnrichment_plot_num_annotations.py`
+  :doc:`/gallery_output/FunctionEnrichment/plot_num_annotations`
 
 .. raw:: html
 
@@ -39,7 +43,7 @@ Functional Impact of Spliced PTMs
   .. image:: /gallery_output/FunctionEnrichment/images/thumb/sphx_glr_plot_geneset_enrichment_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_FunctionEnrichment_plot_geneset_enrichment.py`
+  :doc:`/gallery_output/FunctionEnrichment/plot_geneset_enrichment`
 
 .. raw:: html
 
@@ -56,7 +60,7 @@ Functional Impact of Spliced PTMs
   .. image:: /gallery_output/FunctionEnrichment/images/thumb/sphx_glr_plot_specific_annotation_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_FunctionEnrichment_plot_specific_annotation.py`
+  :doc:`/gallery_output/FunctionEnrichment/plot_specific_annotation`
 
 .. raw:: html
 

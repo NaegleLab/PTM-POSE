@@ -1,3 +1,5 @@
+.. Analysis Gallery
+
 Gallery
 =======
 

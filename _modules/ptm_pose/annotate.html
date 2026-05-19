@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -42,6 +42,7 @@
     <script src="../../_static/documentation_options.js?v=d2a3a1a5"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ptm_pose/annotate';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -153,16 +154,15 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/Dependencies.html">Dependencies</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Projection_Instructions.html">Projecting PTMs onto Splice Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
@@ -204,9 +204,10 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Advanced/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
     </div>
@@ -348,7 +349,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="get_available_gmt_annotations">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.get_available_gmt_annotations">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.get_available_gmt_annotations">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_available_gmt_annotations</span><span class="p">(</span><span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;dict&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the annotations available in resource files in GMT format. Can be outputted as either a dictionary or pandas DataFrame</span>
@@ -407,7 +408,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="add_custom_annotation">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.add_custom_annotation">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.add_custom_annotation">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">add_custom_annotation</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">annotation_data</span><span class="p">,</span> <span class="n">source_name</span><span class="p">,</span> <span class="n">annotation_type</span><span class="p">,</span> <span class="n">annotation_col</span><span class="p">,</span> <span class="n">accession_col</span> <span class="o">=</span> <span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">,</span> <span class="n">residue_col</span> <span class="o">=</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="n">position_col</span> <span class="o">=</span> <span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add custom annotation data to ptms or altered flanking sequence dataframes</span>
@@ -468,7 +469,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="simplify_annotation">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.simplify_annotation">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.simplify_annotation">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">simplify_annotation</span><span class="p">(</span><span class="n">annotation</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given an annotation, remove additional information such as whether or not a function is increasing or decreasing. For example, &#39;cell growth, induced&#39; would be simplified to &#39;cell growth&#39;</span>
@@ -506,7 +507,7 @@ document.write(`
     <span class="k">return</span> <span class="n">collapsed</span>
 
 <div class="viewcode-block" id="load_gmt_file">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.load_gmt_file">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.load_gmt_file">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">load_gmt_file</span><span class="p">(</span><span class="n">gmt_file</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load a GMT file into a pandas DataFrame</span>
@@ -521,7 +522,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="construct_annotation_dict_from_gmt">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.construct_annotation_dict_from_gmt">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.construct_annotation_dict_from_gmt">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_annotation_dict_from_gmt</span><span class="p">(</span><span class="n">gmt_df</span><span class="p">,</span> <span class="n">key_type</span> <span class="o">=</span> <span class="s1">&#39;annotation&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a gmt annotation file format, construct a dictionary mapping each item to its annotations, with either the annotation as key or PTM as the key</span>
@@ -549,7 +550,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="construct_annotation_dict_from_df">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.construct_annotation_dict_from_df">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.construct_annotation_dict_from_df">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_annotation_dict_from_df</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">annot_col</span><span class="p">,</span> <span class="n">key_type</span> <span class="o">=</span> <span class="s1">&#39;annotation&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given an annotated PTM dataframe, construct a dictionary mapping each item to its annotations, with either the annotation as key or PTM as the key</span>
@@ -581,7 +582,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="check_gmt_file">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.check_gmt_file">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.check_gmt_file">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_gmt_file</span><span class="p">(</span><span class="n">gmt_file</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">annot_type</span><span class="p">,</span> <span class="n">automatic_download</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">odir</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a gmt file path, check to make sure it exists. If it doesn&#39;t, either raise error or download and save a gmt file in the provided directory.</span>
@@ -636,7 +637,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="process_database_annotations">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.process_database_annotations">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.process_database_annotations">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">process_database_annotations</span><span class="p">(</span><span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">key_type</span> <span class="o">=</span> <span class="s1">&#39;annotation&#39;</span><span class="p">,</span> <span class="n">collapsed</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">resource_dir</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">automatic_download</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a database and annotation type, find and process the annotations into a dictionary mapping each PTM to its annotations, or vice versa</span>
@@ -711,7 +712,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="append_from_gmt">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.append_from_gmt">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.append_from_gmt">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">append_from_gmt</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gmt_df</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">column_name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a gmt annotation file format, add the annotations to the ptms dataframe</span>
@@ -766,7 +767,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="construct_gmt_df">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.construct_gmt_df">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.construct_gmt_df">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_gmt_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">annotation_col</span><span class="p">,</span> <span class="n">description</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">annotation_separator</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">odir</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fname</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">compressed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given annotation data, construct a dataframe in the gmt file format. Save if odir and fname are provided</span>
@@ -833,7 +834,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="construct_custom_gmt_file">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.construct_custom_gmt_file">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.construct_custom_gmt_file">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_custom_gmt_file</span><span class="p">(</span><span class="n">annotation_df</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">annot_type</span><span class="p">,</span> <span class="n">annot_col</span><span class="p">,</span> <span class="n">accession_col</span> <span class="o">=</span> <span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">,</span> <span class="n">residue_col</span> <span class="o">=</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="n">position_col</span> <span class="o">=</span> <span class="s1">&#39;PTM Position in Isofrom&#39;</span><span class="p">,</span> <span class="n">odir</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function for constructing a gmt file for annotations not currently provided by PTM-POSE. Ideally, these annotations should be partially processed to have the same format as PTM-POSE annotations. For example, they should have columns for UniProtKB Accession, Residue, PTM Position in Isoform, and the annotation data to be added.</span>
@@ -896,7 +897,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="construct_PhosphoSitePlus_gmt_files">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.construct_PhosphoSitePlus_gmt_files">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.construct_PhosphoSitePlus_gmt_files">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_PhosphoSitePlus_gmt_files</span><span class="p">(</span><span class="n">regulatory_site_file</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">kinase_substrate_file</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">disease_association_file</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">odir</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given three PhosphoSitePlus annotation files, convert to readily usable format with PTM-POSE in gmt file format</span>
@@ -1028,7 +1029,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="add_ELM_interactions">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.add_ELM_interactions">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.add_ELM_interactions">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">add_ELM_interactions</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">report_success</span> <span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a spliced ptms or altered flanks dataframe from the project module, add ELM interaction data to the dataframe</span>
@@ -1113,7 +1114,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="add_ELM_matched_motifs">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.add_ELM_matched_motifs">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.add_ELM_matched_motifs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">add_ELM_matched_motifs</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">flank_size</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">report_success</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given spliced ptms or altered flanks dataframes, compare the canonical flanking sequences of each PTM to motifs recorded in the ELM database. If a match is found, the ELM motif will be recorded in the ELM:Motif Matches column</span>
@@ -1181,7 +1182,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="construct_PTMInt_gmt_file">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.construct_PTMInt_gmt_file">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.construct_PTMInt_gmt_file">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_PTMInt_gmt_file</span><span class="p">(</span><span class="n">file</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">odir</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">max_retries</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">delay</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Download and process PTMInt interaction data to create gmt files for PTM-POSE</span>
@@ -1252,7 +1253,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="extract_ids_PTMcode">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.extract_ids_PTMcode">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.extract_ids_PTMcode">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_ids_PTMcode</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;## Protein1&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Many different ID forms are used in PTMcode, but we rely on UniProt IDs. This function is used to convert between Ensembl Gene IDs to UniProt IDs</span>
@@ -1278,7 +1279,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="construct_PTMcode_interprotein_gmt_file">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.construct_PTMcode_interprotein_gmt_file">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.construct_PTMcode_interprotein_gmt_file">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_PTMcode_interprotein_gmt_file</span><span class="p">(</span><span class="n">file</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">odir</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">max_retries</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">delay</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given the PTMcode interprotein interaction data, convert to readily usable format with PTM-POSE in gmt file format</span>
@@ -1372,7 +1373,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="extract_positions_from_DEPOD">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.extract_positions_from_DEPOD">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.extract_positions_from_DEPOD">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_positions_from_DEPOD</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given string object consisting of multiple modifications in the form of &#39;Residue-Position&#39; separated by &#39;, &#39;, extract the residue and position. Ignore any excess details in the string.</span>
@@ -1433,7 +1434,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="construct_DEPOD_gmt_file">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.construct_DEPOD_gmt_file">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.construct_DEPOD_gmt_file">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_DEPOD_gmt_file</span><span class="p">(</span><span class="n">odir</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">max_retries</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">delay</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Download and process DEPOD data to create a GMT file for PTM-POSE. DEPOD contains information on dephosphorylation sites and their corresponding substrates.</span>
@@ -1551,7 +1552,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="construct_RegPhos_gmt_file">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.construct_RegPhos_gmt_file">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.construct_RegPhos_gmt_file">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_RegPhos_gmt_file</span><span class="p">(</span><span class="n">file</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">odir</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    file : str</span>
@@ -1592,7 +1593,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="construct_PTMsigDB_gmt_files">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.construct_PTMsigDB_gmt_files">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.construct_PTMsigDB_gmt_files">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_PTMsigDB_gmt_files</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">odir</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">process_PSP_data</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given the PTMsigDB xlsx file, convert to readily usable format with PTM-POSE in gmt file format. This will also process the PhosphoSitePlus data in PTMsigDB if requested.</span>
@@ -1685,7 +1686,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="construct_omnipath_gmt_file">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.construct_omnipath_gmt_file">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.construct_omnipath_gmt_file">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_omnipath_gmt_file</span><span class="p">(</span><span class="n">min_sources</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">min_references</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">convert_to_gene_name</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">odir</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Download enzyme-substrate interactions from the OmniPath database. The data will be filtered based on the number of sources and references specified. The resulting data will be split into two categories: &#39;Writer&#39; enzymes, which add the modification, and &#39;Eraser&#39; enzymes, which remove the modification. The output will be saved as GMT files in resource files directory.</span>
@@ -1756,7 +1757,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="construct_combined_interactions_gmt_df">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.construct_combined_interactions_gmt_df">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.construct_combined_interactions_gmt_df">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_combined_interactions_gmt_df</span><span class="p">(</span><span class="n">interaction_databases</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="s1">&#39;PTMcode&#39;</span><span class="p">,</span> <span class="s1">&#39;PTMInt&#39;</span><span class="p">,</span> <span class="s1">&#39;RegPhos&#39;</span><span class="p">,</span> <span class="s1">&#39;DEPOD&#39;</span><span class="p">],</span> <span class="n">include_enzyme_interactions</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Combine interaction information and format into gmt format for downstream analysis. To avoid confusion, we will not include ability to save these files, as they are dependent on the specific databases chosen.</span>
@@ -1795,7 +1796,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="construct_combined_enzyme_gmt_df">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.construct_combined_enzyme_gmt_df">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.construct_combined_enzyme_gmt_df">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_combined_enzyme_gmt_df</span><span class="p">(</span><span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Writer Enzyme&#39;</span><span class="p">,</span> <span class="n">enzyme_databases</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="s1">&#39;RegPhos&#39;</span><span class="p">,</span> <span class="s1">&#39;OmniPath&#39;</span><span class="p">,</span> <span class="s1">&#39;DEPOD&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Combine enzyme-substrate interaction information and format into gmt format for downstream analysis. To avoid confusion, we will not include ability to save these files, as they are dependent on the specific databases chosen.</span>
@@ -1846,7 +1847,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="add_omnipath_data">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.add_omnipath_data">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.add_omnipath_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">add_omnipath_data</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">min_sources</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">min_references</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">convert_to_gene_name</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">replace_old_annotations</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">report_success</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given spliced ptms or altered flanks dataframe, append enzyme-substrate interactions recorded in OmniPath database. These will be split between &#39;Writer&#39; enzymes, or enzymes that add the modification (OmniPath:Writer Enzyme), and &#39;Eraser&#39; enzymes, or enzymes that remove the modification (OmniPath:Eraser Enzyme). Note, we do not consider the &#39;post translational modification&#39; or &#39;cleavage&#39; entries for this purpose.</span>
@@ -1958,7 +1959,7 @@ document.write(`
 <span class="c1">######### Functions for combining annotations from multiple sources ########</span>
 
 <div class="viewcode-block" id="convert_PSP_label_to_UniProt">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.convert_PSP_label_to_UniProt">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.convert_PSP_label_to_UniProt">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">convert_PSP_label_to_UniProt</span><span class="p">(</span><span class="n">label</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a label for an interacting protein from PhosphoSitePlus, convert to UniProtKB accession. Required as PhosphoSitePlus interactions are recorded in various ways that aren&#39;t necessarily consistent with other databases (i.e. not always gene name)</span>
@@ -1990,7 +1991,7 @@ document.write(`
         <span class="c1">#missed_genes.append(gene)</span>
 
 <div class="viewcode-block" id="extract_interaction_details">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.extract_interaction_details">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.extract_interaction_details">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_interaction_details</span><span class="p">(</span><span class="n">interaction</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="s2">&quot;PhosphoSitePlus:Interactions&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given an interaction string from a specific database, extract the type of interaction and the interacting protein. This is required as different databases format their interaction strings differently.</span>
@@ -2015,7 +2016,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="unify_interaction_data">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.unify_interaction_data">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.unify_interaction_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">unify_interaction_data</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">interaction_col</span><span class="p">,</span> <span class="n">name_dict</span> <span class="o">=</span> <span class="p">{}):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given spliced ptm data and a column containing interaction data, extract the interacting protein, type of interaction, and convert to UniProtKB accession. This will be added as a new column labeled &#39;Interacting ID&#39;</span>
@@ -2105,7 +2106,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="combine_interaction_data">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.combine_interaction_data">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.combine_interaction_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">combine_interaction_data</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">interaction_databases</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="s1">&#39;PTMcode&#39;</span><span class="p">,</span> <span class="s1">&#39;PTMInt&#39;</span><span class="p">,</span> <span class="s1">&#39;RegPhos&#39;</span><span class="p">,</span> <span class="s1">&#39;DEPOD&#39;</span><span class="p">],</span> <span class="n">include_enzyme_interactions</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given annotated spliced ptm data, extract interaction data from various databases and combine into a single dataframe. This will include the interacting protein, the type of interaction, and the source of the interaction data</span>
@@ -2213,7 +2214,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="combine_enzyme_data">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.combine_enzyme_data">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.combine_enzyme_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">combine_enzyme_data</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">enzyme_databases</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="s1">&#39;RegPhos&#39;</span><span class="p">,</span> <span class="s1">&#39;OmniPath&#39;</span><span class="p">,</span> <span class="s1">&#39;DEPOD&#39;</span><span class="p">],</span> <span class="n">regphos_conversion</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ERK1(MAPK3)&#39;</span><span class="p">:</span><span class="s1">&#39;MAPK3&#39;</span><span class="p">,</span> <span class="s1">&#39;ERK2(MAPK1)&#39;</span><span class="p">:</span><span class="s1">&#39;MAPK1&#39;</span><span class="p">,</span> <span class="s1">&#39;JNK2(MAPK9)&#39;</span><span class="p">:</span><span class="s1">&#39;MAPK9&#39;</span><span class="p">,</span><span class="s1">&#39;CDC2&#39;</span><span class="p">:</span><span class="s1">&#39;CDK1&#39;</span><span class="p">,</span> <span class="s1">&#39;CK2A1&#39;</span><span class="p">:</span><span class="s1">&#39;CSNK2A1&#39;</span><span class="p">,</span> <span class="s1">&#39;PKACA&#39;</span><span class="p">:</span><span class="s1">&#39;PRKACA&#39;</span><span class="p">,</span> <span class="s1">&#39;ABL1(ABL)&#39;</span><span class="p">:</span><span class="s1">&#39;ABL1&#39;</span><span class="p">}):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given spliced ptm information, combine enzyme-substrate data from multiple databases (currently support PhosphoSitePlus, RegPhos, OmniPath, DEPOD, and iKiP downloaded from PTMsigDB), assuming that the enzyme data from these resources has already been added to the spliced ptm data. The combined kinase data will be added as a new column labeled &#39;Combined:Writer Enzyme&#39; and &#39;Combined:Eraser Enzyme&#39;</span>
@@ -2328,7 +2329,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="check_file">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.check_file">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.check_file">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_file</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">expected_extension</span> <span class="o">=</span> <span class="s1">&#39;.tsv&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a file name, check if the file exists and has the expected extension. If the file does not exist or has the wrong extension, raise an error.</span>
@@ -2390,7 +2391,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="annotate_ptms">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.annotate.annotate_ptms">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.annotate.annotate_ptms">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">annotate_ptms</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">phosphositeplus</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">ptmsigdb</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">ptmcode</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">ptmint</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">omnipath</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">regphos</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">depod</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">elm</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">interactions_to_combine</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">enzymes_to_combine</span> <span class="o">=</span> <span class="s2">&quot;All&quot;</span><span class="p">,</span> <span class="n">combine_similar</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">report_success</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given spliced ptm data, add annotations from various databases. The annotations that can be added are the following:</span>

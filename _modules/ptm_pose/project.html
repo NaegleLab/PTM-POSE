@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -42,6 +42,7 @@
     <script src="../../_static/documentation_options.js?v=d2a3a1a5"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ptm_pose/project';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -153,17 +154,17 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/Dependencies.html">Dependencies</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Projection_Instructions.html">Projecting PTMs onto Splice Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Analyzing_PTMs.html">Analyzing PTM Impacts</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
 <ul class="nav bd-sidenav">
@@ -204,9 +205,10 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Advanced/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
     </div>
@@ -337,7 +339,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
 
 <div class="viewcode-block" id="find_ptms_in_region">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.project.find_ptms_in_region">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.project.find_ptms_in_region">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">find_ptms_in_region</span><span class="p">(</span><span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">gene</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given an genomic region in either hg38 or hg19 coordinates (such as the region encoding an exon of interest), identify PTMs that are mapped to that region. If so, return the exon number. If none are found, return np.nan.</span>
@@ -487,6 +489,7 @@ document.write(`
 
     <span class="n">spliced_ptm_info</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">spliced_ptms_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">nonconst_ptms_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">num_ptms_affected</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">num_unique_ptm_sites</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -545,13 +548,20 @@ document.write(`
                     <span class="n">ptms_in_region</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ptms_in_region</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
                     <span class="n">ptms_in_region</span> <span class="o">=</span> <span class="n">ptms_in_region</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">)</span>
 
+                <span class="c1">#get number of ptms</span>
                 <span class="n">ptms_info</span> <span class="o">=</span> <span class="n">ptms_in_region</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39; (&#39;</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="n">ptms_str</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ptms_info</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
                 <span class="n">spliced_ptms_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ptms_str</span><span class="p">)</span>
                 <span class="n">num_ptms_affected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ptms_in_region</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                 <span class="n">num_unique_ptm_sites</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ptms_in_region</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="c1">#get number of ptms, only considering non-constitutive ptms</span>
+                <span class="n">noncons_ptms</span> <span class="o">=</span> <span class="n">ptms_in_region</span><span class="p">[</span><span class="o">~</span><span class="n">ptms_in_region</span><span class="p">[</span><span class="s1">&#39;Constitutive&#39;</span><span class="p">]]</span>
+                <span class="n">nonconst_ptms_str</span> <span class="o">=</span> <span class="n">noncons_ptms</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39; (&#39;</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">nonconst_ptms_str</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nonconst_ptms_str</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+                <span class="n">nonconst_ptms_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nonconst_ptms_str</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">spliced_ptms_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+                <span class="n">nonconst_ptms_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
                 <span class="n">num_ptms_affected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                 <span class="n">num_unique_ptm_sites</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
@@ -567,6 +577,7 @@ document.write(`
     <span class="c1">#add ptm info to original splice event dataframe</span>
     <span class="k">if</span> <span class="n">annotate_original_df</span><span class="p">:</span>
         <span class="n">region_data</span><span class="p">[</span><span class="s1">&#39;PTMs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spliced_ptms_list</span>
+        <span class="n">region_data</span><span class="p">[</span><span class="s1">&#39;Non-constitutive PTMs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nonconst_ptms_list</span>
         <span class="n">region_data</span><span class="p">[</span><span class="s1">&#39;Number of PTMs Affected&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_ptms_affected</span>
         <span class="n">region_data</span><span class="p">[</span><span class="s1">&#39;Number of Unique PTM Sites by Position&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_unique_ptm_sites</span>
         <span class="n">region_data</span><span class="p">[</span><span class="s1">&#39;Event Length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">region_data</span><span class="p">[</span><span class="n">region_end_col</span><span class="p">]</span> <span class="o">-</span> <span class="n">region_data</span><span class="p">[</span><span class="n">region_start_col</span><span class="p">])</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
@@ -577,7 +588,7 @@ document.write(`
 
     
 <div class="viewcode-block" id="project_ptms_onto_splice_events">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.project.project_ptms_onto_splice_events">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.project.project_ptms_onto_splice_events">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">project_ptms_onto_splice_events</span><span class="p">(</span><span class="n">splice_data</span><span class="p">,</span><span class="n">annotate_original_df</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;chr&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;exonStart_0base&#39;</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="s1">&#39;exonEnd&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">separate_modification_types</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">,</span> <span class="n">start_coordinate_system</span> <span class="o">=</span> <span class="s1">&#39;1-based&#39;</span><span class="p">,</span> <span class="n">end_coordinate_system</span> <span class="o">=</span> <span class="s1">&#39;1-based&#39;</span><span class="p">,</span> <span class="n">taskbar_label</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span><span class="n">PROCESSES</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given splice event quantification data, project PTMs onto the regions impacted by the splice events. Assumes that the splice event data will have chromosome, strand, and genomic start/end positions for the regions of interest, and each row of the splice_event_data corresponds to a unique region.</span>
@@ -646,10 +657,16 @@ document.write(`
         <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">filter_ptms</span><span class="p">(</span><span class="n">ptm_coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
 
         <span class="c1">#restrict to significant events if indicated</span>
-        <span class="k">if</span> <span class="s1">&#39;alpha&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;alpha&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">sig_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">splice_data</span> <span class="o">=</span> <span class="n">splice_data</span><span class="p">[</span><span class="n">splice_data</span><span class="p">[</span><span class="n">sig_col</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">if</span> <span class="s1">&#39;min_dpsi&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="s1">&#39;alpha&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">sig_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: alpha value provided but sig_col is None. No filtering based on significance will be applied.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;min_dpsi&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">dPSI_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">splice_data</span> <span class="o">=</span> <span class="n">splice_data</span><span class="p">[</span><span class="n">splice_data</span><span class="p">[</span><span class="n">dPSI_col</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;min_dpsi&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="s1">&#39;min_dpsi&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">dPSI_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: min_dpsi value provided but dPSI_col is None. No filtering based on delta PSI will be applied.&#39;</span><span class="p">)</span>
+
 
     <span class="k">if</span> <span class="n">taskbar_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">taskbar_label</span> <span class="o">=</span> <span class="s1">&#39;Projecting PTMs onto splice events using &#39;</span> <span class="o">+</span> <span class="n">coordinate_type</span> <span class="o">+</span> <span class="s1">&#39; coordinates.&#39;</span>
@@ -685,10 +702,8 @@ document.write(`
 
 
 
-
-<div class="viewcode-block" id="project_ptms_onto_MATS">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.project.project_ptms_onto_MATS">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">project_ptms_onto_MATS</span><span class="p">(</span><span class="n">SE_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">A5SS_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">A3SS_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RI_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">MXE_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">,</span> <span class="n">identify_flanking_sequences</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="s1">&#39;meanDeltaPSI&#39;</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;FDR&#39;</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">separate_modification_types</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span><span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s1">&#39;Tools/functions for performing analysis on MATS data have been moved to the splicing_tools.MATS module.&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">project_ptms_onto_MATS</span><span class="p">(</span><span class="n">SE_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">A5SS_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">A3SS_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RI_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">MXE_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">,</span> <span class="n">identify_flanking_sequences</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="s1">&#39;meanDeltaPSI&#39;</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;FDR&#39;</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">separate_modification_types</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span><span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">min_junction_counts</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given splice quantification from the MATS algorithm, annotate with PTMs that are found in the differentially included regions.</span>
 
@@ -718,6 +733,8 @@ document.write(`
 <span class="sd">        Indicate whether residues with multiple modifications (i.e. phosphorylation and acetylation) should be treated as separate PTMs and be placed in unique rows of the output dataframe. Default is False.</span>
 <span class="sd">    PROCESSES: int</span>
 <span class="sd">        Number of processes to use for multiprocessing. Default is 1.</span>
+<span class="sd">    min_junction_counts: int</span>
+<span class="sd">        Minimum number of junction counts in each sample required to keep a splice event. Default is None (no filtering).</span>
 <span class="sd">    **kwargs: additional keyword arguments</span>
 <span class="sd">        Additional keyword arguments to pass to the find_ptms_in_many_regions function, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add &#39;min_MS_observations = 2&#39; to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -749,6 +766,11 @@ document.write(`
                 <span class="n">SE_events</span> <span class="o">=</span> <span class="n">SE_events</span><span class="p">[</span><span class="n">SE_events</span><span class="p">[</span><span class="n">sig_col</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="k">if</span> <span class="s1">&#39;min_dpsi&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">SE_events</span> <span class="o">=</span> <span class="n">SE_events</span><span class="p">[</span><span class="n">SE_events</span><span class="p">[</span><span class="n">dPSI_col</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;min_dpsi&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">min_junction_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Filtering skipped exon events based on minimum junction counts.&#39;</span><span class="p">)</span>
+            <span class="n">SE_events</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_junction_counts</span><span class="p">(</span><span class="n">SE_events</span><span class="p">,</span> <span class="n">quant_type</span> <span class="o">=</span> <span class="s1">&#39;MATS&#39;</span><span class="p">)</span>
+            <span class="n">SE_events</span> <span class="o">=</span> <span class="n">SE_events</span><span class="p">[(</span><span class="n">SE_events</span><span class="p">[</span><span class="s1">&#39;TJC_SAMPLE_1&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_junction_counts</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">SE_events</span><span class="p">[</span><span class="s1">&#39;TJC_SAMPLE_2&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_junction_counts</span><span class="p">)]</span>
 
         <span class="k">if</span> <span class="n">SE_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="n">SE_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SE_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span> 
@@ -795,6 +817,11 @@ document.write(`
             <span class="k">if</span> <span class="s1">&#39;min_dpsi&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">A5SS_events</span> <span class="o">=</span> <span class="n">A5SS_events</span><span class="p">[</span><span class="n">A5SS_events</span><span class="p">[</span><span class="n">dPSI_col</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;min_dpsi&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
+
+        <span class="k">if</span> <span class="n">min_junction_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Filtering 5</span><span class="se">\&#39;</span><span class="s1"> alternative splice site events based on minimum junction counts.&#39;</span><span class="p">)</span>
+            <span class="n">A5SS_events</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_junction_counts</span><span class="p">(</span><span class="n">A5SS_events</span><span class="p">,</span> <span class="n">quant_type</span> <span class="o">=</span> <span class="s1">&#39;MATS&#39;</span><span class="p">)</span>
+            <span class="n">A5SS_events</span> <span class="o">=</span> <span class="n">A5SS_events</span><span class="p">[(</span><span class="n">A5SS_events</span><span class="p">[</span><span class="s1">&#39;TJC_SAMPLE_1&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_junction_counts</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">A5SS_events</span><span class="p">[</span><span class="s1">&#39;TJC_SAMPLE_2&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_junction_counts</span><span class="p">)]</span>
 
         <span class="k">if</span> <span class="n">A5SS_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="n">A5SS_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">A5SS_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
@@ -865,8 +892,11 @@ document.write(`
                 <span class="n">A3SS_events</span> <span class="o">=</span> <span class="n">A3SS_events</span><span class="p">[</span><span class="n">A3SS_events</span><span class="p">[</span><span class="n">sig_col</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="k">if</span> <span class="s1">&#39;min_dpsi&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">A3SS_events</span> <span class="o">=</span> <span class="n">A3SS_events</span><span class="p">[</span><span class="n">A3SS_events</span><span class="p">[</span><span class="n">dPSI_col</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;min_dpsi&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-            <span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+
+        <span class="k">if</span> <span class="n">min_junction_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Filtering 3</span><span class="se">\&#39;</span><span class="s1"> alternative splice site events based on minimum junction counts.&#39;</span><span class="p">)</span>
+            <span class="n">A3SS_events</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_junction_counts</span><span class="p">(</span><span class="n">A3SS_events</span><span class="p">,</span> <span class="n">quant_type</span> <span class="o">=</span> <span class="s1">&#39;MATS&#39;</span><span class="p">)</span>
+            <span class="n">A3SS_events</span> <span class="o">=</span> <span class="n">A3SS_events</span><span class="p">[(</span><span class="n">A3SS_events</span><span class="p">[</span><span class="s1">&#39;TJC_SAMPLE_1&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_junction_counts</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">A3SS_events</span><span class="p">[</span><span class="s1">&#39;TJC_SAMPLE_2&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_junction_counts</span><span class="p">)]</span>
 
         <span class="k">if</span> <span class="n">A3SS_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="n">A3SS_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">A3SS_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
@@ -939,6 +969,13 @@ document.write(`
             <span class="k">if</span> <span class="s1">&#39;min_dpsi&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">RI_events</span> <span class="o">=</span> <span class="n">RI_events</span><span class="p">[</span><span class="n">RI_events</span><span class="p">[</span><span class="n">dPSI_col</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;min_dpsi&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
+
+        <span class="k">if</span> <span class="n">min_junction_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Filtering retained intron events based on minimum junction counts.&#39;</span><span class="p">)</span>
+            <span class="n">RI_events</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_junction_counts</span><span class="p">(</span><span class="n">RI_events</span><span class="p">,</span> <span class="n">quant_type</span> <span class="o">=</span> <span class="s1">&#39;MATS&#39;</span><span class="p">)</span>
+            <span class="n">RI_events</span> <span class="o">=</span> <span class="n">RI_events</span><span class="p">[(</span><span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;TJC_SAMPLE_1&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_junction_counts</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;TJC_SAMPLE_2&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_junction_counts</span><span class="p">)]</span>
+
+
         <span class="k">if</span> <span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RI_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
 
@@ -969,6 +1006,11 @@ document.write(`
                 <span class="n">MXE_events</span> <span class="o">=</span> <span class="n">MXE_events</span><span class="p">[</span><span class="n">MXE_events</span><span class="p">[</span><span class="n">sig_col</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="k">if</span> <span class="s1">&#39;min_dpsi&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">MXE_events</span> <span class="o">=</span> <span class="n">MXE_events</span><span class="p">[</span><span class="n">MXE_events</span><span class="p">[</span><span class="n">dPSI_col</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;min_dpsi&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">min_junction_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Filtering mutually exclusive exon events based on minimum junction counts.&#39;</span><span class="p">)</span>
+            <span class="n">MXE_events</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_junction_counts</span><span class="p">(</span><span class="n">MXE_events</span><span class="p">,</span> <span class="n">quant_type</span> <span class="o">=</span> <span class="s1">&#39;MATS&#39;</span><span class="p">)</span>
+            <span class="n">MXE_events</span> <span class="o">=</span> <span class="n">MXE_events</span><span class="p">[(</span><span class="n">MXE_events</span><span class="p">[</span><span class="s1">&#39;TJC_SAMPLE_1&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_junction_counts</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">MXE_events</span><span class="p">[</span><span class="s1">&#39;TJC_SAMPLE_2&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_junction_counts</span><span class="p">)]</span>
 
         <span class="k">if</span> <span class="n">MXE_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="n">MXE_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MXE_events</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
@@ -1017,8 +1059,7 @@ document.write(`
         <span class="n">spliced_flanks</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">spliced_flanks</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">spliced_events</span><span class="p">,</span> <span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">spliced_flanks</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">spliced_events</span><span class="p">,</span> <span class="n">spliced_ptms</span></div>
-
+        <span class="k">return</span> <span class="n">spliced_events</span><span class="p">,</span> <span class="n">spliced_ptms</span>
     
 <span class="c1">#def project_ptms_onto_MAJIQ_dPSI(majiq_data, ptm_coordinates = None, coordinate_type = &#39;hg38&#39;, identify_flanking_sequences = False, dPSI_col = &#39;dPSI&#39;, sig_col = &#39;FDR&#39;, separate_modification_types = False, PROCESSES = 1):</span>
 <span class="c1">#    print(&#39;in progress&#39;)</span>
@@ -1042,8 +1083,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Purpose must be either inclusion or flanking. Please provide the correct purpose for the splicegraph information.&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="project_ptms_onto_SpliceSeq">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.project.project_ptms_onto_SpliceSeq">[docs]</a>
+<span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s1">&#39;Tools/functions for performing analysis on SpliceSeq data have been moved to the splicing_tools.SpliceSeq module.&#39;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">project_ptms_onto_SpliceSeq</span><span class="p">(</span><span class="n">psi_data</span><span class="p">,</span> <span class="n">splicegraph</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span><span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">,</span> <span class="n">separate_modification_types</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">identify_flanking_sequences</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">flank_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">PROCESSES</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given splice event quantification from SpliceSeq (such as what can be downloaded from TCGASpliceSeq), annotate with PTMs that are found in the differentially included regions.</span>
@@ -1118,9 +1158,79 @@ document.write(`
 
         <span class="k">return</span> <span class="n">spliced_data</span><span class="p">,</span> <span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">altered_flanks</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">spliced_data</span><span class="p">,</span> <span class="n">spliced_ptms</span></div>
+        <span class="k">return</span> <span class="n">spliced_data</span><span class="p">,</span> <span class="n">spliced_ptms</span>
+
+<span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s1">&#39;Tools/functions for performing analysis on MAJIQ data have been moved to the splicing_tools.MAJIQ module.&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">project_ptms_onto_MAJIQ</span><span class="p">(</span><span class="n">voila_tsv</span><span class="p">,</span> <span class="n">samp1_name</span><span class="p">,</span> <span class="n">samp2_name</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">dpsi_cutoff</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">,</span> <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given splice quantification from the MAJIQ algorithm, annotate with PTMs that are found in the differentially included regions. </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    voila_tsv: str</span>
+<span class="sd">        Path to the MAJIQ output TSV file, which contains the splice quantification data.</span>
+<span class="sd">    samp1_name: str</span>
+<span class="sd">        Name of the first sample in the MAJIQ output. This will be used to identify the sample in MAJIQ output and label the columns in the output dataframe.</span>
+<span class="sd">    samp2_name: str</span>
+<span class="sd">        Name of the second sample in the MAJIQ output. This will be used to identify the sample in MAJIQ output and label the columns in the output dataframe.</span>
+<span class="sd">    alpha: float</span>
+<span class="sd">        Significance threshold for filtering out non-changing lsvs. Default is 0.05.</span>
+<span class="sd">    dpsi_cutoff: float</span>
+<span class="sd">        Delta PSI cutoff for filtering out non-changing lsvs. Default is 0.15.</span>
+<span class="sd">    coordinate_type: str</span>
+<span class="sd">        indicates the coordinate system used for the start and end positions. Either hg38 or hg19. Default is &#39;hg38&#39;.</span>
+<span class="sd">    ptm_coordinates: pandas.DataFrame</span>
+<span class="sd">        DataFrame containing PTM coordinates and information. If not provided, will use the default PTM coordinates from the pose_config module.</span>
+<span class="sd">    **kwargs: additional keyword arguments</span>
+<span class="sd">        Additional keyword arguments to pass to the find_ptms_in_many_regions function, which will be fed into the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add &#39;min_MS_observations = 2&#39; to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    spliced_ptms: pandas.DataFrame</span>
+<span class="sd">        DataFrame containing PTMs that are found in the differentially included regions of the splice events.</span>
+<span class="sd">    majiq: pandas.DataFrame</span>
+<span class="sd">        DataFrame containing the MAJIQ splice quantification data, with additional columns for the PTMs that are found in the differentially included regions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#load ptm data from config if not provided</span>
+    <span class="k">if</span> <span class="n">ptm_coordinates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="n">pose_config</span><span class="o">.</span><span class="n">ptm_coordinates</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    
+
+    <span class="c1">#check for any keyword arguments to use for filtering</span>
+    <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">filter_arguments</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">extract_filter_kwargs</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1">#check any excess unused keyword arguments, report them</span>
+        <span class="n">helpers</span><span class="o">.</span><span class="n">check_filter_kwargs</span><span class="p">(</span><span class="n">filter_arguments</span><span class="p">)</span>
+        <span class="c1">#filter ptm coordinates file to include only ptms with desired evidence</span>
+        <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">filter_ptms</span><span class="p">(</span><span class="n">ptm_coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
 
 
+
+    <span class="n">majiq</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">voila_tsv</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">lsv_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mean_dpsi_per_lsv_junction&#39;</span><span class="p">,</span> <span class="s1">&#39;probability_changing&#39;</span><span class="p">,</span> <span class="s1">&#39;probability_non_changing&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">samp1_name</span><span class="si">}</span><span class="s1">_mean_psi&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">samp2_name</span><span class="si">}</span><span class="s1">_mean_psi&#39;</span><span class="p">,</span> <span class="s1">&#39;de_novo_junctions&#39;</span><span class="p">,</span> <span class="s1">&#39;junctions_coords&#39;</span><span class="p">]</span>
+
+    <span class="c1">#separate lsvs with multiple junctions into unique rows</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">lsv_cols</span><span class="p">:</span>
+        <span class="n">majiq</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">majiq</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+    <span class="n">majiq</span> <span class="o">=</span> <span class="n">majiq</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="n">column</span> <span class="o">=</span> <span class="n">lsv_cols</span><span class="p">)</span>
+
+    <span class="c1">#convert to numeric</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">lsv_cols</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="o">!=</span> <span class="s1">&#39;junctions_coords&#39;</span> <span class="ow">and</span> <span class="n">col</span> <span class="o">!=</span> <span class="s1">&#39;de_novo_junctions&#39;</span><span class="p">:</span>
+            <span class="n">majiq</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">majiq</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+
+    <span class="c1">#extract start and stop of junctions from junctions_coords</span>
+    <span class="n">majiq</span><span class="p">[</span><span class="s1">&#39;junction_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">majiq</span><span class="p">[</span><span class="s1">&#39;junctions_coords&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">majiq</span><span class="p">[</span><span class="s1">&#39;junction_end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">majiq</span><span class="p">[</span><span class="s1">&#39;junctions_coords&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1">#filter out non-changing lsvs</span>
+    <span class="n">majiq</span><span class="p">[</span><span class="s1">&#39;probability_non_changing&#39;</span><span class="p">]</span>
+    <span class="n">majiq</span> <span class="o">=</span> <span class="n">majiq</span><span class="p">[</span><span class="n">majiq</span><span class="p">[</span><span class="s1">&#39;probability_non_changing&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">alpha</span><span class="p">]</span>
+    <span class="n">majiq</span> <span class="o">=</span> <span class="n">majiq</span><span class="p">[</span><span class="n">majiq</span><span class="p">[</span><span class="s1">&#39;mean_dpsi_per_lsv_junction&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">dpsi_cutoff</span><span class="p">]</span>
+
+    <span class="n">majiq</span><span class="p">,</span> <span class="n">spliced_ptms</span> <span class="o">=</span> <span class="n">project_ptms_onto_splice_events</span><span class="p">(</span><span class="n">majiq</span><span class="p">,</span> <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="s1">&#39;seqid&#39;</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="n">region_start_col</span> <span class="o">=</span> <span class="s1">&#39;junction_start&#39;</span><span class="p">,</span> <span class="n">region_end_col</span> <span class="o">=</span> <span class="s1">&#39;junction_end&#39;</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="n">coordinate_type</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;gene_name&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="s1">&#39;mean_dpsi_per_lsv_junction&#39;</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="s1">&#39;lsv_id&#39;</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;probability_non_changing&#39;</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">samp1_name</span><span class="si">}</span><span class="s1">_mean_psi&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">samp2_name</span><span class="si">}</span><span class="s1">_mean_psi&#39;</span><span class="p">,</span> <span class="s1">&#39;probability_changing&#39;</span><span class="p">,</span> <span class="s1">&#39;exons_coords&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">majiq</span>
 
 <span class="c1">#def project_ptms_onto_TCGA_SpliceSeq(tcga_cancer = &#39;PRAD&#39;):</span>
 <span class="c1">#    &quot;&quot;&quot;</span>

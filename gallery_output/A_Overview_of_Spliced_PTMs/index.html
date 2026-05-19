@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -43,6 +43,7 @@
     <script src="../../_static/documentation_options.js?v=d2a3a1a5"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'gallery_output/A_Overview_of_Spliced_PTMs/index';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -154,16 +155,15 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/Dependencies.html">Dependencies</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Projection_Instructions.html">Projecting PTMs onto Splice Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
@@ -205,9 +205,10 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Advanced/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
     </div>
@@ -375,14 +376,14 @@ document.write(`
                   
   <section id="general-overview-of-spliced-ptms">
 <span id="sphx-glr-gallery-output-a-overview-of-spliced-ptms"></span><h1>General Overview of Spliced PTMs<a class="headerlink" href="#general-overview-of-spliced-ptms" title="Link to this heading">#</a></h1>
-<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="One of the first things you will want to do when analyzing spliced PTMs is to check how many and what type of PTMs were identified as being differentially included or altered due to splicing events. This can be done easily using the plotting module in PTM-POSE."><img alt="" src="../../_images/sphx_glr_plot_NumberOfPTMs_thumb.png" />
-<p><a class="reference internal" href="plot_NumberOfPTMs.html#sphx-glr-gallery-output-a-overview-of-spliced-ptms-plot-numberofptms-py"><span class="std std-ref">Inspecting types of PTMs impacted by splicing</span></a></p>
+<div id='sg-tag-list' class='sphx-glr-tag-list'></div><div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="One of the first things you will want to do when analyzing spliced PTMs is to check how many and what type of PTMs were identified as being differentially included or altered due to splicing events. This can be done easily using the plotting module in PTM-POSE."><img alt="" src="../../_images/sphx_glr_plot_NumberOfPTMs_thumb.png" />
+<p><a class="reference internal" href="plot_NumberOfPTMs.html"><span class="doc">Inspecting types of PTMs impacted by splicing</span></a></p>
   <div class="sphx-glr-thumbnail-title">Inspecting types of PTMs impacted by splicing</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="As described in Running PTM-POSE section, PTM-POSE provides various options for annotating functional information for PTMs, coming from various databases. However, PTM functional information is inherently sparse, and so most annotations will only provide information on a handful of PTMs. For this reason, it can be useful to probe how many PTMsTo better understand the types of annotations that are available, as well as the number of PTMs that have an annotation of that type. This can be done using the analyze function in PTM-POSE."><img alt="" src="../../_images/sphx_glr_plot_PTM_annotations_thumb.png" />
-<p><a class="reference internal" href="plot_PTM_annotations.html#sphx-glr-gallery-output-a-overview-of-spliced-ptms-plot-ptm-annotations-py"><span class="std std-ref">Inspecting number of PTMs with annotation information available</span></a></p>
+<p><a class="reference internal" href="plot_PTM_annotations.html"><span class="doc">Inspecting number of PTMs with annotation information available</span></a></p>
   <div class="sphx-glr-thumbnail-title">Inspecting number of PTMs with annotation information available</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="In some cases, you may wish to filter out PTMs with weaker evidence (only identified in small number of experiments), splice events with small changes, or PTMs that have not previously been observed to be impacted by splicing. This can be done using the filter_ptms function in the helpers module. We can also visualize the impact of filtering using the analyze.filter module. "><img alt="" src="../../_images/sphx_glr_plot_filter_impact_thumb.png" />
-<p><a class="reference internal" href="plot_filter_impact.html#sphx-glr-gallery-output-a-overview-of-spliced-ptms-plot-filter-impact-py"><span class="std std-ref">Impact of filtering PTMs</span></a></p>
+<p><a class="reference internal" href="plot_filter_impact.html"><span class="doc">Impact of filtering PTMs</span></a></p>
   <div class="sphx-glr-thumbnail-title">Impact of filtering PTMs</div>
 </div></div><div class="toctree-wrapper compound">
 </div>

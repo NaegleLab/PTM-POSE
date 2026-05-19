@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -42,6 +42,7 @@
     <script src="_static/documentation_options.js?v=d2a3a1a5"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
     <link rel="index" title="Index" href="#" />
@@ -153,17 +154,17 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview/Dependencies.html">Dependencies</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html">Projecting PTMs onto Splice Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Analyzing_PTMs.html">Analyzing PTM Impacts</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
 <ul class="nav bd-sidenav">
@@ -204,9 +205,10 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Advanced/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
     </div>
@@ -338,6 +340,7 @@ document.write(`
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#U"><strong>U</strong></a>
  
@@ -345,23 +348,25 @@ document.write(`
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.add_custom_annotation">add_custom_annotation() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.add_custom_annotation">add_custom_annotation() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.add_ELM_interactions">add_ELM_interactions() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.add_ELM_interactions">add_ELM_interactions() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.add_ELM_matched_motifs">add_ELM_matched_motifs() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.add_ELM_matched_motifs">add_ELM_matched_motifs() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.add_omnipath_data">add_omnipath_data() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.add_omnipath_data">add_omnipath_data() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.annotate_ptms">annotate_ptms() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.annotate_ptms">annotate_ptms() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.annotation_enrichment">annotation_enrichment() (in module ptm_pose.analyze.annotations)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.annotation_enrichment">annotation_enrichment() (in module ptm_pose.analyze.annotations)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.append_from_gmt">append_from_gmt() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.append_from_gmt">append_from_gmt() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.filter.assess_filter_range">assess_filter_range() (in module ptm_pose.analyze.filter)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs.append_top_domains">append_top_domains() (ptm_pose.analyze.interactions.ScorePSSMs method)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.filter.assess_filter_range">assess_filter_range() (in module ptm_pose.analyze.filter)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -369,53 +374,53 @@ document.write(`
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.check_file">check_file() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.check_file">check_file() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.check_gmt_file">check_gmt_file() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.check_gmt_file">check_gmt_file() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.combine_enzyme_data">combine_enzyme_data() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.combine_enzyme_data">combine_enzyme_data() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.combine_interaction_data">combine_interaction_data() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.combine_interaction_data">combine_interaction_data() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.summarize.combine_outputs">combine_outputs() (in module ptm_pose.analyze.summarize)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.summarize.combine_outputs">combine_outputs() (in module ptm_pose.analyze.summarize)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.compare_flanking_sequences">compare_flanking_sequences() (in module ptm_pose.analyze.flank_analysis)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.compare_flanking_sequences">compare_flanking_sequences() (in module ptm_pose.analyze.flank_analysis)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.compare_inclusion_motifs">compare_inclusion_motifs() (in module ptm_pose.analyze.flank_analysis)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.compare_inclusion_motifs">compare_inclusion_motifs() (in module ptm_pose.analyze.flank_analysis)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.enzyme.compare_KL_for_sequence">compare_KL_for_sequence() (in module ptm_pose.analyze.enzyme)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.enzyme.compare_KL_for_sequence">compare_KL_for_sequence() (in module ptm_pose.analyze.enzyme)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.compare_to_nease">compare_to_nease() (ptm_pose.analyze.interactions.protein_interactions method)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.compare_to_nease">compare_to_nease() (ptm_pose.analyze.interactions.protein_interactions method)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_annotation_dict_from_df">construct_annotation_dict_from_df() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_annotation_dict_from_df">construct_annotation_dict_from_df() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_annotation_dict_from_gmt">construct_annotation_dict_from_gmt() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_annotation_dict_from_gmt">construct_annotation_dict_from_gmt() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_combined_enzyme_gmt_df">construct_combined_enzyme_gmt_df() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_combined_enzyme_gmt_df">construct_combined_enzyme_gmt_df() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_combined_interactions_gmt_df">construct_combined_interactions_gmt_df() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_combined_interactions_gmt_df">construct_combined_interactions_gmt_df() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_custom_gmt_file">construct_custom_gmt_file() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_custom_gmt_file">construct_custom_gmt_file() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_DEPOD_gmt_file">construct_DEPOD_gmt_file() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_DEPOD_gmt_file">construct_DEPOD_gmt_file() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_gmt_df">construct_gmt_df() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_gmt_df">construct_gmt_df() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_omnipath_gmt_file">construct_omnipath_gmt_file() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_omnipath_gmt_file">construct_omnipath_gmt_file() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_PhosphoSitePlus_gmt_files">construct_PhosphoSitePlus_gmt_files() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_PhosphoSitePlus_gmt_files">construct_PhosphoSitePlus_gmt_files() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_PTMcode_interprotein_gmt_file">construct_PTMcode_interprotein_gmt_file() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_PTMcode_interprotein_gmt_file">construct_PTMcode_interprotein_gmt_file() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_PTMInt_gmt_file">construct_PTMInt_gmt_file() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_PTMInt_gmt_file">construct_PTMInt_gmt_file() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_PTMsigDB_gmt_files">construct_PTMsigDB_gmt_files() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_PTMsigDB_gmt_files">construct_PTMsigDB_gmt_files() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.construct_RegPhos_gmt_file">construct_RegPhos_gmt_file() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_RegPhos_gmt_file">construct_RegPhos_gmt_file() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.convert_PSP_label_to_UniProt">convert_PSP_label_to_UniProt() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.convert_PSP_label_to_UniProt">convert_PSP_label_to_UniProt() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -423,11 +428,13 @@ document.write(`
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.pose_config.download_translator">download_translator() (in module ptm_pose.pose_config)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.enzyme.dotplot">dotplot() (in module ptm_pose.analyze.enzyme)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.draw_pie">draw_pie() (in module ptm_pose.analyze.annotations)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.pose_config.download_translator">download_translator() (in module ptm_pose.pose_config)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.draw_pie">draw_pie() (in module ptm_pose.analyze.annotations)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -435,13 +442,13 @@ document.write(`
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.extract_ids_PTMcode">extract_ids_PTMcode() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.extract_ids_PTMcode">extract_ids_PTMcode() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.extract_interaction_details">extract_interaction_details() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.extract_interaction_details">extract_interaction_details() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.extract_positions_from_DEPOD">extract_positions_from_DEPOD() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.extract_positions_from_DEPOD">extract_positions_from_DEPOD() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -449,13 +456,13 @@ document.write(`
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.find_motifs">find_motifs() (in module ptm_pose.analyze.flank_analysis)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.find_motifs">find_motifs() (in module ptm_pose.analyze.flank_analysis)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.project.find_ptms_in_region">find_ptms_in_region() (in module ptm_pose.project)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.project.find_ptms_in_region">find_ptms_in_region() (in module ptm_pose.project)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.findAlteredPositions">findAlteredPositions() (in module ptm_pose.analyze.flank_analysis)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.findAlteredPositions">findAlteredPositions() (in module ptm_pose.analyze.flank_analysis)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -463,47 +470,61 @@ document.write(`
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.gene_set_enrichment">gene_set_enrichment() (in module ptm_pose.analyze.annotations)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.gene_set_enrichment">gene_set_enrichment() (in module ptm_pose.analyze.annotations)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.enzyme.get_all_KL_scores">get_all_KL_scores() (in module ptm_pose.analyze.enzyme)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset">GenericDataset (class in ptm_pose.splicing_tools.base)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.get_available_annotations">get_available_annotations() (in module ptm_pose.analyze.annotations)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.enzyme.get_all_KL_scores">get_all_KL_scores() (in module ptm_pose.analyze.enzyme)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.get_available_gmt_annotations">get_available_gmt_annotations() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.get_altered_flanks_generic">get_altered_flanks_generic() (ptm_pose.splicing_tools.base.GenericDataset method)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.get_background_annotation_counts">get_background_annotation_counts() (in module ptm_pose.analyze.annotations)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.get_available_annotations">get_available_annotations() (in module ptm_pose.analyze.annotations)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.get_edge_colors">get_edge_colors() (in module ptm_pose.analyze.interactions)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.get_available_gmt_annotations">get_available_gmt_annotations() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.get_enrichment_inputs">get_enrichment_inputs() (in module ptm_pose.analyze.annotations)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.get_background_annotation_counts">get_background_annotation_counts() (in module ptm_pose.analyze.annotations)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes">get_flanking_changes() (in module ptm_pose.flanking_sequences)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.get_edge_colors">get_edge_colors() (in module ptm_pose.analyze.interactions)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_rMATS">get_flanking_changes_from_rMATS() (in module ptm_pose.flanking_sequences)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.get_enrichment_inputs">get_enrichment_inputs() (in module ptm_pose.analyze.annotations)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes">get_flanking_changes() (in module ptm_pose.flanking_sequences)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_splice_data">get_flanking_changes_from_splice_data() (in module ptm_pose.flanking_sequences)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.SpliceSeq.SpliceSeq_Dataset.get_flanking_changes_from_splicegraph">get_flanking_changes_from_splicegraph() (ptm_pose.splicing_tools.SpliceSeq.SpliceSeq_Dataset method)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_interaction_network">get_interaction_network() (ptm_pose.analyze.interactions.protein_interactions method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_splice_data">get_flanking_changes_from_splice_data() (in module ptm_pose.flanking_sequences)</a>
-</li>
-      <li><a href="PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_splicegraph">get_flanking_changes_from_splicegraph() (in module ptm_pose.flanking_sequences)</a>
-</li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_interaction_network">get_interaction_network() (ptm_pose.analyze.interactions.protein_interactions method)</a>
-</li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.get_interaction_stats">get_interaction_stats() (in module ptm_pose.analyze.interactions)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.get_interaction_stats">get_interaction_stats() (in module ptm_pose.analyze.interactions)</a>
 
       <ul>
-        <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_interaction_stats">(ptm_pose.analyze.interactions.protein_interactions method)</a>
+        <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_interaction_stats">(ptm_pose.analyze.interactions.protein_interactions method)</a>
 </li>
       </ul></li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_class_data">get_modification_class_data() (in module ptm_pose.analyze.summarize)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_class_data">get_modification_class_data() (in module ptm_pose.analyze.summarize)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_counts">get_modification_counts() (in module ptm_pose.analyze.summarize)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_counts">get_modification_counts() (in module ptm_pose.analyze.summarize)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_protein_interaction_network">get_protein_interaction_network() (ptm_pose.analyze.interactions.protein_interactions method)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.get_nease_domains">get_nease_domains() (ptm_pose.splicing_tools.base.GenericDataset method)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.get_ptm_annotations">get_ptm_annotations() (in module ptm_pose.analyze.annotations)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.get_nease_edges">get_nease_edges() (ptm_pose.splicing_tools.base.GenericDataset method)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.getSequenceIdentity">getSequenceIdentity() (in module ptm_pose.analyze.flank_analysis)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.get_nease_motifs">get_nease_motifs() (ptm_pose.splicing_tools.base.GenericDataset method)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.get_percentile">get_percentile() (in module ptm_pose.analyze.interactions)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs.get_percentiles">get_percentiles() (ptm_pose.analyze.interactions.ScorePSSMs method)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.get_protein_interaction_network">get_protein_interaction_network() (ptm_pose.analyze.interactions.protein_interactions method)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.get_ptm_annotations">get_ptm_annotations() (in module ptm_pose.analyze.annotations)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs.get_top_domains">get_top_domains() (ptm_pose.analyze.interactions.ScorePSSMs method)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.getSequenceIdentity">getSequenceIdentity() (in module ptm_pose.analyze.flank_analysis)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -511,7 +532,7 @@ document.write(`
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.identify_change_to_specific_motif">identify_change_to_specific_motif() (in module ptm_pose.analyze.flank_analysis)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.identify_change_to_specific_motif">identify_change_to_specific_motif() (in module ptm_pose.analyze.flank_analysis)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -519,7 +540,7 @@ document.write(`
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.load_gmt_file">load_gmt_file() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.load_gmt_file">load_gmt_file() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -527,29 +548,35 @@ document.write(`
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.MAJIQ.MAJIQ_Dataset">MAJIQ_Dataset (class in ptm_pose.splicing_tools.MAJIQ)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.PSSM.make_mask">make_mask() (ptm_pose.analyze.interactions.PSSM method)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.MATS.MATS_Dataset">MATS_Dataset (class in ptm_pose.splicing_tools.MATS)</a>
+</li>
       <li>
     module
 
       <ul>
-        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.annotations">ptm_pose.analyze.annotations</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.analyze.annotations">ptm_pose.analyze.annotations</a>
 </li>
-        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.enzyme">ptm_pose.analyze.enzyme</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.analyze.enzyme">ptm_pose.analyze.enzyme</a>
 </li>
-        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.filter">ptm_pose.analyze.filter</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.analyze.filter">ptm_pose.analyze.filter</a>
 </li>
-        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.flank_analysis">ptm_pose.analyze.flank_analysis</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.analyze.flank_analysis">ptm_pose.analyze.flank_analysis</a>
 </li>
-        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.interactions">ptm_pose.analyze.interactions</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.analyze.interactions">ptm_pose.analyze.interactions</a>
 </li>
-        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.summarize">ptm_pose.analyze.summarize</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.analyze.summarize">ptm_pose.analyze.summarize</a>
 </li>
-        <li><a href="PTM_POSE.html#module-ptm_pose.annotate">ptm_pose.annotate</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.annotate">ptm_pose.annotate</a>
 </li>
-        <li><a href="PTM_POSE.html#module-ptm_pose.flanking_sequences">ptm_pose.flanking_sequences</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.flanking_sequences">ptm_pose.flanking_sequences</a>
 </li>
-        <li><a href="PTM_POSE.html#module-ptm_pose.pose_config">ptm_pose.pose_config</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.pose_config">ptm_pose.pose_config</a>
 </li>
-        <li><a href="PTM_POSE.html#module-ptm_pose.project">ptm_pose.project</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.project">ptm_pose.project</a>
 </li>
       </ul></li>
   </ul></td>
@@ -558,129 +585,159 @@ document.write(`
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_alterations_matrix">plot_alterations_matrix() (in module ptm_pose.analyze.flank_analysis)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_alterations_matrix">plot_alterations_matrix() (in module ptm_pose.analyze.flank_analysis)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.plot_annotation_counts">plot_annotation_counts() (in module ptm_pose.analyze.annotations)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.plot_annotation_counts">plot_annotation_counts() (in module ptm_pose.analyze.annotations)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.plot_available_annotations">plot_available_annotations() (in module ptm_pose.analyze.annotations)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.plot_available_annotations">plot_available_annotations() (in module ptm_pose.analyze.annotations)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.annotations.plot_EnrichR_pies">plot_EnrichR_pies() (in module ptm_pose.analyze.annotations)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.plot_EnrichR_pies">plot_EnrichR_pies() (in module ptm_pose.analyze.annotations)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.filter.plot_filter_impact">plot_filter_impact() (in module ptm_pose.analyze.filter)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.filter.plot_filter_impact">plot_filter_impact() (in module ptm_pose.analyze.filter)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.plot_interaction_network">plot_interaction_network() (in module ptm_pose.analyze.interactions)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.plot_interaction_network">plot_interaction_network() (in module ptm_pose.analyze.interactions)</a>
 
       <ul>
-        <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_interaction_network">(ptm_pose.analyze.interactions.protein_interactions method)</a>
+        <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_interaction_network">(ptm_pose.analyze.interactions.protein_interactions method)</a>
 </li>
       </ul></li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_location_of_altered_flanking_residues">plot_location_of_altered_flanking_residues() (in module ptm_pose.analyze.flank_analysis)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_location_of_altered_flanking_residues">plot_location_of_altered_flanking_residues() (in module ptm_pose.analyze.flank_analysis)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.summarize.plot_modification_breakdown">plot_modification_breakdown() (in module ptm_pose.analyze.summarize)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.summarize.plot_modification_breakdown">plot_modification_breakdown() (in module ptm_pose.analyze.summarize)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_nease_comparison">plot_nease_comparison() (ptm_pose.analyze.interactions.protein_interactions method)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_nease_comparison">plot_nease_comparison() (ptm_pose.analyze.interactions.protein_interactions method)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.plot_network_centrality">plot_network_centrality() (in module ptm_pose.analyze.interactions)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.plot_network_centrality">plot_network_centrality() (in module ptm_pose.analyze.interactions)</a>
 
       <ul>
-        <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_network_centrality">(ptm_pose.analyze.interactions.protein_interactions method)</a>
+        <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.plot_network_centrality">(ptm_pose.analyze.interactions.protein_interactions method)</a>
 </li>
       </ul></li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_sequence_differences">plot_sequence_differences() (in module ptm_pose.analyze.flank_analysis)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_sequence_differences">plot_sequence_differences() (in module ptm_pose.analyze.flank_analysis)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.process_database_annotations">process_database_annotations() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs.print_available_pssms">print_available_pssms() (ptm_pose.analyze.interactions.ScorePSSMs method)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.project.project_ptms_onto_MATS">project_ptms_onto_MATS() (in module ptm_pose.project)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.process_database_annotations">process_database_annotations() (in module ptm_pose.annotate)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.project.project_ptms_onto_splice_events">project_ptms_onto_splice_events() (in module ptm_pose.project)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.project_ptms_generic">project_ptms_generic() (ptm_pose.splicing_tools.base.GenericDataset method)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.project.project_ptms_onto_SpliceSeq">project_ptms_onto_SpliceSeq() (in module ptm_pose.project)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.project.project_ptms_onto_splice_events">project_ptms_onto_splice_events() (in module ptm_pose.project)</a>
 </li>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions">protein_interactions (class in ptm_pose.analyze.interactions)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions">protein_interactions (class in ptm_pose.analyze.interactions)</a>
 </li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.PSSM">PSSM (class in ptm_pose.analyze.interactions)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ptm_pose.analyze.annotations
 
       <ul>
-        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.annotations">module</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.analyze.annotations">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ptm_pose.analyze.enzyme
 
       <ul>
-        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.enzyme">module</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.analyze.enzyme">module</a>
 </li>
       </ul></li>
       <li>
     ptm_pose.analyze.filter
 
       <ul>
-        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.filter">module</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.analyze.filter">module</a>
 </li>
       </ul></li>
       <li>
     ptm_pose.analyze.flank_analysis
 
       <ul>
-        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.flank_analysis">module</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.analyze.flank_analysis">module</a>
 </li>
       </ul></li>
       <li>
     ptm_pose.analyze.interactions
 
       <ul>
-        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.interactions">module</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.analyze.interactions">module</a>
 </li>
       </ul></li>
       <li>
     ptm_pose.analyze.summarize
 
       <ul>
-        <li><a href="PTM_POSE.html#module-ptm_pose.analyze.summarize">module</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.analyze.summarize">module</a>
 </li>
       </ul></li>
       <li>
     ptm_pose.annotate
 
       <ul>
-        <li><a href="PTM_POSE.html#module-ptm_pose.annotate">module</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.annotate">module</a>
 </li>
       </ul></li>
       <li>
     ptm_pose.flanking_sequences
 
       <ul>
-        <li><a href="PTM_POSE.html#module-ptm_pose.flanking_sequences">module</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.flanking_sequences">module</a>
 </li>
       </ul></li>
       <li>
     ptm_pose.pose_config
 
       <ul>
-        <li><a href="PTM_POSE.html#module-ptm_pose.pose_config">module</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.pose_config">module</a>
 </li>
       </ul></li>
       <li>
     ptm_pose.project
 
       <ul>
-        <li><a href="PTM_POSE.html#module-ptm_pose.project">module</a>
+        <li><a href="Overview/PTM_POSE.html#module-ptm_pose.project">module</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.reformat_pssm">reformat_pssm() (in module ptm_pose.analyze.interactions)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.MATS.MATS_Dataset.run_nease">run_nease() (ptm_pose.splicing_tools.MATS.MATS_Dataset method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.run_nease_generic">run_nease_generic() (ptm_pose.splicing_tools.base.GenericDataset method)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.run_pose_generic">run_pose_generic() (ptm_pose.splicing_tools.base.GenericDataset method)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.simplify_annotation">simplify_annotation() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.save">save() (ptm_pose.splicing_tools.base.GenericDataset method)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs.score_all_ptms">score_all_ptms() (ptm_pose.analyze.interactions.ScorePSSMs method)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs.score_background">score_background() (ptm_pose.analyze.interactions.ScorePSSMs method)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.PSSM.score_SS">score_SS() (ptm_pose.analyze.interactions.PSSM method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.summarize_protein_network">summarize_protein_network() (ptm_pose.analyze.interactions.protein_interactions method)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs">ScorePSSMs (class in ptm_pose.analyze.interactions)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.simplify_annotation">simplify_annotation() (in module ptm_pose.annotate)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.SpliceSeq.SpliceSeq_Dataset">SpliceSeq_Dataset (class in ptm_pose.splicing_tools.SpliceSeq)</a>
+</li>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions.summarize_protein_network">summarize_protein_network() (ptm_pose.analyze.interactions.protein_interactions method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -688,7 +745,7 @@ document.write(`
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="PTM_POSE.html#ptm_pose.annotate.unify_interaction_data">unify_interaction_data() (in module ptm_pose.annotate)</a>
+      <li><a href="Overview/PTM_POSE.html#ptm_pose.annotate.unify_interaction_data">unify_interaction_data() (in module ptm_pose.annotate)</a>
 </li>
   </ul></td>
 </tr></table>

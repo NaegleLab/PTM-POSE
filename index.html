@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -43,11 +43,12 @@
     <script src="_static/documentation_options.js?v=d2a3a1a5"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Overview" href="Overview.html" />
+    <link rel="next" title="What is PTM-POSE?" href="Overview/Overview.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -155,17 +156,17 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview/Dependencies.html">Dependencies</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html">Projecting PTMs onto Splice Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Analyzing_PTMs.html">Analyzing PTM Impacts</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
 <ul class="nav bd-sidenav">
@@ -206,9 +207,10 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Advanced/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
     </div>
@@ -393,112 +395,144 @@ document.write(`
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Dependencies.html">Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Dependencies.html#optional-dependencies">Optional Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="PTM_POSE.html">PTM-POSE Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="PTM_POSE.html#module-ptm_pose.pose_config">Configuration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.pose_config.download_translator"><code class="docutils literal notranslate"><span class="pre">download_translator()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview/Overview.html">What is PTM-POSE?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Overview/Overview.html#compatibility-with-splice-event-quantification-tools">Compatibility with Splice Event Quantification Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Overview/Overview.html#more-information">More Information</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="PTM_POSE.html#module-ptm_pose.project">PTM Projection</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.project.find_ptms_in_region"><code class="docutils literal notranslate"><span class="pre">find_ptms_in_region()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.project.project_ptms_onto_MATS"><code class="docutils literal notranslate"><span class="pre">project_ptms_onto_MATS()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.project.project_ptms_onto_SpliceSeq"><code class="docutils literal notranslate"><span class="pre">project_ptms_onto_SpliceSeq()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.project.project_ptms_onto_splice_events"><code class="docutils literal notranslate"><span class="pre">project_ptms_onto_splice_events()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview/Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview/Dependencies.html#optional-dependencies">Optional Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview/quickstart.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Overview/quickstart.html#id1">Installation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="PTM_POSE.html#module-ptm_pose.flanking_sequences">Flanking Sequences</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes"><code class="docutils literal notranslate"><span class="pre">get_flanking_changes()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_rMATS"><code class="docutils literal notranslate"><span class="pre">get_flanking_changes_from_rMATS()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_splice_data"><code class="docutils literal notranslate"><span class="pre">get_flanking_changes_from_splice_data()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_splicegraph"><code class="docutils literal notranslate"><span class="pre">get_flanking_changes_from_splicegraph()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Overview/PTM_POSE.html">PTM-POSE Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Overview/PTM_POSE.html#module-ptm_pose.pose_config">Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.pose_config.download_translator"><code class="docutils literal notranslate"><span class="pre">download_translator()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="PTM_POSE.html#module-ptm_pose.annotate">Annotating PTMs</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.add_ELM_interactions"><code class="docutils literal notranslate"><span class="pre">add_ELM_interactions()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.add_ELM_matched_motifs"><code class="docutils literal notranslate"><span class="pre">add_ELM_matched_motifs()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.add_custom_annotation"><code class="docutils literal notranslate"><span class="pre">add_custom_annotation()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.add_omnipath_data"><code class="docutils literal notranslate"><span class="pre">add_omnipath_data()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.annotate_ptms"><code class="docutils literal notranslate"><span class="pre">annotate_ptms()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.append_from_gmt"><code class="docutils literal notranslate"><span class="pre">append_from_gmt()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.check_file"><code class="docutils literal notranslate"><span class="pre">check_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.check_gmt_file"><code class="docutils literal notranslate"><span class="pre">check_gmt_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.combine_enzyme_data"><code class="docutils literal notranslate"><span class="pre">combine_enzyme_data()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.combine_interaction_data"><code class="docutils literal notranslate"><span class="pre">combine_interaction_data()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.construct_DEPOD_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_DEPOD_gmt_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.construct_PTMInt_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_PTMInt_gmt_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.construct_PTMcode_interprotein_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_PTMcode_interprotein_gmt_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.construct_PTMsigDB_gmt_files"><code class="docutils literal notranslate"><span class="pre">construct_PTMsigDB_gmt_files()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.construct_PhosphoSitePlus_gmt_files"><code class="docutils literal notranslate"><span class="pre">construct_PhosphoSitePlus_gmt_files()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.construct_RegPhos_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_RegPhos_gmt_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.construct_annotation_dict_from_df"><code class="docutils literal notranslate"><span class="pre">construct_annotation_dict_from_df()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.construct_annotation_dict_from_gmt"><code class="docutils literal notranslate"><span class="pre">construct_annotation_dict_from_gmt()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.construct_combined_enzyme_gmt_df"><code class="docutils literal notranslate"><span class="pre">construct_combined_enzyme_gmt_df()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.construct_combined_interactions_gmt_df"><code class="docutils literal notranslate"><span class="pre">construct_combined_interactions_gmt_df()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.construct_custom_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_custom_gmt_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.construct_gmt_df"><code class="docutils literal notranslate"><span class="pre">construct_gmt_df()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.construct_omnipath_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_omnipath_gmt_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.convert_PSP_label_to_UniProt"><code class="docutils literal notranslate"><span class="pre">convert_PSP_label_to_UniProt()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.extract_ids_PTMcode"><code class="docutils literal notranslate"><span class="pre">extract_ids_PTMcode()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.extract_interaction_details"><code class="docutils literal notranslate"><span class="pre">extract_interaction_details()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.extract_positions_from_DEPOD"><code class="docutils literal notranslate"><span class="pre">extract_positions_from_DEPOD()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.get_available_gmt_annotations"><code class="docutils literal notranslate"><span class="pre">get_available_gmt_annotations()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.load_gmt_file"><code class="docutils literal notranslate"><span class="pre">load_gmt_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.process_database_annotations"><code class="docutils literal notranslate"><span class="pre">process_database_annotations()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.simplify_annotation"><code class="docutils literal notranslate"><span class="pre">simplify_annotation()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#ptm_pose.annotate.unify_interaction_data"><code class="docutils literal notranslate"><span class="pre">unify_interaction_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Overview/PTM_POSE.html#module-ptm_pose.project">PTM Projection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.project.find_ptms_in_region"><code class="docutils literal notranslate"><span class="pre">find_ptms_in_region()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.project.project_ptms_onto_splice_events"><code class="docutils literal notranslate"><span class="pre">project_ptms_onto_splice_events()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="PTM_POSE.html#analyze-modules">Analyze Modules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#module-ptm_pose.analyze.summarize">Summaries</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.summarize.combine_outputs"><code class="docutils literal notranslate"><span class="pre">combine_outputs()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_class_data"><code class="docutils literal notranslate"><span class="pre">get_modification_class_data()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_counts"><code class="docutils literal notranslate"><span class="pre">get_modification_counts()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.summarize.plot_modification_breakdown"><code class="docutils literal notranslate"><span class="pre">plot_modification_breakdown()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Overview/PTM_POSE.html#module-ptm_pose.flanking_sequences">Flanking Sequences</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes"><code class="docutils literal notranslate"><span class="pre">get_flanking_changes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_splice_data"><code class="docutils literal notranslate"><span class="pre">get_flanking_changes_from_splice_data()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#module-ptm_pose.analyze.filter">Filtering PTMs and Events</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.filter.assess_filter_range"><code class="docutils literal notranslate"><span class="pre">assess_filter_range()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.filter.plot_filter_impact"><code class="docutils literal notranslate"><span class="pre">plot_filter_impact()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Overview/PTM_POSE.html#tool-specific-modules">Tool-Specific Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset"><code class="docutils literal notranslate"><span class="pre">GenericDataset</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.get_altered_flanks_generic"><code class="docutils literal notranslate"><span class="pre">GenericDataset.get_altered_flanks_generic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.get_nease_domains"><code class="docutils literal notranslate"><span class="pre">GenericDataset.get_nease_domains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.get_nease_edges"><code class="docutils literal notranslate"><span class="pre">GenericDataset.get_nease_edges()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.get_nease_motifs"><code class="docutils literal notranslate"><span class="pre">GenericDataset.get_nease_motifs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.project_ptms_generic"><code class="docutils literal notranslate"><span class="pre">GenericDataset.project_ptms_generic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.run_nease_generic"><code class="docutils literal notranslate"><span class="pre">GenericDataset.run_nease_generic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.run_pose_generic"><code class="docutils literal notranslate"><span class="pre">GenericDataset.run_pose_generic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.base.GenericDataset.save"><code class="docutils literal notranslate"><span class="pre">GenericDataset.save()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#module-ptm_pose.analyze.annotations">Annotations</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.annotations.annotation_enrichment"><code class="docutils literal notranslate"><span class="pre">annotation_enrichment()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.annotations.draw_pie"><code class="docutils literal notranslate"><span class="pre">draw_pie()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.annotations.gene_set_enrichment"><code class="docutils literal notranslate"><span class="pre">gene_set_enrichment()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.annotations.get_available_annotations"><code class="docutils literal notranslate"><span class="pre">get_available_annotations()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.annotations.get_background_annotation_counts"><code class="docutils literal notranslate"><span class="pre">get_background_annotation_counts()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.annotations.get_enrichment_inputs"><code class="docutils literal notranslate"><span class="pre">get_enrichment_inputs()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.annotations.get_ptm_annotations"><code class="docutils literal notranslate"><span class="pre">get_ptm_annotations()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.annotations.plot_EnrichR_pies"><code class="docutils literal notranslate"><span class="pre">plot_EnrichR_pies()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.annotations.plot_annotation_counts"><code class="docutils literal notranslate"><span class="pre">plot_annotation_counts()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.annotations.plot_available_annotations"><code class="docutils literal notranslate"><span class="pre">plot_available_annotations()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.MATS.MATS_Dataset"><code class="docutils literal notranslate"><span class="pre">MATS_Dataset</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.MATS.MATS_Dataset.run_nease"><code class="docutils literal notranslate"><span class="pre">MATS_Dataset.run_nease()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#module-ptm_pose.analyze.interactions">Protein Interactions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.interactions.get_edge_colors"><code class="docutils literal notranslate"><span class="pre">get_edge_colors()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.interactions.get_interaction_stats"><code class="docutils literal notranslate"><span class="pre">get_interaction_stats()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.interactions.plot_interaction_network"><code class="docutils literal notranslate"><span class="pre">plot_interaction_network()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.interactions.plot_network_centrality"><code class="docutils literal notranslate"><span class="pre">plot_network_centrality()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions"><code class="docutils literal notranslate"><span class="pre">protein_interactions</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.MAJIQ.MAJIQ_Dataset"><code class="docutils literal notranslate"><span class="pre">MAJIQ_Dataset</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.SpliceSeq.SpliceSeq_Dataset"><code class="docutils literal notranslate"><span class="pre">SpliceSeq_Dataset</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.splicing_tools.SpliceSeq.SpliceSeq_Dataset.get_flanking_changes_from_splicegraph"><code class="docutils literal notranslate"><span class="pre">SpliceSeq_Dataset.get_flanking_changes_from_splicegraph()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#module-ptm_pose.analyze.enzyme">Enzyme Regulation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.enzyme.compare_KL_for_sequence"><code class="docutils literal notranslate"><span class="pre">compare_KL_for_sequence()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.enzyme.get_all_KL_scores"><code class="docutils literal notranslate"><span class="pre">get_all_KL_scores()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="PTM_POSE.html#id1">Flanking Sequences</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.compare_flanking_sequences"><code class="docutils literal notranslate"><span class="pre">compare_flanking_sequences()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.compare_inclusion_motifs"><code class="docutils literal notranslate"><span class="pre">compare_inclusion_motifs()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.findAlteredPositions"><code class="docutils literal notranslate"><span class="pre">findAlteredPositions()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.find_motifs"><code class="docutils literal notranslate"><span class="pre">find_motifs()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.getSequenceIdentity"><code class="docutils literal notranslate"><span class="pre">getSequenceIdentity()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.identify_change_to_specific_motif"><code class="docutils literal notranslate"><span class="pre">identify_change_to_specific_motif()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_alterations_matrix"><code class="docutils literal notranslate"><span class="pre">plot_alterations_matrix()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_location_of_altered_flanking_residues"><code class="docutils literal notranslate"><span class="pre">plot_location_of_altered_flanking_residues()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_sequence_differences"><code class="docutils literal notranslate"><span class="pre">plot_sequence_differences()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="Overview/PTM_POSE.html#module-ptm_pose.annotate">Annotating PTMs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.add_ELM_interactions"><code class="docutils literal notranslate"><span class="pre">add_ELM_interactions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.add_ELM_matched_motifs"><code class="docutils literal notranslate"><span class="pre">add_ELM_matched_motifs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.add_custom_annotation"><code class="docutils literal notranslate"><span class="pre">add_custom_annotation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.add_omnipath_data"><code class="docutils literal notranslate"><span class="pre">add_omnipath_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.annotate_ptms"><code class="docutils literal notranslate"><span class="pre">annotate_ptms()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.append_from_gmt"><code class="docutils literal notranslate"><span class="pre">append_from_gmt()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.check_file"><code class="docutils literal notranslate"><span class="pre">check_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.check_gmt_file"><code class="docutils literal notranslate"><span class="pre">check_gmt_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.combine_enzyme_data"><code class="docutils literal notranslate"><span class="pre">combine_enzyme_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.combine_interaction_data"><code class="docutils literal notranslate"><span class="pre">combine_interaction_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_DEPOD_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_DEPOD_gmt_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_PTMInt_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_PTMInt_gmt_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_PTMcode_interprotein_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_PTMcode_interprotein_gmt_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_PTMsigDB_gmt_files"><code class="docutils literal notranslate"><span class="pre">construct_PTMsigDB_gmt_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_PhosphoSitePlus_gmt_files"><code class="docutils literal notranslate"><span class="pre">construct_PhosphoSitePlus_gmt_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_RegPhos_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_RegPhos_gmt_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_annotation_dict_from_df"><code class="docutils literal notranslate"><span class="pre">construct_annotation_dict_from_df()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_annotation_dict_from_gmt"><code class="docutils literal notranslate"><span class="pre">construct_annotation_dict_from_gmt()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_combined_enzyme_gmt_df"><code class="docutils literal notranslate"><span class="pre">construct_combined_enzyme_gmt_df()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_combined_interactions_gmt_df"><code class="docutils literal notranslate"><span class="pre">construct_combined_interactions_gmt_df()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_custom_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_custom_gmt_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_gmt_df"><code class="docutils literal notranslate"><span class="pre">construct_gmt_df()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.construct_omnipath_gmt_file"><code class="docutils literal notranslate"><span class="pre">construct_omnipath_gmt_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.convert_PSP_label_to_UniProt"><code class="docutils literal notranslate"><span class="pre">convert_PSP_label_to_UniProt()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.extract_ids_PTMcode"><code class="docutils literal notranslate"><span class="pre">extract_ids_PTMcode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.extract_interaction_details"><code class="docutils literal notranslate"><span class="pre">extract_interaction_details()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.extract_positions_from_DEPOD"><code class="docutils literal notranslate"><span class="pre">extract_positions_from_DEPOD()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.get_available_gmt_annotations"><code class="docutils literal notranslate"><span class="pre">get_available_gmt_annotations()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.load_gmt_file"><code class="docutils literal notranslate"><span class="pre">load_gmt_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.process_database_annotations"><code class="docutils literal notranslate"><span class="pre">process_database_annotations()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.simplify_annotation"><code class="docutils literal notranslate"><span class="pre">simplify_annotation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.annotate.unify_interaction_data"><code class="docutils literal notranslate"><span class="pre">unify_interaction_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Overview/PTM_POSE.html#analyze-modules">Analyze Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#module-ptm_pose.analyze.summarize">Summaries</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.summarize.combine_outputs"><code class="docutils literal notranslate"><span class="pre">combine_outputs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_class_data"><code class="docutils literal notranslate"><span class="pre">get_modification_class_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_counts"><code class="docutils literal notranslate"><span class="pre">get_modification_counts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.summarize.plot_modification_breakdown"><code class="docutils literal notranslate"><span class="pre">plot_modification_breakdown()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#module-ptm_pose.analyze.filter">Filtering PTMs and Events</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.filter.assess_filter_range"><code class="docutils literal notranslate"><span class="pre">assess_filter_range()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.filter.plot_filter_impact"><code class="docutils literal notranslate"><span class="pre">plot_filter_impact()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#module-ptm_pose.analyze.annotations">Annotations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.annotation_enrichment"><code class="docutils literal notranslate"><span class="pre">annotation_enrichment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.draw_pie"><code class="docutils literal notranslate"><span class="pre">draw_pie()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.gene_set_enrichment"><code class="docutils literal notranslate"><span class="pre">gene_set_enrichment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.get_available_annotations"><code class="docutils literal notranslate"><span class="pre">get_available_annotations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.get_background_annotation_counts"><code class="docutils literal notranslate"><span class="pre">get_background_annotation_counts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.get_enrichment_inputs"><code class="docutils literal notranslate"><span class="pre">get_enrichment_inputs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.get_ptm_annotations"><code class="docutils literal notranslate"><span class="pre">get_ptm_annotations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.plot_EnrichR_pies"><code class="docutils literal notranslate"><span class="pre">plot_EnrichR_pies()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.plot_annotation_counts"><code class="docutils literal notranslate"><span class="pre">plot_annotation_counts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.annotations.plot_available_annotations"><code class="docutils literal notranslate"><span class="pre">plot_available_annotations()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#module-ptm_pose.analyze.interactions">Protein Interactions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.PSSM"><code class="docutils literal notranslate"><span class="pre">PSSM</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.ScorePSSMs"><code class="docutils literal notranslate"><span class="pre">ScorePSSMs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.get_edge_colors"><code class="docutils literal notranslate"><span class="pre">get_edge_colors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.get_interaction_stats"><code class="docutils literal notranslate"><span class="pre">get_interaction_stats()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.get_percentile"><code class="docutils literal notranslate"><span class="pre">get_percentile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.plot_interaction_network"><code class="docutils literal notranslate"><span class="pre">plot_interaction_network()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.plot_network_centrality"><code class="docutils literal notranslate"><span class="pre">plot_network_centrality()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.protein_interactions"><code class="docutils literal notranslate"><span class="pre">protein_interactions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.interactions.reformat_pssm"><code class="docutils literal notranslate"><span class="pre">reformat_pssm()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#module-ptm_pose.analyze.enzyme">Enzyme Regulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.enzyme.compare_KL_for_sequence"><code class="docutils literal notranslate"><span class="pre">compare_KL_for_sequence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.enzyme.dotplot"><code class="docutils literal notranslate"><span class="pre">dotplot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.enzyme.get_all_KL_scores"><code class="docutils literal notranslate"><span class="pre">get_all_KL_scores()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Overview/PTM_POSE.html#id1">Flanking Sequences</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.compare_flanking_sequences"><code class="docutils literal notranslate"><span class="pre">compare_flanking_sequences()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.compare_inclusion_motifs"><code class="docutils literal notranslate"><span class="pre">compare_inclusion_motifs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.findAlteredPositions"><code class="docutils literal notranslate"><span class="pre">findAlteredPositions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.find_motifs"><code class="docutils literal notranslate"><span class="pre">find_motifs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.getSequenceIdentity"><code class="docutils literal notranslate"><span class="pre">getSequenceIdentity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.identify_change_to_specific_motif"><code class="docutils literal notranslate"><span class="pre">identify_change_to_specific_motif()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_alterations_matrix"><code class="docutils literal notranslate"><span class="pre">plot_alterations_matrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_location_of_altered_flanking_residues"><code class="docutils literal notranslate"><span class="pre">plot_location_of_altered_flanking_residues()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="Overview/PTM_POSE.html#ptm_pose.analyze.flank_analysis.plot_sequence_differences"><code class="docutils literal notranslate"><span class="pre">plot_sequence_differences()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -508,41 +542,33 @@ document.write(`
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/quickstart.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/quickstart.html#id1">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html">Projecting PTMs onto Splice Events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#formatting-data">Formatting Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#tools-with-built-in-compatibility">Tools with Built-in Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#other-quantification-tools">Other Quantification Tools</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#formatting-data">Formatting Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#identifying-differentially-included-ptms">Identifying differentially included PTMs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#altered-flanking-sequences">Altered Flanking Sequences</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#using-ptm-pose-with-mats-or-spliceseq-datasets">Using PTM-POSE with MATS or SpliceSeq datasets</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#mats-datasets">MATS datasets</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#spliceseq-datasets">SpliceSeq datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#running-ptm-pose">Running PTM-POSE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#mats-datasets">MATS Datasets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#spliceseq-datasets">SpliceSeq Datasets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#majiq-datasets-voila-tsv-files">MAJIQ Datasets (voila tsv files)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#other-datasets">Other Datasets</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Filtering_PTMs.html#types-of-available-filters">Types of Available Filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Filtering_PTMs.html#how-to-filter-ptms-and-events">How to Filter PTMs and Events</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="Running_PTM-POSE/Filtering_PTMs.html#filtering-ptms-during-projection">Filtering PTMs during Projection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Running_PTM-POSE/Filtering_PTMs.html#filtering-ptms-during-analysis">Filtering PTMs during analysis</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Filtering_PTMs.html#why-filter">Why Filter?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Filtering_PTMs.html#impact-of-filtering-ptms-by-evidence">Impact of Filtering PTMs by evidence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Projection_Instructions.html#downstream-analysis">Downstream Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Annotating_PTMs.html#annotating-ptms-with-pre-installed-annotation-files">Annotating PTMs with pre-installed annotation files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Annotating_PTMs.html#available-annotations">Available Annotations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Annotating_PTMs.html#appending-annotations-to-ptm-dataframes">Appending Annotations to PTM Dataframes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Annotating_PTMs.html#updating-annotation-files">Updating annotation files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Annotating_PTMs.html#creating-custom-annotation-files">Creating Custom Annotation files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Running_PTM-POSE/Annotating_PTMs.html#future-directions">Future Directions</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="Running_PTM-POSE/Analyzing_PTMs.html">Analyzing PTM Impacts</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -568,12 +594,23 @@ document.write(`
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#data-sources">Data sources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#data-preparation">Data Preparation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#interpreting-results">Interpreting Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Advanced/Filtering_PTMs.html#types-of-available-filters">Types of Available Filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Advanced/Filtering_PTMs.html#how-to-filter-ptms-and-events">How to Filter PTMs and Events</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Advanced/Filtering_PTMs.html#filtering-ptms-during-projection">Filtering PTMs during Projection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Advanced/Filtering_PTMs.html#filtering-ptms-during-analysis">Filtering PTMs during analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Advanced/Filtering_PTMs.html#why-filter">Why Filter?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Advanced/Filtering_PTMs.html#impact-of-filtering-ptms-by-evidence">Impact of Filtering PTMs by evidence</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Advanced/faq.html">Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Advanced/faq.html#data-sources">Data sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Advanced/faq.html#data-preparation">Data Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Advanced/faq.html#interpreting-results">Interpreting Results</a></li>
 </ul>
 </li>
 </ul>
@@ -600,11 +637,11 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="right-next"
-       href="Overview.html"
+       href="Overview/Overview.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Overview</p>
+        <p class="prev-next-title">What is PTM-POSE?</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

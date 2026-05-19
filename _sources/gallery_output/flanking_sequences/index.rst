@@ -7,6 +7,10 @@ Analyzing altered flanking sequences
 
 
 
+.. raw:: html
+
+  <div id='sg-tag-list' class='sphx-glr-tag-list'></div>
+
 
 .. raw:: html
 
@@ -23,7 +27,7 @@ Analyzing altered flanking sequences
   .. image:: /gallery_output/flanking_sequences/images/thumb/sphx_glr_plot_sequence_comparison_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_flanking_sequences_plot_sequence_comparison.py`
+  :doc:`/gallery_output/flanking_sequences/plot_sequence_comparison`
 
 .. raw:: html
 
@@ -40,7 +44,7 @@ Analyzing altered flanking sequences
   .. image:: /gallery_output/flanking_sequences/images/thumb/sphx_glr_plot_sh2_domain_motifs_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_flanking_sequences_plot_sh2_domain_motifs.py`
+  :doc:`/gallery_output/flanking_sequences/plot_sh2_domain_motifs`
 
 .. raw:: html
 
@@ -57,7 +61,7 @@ Analyzing altered flanking sequences
   .. image:: /gallery_output/flanking_sequences/images/thumb/sphx_glr_plot_location_altered_flanks_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_flanking_sequences_plot_location_altered_flanks.py`
+  :doc:`/gallery_output/flanking_sequences/plot_location_altered_flanks`
 
 .. raw:: html
 
@@ -74,7 +78,7 @@ Analyzing altered flanking sequences
   .. image:: /gallery_output/flanking_sequences/images/thumb/sphx_glr_plot_kinase_library_affinity_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_flanking_sequences_plot_kinase_library_affinity.py`
+  :doc:`/gallery_output/flanking_sequences/plot_kinase_library_affinity`
 
 .. raw:: html
 

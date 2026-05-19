@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -42,6 +42,7 @@
     <script src="../../_static/documentation_options.js?v=d2a3a1a5"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ptm_pose/flanking_sequences';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -153,17 +154,17 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/Dependencies.html">Dependencies</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Projection_Instructions.html">Projecting PTMs onto Splice Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Running_PTM-POSE/Analyzing_PTMs.html">Analyzing PTM Impacts</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
 <ul class="nav bd-sidenav">
@@ -204,9 +205,10 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Advanced/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
     </div>
@@ -336,6 +338,10 @@ document.write(`
 <span class="c1">#PTM pose functions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">database_interfacing</span> <span class="k">as</span> <span class="n">di</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">project</span><span class="p">,</span> <span class="n">pose_config</span><span class="p">,</span> <span class="n">helpers</span>
+
+<span class="c1">#import warnings to add deprecation warnings for older/moved functions</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
 
 
 
@@ -501,6 +507,7 @@ document.write(`
     
     <span class="k">return</span> <span class="n">flanking_seq_aa</span>
 
+<span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s1">&#39;This function has been moved to the splicing_tools.SpliceSeq module.&#39;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_region_from_splicegraph</span><span class="p">(</span><span class="n">splicegraph</span><span class="p">,</span> <span class="n">region_id</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a region id and the splicegraph from SpliceSeq, extract the chromosome, strand, and start and stop locations of that exon. Start and stop are forced to be in ascending order, which is not necessarily true from the splice graph (i.e. start &gt; stop for negative strand exons). This is done to make the region extraction consistent with the rest of the codebase.</span>
@@ -530,7 +537,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">region_info</span><span class="p">[</span><span class="s1">&#39;Chromosome&#39;</span><span class="p">],</span> <span class="n">strand</span><span class="p">,</span><span class="n">region_info</span><span class="p">[</span><span class="s1">&#39;Chr_Stop&#39;</span><span class="p">],</span> <span class="n">region_info</span><span class="p">[</span><span class="s1">&#39;Chr_Start&#39;</span><span class="p">]]</span>
 
-    
+<span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s1">&#39;This function has been moved to the splicing_tools.SpliceSeq module.&#39;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_spliceseq_event_regions</span><span class="p">(</span><span class="n">gene_name</span><span class="p">,</span> <span class="n">from_exon</span><span class="p">,</span> <span class="n">spliced_exons</span><span class="p">,</span> <span class="n">to_exon</span><span class="p">,</span> <span class="n">splicegraph</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given all exons associated with a splicegraph event, obtain the coordinates associated with the flanking exons and the spliced region. The spliced region is defined as the exons that are associated with psi values, while flanking regions include the &quot;from&quot; and &quot;to&quot; exons that indicate the adjacent, unspliced exons.</span>
@@ -563,7 +570,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="get_flanking_changes">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_flanking_changes</span><span class="p">(</span><span class="n">ptm_coordinates</span><span class="p">,</span> <span class="n">chromosome</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="n">first_flank_region</span><span class="p">,</span> <span class="n">spliced_region</span><span class="p">,</span> <span class="n">second_flank_region</span><span class="p">,</span> <span class="n">gene</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dPSI</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">event_id</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">flank_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">,</span> <span class="n">lowercase_mod</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">order_by</span> <span class="o">=</span> <span class="s1">&#39;Coordinates&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given flanking and spliced regions associated with a splice event, identify PTMs that have potential to have an altered flanking sequence depending on whether spliced region is included or excluded (if PTM is close to splice boundary). For these PTMs, extract the flanking sequences associated with the inclusion and exclusion cases and translate into amino acid sequences. If the PTM is not associated with a codon that codes for the expected amino acid, the PTM will be excluded from the results. </span>
@@ -714,7 +721,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="get_flanking_changes_from_splice_data">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_splice_data">[docs]</a>
+<a class="viewcode-back" href="../../Overview/PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_splice_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_flanking_changes_from_splice_data</span><span class="p">(</span><span class="n">splice_data</span><span class="p">,</span> <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">chromosome_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">strand_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">first_flank_start_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">first_flank_end_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spliced_region_start_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spliced_region_end_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">second_flank_start_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">second_flank_end_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="n">sig_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">flank_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">,</span> <span class="n">start_coordinate_system</span> <span class="o">=</span> <span class="s1">&#39;1-based&#39;</span><span class="p">,</span> <span class="n">end_coordinate_system</span> <span class="o">=</span> <span class="s1">&#39;1-based&#39;</span><span class="p">,</span> <span class="n">lowercase_mod</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a DataFrame containing information about splice events, extract the flanking sequences associated with the PTMs in the flanking regions if there is potential for this to be altered. The DataFrame should contain columns for the chromosome, strand, start and stop locations of the first flanking region, spliced region, and second flanking region. The DataFrame should also contain a column for the event ID associated with the splice event. If the DataFrame does not contain the necessary columns, the function will raise an error.</span>
@@ -772,11 +779,11 @@ document.write(`
 
     <span class="c1">#check for any keyword arguments to use for filtering</span>
     <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
-        <span class="n">filter_arguments</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">extract_filter_arguments</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">filter_arguments</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">extract_filter_kwargs</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1">#check any excess unused keyword arguments, report them</span>
-        <span class="n">helpers</span><span class="o">.</span><span class="n">check_filter_kwargs</span><span class="p">(</span><span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
+        <span class="n">helpers</span><span class="o">.</span><span class="n">check_filter_kwargs</span><span class="p">(</span><span class="n">filter_arguments</span><span class="p">)</span>
         <span class="c1">#filter ptm coordinates file to include only ptms with desired evidence</span>
-        <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">filter_ptms_by_evidence</span><span class="p">(</span><span class="n">ptm_coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
+        <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">filter_ptms</span><span class="p">(</span><span class="n">pose_config</span><span class="o">.</span><span class="n">ptm_coordinates</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
 
     <span class="c1">#check to make sure all required columns are provided</span>
     <span class="k">if</span> <span class="n">chromosome_col</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">strand_col</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">first_flank_start_col</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">first_flank_end_col</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">spliced_region_start_col</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">spliced_region_end_col</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">second_flank_start_col</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">second_flank_end_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -788,10 +795,6 @@ document.write(`
         <span class="n">splice_data</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">splice_data</span><span class="p">[</span><span class="s1">&#39;chr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">)</span>
 
     
-    <span class="c1">#check for any keyword arguments to use for filtering</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
-        <span class="n">filter_arguments</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">extract_filter_arguments</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">filter_ptms_by_evidence</span><span class="p">(</span><span class="n">ptm_coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
     
 
     <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
@@ -846,7 +849,7 @@ document.write(`
     <span class="k">return</span> <span class="n">results</span></div>
 
 
-
+<span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s1">&#39;This function has been moved to the splicing_tools.SpliceSeq module.&#39;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_spliceseq_flank_loc</span><span class="p">(</span><span class="n">ptm</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="n">from_region_coords</span><span class="p">,</span> <span class="n">to_region_coords</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given ptm information for identifying flanking sequences from splicegraph information, extract the relative location of the ptm in the flanking region (where it is located in translation of the flanking region).</span>
@@ -876,6 +879,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">to_region_coords</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ptm</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Gene Location (</span><span class="si">{</span><span class="n">coordinate_type</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">]</span>
 
+<span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s1">&#39;This function has been moved to the splicing_tools.SpliceSeq module.&#39;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_ptms_in_splicegraph_flank</span><span class="p">(</span><span class="n">gene_name</span><span class="p">,</span> <span class="n">chromosome</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="n">flank_region_start</span><span class="p">,</span> <span class="n">flank_region_end</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">,</span> <span class="n">which_flank</span> <span class="o">=</span> <span class="s1">&#39;First&#39;</span><span class="p">,</span> <span class="n">flank_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
@@ -891,6 +895,8 @@ document.write(`
     
     <span class="k">return</span> <span class="n">flank_ptms</span>
 
+
+<span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s1">&#39;This function has been moved to the splicing_tools.SpliceSeq module.&#39;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_flank_changes_from_splicegraph_single_event</span><span class="p">(</span><span class="n">event_row</span><span class="p">,</span> <span class="n">splicegraph</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">flank_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">):</span>
     <span class="n">region_id</span> <span class="o">=</span> <span class="n">event_row</span><span class="p">[</span><span class="n">event_id_col</span><span class="p">]</span> <span class="k">if</span> <span class="n">event_id_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
     <span class="n">dPSI</span> <span class="o">=</span> <span class="n">event_row</span><span class="p">[</span><span class="n">dPSI_col</span><span class="p">]</span> <span class="k">if</span> <span class="n">dPSI_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
@@ -959,8 +965,7 @@ document.write(`
     
     <span class="k">return</span> <span class="n">ptms_of_interest</span>
 
-<div class="viewcode-block" id="get_flanking_changes_from_splicegraph">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_splicegraph">[docs]</a>
+<span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s1">&#39;This function has been moved to the splicing_tools.SpliceSeq module and we recommend using the new implementation.&#39;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_flanking_changes_from_splicegraph</span><span class="p">(</span><span class="n">psi_data</span><span class="p">,</span> <span class="n">splicegraph</span><span class="p">,</span> <span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">event_id_col</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gene_col</span> <span class="o">=</span> <span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="n">flank_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg19&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a DataFrame containing information about splice events  obtained from SpliceSeq and the corresponding splicegraph, extract the flanking sequences of PTMs that are nearby the splice boundary (potential for flanking sequence to be altered). Coordinate information of individual exons should be found in splicegraph. You can also provide columns with specific psi or significance information. Extra cols not in these categories can be provided with extra_cols parameter.</span>
@@ -1039,12 +1044,10 @@ document.write(`
         <span class="n">altered_flanks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">single_event_altered_flanks</span><span class="p">)</span>
 
     <span class="n">altered_flanks</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">altered_flanks</span><span class="p">)</span>    
-    <span class="k">return</span> <span class="n">altered_flanks</span></div>
+    <span class="k">return</span> <span class="n">altered_flanks</span>
 
 
-
-<div class="viewcode-block" id="get_flanking_changes_from_rMATS">
-<a class="viewcode-back" href="../../PTM_POSE.html#ptm_pose.flanking_sequences.get_flanking_changes_from_rMATS">[docs]</a>
+<span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s1">&#39;Tools/functions for performing analysis on MATS data have been moved to the splicing_tools.MATS module.&#39;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_flanking_changes_from_rMATS</span><span class="p">(</span><span class="n">ptm_coordinates</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">SE_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">A5SS_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">A3SS_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">RI_events</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">coordinate_type</span> <span class="o">=</span> <span class="s1">&#39;hg38&#39;</span><span class="p">,</span> <span class="n">dPSI_col</span> <span class="o">=</span> <span class="s1">&#39;meanDeltaPSI&#39;</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;FDR&#39;</span><span class="p">,</span> <span class="n">extra_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given splice events identified rMATS extract quantified PTMs that are nearby the splice boundary (potential for flanking sequence to be altered). Coordinate information of individual exons should be found in splicegraph. You can also provide columns with specific psi or significance information. Extra cols not in these categories can be provided with extra_cols parameter. </span>
@@ -1224,8 +1227,7 @@ document.write(`
         <span class="n">RI_flanks</span><span class="p">[</span><span class="s1">&#39;Event Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;RI&#39;</span>
         <span class="n">spliced_flanks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">RI_flanks</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">spliced_flanks</span><span class="p">)</span></div>
-
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">spliced_flanks</span><span class="p">)</span>
 
 
     

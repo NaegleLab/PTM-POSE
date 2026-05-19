@@ -7,6 +7,10 @@ Impact on protein interaction and regulatory networks
 
 
 
+.. raw:: html
+
+  <div id='sg-tag-list' class='sphx-glr-tag-list'></div>
+
 
 .. raw:: html
 
@@ -23,7 +27,7 @@ Impact on protein interaction and regulatory networks
   .. image:: /gallery_output/Networks/images/thumb/sphx_glr_plot_ksea_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_Networks_plot_ksea.py`
+  :doc:`/gallery_output/Networks/plot_ksea`
 
 .. raw:: html
 
@@ -40,7 +44,7 @@ Impact on protein interaction and regulatory networks
   .. image:: /gallery_output/Networks/images/thumb/sphx_glr_plot_protein_interactions_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_Networks_plot_protein_interactions.py`
+  :doc:`/gallery_output/Networks/plot_protein_interactions`
 
 .. raw:: html
 
@@ -57,7 +61,7 @@ Impact on protein interaction and regulatory networks
   .. image:: /gallery_output/Networks/images/thumb/sphx_glr_plot_kstar_enrichment_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_Networks_plot_kstar_enrichment.py`
+  :doc:`/gallery_output/Networks/plot_kstar_enrichment`
 
 .. raw:: html
 

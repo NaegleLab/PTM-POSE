@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -42,6 +42,7 @@
     <script src="../../../_static/documentation_options.js?v=d2a3a1a5"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ptm_pose/analyze/summarize';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -153,16 +154,15 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/Dependencies.html">Dependencies</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../../PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Projection_Instructions.html">Projecting PTMs onto Splice Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
@@ -204,9 +204,10 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Advanced/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
     </div>
@@ -338,7 +339,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">ptm_pose</span><span class="w"> </span><span class="kn">import</span> <span class="n">helpers</span>
 
 <div class="viewcode-block" id="combine_outputs">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.summarize.combine_outputs">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.summarize.combine_outputs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">combine_outputs</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="n">altered_flanks</span><span class="p">,</span> <span class="n">report_removed_annotations</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="n">include_stop_codon_introduction</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">remove_conflicting</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given the spliced_ptms (differentially included) and altered_flanks (altered flanking sequences) dataframes obtained from project and flanking_sequences modules, combine the two into a single dataframe that categorizes each PTM by the impact on the PTM site</span>
@@ -407,7 +408,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="get_modification_counts">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_counts">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_counts">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_modification_counts</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given PTM data (either spliced ptms, altered flanks, or combined data), return the counts of each modification class</span>
@@ -422,10 +423,11 @@ document.write(`
 <span class="sd">    modification_counts: pd.Series</span>
 <span class="sd">        Series with the counts of each modification class</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ptms</span> <span class="o">=</span> <span class="n">ptms</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="c1">#filter ptms based on kwargs if provided</span>
     <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
         <span class="n">filter_arguments</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">extract_filter_kwargs</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">helpers</span><span class="o">.</span><span class="n">check_filter_kwargs</span><span class="p">(</span><span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
+        <span class="n">helpers</span><span class="o">.</span><span class="n">check_filter_kwargs</span><span class="p">(</span><span class="n">filter_arguments</span><span class="p">)</span>
         <span class="n">ptms</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">filter_ptms</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
 
     <span class="n">ptms</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ptms</span><span class="p">[</span><span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">))</span>
@@ -436,7 +438,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="get_modification_class_data">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_class_data">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.summarize.get_modification_class_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_modification_class_data</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">mod_class</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given ptm dataframe and a specific modification class, return a dataframe with only the PTMs of that class</span>
@@ -460,7 +462,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="plot_modification_breakdown">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.summarize.plot_modification_breakdown">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.summarize.plot_modification_breakdown">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_modification_breakdown</span><span class="p">(</span><span class="n">spliced_ptms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">altered_flanks</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">colors</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">&#39;colorblind&#39;</span><span class="p">),</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot the number of PTMs that are differentially included or have altered flanking sequences, separated by PTM type</span>
@@ -483,7 +485,7 @@ document.write(`
     
     <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
         <span class="n">filter_arguments</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">extract_filter_kwargs</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">helpers</span><span class="o">.</span><span class="n">check_filter_kwargs</span><span class="p">(</span><span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
+        <span class="n">helpers</span><span class="o">.</span><span class="n">check_filter_kwargs</span><span class="p">(</span><span class="n">filter_arguments</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">spliced_ptms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">spliced_ptms</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">filter_ptms</span><span class="p">(</span><span class="n">spliced_ptms</span><span class="p">,</span> <span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">altered_flanks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

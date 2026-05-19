@@ -6,6 +6,10 @@ General Overview of Spliced PTMs
 ---------------------------------
 
 
+.. raw:: html
+
+  <div id='sg-tag-list' class='sphx-glr-tag-list'></div>
+
 
 .. raw:: html
 
@@ -22,7 +26,7 @@ General Overview of Spliced PTMs
   .. image:: /gallery_output/A_Overview_of_Spliced_PTMs/images/thumb/sphx_glr_plot_NumberOfPTMs_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_A_Overview_of_Spliced_PTMs_plot_NumberOfPTMs.py`
+  :doc:`/gallery_output/A_Overview_of_Spliced_PTMs/plot_NumberOfPTMs`
 
 .. raw:: html
 
@@ -39,7 +43,7 @@ General Overview of Spliced PTMs
   .. image:: /gallery_output/A_Overview_of_Spliced_PTMs/images/thumb/sphx_glr_plot_PTM_annotations_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_A_Overview_of_Spliced_PTMs_plot_PTM_annotations.py`
+  :doc:`/gallery_output/A_Overview_of_Spliced_PTMs/plot_PTM_annotations`
 
 .. raw:: html
 
@@ -56,7 +60,7 @@ General Overview of Spliced PTMs
   .. image:: /gallery_output/A_Overview_of_Spliced_PTMs/images/thumb/sphx_glr_plot_filter_impact_thumb.png
     :alt:
 
-  :ref:`sphx_glr_gallery_output_A_Overview_of_Spliced_PTMs_plot_filter_impact.py`
+  :doc:`/gallery_output/A_Overview_of_Spliced_PTMs/plot_filter_impact`
 
 .. raw:: html
 

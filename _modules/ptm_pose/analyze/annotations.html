@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -42,6 +42,7 @@
     <script src="../../../_static/documentation_options.js?v=d2a3a1a5"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ptm_pose/analyze/annotations';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -153,16 +154,15 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/Overview.html">What is PTM-POSE?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/Dependencies.html">Dependencies</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../../PTM_POSE.html">PTM-POSE Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/quickstart.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview/PTM_POSE.html">PTM-POSE Reference</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Instructions:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Running PTM-POSE</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/quickstart.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Projection_Instructions.html">Running PTM-POSE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Projection_Instructions.html">Projecting PTMs onto Splice Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Running_PTM-POSE/Annotating_PTMs.html">Annotating PTMs with Functional Information</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Example Vignettes</span></p>
@@ -204,9 +204,10 @@
 </ul>
 </details></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Troubleshooting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Additional Topics</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Advanced/Filtering_PTMs.html">Filtering PTMs and Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Advanced/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
     </div>
@@ -353,7 +354,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="get_available_annotations">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.get_available_annotations">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.annotations.get_available_annotations">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_available_annotations</span><span class="p">(</span><span class="n">ptms</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a PTM dataframe, indicate the annotations that are available for analysis and indicate whether they have already been appended to the PTM dataset</span>
@@ -390,7 +391,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="get_ptm_annotations">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.get_ptm_annotations">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.annotations.get_ptm_annotations">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_ptm_annotations</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given spliced ptm information obtained from project and annotate modules, grab PTMs in spliced ptms associated with specific PTM modules</span>
@@ -523,7 +524,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="get_background_annotation_counts">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.get_background_annotation_counts">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.annotations.get_background_annotation_counts">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_background_annotation_counts</span><span class="p">(</span><span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a database and annotation type, retrieve the counts of PTMs associated with the requested annotation type across all PTMs in the ptm_coordinates dataframe used for projection</span>
@@ -553,8 +554,8 @@ document.write(`
 
 
 <div class="viewcode-block" id="get_enrichment_inputs">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.get_enrichment_inputs">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_enrichment_inputs</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span>  <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">background_type</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">mod_class</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.annotations.get_enrichment_inputs">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_enrichment_inputs</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span>  <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">background</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">background_type</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">mod_class</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given the spliced ptms, altered_flanks, or combined PTMs dataframe, identify the number of PTMs corresponding to specific annotations in the foreground (PTMs impacted by splicing) and the background (all PTMs in the proteome or all PTMs in dataset not impacted by splicing). This information can be used to calculate the enrichment of specific annotations among PTMs impacted by splicing. Several options are provided for constructing the background data: all (based on entire proteome in the ptm_coordinates dataframe) or significance (foreground PTMs are extracted from provided spliced PTMs based on significance and minimum delta PSI)</span>
 
@@ -579,8 +580,8 @@ document.write(`
 <span class="sd">    kwargs: additional keyword arguments</span>
 <span class="sd">        Additional keyword arguments to pass to the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add &#39;min_MS_observations = 2&#39; to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">background_type</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
-        <span class="n">background_annotation_count</span><span class="p">,</span> <span class="n">background_size</span> <span class="o">=</span> <span class="n">get_background_annotation_counts</span><span class="p">(</span><span class="n">database</span> <span class="o">=</span> <span class="n">database</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="n">annot_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">background</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">background_type</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+        <span class="n">background_annotation_count</span><span class="p">,</span> <span class="n">background_size</span> <span class="o">=</span> <span class="n">get_background_annotation_counts</span><span class="p">(</span><span class="n">database</span> <span class="o">=</span> <span class="n">database</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="n">annot_type</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="n">collapse_on_similar</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">background_size</span> <span class="o">=</span> <span class="n">pose_config</span><span class="o">.</span><span class="n">ptm_coordinates</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">,</span> <span class="s1">&#39;Modification Class&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -588,7 +589,7 @@ document.write(`
         <span class="n">filter_arguments</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">extract_filter_kwargs</span><span class="p">(</span><span class="n">min_dpsi</span> <span class="o">=</span> <span class="n">min_dpsi</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">modification_class</span> <span class="o">=</span> <span class="n">mod_class</span><span class="p">,</span> <span class="n">report_removed</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">helpers</span><span class="o">.</span><span class="n">check_filter_kwargs</span><span class="p">(</span><span class="n">filter_arguments</span><span class="p">)</span>
         <span class="n">ptms</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">filter_ptms</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="o">**</span><span class="n">filter_arguments</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">background_type</span> <span class="o">==</span> <span class="s1">&#39;significance&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">background</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">background_type</span> <span class="o">==</span> <span class="s1">&#39;significance&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="s1">&#39;Significance&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ptms</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="s1">&#39;dPSI&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ptms</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Significance and dPSI columns must be present in spliced_ptms dataframe to construct a background based on significance (these columns must be provided during projection).&#39;</span><span class="p">)</span>
         <span class="c1">#filter ptms if any kwargs are provided</span>
@@ -617,6 +618,18 @@ document.write(`
             <span class="n">background_size</span> <span class="o">=</span> <span class="n">background</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">,</span> <span class="s1">&#39;Modification Class&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="c1">#get background counts</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">background_annotation_count</span> <span class="o">=</span> <span class="n">get_ptm_annotations</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="n">annot_type</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="n">database</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="n">collapse_on_similar</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">background</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1">#make sure background is a dataframe and has the correct columns</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Provided background must be a pandas DataFrame&#39;</span><span class="p">)</span>
+        
+        <span class="c1">#check to make sure background has the correct columns</span>
+        <span class="n">required_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">,</span> <span class="s1">&#39;Modification Class&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">col</span> <span class="ow">in</span> <span class="n">background</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">required_cols</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Background dataframe must contain the following columns: </span><span class="si">{</span><span class="n">required_cols</span><span class="si">}</span><span class="s1">. Please check the provided background dataframe.&#39;</span><span class="p">)</span>
+
+        <span class="n">background_size</span> <span class="o">=</span> <span class="n">background</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;UniProtKB Accession&#39;</span><span class="p">,</span> <span class="s1">&#39;Residue&#39;</span><span class="p">,</span> <span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">,</span> <span class="s1">&#39;Modification Class&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">background_annotation_count</span><span class="o">=</span> <span class="n">get_ptm_annotations</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="n">annot_type</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="n">database</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="n">collapse_on_similar</span><span class="p">,</span> <span class="n">report_removed</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid background type. Must be all (default) or significance&#39;</span><span class="p">)</span>
 
@@ -630,10 +643,13 @@ document.write(`
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No PTMs with requested annotation type, so could not perform enrichment analysis&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">annot_col</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">database</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">annot_type</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="c1">#get annotation details</span>
+        <span class="n">annot_col</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">database</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">annot_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="c1">#separate distinct modification annotations in unique rows</span>
         <span class="n">annotation_details</span><span class="p">[</span><span class="n">annot_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">annotation_details</span><span class="p">[</span><span class="n">annot_col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
         <span class="n">annotation_details</span> <span class="o">=</span> <span class="n">annotation_details</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="n">annot_col</span><span class="p">)</span>
         <span class="n">annotation_details</span><span class="p">[</span><span class="n">annot_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">annotation_details</span><span class="p">[</span><span class="n">annot_col</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="c1">#add PTM column for easier identification and groupby PTM</span>
         <span class="n">annotation_details</span><span class="p">[</span><span class="s1">&#39;PTM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">annotation_details</span><span class="p">[</span><span class="s1">&#39;Gene&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">annotation_details</span><span class="p">[</span><span class="s1">&#39;Residue&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">annotation_details</span><span class="p">[</span><span class="s1">&#39;PTM Position in Isoform&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
         <span class="n">annotation_details</span> <span class="o">=</span> <span class="n">annotation_details</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">annot_col</span><span class="p">)[</span><span class="s1">&#39;PTM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">)</span>
     
@@ -642,7 +658,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="annotation_enrichment">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.annotation_enrichment">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.annotations.annotation_enrichment">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">annotation_enrichment</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">background_type</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">mod_class</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span><span class="c1">#</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given spliced ptm information (differential inclusion, altered flanking sequences, or both), calculate the enrichment of specific annotations in the dataset using a hypergeometric test. Background data can be provided/constructed in a few ways:</span>
@@ -671,7 +687,7 @@ document.write(`
 <span class="sd">    kwargs: additional keyword arguments</span>
 <span class="sd">        Additional keyword arguments to pass to the `filter_ptms()` function from the helper module. These will be used to filter ptms with lower evidence. For example, if you want to filter PTMs based on the number of MS observations, you can add &#39;min_MS_observations = 2&#39; to the kwargs. This will filter out any PTMs that have less than 2 MS observations. See the `filter_ptms()` function for more options.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">foreground_annotation_count</span><span class="p">,</span> <span class="n">foreground_size</span><span class="p">,</span> <span class="n">background_annotations</span><span class="p">,</span> <span class="n">background_size</span><span class="p">,</span> <span class="n">annotation_details</span> <span class="o">=</span> <span class="n">get_enrichment_inputs</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">background_type</span> <span class="o">=</span> <span class="n">background_type</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="n">annot_type</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="n">database</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="n">collapse_on_similar</span><span class="p">,</span> <span class="n">mod_class</span> <span class="o">=</span> <span class="n">mod_class</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="n">min_dpsi</span><span class="p">)</span>
+    <span class="n">foreground_annotation_count</span><span class="p">,</span> <span class="n">foreground_size</span><span class="p">,</span> <span class="n">background_annotations</span><span class="p">,</span> <span class="n">background_size</span><span class="p">,</span> <span class="n">annotation_details</span> <span class="o">=</span> <span class="n">get_enrichment_inputs</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">background_type</span> <span class="o">=</span> <span class="n">background_type</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="n">annot_type</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="n">database</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="n">collapse_on_similar</span><span class="p">,</span> <span class="n">mod_class</span> <span class="o">=</span> <span class="n">mod_class</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="n">min_dpsi</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
 
     <span class="k">if</span> <span class="n">foreground_annotation_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -702,7 +718,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="plot_available_annotations">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.plot_available_annotations">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.annotations.plot_available_annotations">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_available_annotations</span><span class="p">(</span><span class="n">ptms</span><span class="p">,</span> <span class="n">only_annotations_in_data</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">show_all_ptm_count</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a dataframe with ptm annotations added, show the number of PTMs associated with each annotation type</span>
@@ -785,7 +801,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="plot_annotation_counts">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.plot_annotation_counts">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.annotations.plot_annotation_counts">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_annotation_counts</span><span class="p">(</span><span class="n">spliced_ptms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">altered_flanks</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;PhosphoSitePlus&#39;</span><span class="p">,</span> <span class="n">annot_type</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="n">collapse_on_similar</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">colors</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">top_terms</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">legend_loc</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.05</span><span class="p">,</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">title_type</span> <span class="o">=</span> <span class="s1">&#39;database&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a dataframe with PTM annotations added, plot the top annotations associated with the PTMs</span>
@@ -904,7 +920,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="gene_set_enrichment">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.gene_set_enrichment">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.annotations.gene_set_enrichment">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">gene_set_enrichment</span><span class="p">(</span><span class="n">spliced_ptms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">altered_flanks</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sig_col</span> <span class="o">=</span> <span class="s1">&#39;Significance&#39;</span><span class="p">,</span> <span class="n">dpsi_col</span> <span class="o">=</span> <span class="s1">&#39;dPSI&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">min_dpsi</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gene_sets</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GO_Biological_Process_2023&#39;</span><span class="p">,</span> <span class="s1">&#39;Reactome_2022&#39;</span><span class="p">],</span> <span class="n">background</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">return_sig_only</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_retries</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">delay</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given spliced_ptms and/or altered_flanks dataframes (or the dataframes combined from combine_outputs()), perform gene set enrichment analysis using the enrichr API</span>
@@ -1033,7 +1049,7 @@ document.write(`
     
 
 <div class="viewcode-block" id="draw_pie">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.draw_pie">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.annotations.draw_pie">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">draw_pie</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">xpos</span><span class="p">,</span> <span class="n">ypos</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span><span class="n">colors</span><span class="p">,</span><span class="n">edgecolor</span> <span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;donut&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Draws pies individually, as if points on a scatter plot. This function was taken from this stack overflow post: https://stackoverflow.com/questions/56337732/how-to-plot-scatter-pie-chart-using-matplotlib</span>
@@ -1082,7 +1098,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="plot_EnrichR_pies">
-<a class="viewcode-back" href="../../../PTM_POSE.html#ptm_pose.analyze.annotations.plot_EnrichR_pies">[docs]</a>
+<a class="viewcode-back" href="../../../Overview/PTM_POSE.html#ptm_pose.analyze.annotations.plot_EnrichR_pies">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_EnrichR_pies</span><span class="p">(</span><span class="n">enrichr_results</span><span class="p">,</span> <span class="n">top_terms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">terms_to_plot</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">colors</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">row_height</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;circle&#39;</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given PTM-specific EnrichR results, plot EnrichR score for the provided terms, with each self point represented as a pie chart indicating the fraction of genes in the group with PTMs</span>
