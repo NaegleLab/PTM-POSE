@@ -145,7 +145,7 @@ def projection_test(dataset = 'Yang2016_MATS', check_type = 'no changes', splice
 
     return spliced_ptms, altered_flanks
 
-def build_annotations_test(phosphositeplus = True, ptmsigdb = True, regphos = True, ptmcode = True,ptmint = True, depod = True, omnipath = True):
+def build_annotations_test(phosphositeplus = True, ptmsigdb = True, regphos = True, ptmcode = True,ptmint = True, depod = True, omnipath = True, combined = True):
     if not os.path.exists('./Test/Test_Annotations/'):
         os.makedirs('./Test/Test_Annotations/')
 
@@ -199,6 +199,19 @@ def build_annotations_test(phosphositeplus = True, ptmsigdb = True, regphos = Tr
         except Exception as e:
             print(f'Error building Omnipath annotations: {e}')
 
+    if combined:
+        try:
+            annotate.construct_combined_enzyme_gmt_df()
+            print('Combined enzyme annotations built successfully!')
+        except Exception as e:
+            print(f'Error building combined enzyme annotations: {e}')
+        
+        try:
+            annotate.construct_combined_interactions_gmt_df()
+            print('Combined interaction annotations built successfully!')
+        except Exception as e:
+            print(f'Error building combined interaction annotations: {e}')
+
 
 def add_annotations_test(spliced_ptms, altered_flanks, check_type = 'report changes'):
 
@@ -213,7 +226,13 @@ def add_annotations_test(spliced_ptms, altered_flanks, check_type = 'report chan
 
     print('Annotation differentially spliced PTMs')
     #differentially included ptms
-    spliced_ptms = annotate.annotate_ptms(spliced_ptms, elm = True)
+    try:
+        spliced_ptms = annotate.annotate_ptms(spliced_ptms, elm = True)
+        print('ELM annotations and all other annotations added successfully.')
+    except:
+        spliced_ptms = annotate.annotate_ptms(spliced_ptms)
+        print('ELM annotations not available, but other annotations added successfully.')
+
 
     #check if annotations are the same, if not, print differences
     if check_type == 'report changes':

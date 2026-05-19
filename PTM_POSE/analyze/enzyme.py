@@ -849,122 +849,147 @@ class kstar_enrichment:
             sig_enrichment[ptype] = tmp_data[tmp_data < alpha].index.values
         return sig_enrichment
     
-    def dotplot(self, ptype = 'Y', impact_types = ['All', 'Included', 'Excluded'], kinase_axis = 'x', ax = None, facecolor = 'white', title = '', size_legend = False, color_legend = True, max_size = None, sig_kinases_only = True, alpha = 0.05, dotsize = 20, 
-                 colormap={0: '#6b838f', 1: sns.color_palette('colorblind')[1]},
-                 labelmap = {0: 'FPR > %0.2f'%(0.05), 1:'FPR <= %0.2f'%(0.05)},
-                 legend_title = 'p-value', size_number = 5, size_color = 'gray', 
-                 color_title = 'Significant', markersize = 10, 
-                 legend_distance = 1.0, figsize = (4,4)):
+    def plot(self, impact_type = ['All', 'Included', 'Excluded'], phospho_type = 'Y', **kwargs):
         """
-        Generates the dotplot plot, where size is determined by values dataframe and color is determined by significant dataframe. This is a stripped down version of the code used in KSTAR to generate the dotplot for the kinase activities
-        
+        Generate a dotplot of the kstar enrichment results for the specified impact type and phosphorylation type
+
         Parameters
-        -----------
-        ax : matplotlib Axes instance, optional
-            axes dotplot will be plotted on. If None then new plot generated
-        """ 
-        multiplier = 10
-        offset = 5
-        if ax is None:
-            fig, ax = plt.subplots(figsize=figsize)
-        ax.set_facecolor(facecolor)
-        ax.set_title(title)
+        ----------
+        impact_type : str
+            type of impact to plot. Can be 'All', 'Included', or 'Excluded'. Default is 'All'.
+        phospho_type : str
+            type of phosphorylation to plot. Can be 'Y' or 'ST'. Default is 'Y'.
+        kwargs : dict
+            additional arguments to pass to the dotplot function
+        """
+        if self.median_enrichment is None:
+            self.run_kstar_enrichment()
+        
+        if phospho_type not in self.phospho_type:
+            raise ValueError(f'phospho_type {phospho_type} not found in analysis, please choose from {self.phospho_type}')
+        
+        if impact_type not in self.impact_type:
+            raise ValueError(f'impact_type {impact_type} not found in analysis, please choose from {self.impact_type}')
 
-        plt_data = self.median_enrichment[ptype][impact_types]
-        if isinstance(plt_data, pd.Series):
-            plt_data = pd.DataFrame(plt_data)
+        enrichment = self.median_enrichment[phospho_type][impact_type].copy()
+        dotplot(enrichment, **kwargs)
+
+
+
+def dotplot(enrichment, kinase_axis = 'x', ax = None, facecolor = 'white', title = '', size_legend = False, color_legend = True, max_size = None, sig_kinases_only = True, alpha = 0.05, dotsize = 20, 
+                colormap={0: '#6b838f', 1: sns.color_palette('colorblind')[1]},
+                legend_title = 'p-value', size_number = 5, size_color = 'gray', 
+                color_title = 'Significant', markersize = 10, 
+                size_legend_loc = (1.05, 1), color_legend_loc = (1.05, 0.5), figsize = (4,4), multiplier = 10, offset = 5):
+    """
+    Generates the dotplot plot, where size is determined by values dataframe and color is determined by significant dataframe. This is a stripped down version of the code used in KSTAR to generate the dotplot for the kinase activities
+    
+    Parameters
+    -----------
+    ax : matplotlib Axes instance, optional
+        axes dotplot will be plotted on. If None then new plot generated
+    """ 
+    labelmap = {0: 'FPR > %0.2f'%(alpha), 1:'FPR <= %0.2f'%(alpha)}
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+    ax.set_facecolor(facecolor)
+    ax.set_title(title)
+
+    plt_data = enrichment.copy()
+    if isinstance(plt_data, pd.Series):
+        plt_data = pd.DataFrame(plt_data)
+    
+    if sig_kinases_only:
+        plt_data = plt_data[(plt_data < alpha).any(axis = 1)]
+        if plt_data.empty:
+            raise ValueError('No significant kinases found with p-value < %0.2f'%(alpha))
+    
+    if kinase_axis == 'x':
+        plt_data = plt_data.T
+    elif kinase_axis == 'y':
+        plt_data = plt_data.copy()
+    else:
+        raise ValueError('kinase_axis must be either "x" or "y"')
+    
+    # Transform Data
+    columns = list(plt_data.columns)
+    values = -np.log10(plt_data).copy()
+    colors = ((plt_data <= alpha) *1).copy()
+    values['row_index'] = np.arange(len(values)) * multiplier + offset
+    colors['row_index'] = np.arange(len(colors)) * multiplier + offset
+
+
+
+    melt = values.melt(id_vars = 'row_index')
+    values.drop(columns = ['row_index'], inplace = True)
+    melt['var'] = melt.apply(lambda row : columns.index(row.iloc[1]) * multiplier + offset, axis = 1)
+    
+    melt_color = colors.melt(id_vars = 'row_index')
+    melt_color['var'] = melt_color.apply(lambda row : columns.index(row.iloc[1]) * multiplier + offset, axis = 1)
+    colors.drop(columns = ['row_index'], inplace = True)
+
+    # Plot Data
+    x = melt['var']
+    y = melt['row_index'][::-1]    #needs to be done in reverse order to maintain order in the dataframe
+    
+    
+    s = melt.value * dotsize
+    
+    #check to see if more than 2 values are given (fprs). Otherwise get color based on binary significance
+
+    #get color for each datapoint based on significance
+    melt_color['color'] = [colormap.get(l,'black') for l in melt_color.value]
+
         
-        if sig_kinases_only:
-            plt_data = plt_data[(plt_data < alpha).any(axis = 1)]
-            if plt_data.empty:
-                raise ValueError('No significant kinases found with p-value < %0.2f'%(alpha))
+    c = melt_color['color']
+    scatter = ax.scatter(x, y, c=c, s=s)
+    
+    # Add Color Legend
+    if color_legend:
+        #create the legend
+        color_legend = []
+        for color_key in colormap.keys():
+            color_legend.append(
+                Line2D([0], [0], marker='o', color='w', label=labelmap[color_key],
+                        markerfacecolor= colormap[color_key], markersize=markersize),
+            )     
+        legend1 = ax.legend(handles=color_legend, loc=color_legend_loc, title = color_title)  
+
+        legend1.set_clip_on(False)
+        ax.add_artist(legend1)
         
-        if kinase_axis == 'x':
-            plt_data = plt_data.T
-        elif kinase_axis == 'y':
-            plt_data = plt_data.copy()
+
+
+    # Add Size Legend
+    if size_legend:
+        #check to see if max pval parameter was given: if so, use to create custom legend
+        if max_size is not None:
+            s_label = np.arange(max_size/size_number,max_size+1,max_size/size_number).astype(int)
+            dsize = [s*dotsize for s in s_label]
+            legend_elements = []
+            for element, s in zip(s_label, dsize):
+                legend_elements.append(Line2D([0],[0], marker='o', color = 'w', markersize = s**0.5, markerfacecolor = size_color, label = element))
+            legend2 = ax.legend(handles = legend_elements, loc = size_legend_loc, title = legend_title)   
         else:
-            raise ValueError('kinase_axis must be either "x" or "y"')
-        
-        # Transform Data
-        columns = list(plt_data.columns)
-        values = -np.log10(plt_data).copy()
-        colors = ((plt_data <= alpha) *1).copy()
-        values['row_index'] = np.arange(len(values)) * multiplier + offset
-        colors['row_index'] = np.arange(len(colors)) * multiplier + offset
+            kw = dict(prop="sizes", num=size_number, color=size_color, func=lambda s: s/dotsize) 
+            legend2 = ax.legend(*scatter.legend_elements(**kw),
+                    loc=size_legend_loc, title=legend_title) 
+        ax.add_artist(legend2)
+
+    
+    # Add Additional Plotting Information
+    ax.tick_params(axis = 'x', rotation = 90)
+    ax.yaxis.set_ticks(np.arange(len(values)) * multiplier + offset)
+    ax.xaxis.set_ticks(np.arange(len(columns)) * multiplier + offset)
 
 
-
-        melt = values.melt(id_vars = 'row_index')
-        values.drop(columns = ['row_index'], inplace = True)
-        melt['var'] = melt.apply(lambda row : columns.index(row.iloc[1]) * multiplier + offset, axis = 1)
-        
-        melt_color = colors.melt(id_vars = 'row_index')
-        melt_color['var'] = melt_color.apply(lambda row : columns.index(row.iloc[1]) * multiplier + offset, axis = 1)
-        colors.drop(columns = ['row_index'], inplace = True)
-
-        # Plot Data
-        x = melt['var']
-        y = melt['row_index'][::-1]    #needs to be done in reverse order to maintain order in the dataframe
-        
-        
-        s = melt.value * dotsize
-        
-        #check to see if more than 2 values are given (fprs). Otherwise get color based on binary significance
-
-        #get color for each datapoint based on significance
-        melt_color['color'] = [colormap.get(l,'black') for l in melt_color.value]
-
-            
-        c = melt_color['color']
-        scatter = ax.scatter(x, y, c=c, s=s)
-        
-        # Add Color Legend
-        if color_legend:
-            #create the legend
-            color_legend = []
-            for color_key in colormap.keys():
-                color_legend.append(
-                    Line2D([0], [0], marker='o', color='w', label=labelmap[color_key],
-                            markerfacecolor= colormap[color_key], markersize=markersize),
-                )     
-            legend1 = ax.legend(handles=color_legend, loc=f'upper right', bbox_to_anchor=(legend_distance,1), title = color_title)  
-
-            legend1.set_clip_on(False)
-            ax.add_artist(legend1)
-            
-
-
-        # Add Size Legend
-        if size_legend:
-            #check to see if max pval parameter was given: if so, use to create custom legend
-            if max_size is not None:
-                s_label = np.arange(max_size/size_number,max_size+1,max_size/size_number).astype(int)
-                dsize = [s*dotsize for s in s_label]
-                legend_elements = []
-                for element, s in zip(s_label, dsize):
-                    legend_elements.append(Line2D([0],[0], marker='o', color = 'w', markersize = s**0.5, markerfacecolor = size_color, label = element))
-                legend2 = ax.legend(handles = legend_elements, loc = f'lower right', title = legend_title, bbox_to_anchor=(legend_distance,0))        
-            else:
-                kw = dict(prop="sizes", num=size_number, color=size_color, func=lambda s: s/dotsize) 
-                legend2 = ax.legend(*scatter.legend_elements(**kw),
-                        loc=f'lower right', title=legend_title, bbox_to_anchor=(legend_distance,0)) 
-            ax.add_artist(legend2)
-
-        
-        # Add Additional Plotting Information
-        ax.tick_params(axis = 'x', rotation = 90)
-        ax.yaxis.set_ticks(np.arange(len(values)) * multiplier + offset)
-        ax.xaxis.set_ticks(np.arange(len(columns)) * multiplier + offset)
-
-
-        ax.set_xticklabels(plt_data.columns)
-        ax.set_yticklabels(plt_data.index[::-1])  #reverse order to match the dataframe
-        
-        #adjust x and y scale so that data is always equally spaced
-        ax.set_ylim([0,len(values)*multiplier])
-        ax.set_xlim([0,len(columns)*multiplier])
-        return ax 
+    ax.set_xticklabels(plt_data.columns)
+    ax.set_yticklabels(plt_data.index[::-1])  #reverse order to match the dataframe
+    
+    #adjust x and y scale so that data is always equally spaced
+    ax.set_ylim([0,len(values)*multiplier])
+    ax.set_xlim([0,len(columns)*multiplier])
+    return ax 
     
  
 

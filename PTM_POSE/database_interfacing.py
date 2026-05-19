@@ -91,6 +91,124 @@ def get_uniprot_to_gene(genename = True, geneid = True):
         return uni_to_genename
     elif geneid:
         return uni_to_geneid
+    
+
+def get_canonical_isoID(alternative_products, accession):
+    """
+    Given download of uniprot information containing alternative products/isoforms, identify which isoform is the listed as the canonical isoform. This will be the one that displays the sequence in UniProt
+    
+    Parameters
+    ----------
+    alternative_products: str
+        alternative_products information returned from UniProtKB
+    accession: str
+        primary accession number for protein
+
+    Returns
+    -------
+    canonical_isoid: str
+        Isoform ID associated with the canonical isoform of the protein. If only one isoform, isoform ID is listed as swissprot accession
+    """
+    #split parts of information by semicolon
+    split_list = alternative_products.split(';')
+    #check to make sure there are isoforms listed (list will only be 1 length if not)
+    if len(split_list) > 1:
+        #find index of list with 'Sequence=Displayed'. Canonical id will be just before
+        for i, s in enumerate(split_list): 
+            if s.strip() == 'Sequence=Displayed':
+                displayed_index = i
+                break
+        #grab canonical isoid, check to make sure it is an isoform id entry
+        canonical_isoid = split_list[displayed_index-1]
+        if 'IsoId' in canonical_isoid:
+            canonical_isoid = canonical_isoid.split('=')[1]
+        else:
+            raise ValueError(f'Could not find isoform id for {accession}')
+        
+        #for rare case where multiple accessions are provided, find one that matches primary Accession
+        if ',' in canonical_isoid:
+            ids = canonical_isoid.split(',')
+            for id in ids:
+                if id.split('-')[0] == accession:
+                    canonical_isoid = id
+                    break
+    else:
+        #if no alternative isoforms, iso id is just the swissprot id
+        canonical_isoid = accession
+    return canonical_isoid
+
+def get_isoform_IDs(alternative_products, accession):
+    """
+    Given download of uniprot information containing alternative products/isoforms, create list of all isoform IDs.
+    
+    Parameters
+    ----------
+    alternative_products: str
+        alternative_products information returned from UniProtKB
+    accession: str
+        primary accession number for protein
+
+    Returns
+    -------
+    isoids: str
+        list of all Isofrom IDs (canoncial and alternative) currently listed in UniProt
+    """
+    #get list of all isoform IDs
+    split = alternative_products.split(';')
+    #find all entries with 'IsoID in entry
+    isoids = [entry.split('=')[-1].strip(' ') for entry in split if 'IsoId' in entry]
+
+    #trim cases that have multiple ids associated with them and expand
+    for iso in isoids:
+        if ',' in iso:
+            #separate entries
+            iso_split = iso.split(',')
+            #temporarily remove from isoids
+            isoids.remove(iso)
+            for split_iso in iso_split: 
+                if split_iso.split('-')[0] == accession: #get rid of old IDs that don't match swissprot ID
+                    isoids.append(split_iso.strip())
+                    
+    if len(isoids) > 0:
+        return isoids
+    else:
+        return np.nan
+
+    
+def get_uniprot_isoform_info():
+    """
+    Perform batch query of all swissprot proteins and download isoform information/alternative products. Use this to extract the canonical isoform and all listed alternative isoforms.
+
+    Returns
+    -------
+    canonical_isoIDs: dict
+        Mapping of primary accession to canonical isoform ID
+    all_isoforms: dict
+        Mapping of primary accession to list of all isoform IDs
+    """
+    #start up session for interfacting with rest api
+    session, re_next_link = establish_session()
+
+    #url for performing batch queries
+    url =  "https://rest.uniprot.org/uniprotkb/search?query=reviewed:true+AND+organism_id:9606&format=tsv&fields=accession,cc_alternative_products&size=500"
+    canonical_isoIDs = {}
+    all_isoforms = {}
+    #iterate through entries and extract isoform IDs
+    for batch, total in get_batch(url, session, re_next_link):
+        for line in batch.text.splitlines()[1:]:
+            #extract swissprot accession and information on isoforms
+            primaryAccession, alternative_products = line.split('\t')
+            #using alternative products to identify, get canonical isoform ID
+            canonical_isoIDs[primaryAccession] = get_canonical_isoID(alternative_products, primaryAccession)
+
+                
+
+            #get list of all isoform IDs
+            all_isoforms[primaryAccession] = get_isoform_IDs(alternative_products, primaryAccession)
+
+
+
+    return canonical_isoIDs, all_isoforms
 
 
 def get_region_sequence(chromosome, strand, region_start, region_end, coordinate_type = 'hg38', max_retries = 5, delay = 15):

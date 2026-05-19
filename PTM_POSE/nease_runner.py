@@ -97,7 +97,7 @@ def process_data_for_nease(splice_data, region_start_col = 'EXON START', gene_co
     
     return splice_data
 
-def run_nease(splice_data, region_start_col = 'EXON START', gene_col = 'Gene', chromosome_col = 'chr', strand_col = 'strand', gene_id_type = 'name', region_end_col = 'EXON_END', dpsi_col = 'dPSI', coordinate_type = 'hg38', remove_non_in_frame = False, only_divisible_by_3 = False):
+def run_nease(splice_data, region_start_col = 'EXON START', gene_col = 'Gene', chromosome_col = 'chr', strand_col = 'strand', gene_id_type = 'name', region_end_col = 'EXON_END', dpsi_col = 'dPSI', coordinate_type = 'hg38', remove_non_in_frame = True, only_divisible_by_3 = False):
     """
     Given a dataframe containing splice event/isoform information, process and run NEASE analysis
 

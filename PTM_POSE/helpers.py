@@ -1,12 +1,36 @@
 import pandas as pd
 import numpy as np
 from ptm_pose import pose_config
+import functools
+import warnings
 
 #try importing pyliftover (optional dependency) for genomic coordinate conversion
 try:
     import pyliftover
 except ImportError:
     pyliftover = None
+
+def deprecated(reason):
+    """
+    A decorator to mark functions as deprecated. Emits a warning when the function is invoked. Obtained
+    """
+    def decorator(func):
+        fmt = "{reason}. It will likely be removed in a future version."
+
+        @functools.wraps(func)
+        def new_func(*args, **kwargs):
+            warnings.simplefilter('always', DeprecationWarning)
+            warnings.warn(
+                fmt.format(reason=reason),
+                category=DeprecationWarning,
+                stacklevel=2
+            )
+            warnings.simplefilter('default', DeprecationWarning)
+            return func(*args, **kwargs)
+
+        return new_func
+
+    return decorator
 
 def extract_filter_kwargs(**kwargs):
     """
@@ -441,3 +465,20 @@ def join_except_self(df, group_col, value_col, new_col, sep = ';'):
             new_values.append(np.nan)
     df[new_col] = new_values
     return df
+
+
+def get_junction_counts(sevents, quant_type = "MATS"):
+    """
+    Given splice event data, return the total number of junction counts for a splice event in each sample. Currently only supports MATS format splice event data.
+    """
+    if quant_type == 'MATS':
+        #check junction counts
+        sevents['TJC_SAMPLE_1'] = sevents['IJC_SAMPLE_1'].apply(lambda x: sum(map(int, x.split(',')))) + \
+                                sevents['SJC_SAMPLE_1'].apply(lambda x: sum(map(int, x.split(','))))
+        sevents['TJC_SAMPLE_2'] = sevents['IJC_SAMPLE_2'].apply(lambda x: sum(map(int, x.split(',')))) + \
+                                sevents['SJC_SAMPLE_2'].apply(lambda x: sum(map(int, x.split(','))))
+    else:
+        raise ValueError("Currently only supports splice data from MATS")
+    return sevents
+
+
